@@ -1,0 +1,37 @@
+{
+    "success": true,
+	"people": [
+		{
+			"name": "Matt Mathias",
+            "age": 32,
+            "spouse": true,
+		},
+		{
+			"name": "Drew Mathias",
+			"age": 33,
+            "spouse": true,
+		},
+        {
+            "name": "Sargeant Pepper",
+            "age": 25,
+            "spouse": false,
+        }
+	],
+	"jobs": [
+		"teacher",
+		"programmer",
+		"judge"
+	],
+    "states": {
+        "Georgia": [
+            30301,
+            30302,
+            30303
+        ],
+        "Wisconsin": [
+            53000,
+            53001,
+            53002
+        ]
+    }
+}
