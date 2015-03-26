@@ -135,9 +135,12 @@ class BNRSwiftJSONTests: XCTestCase {
     func createData() -> NSData? {
         let testBundle = NSBundle(forClass: BNRSwiftJSONTests.self)
         let path = testBundle.pathForResource("sample", ofType: "JSON")
-        let url = NSURL(fileURLWithPath: path!)
-        let data = NSData(contentsOfURL: url!)
-        return data
+        
+        if let p = path, u = NSURL(fileURLWithPath: p) {
+            return NSData(contentsOfURL: u)
+        }
+        
+        return nil
     }
     
 }
