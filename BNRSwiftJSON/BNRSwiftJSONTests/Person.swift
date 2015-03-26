@@ -24,12 +24,6 @@ public struct Person: JSONValueDecodable, Printable {
         let name = value["name"].string
         let age = value["age"].int
         let isMarried = value["spouse"].bool
-        
-//        if let n = name, a = age, b = isMarried {
-//            return self.init(name: n, age: a, spouse: b)
-//        } else {
-//            return nil
-//        }
 
         return name.bind { n in
             age.bind { a in

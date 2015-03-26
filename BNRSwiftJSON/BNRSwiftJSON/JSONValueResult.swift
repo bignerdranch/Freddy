@@ -9,18 +9,18 @@
 import Foundation
 
 /**
-    An enum to handle binding from `JSONValue`s to `JSONValueResult`s to eliminte ugly `?`s when chaining.
+    An enum to handle binding `JSONValue`s to `JSONValueResult`s.
 */
 public enum JSONValueResult {
     case Success(JSONValue)
     case Failure(NSError)
     
     /**
-        A method to `bind` a case's associated value to an instance of `JSONValueResult`.
+        A method to `bind` a `JSONValue` case's associated value to an instance of `JSONValueResult`.
     
         :param: f A closure to specify the binding.
     
-        :returns: An instance of `JSONValueResult` containing the assigned `JSONValue` in the `.Value` case's associated value.
+        :returns: An instance of `JSONValueResult` containing the assigned `JSONValue` in the `.Success` case's associated value, or .`Failure ` if there is an `error`..
     */
     public func bind(f: JSONValue -> JSONValueResult) -> JSONValueResult {
         switch self {
@@ -36,7 +36,7 @@ public enum JSONValueResult {
     
         :param: f A closure to specify the binding.
     
-        :returns: A `Result` containing the assigned `JSONValue` in the `.Value` case's associated value.
+        :returns: A `Result` containing the assigned `JSONValue` in the `.Success` case's associated value, or .`Failure ` if there is an `error`..
     */
     public func bind<T>(f: JSONValue -> Result<T>) -> Result<T> {
         switch self {
@@ -52,7 +52,7 @@ public enum JSONValueResult {
 
 public extension JSONValueResult {
     /**
-        Retrieves an `Array` of `JSONValue`s from the given `JSONValueResult`.  If the target value's type inside of the `JSONValue` instance does not match `Array`, this property returns `nil`.
+        Retrieves an `Array` of `JSONValue`s from the given `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Array`, this property returns `.Failure` with an appropriate `error`.
     */
     var array: Result<[JSONValue]> {
         return bind { json in
@@ -65,7 +65,7 @@ public extension JSONValueResult {
     }
     
     /**
-        Retrieves a `Dictionary` `JSONValue`s from the given `JSONValueResult`.  If the target value's type inside of the `JSONValue` instance does not match `Dictionary`, this property returns `nil`.
+        Retrieves a `Dictionary` `JSONValue`s from the given `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Dictionary`, this property returns `.Failure` with an appropriate `error`.
     */
     var dictionary: Result<[String: JSONValue]> {
         return bind { json in
@@ -78,7 +78,7 @@ public extension JSONValueResult {
     }
     
     /**
-        Retrieves a `Double` from the `JSONValueResult`.  If the target value's type inside of the `JSONValue` instance does not match `Double`, this property returns `nil`.
+        Retrieves a `Double` from the `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Double`, this property returns `.Failure` with an appropriate `error`.
     */
     var number: Result<Double> {
         return bind { json in
@@ -91,7 +91,7 @@ public extension JSONValueResult {
     }
     
     /**
-        Retrieves a `String` from the `JSONValueResult`.  If the target value's type inside of the `JSONValue` instance does not match `String`, this property returns `nil`.
+        Retrieves a `String` from the `Result`.  If the target value's type inside of the `JSONValue` instance does not match `String`, this property returns `.Failure` with an appropriate `error`.
     */
     var string: Result<String> {
         return bind { json in
@@ -104,7 +104,7 @@ public extension JSONValueResult {
     }
     
     /**
-        Retrieves a `Bool` from the `JSONValueResult`.  If the target value's type inside of the `JSONValue` instance does not match `Bool`, this property returns `nil`.
+        Retrieves a `Bool` from the `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Bool`, this property returns `.Failure` with an appropriate `error`.
     */
     var bool: Result<Bool> {
         return bind { json in
@@ -117,7 +117,7 @@ public extension JSONValueResult {
     }
     
     /**
-        Retrieves an `Int` from the `JSONValueResult`.  If the target value's type inside of the `JSONValue` instance does not match `Int`, this property returns `nil`.
+        Retrieves an `Int` from the `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Int`, this property returns `.Failure` with an appropriate `error`.
     */
     var int: Result<Int> {
         return bind { json in
