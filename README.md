@@ -86,7 +86,7 @@ if let data = createData() {
 	    if let name = person["name"] as? String, age = person["age"] as? Int, spouse = person["spouse"] as? Bool {
 	        persons.append(Person(name: name, age: age, spouse: spouse))
             }
-	}
+        }
     }
 }
 ```
