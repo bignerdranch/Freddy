@@ -58,3 +58,16 @@ public enum Result<T> {
         }
     }
 }
+
+public func collectResults<T>(results: [Result<T>]) -> Result<[T]> {
+    var successes = [T]()
+    for result in results {
+        switch result {
+        case .Success(let res):
+            successes.append(res.value)
+        case .Failure(let error):
+            return .Failure(error)
+        }
+    }
+    return .Success(Box(successes))
+}

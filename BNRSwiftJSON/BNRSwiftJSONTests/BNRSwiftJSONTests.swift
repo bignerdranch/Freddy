@@ -9,6 +9,7 @@
 import UIKit
 import XCTest
 import BNRSwiftJSON
+import Swift
 
 class BNRSwiftJSONTests: XCTestCase {
     
@@ -27,7 +28,7 @@ class BNRSwiftJSONTests: XCTestCase {
         let data = createData()
         
         let json = JSONValue.createJSONValueFrom(data!)
-        let peopleArray = json.bind({ $0["people"] }).array.bind { self.collectResults(map($0, Person.createWithJSONValue)) }
+        let peopleArray = json.bind({ $0["people"] }).array.bind { collectResults(map($0, Person.createWithJSONValue)) }
         
         switch peopleArray {
         case .Success(let box):
@@ -152,19 +153,6 @@ class BNRSwiftJSONTests: XCTestCase {
         }
         
         return nil
-    }
-    
-    func collectResults<T>(results: [Result<T>]) -> Result<[T]> {
-        var successes = [T]()
-        for result in results {
-            switch result {
-            case .Success(let res):
-                successes.append(res.value)
-            case .Failure(let error):
-                return .Failure(error)
-            }
-        }
-        return .Success(Box(successes))
     }
     
 }
