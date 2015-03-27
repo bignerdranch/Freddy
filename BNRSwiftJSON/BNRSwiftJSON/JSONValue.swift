@@ -11,7 +11,7 @@ import Foundation
 /**
     An enum to describe the structure of JSON.
 */
-public enum JSONValue: NilLiteralConvertible {
+public enum JSONValue {
     case JSONArray([JSONValue])
     case JSONDictionary([String: JSONValue])
     case JSONNumber(Double)
@@ -27,14 +27,15 @@ public enum JSONValue: NilLiteralConvertible {
     
         :returns: An optional instance of `JSONValue`.
     */
-    public static func createJSONValueFrom(data: NSData) -> JSONValue? {
+    public static func createJSONValueFrom(data: NSData) -> JSONValueResult {
         var error: NSError?
         let jsonObject: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &error)
         
         if let obj: AnyObject = jsonObject {
-            return makeJSONValue(obj)
+            return .Success(makeJSONValue(obj))
         } else {
-            return nil
+            let error = NSError(domain: "com.bignerdranch.swift-json", code: JSONValue.BNRSwiftJSONErrorCode.CouldNotParseJSON.rawValue, userInfo: [NSLocalizedFailureReasonErrorKey: "Could not parse `NSData`."])
+            return .Failure(error)
         }
     }
     
@@ -127,7 +128,7 @@ public extension JSONValue {
     /**
         Retrieves a `String` from the `JSONValue`.  If the target value's type inside of the `JSONValue` instance does not match `String`, this property returns `nil`.
     */
-    var string: Swift.String? {
+    var string: String? {
         switch self {
         case .JSONString(let s):
             return s
@@ -230,7 +231,7 @@ public extension JSONValue {
     }
     
     enum BNRSwiftJSONErrorCode: Int {
-        case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible
+        case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible, CouldNotParseJSON
     }
 }
 
@@ -250,6 +251,9 @@ extension JSONValue {
             return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
         case .TypeNotConvertible:
             let errorDict = [NSLocalizedFailureReasonErrorKey: "Unexpected type. `\(self)` is not convertible to `\(problem)`."]
+            return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
+        case .CouldNotParseJSON:
+            let errorDict = [NSLocalizedFailureReasonErrorKey: "Could not parse JSON. Check the `NSData` instance."]
             return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
         }
     }
