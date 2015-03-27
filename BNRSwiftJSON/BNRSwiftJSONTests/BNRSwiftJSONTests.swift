@@ -49,7 +49,6 @@ class BNRSwiftJSONTests: XCTestCase {
         
         let json = JSONValue.createJSONValueFrom(data!)
         let peopleArray = json.bind({ $0["people"] }).array.bind { collectResults(map($0, Person.createWithJSONValue)) }
-        
         switch peopleArray {
         case .Success(let box):
             box.value.map { XCTAssertTrue($0.name != "", "There should be a name.") }

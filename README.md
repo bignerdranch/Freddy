@@ -192,7 +192,22 @@ The `for` loop and nested `switch` statement in the first `.Success` case is per
 There is a more elegant way to accomplish the same task.
 
 ```swift
+let data = createData()
+let json = JSONValue.createJSONValueFrom(data!)
 
+let peopleArray = json.bind({ $0["people"] }).array.bind { collectResults(map($0, Person.createWithJSONValue)) }
+var people = [Person]()
+switch peopleArray {
+case .Success(let box):
+	box.value.map { people.append($0) } 
+case .Failure(let error):
+	println(error) // do something better with the error
+}
 ```
+
+The above example is considerably more complex, and dense, than the previous implementation.
+Nonetheless, it accomplishes the same task in a much more compact manner.
+Here is what is going on.
+
 
 ## Underlying Machinery
