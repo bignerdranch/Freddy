@@ -98,10 +98,98 @@ Furthermore, the above code is difficult to debug.
 If any of the above optional bindings fail for some reason, then the result is `nil` and we do not have any data.
 We ideally would like the syntax to be clean, while also being able to check informative errors should any arise.
 
-## Usage
+# Using BNRSwiftJSON
 
 `BNRSwiftJSON` is a framework that provides clean syntax, safe typing, and useful information in parsing JSON.
 Consider the above example using `BNRSwiftJSON`.
+
+```swift
+let data = createData()
+let json = JSONValue.createJSONValueFrom(data!)
+let peopleArray = json["people"].array
+switch peopleArray {
+case .Success(let people):
+	for person in people {
+		let per = Person.createWithJSONValue(person)
+		switch per {
+		case .Success(let p):
+			someContainer.append(p)
+		case .Failure(let error):
+			println(error) // do something better with the error
+		}
+	}
+case .Failure(let error):
+	println(error) // do something better with the error
+}
+```
+
+The above example demonstrates the safety and ease-of-use that the comes with using `BNRSwiftJSON`. 
+`JSONValue` is an enumeration with cases matching each value of JSON that may be returned by a web service.
+The method `createWithJSONValueFrom(_:)` takes an instance of `NSData` and returns an instance of `JSONValueResult`.
+This type has two cases: `.Success` that will have an associated value of type `JSONValue`, and `.Failure` with an associated value of type `NSError`.
+Thus, it will quite apparent of there is or is not JSON data to parse.
+Moreover, if there is an error parsing the JSON, then the `.Failure` case will carry with it the associated error information.
+
+Once you have a `JSONValueResult`, you can use various subscriptors and computed properties to get the data.
+The code in the above example uses the key `people` to extract the array of persons returned by the web service.
+The `array` computed property on `JSONValueResult` returns an instance of the `Result` type, which is similar to `JSONValueResult`.
+`Result` has two cases, one for a generic value in the `.Success` case, and another `.Failure` case for error information.
+If there is data available for `array` to pull out of the `JSONValueResult` instance, then it will return `Result<[JSONValue]>`.
+This return type can be interpreted as a `Result` with potentially an array of `JSONValue`s inside of its `.Success` case.
+
+Next, `peopleArray` is `switch`ed over to determine if there is data.
+In the `.Success` case, you can grab the array of `JSONValue`s: `case .Success(let people):`.
+This line of code places the array of `JSONValue`s in a constant called `people`.
+You can then loop through these `JSONValue`s create instances of some model.
+
+The example above uses a `Person` struct.
+Here is its implementation:
+
+```swift
+public struct Person: JSONValueDecodable, Printable {
+	public let name: String
+	public let age: Int
+	public let spouse: Bool
+
+	public init(name: String, age: Int, spouse: Bool) {
+		self.name = name
+		self.age = age
+		self.spouse = spouse
+	}
+
+	public static func createWithJSONValue(value: JSONValue) -> Result<Person> {
+		let name = value["name"].string
+		let age = value["age"].int
+		let isMarried = value["spouse"].bool
+
+		return name.bind { n in 
+			age.bind { a in
+				isMarried.map { im in 
+					return self.init(name: n, age: a, spouse: im)
+				}
+			}
+		}
+	}
+
+	public var description: String {
+		return "Name: \(name), age: \(age), married: \(spouse)"
+	}
+}
+```
+
+Notice that the `Person` struct conforms to a protocol: `JSONValueDecodable`.
+The protocol requires an implementation of a `static` method to construct an instance of the model: `createWithJSONValue(_:)`.
+This method takes an instance of `JSONValue`, which is used to extract the model's relevant data.
+
+Finally, notice that `createWithJSONValue(_:)` returns a `Result` with a `Person` in its `.Success` case's associated value if everything goes well.
+The benefit here is that you will know if `createWithJSONValue(_:)` succeeds in making an instance.
+If the method does not succeed, then you will know why by checking the associated value in the `.Failure` case.
+
+# A More Elegant Way
+
+The above example is very safe, but is perhaps a little mechanical.
+The `for` loop and nested `switch` statement in the first `.Success` case is perahps not ideal.
+There is a more elegant way to accomplish the same task.
 
 ```swift
 

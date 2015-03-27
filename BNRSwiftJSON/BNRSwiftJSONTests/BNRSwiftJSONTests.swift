@@ -24,20 +24,6 @@ class BNRSwiftJSONTests: XCTestCase {
         }
     }
     
-    func testThatJSONValueCanCreateArrayOfPeople() {
-        let data = createData()
-        
-        let json = JSONValue.createJSONValueFrom(data!)
-        let peopleArray = json.bind({ $0["people"] }).array.bind { collectResults(map($0, Person.createWithJSONValue)) }
-        
-        switch peopleArray {
-        case .Success(let box):
-            box.value.map { XCTAssertTrue($0.name != "", "There should be a name.") }
-        case .Failure(let error):
-            XCTAssertTrue(true == false, "There should be no failure.")
-        }
-    }
-    
     func testThatJSONValueCanCreatePeople() {
         let data = createData()
         let json = JSONValue.createJSONValueFrom(data!)
@@ -57,6 +43,21 @@ class BNRSwiftJSONTests: XCTestCase {
             XCTAssertTrue(false == true, "There should be no error.")
         }
     }
+    
+    func testThatJSONValueCanCreateArrayOfPeople() {
+        let data = createData()
+        
+        let json = JSONValue.createJSONValueFrom(data!)
+        let peopleArray = json.bind({ $0["people"] }).array.bind { collectResults(map($0, Person.createWithJSONValue)) }
+        
+        switch peopleArray {
+        case .Success(let box):
+            box.value.map { XCTAssertTrue($0.name != "", "There should be a name.") }
+        case .Failure(let error):
+            XCTAssertTrue(true == false, "There should be no failure.")
+        }
+    }
+
     
     func testThatSubscriptingJSONValueWorksForTopLevelObject() {
         let data = createData()
