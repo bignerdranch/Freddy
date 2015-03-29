@@ -59,6 +59,13 @@ public enum Result<T> {
     }
 }
 
+/**
+    A function to collect `Result` instances into an array of `T` in the `.Success` case.
+
+    :param: results An array of `Result<T>`: `[Result<T>]`.
+
+    :returns: A `Result<[T]>` such that all successes are collected within an array of the `.Success` case.
+*/
 public func collectResults<T>(results: [Result<T>]) -> Result<[T]> {
     var successes = [T]()
     for result in results {
@@ -70,4 +77,25 @@ public func collectResults<T>(results: [Result<T>]) -> Result<[T]> {
         }
     }
     return .Success(Box(successes))
+}
+
+/**
+    A function to break an array of `Result`s into a tuple of `successes` and `failures`.
+
+    :param: results An array of `Result<T>`: `[Result<T>]`.
+
+    :returns: A tuple of `successes` and `failures`.
+*/
+public func splitResults<T>(results: [Result<T>]) -> (successes: [T], failures: [NSError]) {
+    var successes = [T]()
+    var failures = [NSError]()
+    for result in results {
+        switch result {
+        case .Success(let res):
+            successes.append(res.value)
+        case .Failure(let error):
+            failures.append(error)
+        }
+    }
+    return (successes, failures)
 }
