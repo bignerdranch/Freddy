@@ -82,7 +82,7 @@ if let data = createData() {
 	       
     var persons: [Person] = []
     if let people = stuff?["people"] as? [[String: AnyObject]] {
-	for person in people {
+        for person in people {
 	    if let name = person["name"] as? String, age = person["age"] as? Int, spouse = person["spouse"] as? Bool {
 	        persons.append(Person(name: name, age: age, spouse: spouse))
             }
@@ -101,6 +101,7 @@ We ideally would like the syntax to be clean, while also being able to check inf
 # Using BNRSwiftJSON
 
 `BNRSwiftJSON` is a framework that provides clean syntax, safe typing, and useful information in parsing JSON.
+Errors are tracked, stored, and are available to use after parsing.
 Consider the above example using `BNRSwiftJSON`.
 
 ```swift
@@ -185,10 +186,14 @@ Finally, notice that `createWithJSONValue(_:)` returns a `Result` with a `Person
 The benefit here is that you will know if `createWithJSONValue(_:)` succeeds in making an instance.
 If the method does not succeed, then you will know why by checking the associated value in the `.Failure` case.
 
+Do not be concerned with the implementation of `createWithJSONValue(_:)` at this point.
+Understanding this method entails an explanation of `bind` and `map`, which we will get to below.
+For now, it is more important to understand the basic mechanics: you create an instance of your model object with a `JSONValue`, and you return a `Result` from `createWithJSONValue(_:)`.
+
 # A More Elegant Way
 
 The above example is very safe, but is perhaps a little mechanical.
-The `for` loop and nested `switch` statement in the first `.Success` case is perahps not ideal.
+The `for` loop and nested `switch` statements are not ideal.
 There is a more elegant way to accomplish the same task.
 
 ```swift
@@ -207,7 +212,32 @@ case .Failure(let error):
 
 The above example is considerably more complex, and dense, than the previous implementation.
 Nonetheless, it accomplishes the same task in a much more compact manner.
-Here is what is going on.
+In order to understand how `peopleArray` is created and what it holds, you will have to have a feeling for how `Result`, `bind`, and `map` work.
 
+These are the topics of the next sectionn.
 
 ## Underlying Machinery
+
+The method `createJSONValueFromData(_:)` returns  a `JSONValueResult` containing the resulting `JSONValue` in its `.Success` case.
+Let's take a look at `JSONValue` before moving on.
+
+```swift 
+public enum JSONValue {
+    case JSONArray([JSONValue])
+    case JSONDictionary([String: JSONValue])
+    case JSONNumber(Double)
+    case JSONString(String)
+    case JSONBool(Bool)
+    case JSONNull()
+
+    ...
+}
+```
+
+As you can see, a `JSONValue` is an enumeration with cases that match the sort of data modeled by JSON.
+The cases for this enum all have associated values, with the exception of `JSONNull`.
+`JSONArray` and `JSONDictionary` have associated values that refer back to the `JSONValue` enumeration itself.
+In other words, the associated value for `JSONArray` can hold an array of `JSONDictionary`, where each dictionary will hold `String` keys and `JSONValue` values.
+As you can imagine, the method `createJSONValueFrom(_:)` will create an instance of the `JSONValue` enum recursively.
+
+Here is the implementation of `createJSONValueFrom(_:)`.
