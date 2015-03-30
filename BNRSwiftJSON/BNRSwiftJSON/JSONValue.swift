@@ -226,9 +226,7 @@ public extension JSONValue {
 // MARK: - Errors
 
 public extension JSONValue {
-    var errorDomain: String {
-        return "com.bignerdranch.swift-json"
-    }
+    var errorDomain: String { return "com.bignerdranch.swift-json" }
     
     enum BNRSwiftJSONErrorCode: Int {
         case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible, CouldNotParseJSON

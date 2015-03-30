@@ -99,3 +99,31 @@ public func splitResults<T>(results: [Result<T>]) -> (successes: [T], failures: 
     }
     return (successes, failures)
 }
+
+/**
+    A function to break a `Result` with an array of type `[U]` into a tuple of `successes` and `failures`.
+
+    :param: result The `Result<[U]>`.
+    :param: f The function to be used to create the array given to the `successes` member of the tuple.
+
+    :returns: A tuple of `successes` and `failures`.
+*/
+public func splitResult<U, T>(result: Result<[U]>, f: U -> Result<T>) -> (successes: [T], failures: [NSError]) {
+    var successes = [T]()
+    var failures = [NSError]()
+    switch result {
+    case .Success(let results):
+        for result in results.value {
+            let res = f(result)
+            switch res {
+            case .Success(let r):
+                successes.append(r.value)
+            case .Failure(let error):
+                failures.append(error)
+            }
+        }
+    case .Failure(let error):
+        failures.append(error)
+    }
+    return (successes, failures)
+}

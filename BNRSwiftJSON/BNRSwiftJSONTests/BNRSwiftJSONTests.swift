@@ -44,7 +44,7 @@ class BNRSwiftJSONTests: XCTestCase {
         }
     }
     
-    func testThatJSONValueCanCreateArrayOfPeople() {
+    func testThatCollectResultsCanCreateArrayOfPeople() {
         let data = createData()
         
         let json = JSONValue.createJSONValueFrom(data!)
@@ -57,6 +57,38 @@ class BNRSwiftJSONTests: XCTestCase {
         }
     }
 
+    func testThatSplitResultsCanCreateArrayOfPeople() {
+        let data = createData()
+        let json = JSONValue.createJSONValueFrom(data!)
+        
+//        let peopleArray = json.bind({ $0["people"] }).array.map { splitResults(map($0, Person.createWithJSONValue)) }
+        
+        let peopleArray = json.bind({ $0["people"] }).array
+        switch peopleArray {
+        case .Success(let people):
+            let results = splitResults(people.value.map({ Person.createWithJSONValue($0) }))
+            XCTAssertTrue(results.successes.count != 0, "There should be successes.")
+            XCTAssertTrue(results.failures.count == 0, "There should be no failures.")
+        case .Failure(let error):
+            XCTAssertTrue(false == true, "There should be no error.")
+        }
+    }
+    
+    func testSplitResultCanGatherPeopleInSuccesses() {
+        let data = createData()
+        let json = JSONValue.createJSONValueFrom(data!)
+        let people = splitResult(json.bind({ $0["people"].array }), Person.createWithJSONValue)
+        XCTAssertTrue(people.successes.count > 0, "There should be people in `successes`.")
+        XCTAssertTrue(people.failures.count == 0, "There should be no errors in `failures`.")
+    }
+    
+    func testSplitResultCanGatherErrorsInFailures() {
+        let data = createData()
+        let json = JSONValue.createJSONValueFrom(data!)
+        let peopl = splitResult(json.bind({ $0["peopl"] }).array, Person.createWithJSONValue)
+        XCTAssertTrue(peopl.successes.count == 0, "There should be no people in `successes`.")
+        XCTAssertTrue(peopl.failures.count > 0, "There should be errors in `failures`.")
+    }
     
     func testThatSubscriptingJSONValueWorksForTopLevelObject() {
         let data = createData()
@@ -70,7 +102,7 @@ class BNRSwiftJSONTests: XCTestCase {
         }
     }
     
-    func testThatYouCanAssessNestedKeys() {
+    func testThatYouCanAccessNestedKeys() {
         let data = createData()
         let json = JSONValue.createJSONValueFrom(data!)
         let zips = json["states"]["Georgia"].array
