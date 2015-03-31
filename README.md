@@ -251,7 +251,7 @@ public static func createJSONValueFrom(data: NSData) -> JSONValueResult {
     } else {
         let errorDictionary = [NSLocalizedFailureReasonErrorKey: "Could not parse `NSData`."
         let error = NSError(domain: "com.bignerdranch.BNRSwiftJSON", code: JSONValue.BNRSwiftJSONErrorCode.CouldNotParseJSON.rawValue, userInfo: errorDictionary)
-	return .Failure(error)
+        return .Failure(error)
     }
 }
 ```
@@ -309,7 +309,7 @@ private static func makeJSONValueArray(jsonArray: [AnyObject]) -> JSONValue {
     var items = [JSONValue]()
     for item in jsonArray {
         let value = makeJSONValue(item)
-	items.append(value)
+        items.append(value)
     }
     return .JSONArray(items)
 }
