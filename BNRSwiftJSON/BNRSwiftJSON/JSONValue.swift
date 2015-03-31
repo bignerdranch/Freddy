@@ -16,8 +16,8 @@ public enum JSONValue {
     case JSONDictionary([String: JSONValue])
     case JSONNumber(Double)
     case JSONString(String)
-    case JSONBool(Int)
-    case JSONNull()
+    case JSONBool(Bool)
+    case JSONNull
     
     // MARK: Decode NSData
     /**
@@ -28,13 +28,12 @@ public enum JSONValue {
         :returns: An optional instance of `JSONValue`.
     */
     public static func createJSONValueFrom(data: NSData) -> JSONValueResult {
-        var error: NSError?
-        let jsonObject: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &error)
+        let jsonObject: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
         
         if let obj: AnyObject = jsonObject {
             return .Success(makeJSONValue(obj))
         } else {
-            let error = NSError(domain: "com.bignerdranch.swift-json", code: JSONValue.BNRSwiftJSONErrorCode.CouldNotParseJSON.rawValue, userInfo: [NSLocalizedFailureReasonErrorKey: "Could not parse `NSData`."])
+            let error = NSError(domain: "com.bignerdranch.BNRSwiftJSON", code: JSONValue.BNRSwiftJSONErrorCode.CouldNotParseJSON.rawValue, userInfo: [NSLocalizedFailureReasonErrorKey: "Could not parse `NSData`."])
             return .Failure(error)
         }
     }
@@ -57,10 +56,10 @@ public enum JSONValue {
             return .JSONNumber(n)
         case let s as Swift.String:
             return .JSONString(s)
-        case let b as Int:
+        case let b as Bool:
             return .JSONBool(b)
         default:
-            return .JSONNull()
+            return .JSONNull
         }
     }
     
@@ -226,7 +225,7 @@ public extension JSONValue {
 // MARK: - Errors
 
 public extension JSONValue {
-    var errorDomain: String { return "com.bignerdranch.swift-json" }
+    var errorDomain: String { return "com.bignerdranch.BNRSwiftJSON" }
     
     enum BNRSwiftJSONErrorCode: Int {
         case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible, CouldNotParseJSON

@@ -228,16 +228,131 @@ public enum JSONValue {
     case JSONNumber(Double)
     case JSONString(String)
     case JSONBool(Bool)
-    case JSONNull()
+    case JSONNull
 
     ...
 }
 ```
 
-As you can see, a `JSONValue` is an enumeration with cases that match the sort of data modeled by JSON.
-The cases for this enum all have associated values, with the exception of `JSONNull`.
+A `JSONValue` is an enumeration with cases that match the sort of data modeled by JSON.
+Most of the cases for this enum all have associated values, with `JSONNull` being the exception.
 `JSONArray` and `JSONDictionary` have associated values that refer back to the `JSONValue` enumeration itself.
-In other words, the associated value for `JSONArray` can hold an array of `JSONDictionary`, where each dictionary will hold `String` keys and `JSONValue` values.
+For example, the associated value for `JSONArray` can hold an array of `JSONDictionary`, where each dictionary will hold `String` keys and `JSONValue` values.
 As you can imagine, the method `createJSONValueFrom(_:)` will create an instance of the `JSONValue` enum recursively.
 
 Here is the implementation of `createJSONValueFrom(_:)`.
+
+```swift
+public static func createJSONValueFrom(data: NSData) -> JSONValueResult {
+    let jsonObject: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
+
+    if let obj: AnyObject = jsonObject {
+        return .Success(makeJSONValue(obj)
+    } else {
+        let errorDictionary = [NSLocalizedFailureReasonErrorKey: "Could not parse `NSData`."
+        let error = NSError(domain: "com.bignerdranch.BNRSwiftJSON", code: JSONValue.BNRSwiftJSONErrorCode.CouldNotParseJSON.rawValue, userInfo: errorDictionary)
+	return .Failure(error)
+    }
+}
+```
+
+The method above helps take an instance of `NSData` and returns an instance of `JSONValueResult`.
+`JSONValueResult` is an enum that has two cases: `.Success` and `.Failure`.
+The `.Success` case has an associated value of type `JSONValue`.
+The `.Failure` case has an associated value of type `NSError`.
+Thus, when `createJSONValueFrom(_:)` completes, it will either return the data you are looking for, or it will return a helpful error describing what went wrong.
+
+If the data provided to `createJSONValueFrom(_:)` can be made into a JSON object, then this object is given to the `makeJSONValue(_:)` method on `JSONValue`.
+The result of this method is returned as the associated value of the `.Success` case above.
+As you may be able to infer, `makeJSONValue(_:)` returns an instance of `JSONValue`.
+
+Instances of `JSONValue` are made recursively.
+That is, `makeJSONValue(_:)` will traverse the object yielded by `JSONObjectWithData(_: options: error:)` and create `JSONValue` instances by calling itself.
+Here is how it is implemented.
+
+```swift
+private static func makeJSONValue(object: AnyObject) -> JSONValue {
+    switch object {
+    case let arr as [AnyObject]:
+        return makeJSONValueArray(arr)
+    case let dict as [String: AnyObject]:
+        return makeJSONValueDictionary(dict)
+    case let n as Double:
+        return .JSONNumber(n)
+    case let s as String:
+        return .JSONString(s)
+    case let b as Bool:
+        return .JSONBool(b)
+    default:
+        return JSONNull
+    }
+}
+```
+
+This method with `switch` over the `object` (of type `AnyObject`) given to it.
+If a case is matched, then it will return case of `JSONValue` with its corresponding associated value.
+For example, if `object` is a `Bool`, then this value is associated with a `.JSONBool`.
+
+The cases for matching on arrays and dictionaries are a bit more complicated.
+Let's begin with arrays.
+
+If the `object` passed into `makeJSONValue(_:)` is an array, then this case will match: `case let arr as [AnyObject]:`.
+This line of code binds an array of `AnyObject` to  a constant called `arr`.
+The constant, `arr`, is then passed to `makeJSONValueArray(_:)`.
+
+At this point, the task is to transform `arr`, which is a `[AnyObject]`, into a `[JSONValue]`.
+In words, `arr` needs to be changed from an array of `AnyObject`s into an array of `JSONValue`s.
+The method `makeJSONValueArray(_:)` is designed to do just this task.
+
+```swift
+private static func makeJSONValueArray(jsonArray: [AnyObject]) -> JSONValue {
+    var items = [JSONValue]()
+    for item in jsonArray {
+        let value = makeJSONValue(item)
+	items.append(value)
+    }
+    return .JSONArray(items)
+}
+```
+
+The above method takes an `[AnyObject]` and returns a `JSONValue`.
+In this case, we know that the returned object will be a `.JSONArray` with an associated value of `[JSONValue]`.
+How will we accomplish this conversion?
+
+The first step in the implementation is to create an empty array of type `[JSONValue]`.
+We will append `JSONValue`s to this array as they are made.
+Next, we iterate through `jsonArray` to convert each `item` into a `JSONValue`.
+To do so, we pass `item` to `makeJSONValue(_:)`.
+As we have seen above, `makeJSONValue(_:)` will create an instance of `JSONValue`.
+We append the result to our array of `JSONValue`s, and return after we have looped through all of the items in `jsonArray`.
+
+The implementation for creating dictionaries is very similar.
+If the `object` passed to `makeJSONValue(_:)` matches the type `[String: AnyObject]`, then we pass the object to `makeJSONValueDictionary(_:)`.
+This function takes dictionaries of type `[String: AnyObject]`, and converts them into dictionaries of type `[String: JSONValue]`.
+These are the dictionaries that will be associated with the `.JSONDictionary` case.
+
+```swift
+private static func makeJSONValueDictionary(jsonDict: [String: AnyObject]) -> JSONValue {
+    var dict = [String: JSONValue]()
+    for (key, value) in jsonDict {
+        dict[key as String] = makeJSONValue(value)
+    }
+    return .JSONDictionary(dict)
+}
+```
+
+Making dictionaries of `JSONValue`s works very similarly to making arrays of `JSValues`.
+We begin by making an empty dictionary with the correct type: `[String: JSONValue]`.
+Next, we iterate through the `jsonDict` given to the `makeJSONValueDictionary(_:)` method.
+We gave each `value` that we found to `makeJSONValue(_:)` to make an instance of `JSONValue`, and associated this value with its corresponding `key`.
+After we iterate through all of the items in `jsonDict`, we return a `.JSONDictionary` with the dictionary of `JSONValue`s as its associated value.
+
+At this point, every value in `object` that was given to `makeJSONValue(_:)` has been converted to a `JSONValue`.
+This method recursively traversed the data described by `object`, calling itself along the way.
+The result will be a `JSONValue` instance whose structure will match the JSON payload delivered by a web service, with one key difference: the instance of `JSONValue` will pack the JSON's data into associated values of `JSONValue` within each matching case.
+The next trick to discuss is how data can be safely, and conveniently, retried from the `JSONValue` enum.
+
+# Subscripting `JSONValue`
+
+# Computed Properties on `JSONValue`
+
