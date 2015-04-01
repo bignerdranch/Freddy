@@ -102,6 +102,23 @@ class BNRSwiftJSONTests: XCTestCase {
         }
     }
     
+    func testThatJSONNullMatchesNullValue() {
+        let data = createData()
+        let json = JSONValue.createJSONValueFrom(data!)
+        let key = json["key"]
+        switch key {
+        case .Success(let value):
+            switch value {
+            case .JSONNull:
+                XCTAssert(true, "`value` should be `.JSONNull`.")
+            default:
+                XCTAssert(false, "`value` should be `.JSONNull`.")
+            }
+        case .Failure(let error):
+            XCTAssert(false, "Shouldn't be an error.")
+        }
+    }
+    
     func testThatYouCanAccessNestedKeys() {
         let data = createData()
         let json = JSONValue.createJSONValueFrom(data!)
