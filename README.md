@@ -326,7 +326,7 @@ This method recursively traversed the data described by `object`, calling itself
 The result will be a `JSONValue` instance whose structure will match the JSON payload delivered by a web service, with one key difference: the instance of `JSONValue` will pack the JSON's data into associated values of `JSONValue` within each matching case.
 The next trick to discuss is how data can be safely, and conveniently, retrieved from the `JSONValue` enum.
 
-### Subscripting `JSONValue` and `JSONValueResult`
+### Subscripting 
 
 Recall that `createJSONValueFrom(_:)` returns a `JSONValueResult`.
 That means the code above that subscripts `json` like so: `json["people"]` is actually subscripting an instance of `JSONValueResult`.
@@ -470,7 +470,7 @@ That function takes a `JSONValue` as its argument and itself returns a `JSONValu
 The above code uses `bind` to subscript `jsonValue` with the given `key`.
 Subscripting in this manner satisfies the contract established by `bind`'s argument because `jsonValue[key]` will return a `JSONValueResult`.
 
-### Computed Properties on `JSONValue`
+### Computed Properties
 
 Recall the following line of code from the first example of using `BNRSwiftJSON`.
 
@@ -601,7 +601,7 @@ We have to resort to a trick to get the Swift compiler to cooperate.
 
 ### `map`
 
-## `JSONValueDecodable` and `createWithJSONValue(_:)`
+## `JSONValueDecodable`
 
 ## A More Elegant Way
 
