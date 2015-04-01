@@ -350,9 +350,151 @@ After we iterate through all of the items in `jsonDict`, we return a `.JSONDicti
 At this point, every value in `object` that was given to `makeJSONValue(_:)` has been converted to a `JSONValue`.
 This method recursively traversed the data described by `object`, calling itself along the way.
 The result will be a `JSONValue` instance whose structure will match the JSON payload delivered by a web service, with one key difference: the instance of `JSONValue` will pack the JSON's data into associated values of `JSONValue` within each matching case.
-The next trick to discuss is how data can be safely, and conveniently, retried from the `JSONValue` enum.
+The next trick to discuss is how data can be safely, and conveniently, retrieved from the `JSONValue` enum.
 
-# Subscripting `JSONValue`
+# Subscripting `JSONValue` and `JSONValueResult`
+
+Recall that `createJSONValueFrom(_:)` returns a `JSONValueResult`.
+That means the code above that subscripts `json` like so: `json["people"]` is actually subscripting an instance of `JSONValueResult`.
+Indeed, the more elegant code that we just reviewed that uses `bind` and `map` was actually working on an instance of `JSONValueResult`.
+
+Let's first take a look at `JSONValueResult`.
+
+```swift
+public enum JSONValueResult {
+	case Success(JSONValue)
+        case Failure(NSError)
+
+	...
+}
+```
+
+`JSONValueResult` is an enumeration with two cases: `Success` and `Failure`.
+The `Success` case has an associated value of type `JSONValue`, and the `Failure` case has an associated value of type `NSError`.
+Thus, an instance of `JSONValueResult` can either hold a valid `JSONValue` or an instance of `NSError` explaining what went wrong.
+
+As mentioned above, `JSONValueResult` provides subscripts to facilitate the parsing of JSON data.
+
+```swift
+public extension JSONValueResult {
+	subscript(key: String) -> JSONValueResult {
+            return bind { jsonValue in 
+                return jsonValue[key]
+	    }
+	}
+
+	subscrip(index: Int) -> JSONValueResult {
+            return bind { jsonValue in
+                return jsonValue[index]
+	    }
+	}
+}
+```
+
+`JSONValueResult` defines two subscripts.
+The first takes an argument, `key`, of type `String`, and returns a `JSONValueResult`.
+This subscript allows for the subscripting of a `JSONValueResult` similar to a `Dictionary`.
+The second subscript takes an argument `index` of type `Int`, and operates similarly to subscripting an `Array`.
+
+Both subscripts use `bind` and apply the subscript to something labeled as `jsonValue`.
+What is `jsonValue`?
+We will take a look at this question first, and will return to how `bind` works afterward.
+
+The subscripts for `JSONValueResult` actually apply a given subscript to an instance of `JSONValue`.
+In other words, `JSONValue` itself defines these two subscripts as well.
+
+```swift
+public extension JSONValue {
+    subscript(key: String) -> JSONValueResult {
+        get {
+            switch self {
+            case .JSONDictionary(let jsonDict):
+                if let obj = jsonDict[key] {
+                    return .Success(obj)
+		} else {
+                    return .Failure(makeError(BNRSwiftJSONErrorCode.KeyNotFound, problem: key))
+		}
+	    default:
+	        return .Failure(makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: key))
+	    }
+	}
+    }
+
+    subscript(index: Int) -> JSONValueResult {
+        get {
+            switch self {
+            case .JSONArray(let jsonArray):
+	        if index <= jsonArray.count - 1 {
+                    return .Success(jsonArray[index])
+		} else {
+                    return .Failure(makeError(BNRSwiftJSONErrorCode.IndexOutOfBounds, problem: index))
+	        }
+            default:
+	        return .Failure(makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: index))
+	    }
+        }
+    }
+}
+```
+
+The subscripts on `JSONValue` return instances of `JSONValueResult`.
+Each subscript `switch`es over `self`, which in this case will be an instance of `JSONValue`.
+If `self` matches the expected case on `JSONValue` (e.g., the subscript for an array should match the case `.JSONArray`.), then we apply the subscript to the bound value in the matching case.
+For example, if the supplied `index` is within the range of the existing `jsonArray`, then an instance of `JSONValueResult`'s `.Success` case is returned with the `index` applied to `jsonArray` as its associated value.
+If the supplied `index` is out of bounds, or if `self` does not match the expected case, then an appropriate error is created and returned as the associated value of the `.Failure` case of `JSONValueResult`.
+
+Putting it all together now, we see that the subscript on `JSONValueResult` returns the result of applying the subscript to an instance of `JSONValue`.
+The subscript on `JSONValue` actually returns an instance of `JSONValueResult`.
+Let undiscussed at this point is how the function `bind` helps these subscripts to work.
+That is the topic of the next section.
+
+# `bind`
+
+Now that we understand how the subscripts work on `JSONValueResult` and `JSONValue`, we can discuss the role of `bind`.
+This method is defined on `JSONValueResult`.
+
+```swift 
+enum JSONValueResult {
+    ...
+    public func bind(f: JSONValue -> JSONValueResult) -> JSONValueResult {
+        switch self {
+        case .Failure(let error)
+            return .Failure(error)
+	case .Success(let jsonValue):
+	    return f(jsonValue)
+	}
+    }
+    ...
+}
+```
+
+The goal of `bind` is to provide a way to place a `JSONValue` within an instance of `JSONValueResult`.
+Hence the name `bind`: if successful, the method *binds* an instance of `JSONValue` to the `.Success` case of `JSONValueResult`.
+If not successful, `bind` will pass through the existing `error` to the `JSONValueResult`.
+Let's take a closure look at this method.
+
+The function type of `bind` is: `(JSONValue -> JSONValueResult) -> JSONValueResult`.
+In words, `bind` takes an argument that is a function itself that expects a `JSONValue` as its argument and returns a `JSONValueResult`, while `bind` returns a `JSONValueResult`.
+Thus, `bind` needs to be given an appropriate function in order to return what it needs to.
+
+Returning to the implementation of subscript on `JSONValueResult` helps to elucidate how `bind` works.
+
+```swift 
+public extension JSONValueResult {
+    subscript(key: String) -> JSONValueResult {
+        return bind { jsonValue in
+            return jsonValue[key]
+	}
+    }
+    ...
+}
+```
+
+In the above subscript, `bind` is used to place an instance of `JSONValue` into a `JSONValueResult`.
+Recall that `bind`'s argument takes a function and returns a `JSONValueResult`.
+That function takes a `JSONValue` as its argument and itself returns a `JSONValueResult`.
+The above code uses `bind` to subscript `jsonValue` with the given `key`.
+Subscripting in this manner satisfies the contract established by `bind`'s argument because `jsonValue[key]` will return a `JSONValueResult`.
 
 # Computed Properties on `JSONValue`
 
