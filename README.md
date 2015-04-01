@@ -8,7 +8,7 @@ Its primary goal is faciliate the safe parsing of JSON, while also preserving th
 Here are several examples of parsing JSON.
 Many of these examples can also be reviewed in the framework's test target: `BNRSwiftJSONTests`.
 
-# Loading Data
+### Loading Data
 
 The process begins with loading the JSON data.
 Our example uses the following JSON:
@@ -71,7 +71,7 @@ func createData() -> NSData? {
 The function `createData()` creates an optional instance of `NSData` containing the JSON above.
 In a real app, this function would be replaced by whatever yields the JSON payload, most likely some call to a web service.
 
-# The Motivation
+## The Motivation
 
 Typically, we would do something like this in Swift to get the JSON data:
 
@@ -98,11 +98,11 @@ Furthermore, the above code is difficult to debug.
 If any of the above optional bindings fail for some reason, then the result is `nil` and we do not have any data.
 We ideally would like the syntax to be clean, while also being able to check informative errors should any arise.
 
-# Using BNRSwiftJSON
+## Using BNRSwiftJSON
 
 `BNRSwiftJSON` is a framework that provides clean syntax, safe typing, and useful information in parsing JSON.
 Errors are tracked, stored, and are available to use after parsing.
-Consider the above example using `BNRSwiftJSON`.
+Consider the above example of parsing JSON reworked to use `BNRSwiftJSON`.
 
 ```swift
 let data = createData()
@@ -124,7 +124,7 @@ case .Failure(let error):
 }
 ```
 
-The above example demonstrates the safety and ease-of-use that the comes with using `BNRSwiftJSON`. 
+`BNRSwiftJSON` provides safety and ease-of-use. 
 `JSONValue` is an enumeration with cases matching each value of JSON that may be returned by a web service.
 The method `createWithJSONValueFrom(_:)` takes an instance of `NSData` and returns an instance of `JSONValueResult`.
 This type has two cases: `.Success` that will have an associated value of type `JSONValue`, and `.Failure` with an associated value of type `NSError`.
@@ -189,32 +189,6 @@ If the method does not succeed, then you will know why by checking the associate
 Do not be concerned with the implementation of `createWithJSONValue(_:)` at this point.
 Understanding this method entails an explanation of `bind` and `map`, which we will get to below.
 For now, it is more important to understand the basic mechanics: you create an instance of your model object with a `JSONValue`, and you return a `Result` from `createWithJSONValue(_:)`.
-
-# A More Elegant Way
-
-The above example is very safe, but is perhaps a little mechanical.
-The `for` loop and nested `switch` statements are not ideal.
-There is a more elegant way to accomplish the same task.
-
-```swift
-let data = createData()
-let json = JSONValue.createJSONValueFrom(data!)
-
-let peopleArray = json.bind({ $0["people"] }).array.bind { collectResults(map($0, Person.createWithJSONValue)) }
-var people = [Person]()
-switch peopleArray {
-case .Success(let box):
-	box.value.map { people.append($0) } 
-case .Failure(let error):
-	println(error) // do something better with the error
-}
-```
-
-The above example is considerably more complex, and dense, than the previous implementation.
-Nonetheless, it accomplishes the same task in a much more compact manner.
-In order to understand how `peopleArray` is created and what it holds, you will have to have a feeling for how `Result`, `bind`, and `map` work.
-
-These are the topics of the next sectionn.
 
 ## Underlying Machinery
 
@@ -352,7 +326,7 @@ This method recursively traversed the data described by `object`, calling itself
 The result will be a `JSONValue` instance whose structure will match the JSON payload delivered by a web service, with one key difference: the instance of `JSONValue` will pack the JSON's data into associated values of `JSONValue` within each matching case.
 The next trick to discuss is how data can be safely, and conveniently, retrieved from the `JSONValue` enum.
 
-# Subscripting `JSONValue` and `JSONValueResult`
+### Subscripting `JSONValue` and `JSONValueResult`
 
 Recall that `createJSONValueFrom(_:)` returns a `JSONValueResult`.
 That means the code above that subscripts `json` like so: `json["people"]` is actually subscripting an instance of `JSONValueResult`.
@@ -378,16 +352,16 @@ As mentioned above, `JSONValueResult` provides subscripts to facilitate the pars
 ```swift
 public extension JSONValueResult {
 	subscript(key: String) -> JSONValueResult {
-            return bind { jsonValue in 
-                return jsonValue[key]
-	    }
-	}
+        return bind { jsonValue in 
+            return jsonValue[key]
+        }
+    }
 
-	subscrip(index: Int) -> JSONValueResult {
-            return bind { jsonValue in
-                return jsonValue[index]
-	    }
-	}
+	subscript(index: Int) -> JSONValueResult {
+        return bind { jsonValue in
+            return jsonValue[index]
+        }
+    }
 }
 ```
 
@@ -411,27 +385,27 @@ public extension JSONValue {
             case .JSONDictionary(let jsonDict):
                 if let obj = jsonDict[key] {
                     return .Success(obj)
-		} else {
+                } else {
                     return .Failure(makeError(BNRSwiftJSONErrorCode.KeyNotFound, problem: key))
-		}
-	    default:
-	        return .Failure(makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: key))
-	    }
-	}
+                }
+            default:
+                return .Failure(makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: key))
+            }
+        }
     }
 
     subscript(index: Int) -> JSONValueResult {
         get {
             switch self {
             case .JSONArray(let jsonArray):
-	        if index <= jsonArray.count - 1 {
+                if index <= jsonArray.count - 1 {
                     return .Success(jsonArray[index])
-		} else {
+                } else {
                     return .Failure(makeError(BNRSwiftJSONErrorCode.IndexOutOfBounds, problem: index))
-	        }
+                }
             default:
-	        return .Failure(makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: index))
-	    }
+	            return .Failure(makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: index))
+	        }
         }
     }
 }
@@ -448,7 +422,7 @@ The subscript on `JSONValue` actually returns an instance of `JSONValueResult`.
 Let undiscussed at this point is how the function `bind` helps these subscripts to work.
 That is the topic of the next section.
 
-# `bind`
+### `bind`
 
 Now that we understand how the subscripts work on `JSONValueResult` and `JSONValue`, we can discuss the role of `bind`.
 This method is defined on `JSONValueResult`.
@@ -460,9 +434,9 @@ enum JSONValueResult {
         switch self {
         case .Failure(let error)
             return .Failure(error)
-	case .Success(let jsonValue):
-	    return f(jsonValue)
-	}
+	    case .Success(let jsonValue):
+	        return f(jsonValue)
+	    }
     }
     ...
 }
@@ -484,7 +458,7 @@ public extension JSONValueResult {
     subscript(key: String) -> JSONValueResult {
         return bind { jsonValue in
             return jsonValue[key]
-	}
+	    }
     }
     ...
 }
@@ -496,5 +470,166 @@ That function takes a `JSONValue` as its argument and itself returns a `JSONValu
 The above code uses `bind` to subscript `jsonValue` with the given `key`.
 Subscripting in this manner satisfies the contract established by `bind`'s argument because `jsonValue[key]` will return a `JSONValueResult`.
 
-# Computed Properties on `JSONValue`
+### Computed Properties on `JSONValue`
+
+Recall the following line of code from the first example of using `BNRSwiftJSON`.
+
+```swift
+let data = createData()
+let json = JSONValue.createJSONValueFrom(data!)
+let peopleArray = json["people"].array
+...
+```
+
+Notice that not only do we apply a subscript to `json`, but we also access a computed property called `array` on the `JSONValueResult` yielded by the subscript `people`.
+You can probably guess that this `array` property returns an array of some sort, but what exactly is inside of this array, and how is it made?
+The answers to these questions are the topic of this section.
+
+The goal of the computed properties on `JSONValueResult` is to find the associated value in the `JSONValueResult`'s `.Success` case and create a type that matches the requested computed property.
+In this example above, we are trying to grab the key `people` from the JSON, and get its corresponding array.
+Let's take a look at the implementation of the `array` property on `JSONValueResult` to see what is going on.
+
+```swift
+public extension JSONValueResult {
+    var array: Result<[JSONValue]> {
+        return bind { jsonValue in
+            if let array = jsonValue.array {
+                return .Success(Box(array))
+            } else {
+                return .Failure(jsonValue.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Array"))
+            }
+        }
+    }
+	...
+```
+
+All of the computed properties on `JSONValueResult` are defined within this same extension.
+For simplicity, we only discuss the `array` computed property, but the others work very similarly (e.g., `dictionary`, `string`, `bool`, etc.)
+
+The `array` property finds the appropriate array in the `JSONValue` and returns that array in the `.Success` case of a new `Result` type.
+Notice that this computed property uses a `bind` method in a manner similar to what we have seen before.
+This version of `bind` is a bit different, and we will get to exactly how its different in just a moment.
+
+Focus instead on what is going on inside of this new version of `bind`.
+There is something called `jsonValue`, which is an instance of `JSONValue`, just as before.
+This `JSONValue` is used by accessing its version of the `array` computed property.
+
+```swift
+public extension JSONValue {
+    var array: [JSONValue]? {
+        switch self {
+        case .JSONArray(let value):
+            return value
+        default:
+            return nil
+        }
+    }
+}
+```
+
+`JSONValue`'s computed property `array` `switch`es over `self` to ensure that the matching case is `.JSONArray`.
+If this case matches, then the associated value is bound to a local constant called `value` and is returned.
+If this case does not match, then we return `nil` to indicate that we did not find that anticipated data.
+Thus, `JSONValue`'s `array` property returns an optional array of `JSONValue`s: `[JSONValue]?`.
+
+Returning back to the implementation of `array` on `JSONValueResult`, you should notice that the computed property does not return an optional on this type.
+Instead, if `jsonValue.array` does not succeed and returns `nil`, we then return `.Failure` with an appropriately constructed error detailing the mistake.
+If `jsonValue.array` does succeed, then we bind that value to `array` and return it as the associated value of `.Success`.
+
+Notice that the return type of `array` on `JSONValueResult` is `Result<[JSONValue]>`?
+This result type is a bit different than `JSONValueResult`, though it is very similar in spirit.
+It seeks to succinctly model either success or failure.
+An instance of `Result` will either carry with it data, or an informative error describing what went wrong.
+Before we go into the details of `Result`, let's take a look at what this new `bind` method does.
+
+```swift
+public enum JSONValueResult {
+    case Success(JSONValue)
+    case Failure(NSError)
+
+    public func bind(f: JSONValue -> JSONValueResult) -> JSONValueResult {
+        switch self {
+        case .Failure(let error):
+            return .Failure(error)
+        case .Success(let jsonValue):
+            return f(jsonValue)
+        }
+    }
+   
+    public func bind<T>(f: JSONValue -> Result<T>) -> Result<T> {
+        switch self {
+        case .Failure(let error):
+            return .Failure(error)
+        case .Success(let jsonValue):
+            return f(jsonValue)
+        }
+    }
+}
+```
+
+We have included the version of `bind` that we covered previously for the sake of comparison.
+This new version of `bind` has a few distinguishing features.
+First, it is a generic function: it specifies a generic parameter `T`.
+This parameter is used to specify the type that we anticipate using with the `Result` in this method.
+
+Second, though this version of `bind` also takes a function, its type is a bit different than what we have seen before.
+The new `bind` method has the following type: `(JSONValue -> Result<T>) -> Result<T>`.
+It takes a function as its sole argument, and returns an instance of `Result`.
+The function `bind` takes in its argument itself takes `JSONValue` as its argument and returns a `Result<T>`.
+As before, this version of `bind` relies upon the function supplied to its argument to produce its return value.
+
+Thus, the `array` property on `JSONValueResult` asks a `JSONValue` for a `[JSONValue]?`.
+If there is one of these, the value is unwrapped from the optional, and is bound to the `.Success` case of a `Result` instance.
+Otherwise, there was an error, and we bind that to the `.Failure` case of a `Result`.
+
+At this point, you might be asking yourself some questions. 
+"Why do we need another version of `Result`?"
+"Just what is a `Result<T>`?"
+"And what is that weird `Box` type I saw in the `array` property on `JSONValueResult`?"
+
+The answers to these questions are the subject of the next section.
+
+### `Result<T>`
+
+`Result` is a generic enumeration, with a twist.
+Swift does not yet support a enumeration with generic cases.
+We have to resort to a trick to get the Swift compiler to cooperate.
+
+**Describe what <T> means**
+**Describe why <T> is needed**
+**Describe why we need Box**
+
+### `map`
+
+## `JSONValueDecodable` and `createWithJSONValue(_:)`
+
+## A More Elegant Way
+
+The above example is very safe, but is perhaps a little mechanical.
+The `for` loop and nested `switch` statements are not ideal.
+There is a more elegant way to accomplish the same task.
+
+```swift
+let data = createData()
+let json = JSONValue.createJSONValueFrom(data!)
+
+let peopleArray = json.bind({ $0["people"] }).array.bind { collectResults(map($0, Person.createWithJSONValue)) }
+var people = [Person]()
+switch peopleArray {
+case .Success(let box):
+	box.value.map { people.append($0) } 
+case .Failure(let error):
+	println(error) // do something better with the error
+}
+```
+
+The above example is considerably more complex, and dense, than the previous implementation.
+Nonetheless, it accomplishes the same task in a much more compact manner.
+In order to understand how `peopleArray` is created and what it holds, you will have to have a feeling for how `Result`, `bind`, and `map` work.
+
+These are the topics of the next section.
+
+### `collectResults(_:)`, `splitResults(_:)`, and `splitResult(_: f:)`
+
+## Conclusion
 

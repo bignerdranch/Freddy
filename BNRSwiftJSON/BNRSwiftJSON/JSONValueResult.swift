@@ -55,11 +55,11 @@ public extension JSONValueResult {
         Retrieves an `Array` of `JSONValue`s from the given `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Array`, this property returns `.Failure` with an appropriate `error`.
     */
     var array: Result<[JSONValue]> {
-        return bind { json in
-            if let array = json.array {
+        return bind { jsonValue in
+            if let array = jsonValue.array {
                 return .Success(Box(array))
             } else {
-                return .Failure(json.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Array"))
+                return .Failure(jsonValue.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Array"))
             }
         }
     }
@@ -68,11 +68,11 @@ public extension JSONValueResult {
         Retrieves a `Dictionary` `JSONValue`s from the given `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Dictionary`, this property returns `.Failure` with an appropriate `error`.
     */
     var dictionary: Result<[String: JSONValue]> {
-        return bind { json in
-            if let dict = json.dictionary {
+        return bind { jsonValue in
+            if let dict = jsonValue.dictionary {
                 return .Success(Box(dict))
             } else {
-                return .Failure(json.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Dictionary"))
+                return .Failure(jsonValue.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Dictionary"))
             }
         }
     }
@@ -81,11 +81,11 @@ public extension JSONValueResult {
         Retrieves a `Double` from the `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Double`, this property returns `.Failure` with an appropriate `error`.
     */
     var number: Result<Double> {
-        return bind { json in
-            if let num = json.number {
+        return bind { jsonValue in
+            if let num = jsonValue.number {
                 return .Success(Box(num))
             } else {
-                return .Failure(json.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Double.self))
+                return .Failure(jsonValue.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Double.self))
             }
         }
     }
@@ -94,11 +94,11 @@ public extension JSONValueResult {
         Retrieves a `String` from the `Result`.  If the target value's type inside of the `JSONValue` instance does not match `String`, this property returns `.Failure` with an appropriate `error`.
     */
     var string: Result<String> {
-        return bind { json in
-            if let str = json.string {
+        return bind { jsonValue in
+            if let str = jsonValue.string {
                 return .Success(Box(str))
             } else {
-                return .Failure(json.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: String.self))
+                return .Failure(jsonValue.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: String.self))
             }
         }
     }
@@ -107,11 +107,11 @@ public extension JSONValueResult {
         Retrieves a `Bool` from the `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Bool`, this property returns `.Failure` with an appropriate `error`.
     */
     var bool: Result<Bool> {
-        return bind { json in
-            if let b = json.bool {
+        return bind { jsonValue in
+            if let b = jsonValue.bool {
                 return .Success(Box(b))
             } else {
-                return .Failure(json.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Bool.self))
+                return .Failure(jsonValue.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Bool.self))
             }
         }
     }
@@ -120,11 +120,11 @@ public extension JSONValueResult {
         Retrieves an `Int` from the `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Int`, this property returns `.Failure` with an appropriate `error`.
     */
     var int: Result<Int> {
-        return bind { json in
-            if let i = json.int {
+        return bind { jsonValue in
+            if let i = jsonValue.int {
                 return .Success(Box(i))
             } else {
-                return .Failure(json.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Int.self))
+                return .Failure(jsonValue.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Int.self))
             }
         }
     }
