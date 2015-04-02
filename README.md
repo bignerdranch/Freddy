@@ -595,9 +595,56 @@ The answers to these questions are the subject of the next section.
 Swift does not yet support a enumeration with generic cases.
 We have to resort to a trick to get the Swift compiler to cooperate.
 
-**Describe what <T> means**
-**Describe why <T> is needed**
-**Describe why we need Box**
+Here is the implementation of `Result`.
+
+```swift
+public enum Result<T> {
+    case Success(Box<T>)
+    case Failure(NSError)
+
+	...
+
+}
+```
+
+The `Result` enum is declared with something called a *placeholder type*: `public enum Result<T> {`.
+This first line declares a generic placeholder type `T` that will defined when the `Result` enum is used.
+Placeholders such as `T` above allow types to be highly resusable.
+
+These placeholders can even be referred to within the definition of the generic type.
+For example, notice that `T` is used in the `.Success` case's associated value: `case Success(Box<T>)`.
+What is `Box<T>`?
+
+Recall that in the previous section we lamented that the Swift compiler cannot accommodate enumerations with generic cases.
+We mentioned that there is a trick that allows us to get around this limitation.
+`Box` is the trick.
+Here is how it is implemented.
+
+```swift
+public final class Box<T> {
+    public let value: T
+    
+    public init(_ value: T) {
+        self.value = value
+    }
+}
+```
+
+`Box` is a `public` and `final` class.
+That means it can visible outside of this module, and it cannot be subclassed.
+Like `Result`, it declares a generic placeholder, and refers to it inside of its implmentation.
+`Box` has a single `public` property that is a constant called `value`, and it is of type `T`.
+This type also has a single initializer that takes one argument: the `value` to be given to its property.
+
+So, while Swift's enumerations cannot yet (we say *yet* because we assume it will some day) handle generic cases, we know that Swift enums can have associated values.
+We also know that an enum's associated values can be any type.
+Furthermore, we know that Swift allows us to declare generic types.
+Therefore, it stands to reason that we can create a generic type and list it as our `Result` enum's associated value.
+
+`Box` is a utility type that will only be used in coordination with the `Result` enum.
+It acts as a `box` to put values inside and ship around with a `Result` as needed.
+
+Let's look into how `Box` is used with the `Result` type.
 
 ### `map`
 
