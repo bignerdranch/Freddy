@@ -662,6 +662,7 @@ public extension JSONValueResult {
         }
     }
 	...
+}
 ```
 
 Notice the first `return` if `jsonValue.array` is able to yield an unwrapped `[JSONValue]`: `return .Success(Box(array))`.
@@ -729,6 +730,8 @@ For example, that means we can ask the `value` for the person's name.
 
 Talk about the role of this protocol and what its method does.
 
+### `bind` Redux (Or, `bind` on `Result<T>`)
+
 ### `map`
 
 Introduce map and how it works.
@@ -757,8 +760,6 @@ case .Failure(let error):
 The above example is considerably more complex, and dense, than the previous implementation.
 Nonetheless, it accomplishes the same task in a much more compact manner.
 In order to understand how `peopleArray` is created and what it holds, you will have to have a feeling for how `Result`, `bind`, and `map` work.
-
-These are the topics of the next section.
 
 ### `collectResults(_:)`, `splitResults(_:)`, and `splitResult(_: f:)`
 
