@@ -646,9 +646,93 @@ It acts as a `box` to put values inside and ship around with a `Result` as neede
 
 Let's look into how `Box` is used with the `Result` type.
 
-### `map`
+### Using `Box`
+
+Recall the `array` computed property on `JSONValueResult`.
+
+```swift
+public extension JSONValueResult {
+    var array: Result<[JSONValue]> {
+        return bind { jsonValue in
+            if let array = jsonValue.array {
+                return .Success(Box(array))
+            } else {
+                return .Failure(jsonValue.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Array"))
+            }
+        }
+    }
+	...
+```
+
+Notice the first `return` if `jsonValue.array` is able to yield an unwrapped `[JSONValue]`: `return .Success(Box(array))`.
+This line creates an instance of `Box`, places the `array` in `Box`'s `value` property, and associates the `Box` instance with `JSONValueResult`'s `.Success` case.
+Put more informally, the code creates a value of interest, places it in a box for safekeeping, and the ships it with the return value of computed property.
+
+The next step is to retrieve a value from a `Box`.
+Recall the above example that creates instances of the `Person` type from the sample JSON.
+
+```swift
+let data = createData()
+let json = JSONValue.createJSONValueFrom(data!)
+let peopleArray = json["people"].array
+switch peopleArray {
+case .Success(let people):
+	for person in people {
+		let per = Person.createWithJSONValue(person)
+		switch per {
+		case .Success(let p):
+			someContainer.append(p)
+		case .Failure(let error):
+			println(error) // do something better with the error
+		}
+	}
+case .Failure(let error):
+	println(error) // do something better with the error
+}
+```
+
+The example creates creates instances of the `Person` type and appends them to `someContainer`.
+This work is done in the `for` loop.
+For every `person` that is found in `peopleArray`, we create an instance of `Person` with the method `createWithJSONValue(_:)`.
+This method returns a `Result<Person>`; that is, an instance of `Result` with a `Person` instance inside of the `Box` associated with its `.Success` case.
+
+That means we need to `switch` on the return from `createWithJSONValue(_:)`.
+
+```swift
+let per = Person.createWithJSONValue(person)
+switch per {
+case .Success(let p):
+    someContainer.append(p)
+case .Failure(let error):
+    println(error) // do something better with the error
+}
+```
+
+If we find success, then we append the `Box` with the `Person` inside of it to our array.
+Using these data can be done like so:
+
+```swift
+if let firstPerson = someContainer.first {
+    println(firstPerson.value.name) // Logs person's name to console
+}
+```
+
+Remember that we were appending instances of `Box<Person>` to our array called `someContainer`.
+That means we need to do two things to get the person out of the box.
+First, if we need to need to get the first person in the array, then we use the computed property `first` on the array.
+This property returns an optional, and so we need to unwrap it, which we do so via optional binding.
+
+Second, we can access the person instance via the `value` property on the `Box` instance.
+For example, that means we can ask the `value` for the person's name.
 
 ## `JSONValueDecodable`
+
+Talk about the role of this protocol and what its method does.
+
+### `map`
+
+Introduce map and how it works.
+Highlight how this will pave the path toward a more elegant way to transform a `JSONValue` into a model instances.
 
 ## A More Elegant Way
 
