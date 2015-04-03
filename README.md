@@ -728,9 +728,88 @@ For example, that means we can ask the `value` for the person's name.
 
 ## `JSONValueDecodable`
 
-Talk about the role of this protocol and what its method does.
+We mentioned before that `BNRSwiftJSON` provides a protocol to help model objects create instances from `JSONValue`s.
+It is time to take a look at the protocol.
+
+```swift
+public protocol JSONValueDecodable {
+    static func createWithJSONValue(value: JSONValue) -> Result<Self>
+}
+```
+
+`JSONValueDecodable` provides a type level method called `createWithJSONValu(_:)`.
+This mentod takes an instance of `JSONValue`, and returns a `Result` with an instance of `Self` in its `.Success` case.
+A conforming type implements this method to use a `JSONValue` to create an instance of itself.
+
+Let's take a look at how the `Person` type conforms to `JSONValueDecodable`.
+
+```swift
+extension Person: JSONValueDecodable {
+    public static func createWithJSONValue(value: JSONValue) -> Result<Person> {
+        let name = value["name"].string
+        let age = value["age"].int
+        let isMarried = value["spouse"].bool
+        
+        return name.bind { n in
+            age.bind { a in
+                isMarried.map { im in
+                    return self.init(name: n, age: a, spouse: im)
+                }
+            }
+        }
+    }
+}
+```
+
+`Person` conforms to `JSONValueDecodable` in an extension.
+Notice that the implementation `Person` provides returns a `Result<Person>`.
+This return means that creating a `Person` will yield a `Result` with either an instance of `Person` or an informative error if a problem should occur.
+
+The implementation of `createWithJSONValue(_:)` begins by making use of subscripting on `JSONValue`, and the uses computed properties on the resulting `JSONValueResult`.
+(Remember: that subscripting `JSONValue` returns a `JSONValueResult`.)
+The computed properties on `JSONValueResult` return a `Result<T>`.
+
+```swift
+let name = value["name"].string
+let age = value["age"].int
+let isMarried = value["spouse"].bool
+```
+
+For example, `name` is a `Result<String>`; that is, `name` is a `Result` with a `Box` holding a `String` in its `.Success` case.
+
+After using relevant computed properties on all of the values that are needed to create an instance of the model type, we then need to figure out how to get the values out of the `Result`s.
+In order to do so, we need to introduce two new methods on `Result<T>`: `bind` and `map`.
+The next section describes these methods and closes the discussion of how to use `createWithJSONValue(_:)`.
 
 ### `bind` Redux (Or, `bind` on `Result<T>`)
+
+To create an instance of the `Person` type, we need to conform to a protocol called `JSONValueDecodable` and implement its sole required method.
+
+```swift
+extension Person: JSONValueDecodable {
+    public static func createWithJSONValue(value: JSONValue) -> Result<Person> {
+        let name = value["name"].string
+        let age = value["age"].int
+        let isMarried = value["spouse"].bool
+        
+        return name.bind { n in
+            age.bind { a in
+                isMarried.map { im in
+                    return self.init(name: n, age: a, spouse: im)
+                }
+            }
+        }
+    }
+}
+```
+
+The above section discussed how to use subscripting and computed properties on the `JSONValue` to get the necessary data to create an instance.
+An important question remains: how do we use those values?
+All of the data pulled from `JSONValue` in `createWithJSONValue(_:)` are some form of `Result`.
+We need a way to pull the data from these results, and a convenient way to chain these data into a call to the `Person` type's initializer.
+Enter `bind` and `map`.
+
+The `Result<T>` type needs to define two new methods to facilitate the creation of instances of a given model type.
 
 ### `map`
 

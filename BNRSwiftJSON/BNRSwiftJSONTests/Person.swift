@@ -9,7 +9,7 @@
 import Foundation
 import BNRSwiftJSON
 
-public struct Person: JSONValueDecodable, Printable {
+public struct Person: Printable {
     public let name: String
     public var age: Int
     public let spouse: Bool
@@ -20,11 +20,17 @@ public struct Person: JSONValueDecodable, Printable {
         self.spouse = spouse
     }
     
+    public var description: String {
+        return "Name: \(name), age: \(age), married: \(spouse)"
+    }
+}
+
+extension Person: JSONValueDecodable {
     public static func createWithJSONValue(value: JSONValue) -> Result<Person> {
         let name = value["name"].string
         let age = value["age"].int
         let isMarried = value["spouse"].bool
-
+        
         return name.bind { n in
             age.bind { a in
                 isMarried.map { im in
@@ -32,9 +38,5 @@ public struct Person: JSONValueDecodable, Printable {
                 }
             }
         }
-    }
-    
-    public var description: String {
-        return "Name: \(name), age: \(age), married: \(spouse)"
     }
 }
