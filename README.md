@@ -781,7 +781,7 @@ After using relevant computed properties on all of the values that are needed to
 In order to do so, we need to introduce two new methods on `Result<T>`: `bind` and `map`.
 The next section describes these methods and closes the discussion of how to use `createWithJSONValue(_:)`.
 
-### `bind` Redux (Or, `bind` on `Result<T>`)
+### More Methods on `Result<T>`
 
 To create an instance of the `Person` type, we need to conform to a protocol called `JSONValueDecodable` and implement its sole required method.
 
@@ -811,9 +811,66 @@ Enter `bind` and `map`.
 
 The `Result<T>` type needs to define two new methods to facilitate the creation of instances of a given model type.
 
+### `bind`
+
+You have seen `bind` defined and used already on `JSONValueResult`.
+The generic `Result<T>` also defines `bind`.
+Whereas `JSONValueResult` was explicit about the parameters in the function provided to its sole argument in `bind`, `Result<T>` will define `bind` more generically.
+
+```swift
+public enum Result<T> {
+    case Success(Box<T>)
+    case Failure(NSError)
+    
+    public func bind<U>(f: T -> Result<U>) -> Result<U> {
+        switch self {
+        case let .Failure(error):
+            return .Failure(error)
+        case let .Success(value):
+            return f(value.value)
+        }
+    }
+}
+```
+
+As with the other definitions of `bind` that you have seen, this version takes a function and uses it to produce a `Result`.
+The function type of `bind` on `Result` looks like this: `(T -> Result<U>) -> Result<U>`.
+In words, `bind` takes a function with a generic parameter `T` and returns a `Result` with a generic parameter `U`.
+This `Result<U>` is the return value of `bind`.
+
+The benefit of `bind` taking a generic parameter in the function and returning a generic `Result` means that you can use it with virtually any value of interest.
+This flexibility allowed us to use `bind` on a `Result` with a `String`, `Int`, or `Bool` inside of the `Box` in the `.Success` case.
+It is up to the function given to `bind` to determine how the value in question is slotted within a `Result`.
+
+Consider again the code from `createWithJSONValue(_:)` that created the `Person` instance.
+
+```swift
+...
+return name.bind { n in
+    age.bind { a in
+        isMarried.map { im in
+            return self.init(name: n, age: a, spouse: im)
+        }
+    }
+}
+...
+```
+
+Remember that `name`, `age`, and `isMarried` are values that were created previously.
+The goal of this code is to 'unbox' the values from the `Result` instances represented by `name`, `age`, and `isMarried`.
+We use `bind` to grab those values and *bind* them to another `Result`; effectively passing the values down a chain until we have everything we need to initialize a `Person` instance.
+
+For example, `name.bind { n in ` grabs the `String` representing a person's name from the JSON that we have been working with, and places it within `n`.
+Since this call to `bind` uses a closure, that means `n` is available within this scope.
+This case is true for `age` (i.e., `a`) and `isMarried` (i.e., `im`) as well.
+
+The last wrinkle to discuss is that final call to `map`.
+Why are we using `map` instead of `bind` here?
+
 ### `map`
 
 Introduce map and how it works.
+Explain that `map` is needed to wrap up the returned `Person` instance inside of a `Result` (the initializer on `Person` returns a `Person` instance, we need to return a `Result<Person>` per the contract established by `createWithJSONValue(_:)` and the use of `bind`.).
 Highlight how this will pave the path toward a more elegant way to transform a `JSONValue` into a model instances.
 
 ## A More Elegant Way
