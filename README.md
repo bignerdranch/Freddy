@@ -858,7 +858,7 @@ return name.bind { n in
 
 Remember that `name`, `age`, and `isMarried` are values that were created previously.
 The goal of this code is to 'unbox' the values from the `Result` instances represented by `name`, `age`, and `isMarried`.
-We use `bind` to grab those values and *bind* them to another `Result`; effectively passing the values down a chain until we have everything we need to initialize a `Person` instance.
+We use `bind` to 'unbox' those values and nest another call to `bind` to make sure that we have access to all of the values required by the initializer on the `Person` type.
 
 For example, `name.bind { n in ` grabs the `String` representing a person's name from the JSON that we have been working with, and places it within `n`.
 Since this call to `bind` uses a closure, that means `n` is available within this scope.
@@ -869,15 +869,65 @@ Why are we using `map` instead of `bind` here?
 
 ### `map`
 
-Introduce map and how it works.
-Explain that `map` is needed to wrap up the returned `Person` instance inside of a `Result` (the initializer on `Person` returns a `Person` instance, we need to return a `Result<Person>` per the contract established by `createWithJSONValue(_:)` and the use of `bind`.).
-Highlight how this will pave the path toward a more elegant way to transform a `JSONValue` into a model instances.
+In the above example, we used `bind` to chain the values from various `Result` instances together to create an instance of the `Person` type.
+We finished off the chain with a call to `map` when we reached the final property the `Person` type's initializer expected: `isMarried`.
+It is worthwhile to mention here that the order is not important; we could have ended with a call to `map` on `age` or `name` if we so chose.
+The point to emphasize is that the final value needs to have `map` called on it.
+Why?
+
+Recall that `bind` takes a `T` and returns a `Result<U>`.
+This function type allows you to chain multiple calls to `bind` together.
+In our case, we nest calls to `bind` in order to 'unbox' the values needed for the intializer we want to use to create a `Person` instance.
+
+When we finally get to `isMarried`, we need to do two things.
+First, we need to 'unbox' the `Bool` value inside of the `Result`.
+Second, we need to pass all of the values we just 'unboxed' and pass them to the memberwise initializer on `Person`.
+Notice, however, that this initializer returns a `Person`.
+This reality will not meet the requirement established by the function type for `createWithJSONValue(_:)`, which needs to return a `Result<Person>`.
+
+Thus, the challenge before us is to figure out how we can wrap up the `Person` instance returned by the memberwise initializer within a `Result`.
+It turns out that we can use `map` on the `Result` type to help us with this task.
+We can define `map` as follows:
+
+```swift
+public enum Result<T> {
+    case Success(Box<T>)
+    case Failure(NSError)
+
+    public func map<U>(f: T -> U) -> Result<U> {
+        switch self {
+        case let .Failure(error):
+            return .Failure(error)
+        case let .Success(value):
+            return .Success(Box(f(value.value)))
+        }
+    }
+	...
+}
+```
+
+In distinction to `bind`, our implementation of `map` wraps up the supplied value in a `Box` instance and places that within the `.Success` case of the `Result` type.
+While `bind` relies upon the supplied function to do the work of putting the value of interest within a `Result`, `map` does this work for us.
+That means `map` is the perfect solution for us to use with the initializer on the `Person` type.
+
+```swift
+isMarried.map { im in
+    return self.init(name: n, age: a, spouse: im)
+}
+```
+
+The above code uses a closure to 'unbox' the `Bool` value from `isMarried` and places it within a local constant `im`.
+At this point, all of the values required by the `Person` type's memberwise initializer are available to use.
+We can therefore call the initilizer and return the instance within `map`, whose implementation will place the `Person` instance within a `Box` inside of the `Result` type's `.Success` case.
+Notice that this operation satisfies the return type of `createWithJSONValue(_:)`, which is `Result<Person>`.
 
 ## A More Elegant Way
 
 The above example is very safe, but is perhaps a little mechanical.
 The `for` loop and nested `switch` statements are not ideal.
 There is a more elegant way to accomplish the same task.
+
+Now that you understand how `Result`, `bind`, and `map` work, you are ready to see and use a more compact solution for parsing JSON.
 
 ```swift
 let data = createData()
@@ -895,7 +945,6 @@ case .Failure(let error):
 
 The above example is considerably more complex, and dense, than the previous implementation.
 Nonetheless, it accomplishes the same task in a much more compact manner.
-In order to understand how `peopleArray` is created and what it holds, you will have to have a feeling for how `Result`, `bind`, and `map` work.
 
 ### `collectResults(_:)`, `splitResults(_:)`, and `splitResult(_: f:)`
 
