@@ -923,17 +923,16 @@ Notice that this operation satisfies the return type of `createWithJSONValue(_:)
 
 ## A More Elegant Way
 
-The above example is very safe, but is perhaps a little mechanical.
-The `for` loop and nested `switch` statements are not ideal.
-There is a more elegant way to accomplish the same task.
-
 Now that you understand how `Result`, `bind`, and `map` work, you are ready to see and use a more compact solution for parsing JSON.
+While the first example we provided of working with `JSONValue` was safe and explicit, it is perhaps a little mechanical.
+The `for` loop and nested `switch` statements are not ideal.
+
+We can use `bind` and `map` to help us accomplish the same task in a more elegant fashion.
 
 ```swift
 let data = createData()
 let json = JSONValue.createJSONValueFrom(data!)
-
-let peopleArray = json.bind({ $0["people"] }).array.bind { collectResults(map($0, Person.createWithJSONValue)) }
+let peopleArray = json.bind { $0["people"] }.array.bind { collectResults(map($0, Person.createWithJSONValue)) }
 var people = [Person]()
 switch peopleArray {
 case .Success(let box):
@@ -943,10 +942,92 @@ case .Failure(let error):
 }
 ```
 
-The above example is considerably more complex, and dense, than the previous implementation.
+The above example is somewhat more complex than our previous example.
 Nonetheless, it accomplishes the same task in a much more compact manner.
+Moreover, it makes good use of the `bind` and `map`, which helps to make our code more elegant at no cost to its expressiveness.
 
-### `collectResults(_:)`, `splitResults(_:)`, and `splitResult(_: f:)`
+In fact, there is only one really complicated line of code above:
+
+```swift
+let peopleArray = json.bind { $0["people"] }.array.bind { collectResults(map($0, Person.createWithJSONValue)) }
+```
+
+Let's break this line down piece by piece.
+
+We start out with `json`, which is an instance of `JSONValueResult` returned by `createJSONValueFrom(_:)`.
+Since `json` is a `JSONValueResult`, we can use the version of `bind` we defined on that type.
+Recall that we defined two versions of `bind` on `JSONValueResult`.
+In this case, we will use the version with the following function type: `(JSONValue -> JSONValueResult) -> JSONValueResult`.
+Using this version means that we can access `JSONValueResult`'s subscripts and computed properties.
+
+Inside of `bind`'s closure, we have access to the `JSONValue` held within the `.Success` case of `JSONValueResult`.
+`$0` will be that instance of `JSONValue`, which means that we can subscript it with `$0["people"]`.
+This subscript will return the array of people encapsulated by the JSON inside of a `JSONValueResult`.
+The return value satisfies what this version of `bind` is expecting, a `JSONValueResult`.
+
+Next, we used the `array` computed property on `JSONValueResult`.
+This use of `array` takes the `JSONValueResult` and places the `JSONValue` in its `.Success` case inside of a `Result` whose type will be: `Result<[JSONValue]>`.
+In other words, you used the `array` computed property to grab the array of `JSONValue`s that you know the `people` key corresponds to inside of the JSON.
+
+Since you now have a `Result`, with `[JSONValue]` inside of it, you can use the generic version of `bind` defined on the `Result` type.
+Doing so will expose the array of `JSONValue`s holding the people data inside of it that we are interested in using.
+The question is: how can we use these data?
+
+The trick is to remember that the generic version of `bind` expects to return a `Result<U>`.
+This expectation means that we will need to return a `Result`.
+Ideally, we would like to return a `Result` with an array of people in its `.Success` case: `Result<[Person]>`.
+There are a number of other useful forms these data can take.
+We can define a `collectResults(_:)` function inside of `Result.swift` to facilitate this process.
+
+
+### `collectResults(_:)`
+
+At this point, we are stuck at the call to the generic `bind` defined on `Result`.
+Inside of this closure, we used a new function that we have not yet discussed: `collectResults(_:)`.
+This function takes one argument of type `[Result<T>]` and returns a `Result<[T]>`.
+In other words, it takes an array of `Result`s of a generic type, and returns a single `Result` where the instances have been appended to an array in the `.Success` case.
+
+```swift
+public func collectResults<T>(results: [Result<T>]) -> Result<[T]> {
+    var successes = [T]()
+    for result in results {
+        switch result {
+        case .Success(let res):
+            successes.append(res.value)
+        case .Failure(let error):
+            return .Failure(error)
+        }
+    }
+    return .Success(Box(successes))
+}
+```
+
+The implementation of `collectResults(_:)` is fairly straightforward.
+We create an empty array of type `T`.
+Next, we iterate over the `Result`s provided to the `results` argument.
+We `switch` over each `Result`, checking for `.Success` and `.Failure`.
+If we encounter a `.Success`, we append the `value` of that `Result` to the empty `successes` array.
+If we find a `.Failure`, then we pass the error through to the `.Failure` case to the `Result`.
+Finally, if we found no error, then we return `.Success(Box(successes))`; or, we place the `successes` array inside of a `Box` and give that instance to the `.Success` case of `Result`.
+
+Now we need to figure out how to give `collectResults(_:)` a value that its argument expects: `[Result<T>]`.
+Thankfully, we do not need to write a custom function or method to handle this work.
+Instead, we can make use of the global function `map` provided by the standard library.
+This version of `map` will take a `CollectionType` as its argument, and will iterate over the collection applying a supplied function to each element.
+Remember that the standard library's definition of `map` returns an array of type `[T]`.  
+
+It turns out that this type is exactly what we want.
+The function `collectResults(_:)` expects an array of `Results`.
+Therefore, we can use this version of `map` to iterate over the array of `JSONValue`s that will be exposed to `bind`.
+We ask `map` to apply the method `createWithJSONValue(_:)` defined on the `Person` type to each element in the array `[JSONValue]`.
+The return value of `map` is then an array of `Person` `Result`s: `[Result<Person>]`.
+We can give this array to `collectResults(_:)` to convert the array `[Result<Person>]` to `Result<[Person]>`
+Note that this conversion meets the expectation of `bind` that it returns a `Result`.
+
+After all of this work, the type of `peopleArray` is a `Result` with an array of `Person` in its `.Success` case: `Result<[Person]>`.
+We can then `switch` on `peopleArray` to do whatever we like with the `Person` instances.
+If we find `.Success`, then we can append these model instances to an array.
+If we find `.Failure`, then we can handle that case as needed because the error will contain useful information describing why the operation failed.
 
 ## Conclusion
 
