@@ -71,6 +71,51 @@ func createData() -> NSData? {
 The function `createData()` creates an optional instance of `NSData` containing the JSON above.
 In a real app, this function would be replaced by whatever yields the JSON payload, most likely some call to a web service.
 
+### Quick Examples
+
+Imagine that we want to see if the `"success"` key is `true`.
+
+```swift
+let data = createData()
+let json = JSONValue.createJSONValueFrom(data!)
+let success = json["success"].bool
+switch success {
+case .Success(let s):
+    println("Success!")
+case .Failure(let error):
+    println(error) // Do something better with the error
+}
+```
+
+We first use `createData()` to simulate downloading data.
+Next, we create an instance of `JSONValue`, the workhorse of this framework, and place it in the constant `json`.
+We can subscript (i.e., `["success"]`) and use computed properties (i.e., `bool`) on `json` to access the value of interest.
+Doing so will either give the data to `success` or an error.
+We cover these details in greater depth below, but suffice it to say now that `success` is an enum with one of either two cases: `.Success` or `.Failure`.
+
+We can also use BNRSwiftJSON to access nested keys.
+Consider the following code to get access the `"name"` of the first person in the `"people"` array.
+
+```swift
+let data = createData()
+let json = JSONValue.createJSONValueFrom(data!)
+let matt = json["people"][0]["name"].string
+switch matt {
+case .Success(let n):
+    println(n.value) // "Matt Mathias"
+case .Failure(let error):
+    println(error) // Do something better with the error
+}
+```
+
+The key `"people"` accesses the array in the JSON for people, and `0` accesses the first index.
+This first index corresponds to a dictionary, and so we can subscript that by the `"name"` key.
+Last, we use the computed property `string` to get this key's `String` representation, and give it to a constant `matt`.
+At that point, we can `switch` over `matt` to determine if we were successful.
+
+The next section describes how we would typically JSON data to create instances of model objects.
+It then proposes BNRSwiftJSON as a safer solution, and moves on to illustrate how it can be used.
+
 ## The Motivation
 
 Typically, we would do something like this in Swift to get the JSON data:
@@ -1031,7 +1076,7 @@ If we find `.Failure`, then we can handle that case as needed because the error 
 
 ## Conclusion
 
-The primary goal of `BNRSwiftJSON` is to provide an elegant and safe solution to parsing JSON in Swift.
+The primary goal of BNRSwiftJSON is to provide an elegant and safe solution to parsing JSON in Swift.
 A related, if not secondary, goal is to provide an idiomatic solution to JSON parsing.
 The solution we have provided involves a fair amount concepts borrowed from Functional Programming, a fact that isn't all that important to know.
 
@@ -1041,6 +1086,6 @@ The primary benefit is to ensure that parsing JSON reliably either provides the 
 
 Last, it is important to note that while `bind` and `map` are not strictly required to use.
 If you prefer to use `for` loops and `switch` statements together, then feel free!
-You will still benefit from `BNRSwiftJSON`'s safety and error handling.
+You will still benefit from BNRSwiftJSON's safety and error handling.
 Nonetheless, `bind` and `map` can help your usage of `BNRSwiftJSON` to be more concise.
 They also follow the spirit of the framework, and make it easier to use once you master their complexity.
