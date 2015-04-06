@@ -73,7 +73,7 @@ class BNRSwiftJSONTests: XCTestCase {
     func testSplitResultCanGatherPeopleInSuccesses() {
         let data = createData()
         let json = JSONValue.createJSONValueFrom(data!)
-        let people = splitResult(json.bind { $0["people"].array }, Person.createWithJSONValue)
+        let people = splitResult(json["people"].array, Person.createWithJSONValue)
         XCTAssertTrue(people.successes.count > 0, "There should be people in `successes`.")
         XCTAssertTrue(people.failures.count == 0, "There should be no errors in `failures`.")
     }
@@ -81,7 +81,7 @@ class BNRSwiftJSONTests: XCTestCase {
     func testSplitResultCanGatherErrorsInFailures() {
         let data = createData()
         let json = JSONValue.createJSONValueFrom(data!)
-        let peopl = splitResult(json.bind { $0["peopl"] }.array, Person.createWithJSONValue)
+        let peopl = splitResult(json["peopl"].array, Person.createWithJSONValue)
         XCTAssertTrue(peopl.successes.count == 0, "There should be no people in `successes`.")
         XCTAssertTrue(peopl.failures.count > 0, "There should be errors in `failures`.")
     }
