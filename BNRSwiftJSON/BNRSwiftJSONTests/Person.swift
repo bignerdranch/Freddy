@@ -25,8 +25,8 @@ public struct Person: Printable {
     }
 }
 
-extension Person: JSONValueDecodable {
-    public static func createWithJSONValue(value: JSONValue) -> Result<Person> {
+extension Person: JSONDecodable {
+    public static func createWithJSON(value: JSON) -> Result<Person> {
         let name = value["name"].string
         let age = value["age"].int
         let isMarried = value["spouse"].bool
