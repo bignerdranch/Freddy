@@ -27,7 +27,7 @@ public enum JSON {
     
         :returns: An optional instance of `JSONValue`.
     */
-    public static func createJSONFrom(data: NSData) -> JSONValueResult {
+    public static func createJSONFrom(data: NSData) -> JSONResult {
         let jsonObject: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
         
         if let obj: AnyObject = jsonObject {
@@ -183,7 +183,7 @@ public extension JSON {
 // MARK: - Subscript JSONValue
 
 public extension JSON {
-    subscript(key: Swift.String) -> JSONValueResult {
+    subscript(key: Swift.String) -> JSONResult {
         get {
             switch self {
             case .Dictionary(let jsonDict):
@@ -198,7 +198,7 @@ public extension JSON {
         }
     }
     
-    subscript(index: Int) -> JSONValueResult {
+    subscript(index: Int) -> JSONResult {
         get {
             switch self {
             case .Array(let jsonArray):

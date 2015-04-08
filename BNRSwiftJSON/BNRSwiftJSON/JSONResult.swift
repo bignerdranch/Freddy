@@ -1,5 +1,5 @@
 //
-//  JSONValueResult.swift
+//  JSONResult.swift
 //  Test
 //
 //  Created by Matthew D. Mathias on 3/24/15.
@@ -9,20 +9,20 @@
 import Foundation
 
 /**
-    An enum to handle binding `JSONValue`s to `JSONValueResult`s.
+    An enum to handle binding `JSONValue`s to `JSONResult`s.
 */
-public enum JSONValueResult {
+public enum JSONResult {
     case Success(JSON)
     case Failure(NSError)
     
     /**
-        A method to `bind` a `JSONValue` case's associated value to an instance of `JSONValueResult`.
+        A method to `bind` a `JSONValue` case's associated value to an instance of `JSONResult`.
     
         :param: f A closure to specify the binding.
     
-        :returns: An instance of `JSONValueResult` containing the assigned `JSONValue` in the `.Success` case's associated value, or .`Failure ` if there is an `error`..
+        :returns: An instance of `JSONResult` containing the assigned `JSONValue` in the `.Success` case's associated value, or .`Failure ` if there is an `error`..
     */
-    public func bind(f: JSON -> JSONValueResult) -> JSONValueResult {
+    public func bind(f: JSON -> JSONResult) -> JSONResult {
         switch self {
         case .Failure(let error):
             return .Failure(error)
@@ -48,9 +48,9 @@ public enum JSONValueResult {
     }
 }
 
-// MARK: - JSONValueResult Computed Properties
+// MARK: - JSONResult Computed Properties
 
-public extension JSONValueResult {
+public extension JSONResult {
     /**
         Retrieves an `Array` of `JSONValue`s from the given `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Array`, this property returns `.Failure` with an appropriate `error`.
     */
@@ -130,16 +130,16 @@ public extension JSONValueResult {
     }
 }
 
-// MARK: - Subscript JSONValueResult
+// MARK: - Subscript JSONResult
 
-public extension JSONValueResult {
-    subscript(key: String) -> JSONValueResult {
+public extension JSONResult {
+    subscript(key: String) -> JSONResult {
         return bind { jsonValue in
             return jsonValue[key]
         }
     }
     
-    subscript(index: Int) -> JSONValueResult {
+    subscript(index: Int) -> JSONResult {
         return bind { jsonValue in
             return jsonValue[index]
         }
