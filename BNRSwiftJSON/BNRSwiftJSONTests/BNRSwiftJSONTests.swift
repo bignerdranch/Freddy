@@ -16,12 +16,7 @@ class BNRSwiftJSONTests: XCTestCase {
     func testThatJSONCanCreateInstanceWithData() {
         let data = createData()
         let json = JSON.createJSONFrom(data!)
-        switch json {
-        case .Success(let b):
-            XCTAssert(true, "There should be a `JSON` in the `box`.")
-        case .Failure(let error):
-            XCTAssert(false, "There should be no error in parsing the sample JSON data.")
-        }
+        XCTAssertTrue(json.isSuccess, "The sample JSON data should be parsed successfully.")
     }
     
     func testThatJSONCanCreatePeople() {
@@ -47,7 +42,7 @@ class BNRSwiftJSONTests: XCTestCase {
     func testThatCollectResultsCanCreateArrayOfPeople() {
         let data = createData()
         let json = JSON.createJSONFrom(data!)
-        let peopleArray = json.bind { $0["people"] }.array.bind { collectResults(map($0, Person.createWithJSON)) }
+        let peopleArray = json["people"].array.bind { collectResults(map($0, Person.createWithJSON)) }
         switch peopleArray {
         case .Success(let box):
             box.value.map { XCTAssertTrue($0.name != "", "There should be a name.") }
@@ -59,7 +54,7 @@ class BNRSwiftJSONTests: XCTestCase {
     func testThatSplitResultsCanCreateArrayOfPeople() {
         let data = createData()
         let json = JSON.createJSONFrom(data!)
-        let peopleArray = json.bind { $0["people"] }.array
+        let peopleArray = json["people"].array
         switch peopleArray {
         case .Success(let people):
             let (successes, failures) = partitionResults(people.value.map { Person.createWithJSON($0) })
@@ -101,17 +96,13 @@ class BNRSwiftJSONTests: XCTestCase {
     func testThatJSONNullMatchesNullValue() {
         let data = createData()
         let json = JSON.createJSONFrom(data!)
-        let key = json["key"]
+        let key = json["key"].null
+
         switch key {
-        case .Success(let value):
-            switch value {
-            case .Null:
-                XCTAssert(true, "`value` should be `.JSONNull`.")
-            default:
-                XCTAssert(false, "`value` should be `.JSONNull`.")
-            }
+        case .Success:
+            break
         case .Failure(let error):
-            XCTAssert(false, "Shouldn't be an error.")
+            XCTFail("Unexpected error: \(error)")
         }
     }
     
@@ -144,11 +135,12 @@ class BNRSwiftJSONTests: XCTestCase {
     func testJSONErrorKeyNotFound() {
         let data = createData()
         let json = JSON.createJSONFrom(data!)
-        let peopl = json["peopl"]
+        let peopl = json["peopl"].array
         switch peopl {
-        case .Success(let ppl):
-            XCTAssert(false, "There should be no people.")
-        case .Failure(let error):
+        case .Success:
+            XCTFail("There should be no people.")
+        case .Failure(let errorType):
+            let error = errorType as! NSError
             XCTAssertEqual(error.code, JSON.BNRSwiftJSONErrorCode.KeyNotFound.rawValue, "The error should be due to the key not being found.")
         }
     }
@@ -156,11 +148,12 @@ class BNRSwiftJSONTests: XCTestCase {
     func testJSONErrorIndexOutOfBounds() {
         let data = createData()
         let json = JSON.createJSONFrom(data!)
-        let person = json["people"][4]
+        let person = json["people"][4].dictionary
         switch person {
-        case .Success(let p):
-            XCTAssert(false, "There should be no person at index 4.")
-        case .Failure(let error):
+        case .Success:
+            XCTFail("There should be no person at index 4.")
+        case .Failure(let errorType):
+            let error = errorType as! NSError
             XCTAssertEqual(error.code, JSON.BNRSwiftJSONErrorCode.IndexOutOfBounds.rawValue, "The error should be due to the index being out of bounds.")
         }
     }
@@ -181,11 +174,12 @@ class BNRSwiftJSONTests: XCTestCase {
     func testJSONErrorUnexpectedType() {
         let data = createData()
         let json = JSON.createJSONFrom(data!)
-        let matt = json["people"]["name"]
+        let matt = json["people"]["name"].string
         switch matt {
-        case .Success(let name):
-            XCTAssert(false, "The `name` key should not be availabe as a subscript for the `Array` `people`.")
-        case .Failure(let error):
+        case .Success:
+            XCTFail("The `name` key should not be availabe as a subscript for the `Array` `people`.")
+        case .Failure(let errorType):
+            let error = errorType as! NSError
             XCTAssertEqual(error.code, JSON.BNRSwiftJSONErrorCode.UnexpectedType.rawValue, "The `people` `Array` is not subscriptable with `String`s.")
         }
     }

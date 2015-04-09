@@ -31,10 +31,10 @@ public enum JSON {
         let jsonObject: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
         
         if let obj: AnyObject = jsonObject {
-            return .Success(makeJSON(obj))
+            return JSONResult(success: makeJSON(obj))
         } else {
             let error = NSError(domain: "com.bignerdranch.BNRSwiftJSON", code: JSON.BNRSwiftJSONErrorCode.CouldNotParseJSON.rawValue, userInfo: [NSLocalizedFailureReasonErrorKey: "Could not parse `NSData`."])
-            return .Failure(error)
+            return JSONResult(failure: error)
         }
     }
     
@@ -200,12 +200,12 @@ public extension JSON {
             switch self {
             case .Dictionary(let jsonDict):
                 if let obj = jsonDict[key] {
-                    return .Success(obj)
+                    return JSONResult(success: obj)
                 } else {
-                    return .Failure(makeError(BNRSwiftJSONErrorCode.KeyNotFound, problem: key))
+                    return JSONResult(failure: makeError(BNRSwiftJSONErrorCode.KeyNotFound, problem: key))
                 }
             default:
-                return .Failure(makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: key))
+                return JSONResult(failure: makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: key))
             }
         }
     }
@@ -215,12 +215,12 @@ public extension JSON {
             switch self {
             case .Array(let jsonArray):
                 if index <= jsonArray.count - 1 {
-                    return .Success(jsonArray[index])
+                    return JSONResult(success: jsonArray[index])
                 } else {
-                    return .Failure(makeError(BNRSwiftJSONErrorCode.IndexOutOfBounds, problem: index))
+                    return JSONResult(failure: makeError(BNRSwiftJSONErrorCode.IndexOutOfBounds, problem: index))
                 }
             default:
-                return .Failure(makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: index))
+                return JSONResult(failure: makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: index))
             }
         }
     }
