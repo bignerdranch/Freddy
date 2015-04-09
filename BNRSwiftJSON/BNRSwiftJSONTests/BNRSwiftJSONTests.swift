@@ -29,13 +29,13 @@ class BNRSwiftJSONTests: XCTestCase {
                 let per = Person.createWithJSON(person)
                 switch per {
                 case .Success(let p):
-                    XCTAssertTrue(p.value.name != "", "People should have names.")
+                    XCTAssertNotEqual(p.value.name, "", "People should have names.")
                 case .Failure(let error):
-                    XCTAssert(false, "There should be no `error`.")
+                    XCTFail("There should be no `error`.")
                 }
             }
         case .Failure(let error):
-            XCTAssert(false, "There should be no error.")
+            XCTFail("There should be no error.")
         }
     }
     
@@ -45,9 +45,11 @@ class BNRSwiftJSONTests: XCTestCase {
         let peopleArray = json["people"].array.bind { collectResults(map($0, Person.createWithJSON)) }
         switch peopleArray {
         case .Success(let box):
-            box.value.map { XCTAssertTrue($0.name != "", "There should be a name.") }
+            for person in box.value {
+                XCTAssertNotEqual(person.name, "", "There should be a name.")
+            }
         case .Failure(let error):
-            XCTAssert(false, "There should be no failure.")
+            XCTFail("There should be no failure.")
         }
     }
 
@@ -58,10 +60,10 @@ class BNRSwiftJSONTests: XCTestCase {
         switch peopleArray {
         case .Success(let people):
             let (successes, failures) = partitionResults(people.value.map { Person.createWithJSON($0) })
-            XCTAssertTrue(successes.count != 0, "There should be successes.")
-            XCTAssertTrue(failures.count == 0, "There should be no failures.")
+            XCTAssertNotEqual(successes.count, 0, "There should be successes.")
+            XCTAssertEqual(failures.count, 0, "There should be no failures.")
         case .Failure(let error):
-            XCTAssert(false, "There should be no error.")
+            XCTFail("There should be no error.")
         }
     }
     
@@ -69,16 +71,16 @@ class BNRSwiftJSONTests: XCTestCase {
         let data = createData()
         let json = JSON.createJSONFrom(data!)
         let people = splitResult(json["people"].array, Person.createWithJSON)
-        XCTAssertTrue(people.successes.count > 0, "There should be people in `successes`.")
-        XCTAssertTrue(people.failures.count == 0, "There should be no errors in `failures`.")
+        XCTAssertGreaterThan(people.successes.count, 0, "There should be people in `successes`.")
+        XCTAssertEqual(people.failures.count, 0, "There should be no errors in `failures`.")
     }
     
     func testSplitResultCanGatherErrorsInFailures() {
         let data = createData()
         let json = JSON.createJSONFrom(data!)
         let peopl = splitResult(json["peopl"].array, Person.createWithJSON)
-        XCTAssertTrue(peopl.successes.count == 0, "There should be no people in `successes`.")
-        XCTAssertTrue(peopl.failures.count > 0, "There should be errors in `failures`.")
+        XCTAssertEqual(peopl.successes.count, 0, "There should be no people in `successes`.")
+        XCTAssertGreaterThan(peopl.failures.count, 0, "There should be errors in `failures`.")
     }
     
     func testThatSubscriptingJSONWorksForTopLevelObject() {
@@ -87,9 +89,9 @@ class BNRSwiftJSONTests: XCTestCase {
         let success = json["success"].bool
         switch success {
         case .Success(let s):
-            XCTAssertTrue(s.value == true, "There should be `success`.")
+            XCTAssertTrue(s.value, "There should be `success`.")
         case .Failure(let error):
-            XCTAssert(false, "There should be no error: \(error)")
+            XCTFail("There should be no error: \(error)")
         }
     }
     
@@ -116,7 +118,7 @@ class BNRSwiftJSONTests: XCTestCase {
                 XCTAssertNotNil(z.int, "The `Int` should not be `nil`.")
             }
         case .Failure(let error):
-            XCTAssert(false, "There should be no `error`.")
+            XCTFail("There should be no `error`.")
         }
     }
 
@@ -128,7 +130,7 @@ class BNRSwiftJSONTests: XCTestCase {
         case .Success(let n):
             XCTAssertEqual(n.value, "Matt Mathias", "`matt` should hold string `Matt Mathias`")
         case .Failure(let error):
-            XCTAssert(false, "There should be no error: \(error)")
+            XCTFail("There should be no error: \(error)")
         }
     }
 
@@ -164,7 +166,7 @@ class BNRSwiftJSONTests: XCTestCase {
         let matt = json["people"][0]["name"].number
         switch matt {
         case .Success(let name):
-            XCTAssert(false, "The `name` should not be convertible to `number`.")
+            XCTFail("The `name` should not be convertible to `number`.")
         case .Failure(let errorType):
             let error = errorType as! NSError
             XCTAssertEqual(error.code, JSON.BNRSwiftJSONErrorCode.TypeNotConvertible.rawValue, "The error should be due to `name` not being convertible to `number`.")
