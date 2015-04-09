@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Result
 
 /**
     A protocol to provide functionality of creating a model object with a `JSONValue`.
