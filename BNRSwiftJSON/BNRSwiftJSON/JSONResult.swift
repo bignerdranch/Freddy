@@ -131,6 +131,19 @@ public extension JSONResult {
             }
         }
     }
+
+    /**
+        Retrieves `Null` from the `Result`. If the target value's type inside of the `JSONValue` instance does not match `Null`, this property returns `.Failure` with an appropriate `error`.
+    */
+    var null: Result<()> {
+        return bind { jsonValue in
+            if jsonValue.isNull {
+                return Result(success: ())
+            } else {
+                return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Int.self))
+            }
+        }
+    }
 }
 
 // MARK: - Subscript JSONResult

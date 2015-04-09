@@ -178,6 +178,18 @@ public extension JSON {
             return nil
         }
     }
+
+    /**
+        Returns true if the target's type is `Null`.
+    */
+    var isNull: Swift.Bool {
+        switch self {
+        case .Null:
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 // MARK: - Subscript JSONValue
