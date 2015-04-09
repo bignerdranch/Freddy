@@ -8,6 +8,7 @@
 
 import Foundation
 import BNRSwiftJSON
+import Result
 
 public struct Person: Printable {
     public let name: String

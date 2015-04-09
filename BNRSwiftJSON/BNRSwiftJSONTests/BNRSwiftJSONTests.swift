@@ -9,7 +9,7 @@
 import UIKit
 import XCTest
 import BNRSwiftJSON
-import Swift
+import Result
 
 class BNRSwiftJSONTests: XCTestCase {
     
@@ -62,9 +62,9 @@ class BNRSwiftJSONTests: XCTestCase {
         let peopleArray = json.bind { $0["people"] }.array
         switch peopleArray {
         case .Success(let people):
-            let results = splitResults(people.value.map { Person.createWithJSON($0) })
-            XCTAssertTrue(results.successes.count != 0, "There should be successes.")
-            XCTAssertTrue(results.failures.count == 0, "There should be no failures.")
+            let (successes, failures) = partitionResults(people.value.map { Person.createWithJSON($0) })
+            XCTAssertTrue(successes.count != 0, "There should be successes.")
+            XCTAssertTrue(failures.count == 0, "There should be no failures.")
         case .Failure(let error):
             XCTAssert(false, "There should be no error.")
         }
@@ -94,7 +94,7 @@ class BNRSwiftJSONTests: XCTestCase {
         case .Success(let s):
             XCTAssertTrue(s.value == true, "There should be `success`.")
         case .Failure(let error):
-            XCTAssert(false, "There should be no error: \(error.localizedFailureReason)")
+            XCTAssert(false, "There should be no error: \(error)")
         }
     }
     
@@ -137,7 +137,7 @@ class BNRSwiftJSONTests: XCTestCase {
         case .Success(let n):
             XCTAssertEqual(n.value, "Matt Mathias", "`matt` should hold string `Matt Mathias`")
         case .Failure(let error):
-            XCTAssert(false, "There should be no error: \(error.localizedFailureReason)")
+            XCTAssert(false, "There should be no error: \(error)")
         }
     }
 
@@ -172,7 +172,8 @@ class BNRSwiftJSONTests: XCTestCase {
         switch matt {
         case .Success(let name):
             XCTAssert(false, "The `name` should not be convertible to `number`.")
-        case .Failure(let error):
+        case .Failure(let errorType):
+            let error = errorType as! NSError
             XCTAssertEqual(error.code, JSON.BNRSwiftJSONErrorCode.TypeNotConvertible.rawValue, "The error should be due to `name` not being convertible to `number`.")
         }
     }

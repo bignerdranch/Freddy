@@ -7,6 +7,9 @@
 //
 
 import Foundation
+import Result
+
+extension NSError: ErrorType {}
 
 /**
     An enum to handle binding `JSONValue`s to `JSONResult`s.
@@ -41,7 +44,7 @@ public enum JSONResult {
     public func bind<T>(f: JSON -> Result<T>) -> Result<T> {
         switch self {
         case .Failure(let error):
-            return .Failure(error)
+            return Result(failure: error)
         case .Success(let jsonValue):
             return f(jsonValue)
         }
@@ -57,9 +60,9 @@ public extension JSONResult {
     var array: Result<[JSON]> {
         return bind { jsonValue in
             if let array = jsonValue.array {
-                return .Success(Box(array))
+                return Result(success: array)
             } else {
-                return .Failure(jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Array"))
+                return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Array"))
             }
         }
     }
@@ -70,9 +73,9 @@ public extension JSONResult {
     var dictionary: Result<[String: JSON]> {
         return bind { jsonValue in
             if let dict = jsonValue.dictionary {
-                return .Success(Box(dict))
+                return Result(success: dict)
             } else {
-                return .Failure(jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Dictionary"))
+                return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Dictionary"))
             }
         }
     }
@@ -83,9 +86,9 @@ public extension JSONResult {
     var number: Result<Double> {
         return bind { jsonValue in
             if let num = jsonValue.number {
-                return .Success(Box(num))
+                return Result(success: num)
             } else {
-                return .Failure(jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Double.self))
+                return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Double.self))
             }
         }
     }
@@ -96,9 +99,9 @@ public extension JSONResult {
     var string: Result<String> {
         return bind { jsonValue in
             if let str = jsonValue.string {
-                return .Success(Box(str))
+                return Result(success: str)
             } else {
-                return .Failure(jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: String.self))
+                return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: String.self))
             }
         }
     }
@@ -109,9 +112,9 @@ public extension JSONResult {
     var bool: Result<Bool> {
         return bind { jsonValue in
             if let b = jsonValue.bool {
-                return .Success(Box(b))
+                return Result(success: b)
             } else {
-                return .Failure(jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Bool.self))
+                return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Bool.self))
             }
         }
     }
@@ -122,9 +125,9 @@ public extension JSONResult {
     var int: Result<Int> {
         return bind { jsonValue in
             if let i = jsonValue.int {
-                return .Success(Box(i))
+                return Result(success: i)
             } else {
-                return .Failure(jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Int.self))
+                return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Int.self))
             }
         }
     }
@@ -144,4 +147,54 @@ public extension JSONResult {
             return jsonValue[index]
         }
     }
+}
+
+// MARK: - Additional Result functions
+
+/**
+    A function to collect `Result` instances into an array of `T` in the `.Success` case.
+
+    :param: results An array of `Result<T>`: `[Result<T>]`.
+
+    :returns: A `Result<[T]>` such that all successes are collected within an array of the `.Success` case.
+*/
+public func collectResults<T>(results: [Result<T>]) -> Result<[T]> {
+    var successes = [T]()
+    for result in results {
+        switch result {
+        case .Success(let res):
+            successes.append(res.value)
+        case .Failure(let error):
+            return Result(failure: error)
+        }
+    }
+    return Result(success: successes)
+}
+
+/**
+    A function to break a `Result` with an array of type `[U]` into a tuple of `successes` and `failures`.
+
+    :param: result The `Result<[U]>`.
+    :param: f The function to be used to create the array given to the `successes` member of the tuple.
+
+    :returns: A tuple of `successes` and `failures`.
+*/
+public func splitResult<U, T>(result: Result<[U]>, f: U -> Result<T>) -> (successes: [T], failures: [ErrorType]) {
+    var successes = [T]()
+    var failures = [ErrorType]()
+    switch result {
+    case .Success(let results):
+        for result in results.value {
+            let res = f(result)
+            switch res {
+            case .Success(let r):
+                successes.append(r.value)
+            case .Failure(let error):
+                failures.append(error)
+            }
+        }
+    case .Failure(let error):
+        failures.append(error)
+    }
+    return (successes, failures)
 }
