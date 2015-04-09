@@ -12,42 +12,43 @@ import Result
 extension NSError: ErrorType {}
 
 /**
-    An enum to handle binding `JSONValue`s to `JSONResult`s.
+    A newtype for Result<JSON> that provides additional properties for extracting typed JSON data.
 */
-public enum JSONResult {
-    case Success(JSON)
-    case Failure(NSError)
-    
-    /**
-        A method to `bind` a `JSONValue` case's associated value to an instance of `JSONResult`.
-    
-        :param: f A closure to specify the binding.
-    
-        :returns: An instance of `JSONResult` containing the assigned `JSONValue` in the `.Success` case's associated value, or .`Failure ` if there is an `error`..
-    */
-    public func bind(f: JSON -> JSONResult) -> JSONResult {
-        switch self {
-        case .Failure(let error):
-            return .Failure(error)
-        case .Success(let jsonValue):
-            return f(jsonValue)
-        }
+public struct JSONResult {
+    private let r: Result<JSON>
+
+    internal init(success: JSON) {
+        r = Result(success: success)
     }
-    
+
+    internal init(failure: ErrorType) {
+        r = Result(failure: failure)
+    }
+
+    private init(r: Result<JSON>) {
+        self.r = r
+    }
+
+    private func bind(f: JSON -> JSONResult) -> JSONResult {
+        return JSONResult(r: r.bind { value in f(value).r })
+    }
+
+    private func bind<T>(f: JSON -> Result<T>) -> Result<T> {
+        return r.bind(f)
+    }
+
     /**
-        A method to `bind` a `JSONValue` to an instance of `Result`.
-    
-        :param: f A closure to specify the binding.
-    
-        :returns: A `Result` containing the assigned `JSONValue` in the `.Success` case's associated value, or .`Failure ` if there is an `error`..
+        Returns `true` if the target's underlying `Result` is in the `.Success` case.
     */
-    public func bind<T>(f: JSON -> Result<T>) -> Result<T> {
-        switch self {
-        case .Failure(let error):
-            return Result(failure: error)
-        case .Success(let jsonValue):
-            return f(jsonValue)
-        }
+    public var isSuccess: Bool {
+        return r.isSuccess
+    }
+
+    /**
+        Returns `true` if the target's underlying `Result` is in the `.Failure` case.
+    */
+    public var isFailure: Bool {
+        return r.isFailure
     }
 }
 
@@ -126,6 +127,19 @@ public extension JSONResult {
         return bind { jsonValue in
             if let i = jsonValue.int {
                 return Result(success: i)
+            } else {
+                return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Int.self))
+            }
+        }
+    }
+
+    /**
+        Retrieves `Null` from the `Result`. If the target value's type inside of the `JSONValue` instance does not match `Null`, this property returns `.Failure` with an appropriate `error`.
+    */
+    var null: Result<()> {
+        return bind { jsonValue in
+            if jsonValue.isNull {
+                return Result(success: ())
             } else {
                 return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Int.self))
             }
