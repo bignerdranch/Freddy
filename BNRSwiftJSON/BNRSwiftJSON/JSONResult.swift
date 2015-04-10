@@ -61,20 +61,13 @@ public extension JSONResult {
         :returns: A `Result` with `NSData` in the `.Success` case, `.Failure` with an `NSError` otherwise.
     */
     public func serialize() -> Result<NSData> {
-        if isFailure {
-            return Result(failure: r.failureValue!)
-        } else {
-            switch r {
-            case .Success(let jsonBox):
-                let data: AnyObject = jsonBox.value.serializeJSON()
-                let jsonData = NSJSONSerialization.dataWithJSONObject(data, options: nil, error: nil)
-                if let jd = jsonData {
-                    return Result(success: jd)
-                } else {
-                    return Result(failure: jsonBox.value.makeError(JSON.BNRSwiftJSONErrorCode.CouldNotSerializeJSON, problem: data))
-                }
-            case .Failure(let error):
-                return Result(failure: error)
+        return bind { json in
+            let data: AnyObject = json.serializeJSON()
+            let jsonData = NSJSONSerialization.dataWithJSONObject(data, options: nil, error: nil)
+            if let jd = jsonData {
+                return Result(success: jd)
+            } else {
+                return Result(failure: json.makeError(JSON.BNRSwiftJSONErrorCode.CouldNotSerializeJSON, problem: data))
             }
         }
     }
