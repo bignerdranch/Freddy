@@ -13,29 +13,46 @@ import Result
 
 class BNRSwiftJSONTests: XCTestCase {
     
+    lazy var data: NSData? = {
+        let testBundle = NSBundle(forClass: BNRSwiftJSONTests.self)
+        let path = testBundle.pathForResource("sample", ofType: "JSON")
+        
+        if let p = path, u = NSURL(fileURLWithPath: p) {
+            return NSData(contentsOfURL: u)
+        }
+        
+        return nil
+    }()
+    
     func testThatJSONCanCreateInstanceWithData() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         XCTAssertTrue(json.isSuccess, "The sample JSON data should be parsed successfully.")
     }
     
     func testThatJSONCanBeSerialized() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         let serializedJSONData = json.serialize()
-        XCTAssertNotNil(serializedJSONData, "JSON should be serializable.")
+        switch serializedJSONData {
+        case .Success(let data):
+            XCTAssertNotNil(data, "JSON should be serializable.")
+        case .Failure(let error):
+            XCTFail("Failed with error: \(error)")
+        }
     }
     
     func testThatJSONSerializationMakesEqualJSON() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         let serializedJSONData = json.serialize()
-        let serialJSON = JSON.createJSONFrom(serializedJSONData!)
-        XCTAssertEqual(json, serialJSON, "The JSON values should be equal.")
+        switch serializedJSONData {
+        case .Success(let data):
+            let serialJSON = JSON.createJSONFrom(data.value)
+            XCTAssertEqual(json, serialJSON, "The JSON values should be equal.")
+        case .Failure(let error):
+            XCTFail("Failed with error: \(error)")
+        }
     }
     
     func testThatJSONCanCreatePeople() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         let peopleArray = json["people"].array
         switch peopleArray {
@@ -55,7 +72,6 @@ class BNRSwiftJSONTests: XCTestCase {
     }
     
     func testThatCollectResultsCanCreateArrayOfPeople() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         let peopleArray = json["people"].array.bind { collectResults(map($0, Person.createWithJSON)) }
         switch peopleArray {
@@ -69,7 +85,6 @@ class BNRSwiftJSONTests: XCTestCase {
     }
 
     func testThatSplitResultsCanCreateArrayOfPeople() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         let peopleArray = json["people"].array
         switch peopleArray {
@@ -83,7 +98,6 @@ class BNRSwiftJSONTests: XCTestCase {
     }
     
     func testSplitResultCanGatherPeopleInSuccesses() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         let people = splitResult(json["people"].array, Person.createWithJSON)
         XCTAssertGreaterThan(people.successes.count, 0, "There should be people in `successes`.")
@@ -91,7 +105,6 @@ class BNRSwiftJSONTests: XCTestCase {
     }
     
     func testSplitResultCanGatherErrorsInFailures() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         let peopl = splitResult(json["peopl"].array, Person.createWithJSON)
         XCTAssertEqual(peopl.successes.count, 0, "There should be no people in `successes`.")
@@ -99,7 +112,6 @@ class BNRSwiftJSONTests: XCTestCase {
     }
     
     func testThatSubscriptingJSONWorksForTopLevelObject() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         let success = json["success"].bool
         switch success {
@@ -111,7 +123,6 @@ class BNRSwiftJSONTests: XCTestCase {
     }
     
     func testThatJSONNullMatchesNullValue() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         let key = json["key"].null
 
@@ -124,7 +135,6 @@ class BNRSwiftJSONTests: XCTestCase {
     }
     
     func testThatYouCanAccessNestedKeys() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         let zips = json["states"]["Georgia"].array
         switch zips {
@@ -138,7 +148,6 @@ class BNRSwiftJSONTests: XCTestCase {
     }
 
     func testJSONSubscriptWithInt() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         let matt = json["people"][0]["name"].string
         switch matt {
@@ -150,7 +159,6 @@ class BNRSwiftJSONTests: XCTestCase {
     }
 
     func testJSONErrorKeyNotFound() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         let peopl = json["peopl"].array
         switch peopl {
@@ -163,7 +171,6 @@ class BNRSwiftJSONTests: XCTestCase {
     }
     
     func testJSONErrorIndexOutOfBounds() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         let person = json["people"][4].dictionary
         switch person {
@@ -176,7 +183,6 @@ class BNRSwiftJSONTests: XCTestCase {
     }
     
     func testJSONErrorTypeNotConvertible() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         let matt = json["people"][0]["name"].number
         switch matt {
@@ -189,7 +195,6 @@ class BNRSwiftJSONTests: XCTestCase {
     }
     
     func testJSONErrorUnexpectedType() {
-        let data = createData()
         let json = JSON.createJSONFrom(data!)
         let matt = json["people"]["name"].string
         switch matt {
@@ -200,16 +205,4 @@ class BNRSwiftJSONTests: XCTestCase {
             XCTAssertEqual(error.code, JSON.BNRSwiftJSONErrorCode.UnexpectedType.rawValue, "The `people` `Array` is not subscriptable with `String`s.")
         }
     }
-    
-    func createData() -> NSData? {
-        let testBundle = NSBundle(forClass: BNRSwiftJSONTests.self)
-        let path = testBundle.pathForResource("sample", ofType: "JSON")
-        
-        if let p = path, u = NSURL(fileURLWithPath: p) {
-            return NSData(contentsOfURL: u)
-        }
-        
-        return nil
-    }
-    
 }

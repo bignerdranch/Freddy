@@ -279,7 +279,7 @@ public extension JSON {
     var errorDomain: Swift.String { return "com.bignerdranch.BNRSwiftJSON" }
     
     enum BNRSwiftJSONErrorCode: Int {
-        case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible, CouldNotParseJSON
+        case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible, CouldNotParseJSON, CouldNotSerializeJSON
     }
 }
 
@@ -301,7 +301,10 @@ extension JSON {
             let errorDict = [NSLocalizedFailureReasonErrorKey: "Unexpected type. `\(self)` is not convertible to `\(problem)`."]
             return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
         case .CouldNotParseJSON:
-            let errorDict = [NSLocalizedFailureReasonErrorKey: "Could not parse JSON. Check the `NSData` instance."]
+            let errorDict = [NSLocalizedFailureReasonErrorKey: "Could not parse `JSON`. Check the `NSData` instance."]
+            return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
+        case .CouldNotSerializeJSON:
+            let errorDict = [NSLocalizedFailureReasonErrorKey: "Could not serialize \(problem) into `NSData`. Check the `JSON` instance."]
             return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
         }
     }
