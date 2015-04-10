@@ -62,7 +62,7 @@ public extension JSONResult {
     */
     public func serialize() -> Result<NSData> {
         if isFailure {
-            return .Failure(r.failureValue!)
+            return Result(failure: r.failureValue!)
         } else {
             switch r {
             case .Success(let jsonBox):
