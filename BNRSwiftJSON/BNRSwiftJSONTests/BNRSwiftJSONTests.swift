@@ -19,6 +19,14 @@ class BNRSwiftJSONTests: XCTestCase {
         XCTAssertTrue(json.isSuccess, "The sample JSON data should be parsed successfully.")
     }
     
+    func testThatJSONCanBeSerialized() {
+        let data = createData()
+        let json = JSON.createJSONFrom(data!)
+        let serializedJSONData = json.serialize()
+        XCTAssertNotNil(serializedJSONData, "JSON should be serializable.")
+        XCTAssertEqual(data!, serializedJSONData!, "Data should be the same.")
+    }
+    
     func testThatJSONCanCreatePeople() {
         let data = createData()
         let json = JSON.createJSONFrom(data!)
