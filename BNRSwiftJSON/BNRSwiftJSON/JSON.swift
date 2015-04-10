@@ -1,5 +1,5 @@
 //
-//  JSONValue.swift
+//  JSON.swift
 //  JSONParser
 //
 //  Created by Matthew D. Mathias on 3/17/15.
@@ -7,11 +7,12 @@
 //
 
 import Foundation
+import Swift
 
 /**
     An enum to describe the structure of JSON.
 */
-public enum JSON {
+public enum JSON: Equatable {
     case Array([JSON])
     case Dictionary([Swift.String: JSON])
     case Number(Double)
@@ -21,11 +22,11 @@ public enum JSON {
     
     // MARK: Decode NSData
     /**
-        Creates an optional instance of `JSONValue` from `NSData`.
+        Creates an optional instance of `JSON` from `NSData`.
     
         :param: data The instance of `NSData` from the web service.
     
-        :returns: An optional instance of `JSONValue`.
+        :returns: An optional instance of `JSON`.
     */
     public static func createJSONFrom(data: NSData) -> JSONResult {
         let jsonObject: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
@@ -38,13 +39,13 @@ public enum JSON {
         }
     }
     
-    // MARK: Make JSON Value
+    // MARK: Make JSON
     /**
-        Makes a `JSONValue` object by matching its argument to a case in the `JSONValue` enum.
+        Makes a `JSON` object by matching its argument to a case in the `JSON` enum.
     
         :param: object The instance of `AnyObject` returned from serializing the JSON.
     
-        :returns: An instance of `JSONValue` matching the JSON given to the function.
+        :returns: An instance of `JSON` matching the JSON given to the function.
     */
     private static func makeJSON(object: AnyObject) -> JSON {
         switch object {
@@ -63,13 +64,13 @@ public enum JSON {
         }
     }
     
-    // MARK: Make a JSON Value Array
+    // MARK: Make a JSON Array
     /**
-        Makes a `JSONValue` array from the object passed in.
+        Makes a `JSON` array from the object passed in.
     
-        :param: jsonArray The array to transform into a `JSONValue`.
+        :param: jsonArray The array to transform into a `JSON`.
     
-        :returns: An instance of `JSONValue` matching the array.
+        :returns: An instance of `JSON` matching the array.
     */
     private static func makeJSONArray(jsonArray: [AnyObject]) -> JSON {
         var items = [JSON]()
@@ -80,13 +81,13 @@ public enum JSON {
         return .Array(items)
     }
     
-    // MARK: Make a JSONValue Dictionary
+    // MARK: Make a JSON Dictionary
     /**
-        Makes a `JSONValue` dictionary from the `JSONValue` object passed in.
+        Makes a `JSON` dictionary from the `JSON` object passed in.
     
         :param: jsonDict The dictionary to transform into a `JSValue`.
     
-        :returns: An instance of `JSONValue` matching the dictionary.
+        :returns: An instance of `JSON` matching the dictionary.
     */
     private static func makeJSONDictionary(jsonDict: [Swift.String: AnyObject]) -> JSON {
         var dict: [Swift.String: JSON] = [:]
@@ -95,13 +96,51 @@ public enum JSON {
         }
         return .Dictionary(dict)
     }
+    
+    // MARK: - Serialize JSON
+    /**
+        Serializes `JSON` into an `AnyObject`.
+    
+        :returns: An instance of `AnyObject`.
+    */
+    internal func serializeJSON() -> AnyObject {
+        switch self {
+        case .Array(let jsonArray):
+            return map(jsonArray) { $0.serializeJSON() }
+        case .Dictionary(let jsonDictionary):
+            return serializeJSONDictionary(jsonDictionary)
+        case .String(let str):
+            return str
+        case .Number(let num):
+            return num
+        case .Bool(let b):
+            return b
+        case .Null:
+            return NSNull()
+        }
+    }
+    
+    /**
+        A function to help with the serialization of `JSON` into a `Dictionary`.
+    
+        :param: jsonDict A `Dictionary` of type `[Swift.String: JSON]` to serialize.
+    
+        :returns: A `Dictionary` of type `[Swift.String: AnyObject]`.
+    */
+    private func serializeJSONDictionary(jsonDict: [Swift.String: JSON]) -> [Swift.String: AnyObject] {
+        var dict: [Swift.String: AnyObject] = Swift.Dictionary(minimumCapacity: jsonDict.count)
+        for (key, value) in jsonDict {
+            dict[key] = value.serializeJSON()
+        }
+        return dict
+    }
 }
 
-// MARK: - Computed properties for the JSONValue
+// MARK: - Computed properties for the JSON
 
 public extension JSON {
     /**
-        Retrieves a `Dictionary` from the given `JSONValue`.  If the target value's type inside of the `JSONValue` instance does not match `Dictionary`, this property returns `nil`.
+        Retrieves a `Dictionary` from the given `JSON`.  If the target value's type inside of the `JSON` instance does not match `Dictionary`, this property returns `nil`.
     */
     var dictionary: [Swift.String: JSON]? {
         switch self {
@@ -113,7 +152,7 @@ public extension JSON {
     }
     
     /**
-        Retrieves an `Array` of `JSONValue`s from the given `JSONValue`.  If the target value's type inside of the `JSONValue` instance does not match `Array`, this property returns `nil`.
+        Retrieves an `Array` of `JSON`s from the given `JSON`.  If the target value's type inside of the `JSON` instance does not match `Array`, this property returns `nil`.
     */
     var array: [JSON]? {
         switch self {
@@ -125,7 +164,7 @@ public extension JSON {
     }
     
     /**
-        Retrieves a `String` from the `JSONValue`.  If the target value's type inside of the `JSONValue` instance does not match `String`, this property returns `nil`.
+        Retrieves a `String` from the `JSON`.  If the target value's type inside of the `JSON` instance does not match `String`, this property returns `nil`.
     */
     var string: Swift.String? {
         switch self {
@@ -137,7 +176,7 @@ public extension JSON {
     }
     
     /**
-        Retrieves a `Double` from the `JSONValue`.  If the target value's type inside of the `JSONValue` instance does not match `Double`, this property returns `nil`.
+        Retrieves a `Double` from the `JSON`.  If the target value's type inside of the `JSON` instance does not match `Double`, this property returns `nil`.
     */
     var number: Double? {
         switch self {
@@ -149,7 +188,7 @@ public extension JSON {
     }
     
     /**
-        Retrieves an `Int` from the `JSONValue`.  If the target value's type inside of the `JSONValue` instance does not match `Int`, this property returns `nil`.
+        Retrieves an `Int` from the `JSON`.  If the target value's type inside of the `JSON` instance does not match `Int`, this property returns `nil`.
     */
     var int: Int? {
         switch self {
@@ -161,7 +200,7 @@ public extension JSON {
     }
     
     /**
-        Retrieves a `Bool` from the `JSONValue`.  If the target value's type inside of the `JSONValue` instance does not match `Bool`, this property returns `nil`.
+        Retrieves a `Bool` from the `JSON`.  If the target value's type inside of the `JSON` instance does not match `Bool`, this property returns `nil`.
     */
     var bool: Swift.Bool? {
         switch self {
@@ -192,7 +231,7 @@ public extension JSON {
     }
 }
 
-// MARK: - Subscript JSONValue
+// MARK: - Subscript JSON
 
 public extension JSON {
     subscript(key: Swift.String) -> JSONResult {
@@ -240,7 +279,7 @@ public extension JSON {
     var errorDomain: Swift.String { return "com.bignerdranch.BNRSwiftJSON" }
     
     enum BNRSwiftJSONErrorCode: Int {
-        case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible, CouldNotParseJSON
+        case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible, CouldNotParseJSON, CouldNotSerializeJSON
     }
 }
 
@@ -262,8 +301,32 @@ extension JSON {
             let errorDict = [NSLocalizedFailureReasonErrorKey: "Unexpected type. `\(self)` is not convertible to `\(problem)`."]
             return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
         case .CouldNotParseJSON:
-            let errorDict = [NSLocalizedFailureReasonErrorKey: "Could not parse JSON. Check the `NSData` instance."]
+            let errorDict = [NSLocalizedFailureReasonErrorKey: "Could not parse `JSON`. Check the `NSData` instance."]
+            return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
+        case .CouldNotSerializeJSON:
+            let errorDict = [NSLocalizedFailureReasonErrorKey: "Could not serialize \(problem) into `NSData`. Check the `JSON` instance."]
             return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
         }
+    }
+}
+
+// MARK: - Test Equality
+
+public func ==(lhs: JSON, rhs: JSON) -> Bool {
+    switch (lhs, rhs) {
+    case (.Array(let arrL), .Array(let arrR)):
+        return arrL == arrR
+    case (.Dictionary(let dictL), .Dictionary(let dictR)):
+        return dictL == dictR
+    case (.String(let strL), .String(let strR)):
+        return strL == strR
+    case (.Number(let numL), .Number(let numR)):
+        return numL == numR
+    case (.Bool(let bL), .Bool(let bR)):
+        return bL == bR
+    case (.Null, .Null):
+        return true
+    default:
+        return false
     }
 }

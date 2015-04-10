@@ -14,7 +14,7 @@ extension NSError: ErrorType {}
 /**
     A newtype for Result<JSON> that provides additional properties for extracting typed JSON data.
 */
-public struct JSONResult {
+public struct JSONResult: Equatable {
     private let r: Result<JSON>
 
     internal init(success: JSON) {
@@ -52,96 +52,117 @@ public struct JSONResult {
     }
 }
 
+// MARK: - Serialize JSONResult
+
+public extension JSONResult {
+    /**
+        A function to serialize an instance to NSData.
+    
+        :returns: A `Result` with `NSData` in the `.Success` case, `.Failure` with an `NSError` otherwise.
+    */
+    public func serialize() -> Result<NSData> {
+        return bind { json in
+            let data: AnyObject = json.serializeJSON()
+            let jsonData = NSJSONSerialization.dataWithJSONObject(data, options: nil, error: nil)
+            if let jd = jsonData {
+                return Result(success: jd)
+            } else {
+                return Result(failure: json.makeError(JSON.BNRSwiftJSONErrorCode.CouldNotSerializeJSON, problem: data))
+            }
+        }
+    }
+}
+
 // MARK: - JSONResult Computed Properties
 
 public extension JSONResult {
     /**
-        Retrieves an `Array` of `JSONValue`s from the given `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Array`, this property returns `.Failure` with an appropriate `error`.
+        Retrieves an `Array` of `JSON`s from the given `Result`.  If the target value's type inside of the `JSON` instance does not match `Array`, this property returns `.Failure` with an appropriate `error`.
     */
     var array: Result<[JSON]> {
-        return bind { jsonValue in
-            if let array = jsonValue.array {
+        return bind { json in
+            if let array = json.array {
                 return Result(success: array)
             } else {
-                return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Array"))
+                return Result(failure: json.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Array"))
             }
         }
     }
     
     /**
-        Retrieves a `Dictionary` `JSONValue`s from the given `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Dictionary`, this property returns `.Failure` with an appropriate `error`.
+        Retrieves a `Dictionary` `JSON`s from the given `Result`.  If the target value's type inside of the `JSON` instance does not match `Dictionary`, this property returns `.Failure` with an appropriate `error`.
     */
     var dictionary: Result<[String: JSON]> {
-        return bind { jsonValue in
-            if let dict = jsonValue.dictionary {
+        return bind { json in
+            if let dict = json.dictionary {
                 return Result(success: dict)
             } else {
-                return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Dictionary"))
+                return Result(failure: json.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Dictionary"))
             }
         }
     }
     
     /**
-        Retrieves a `Double` from the `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Double`, this property returns `.Failure` with an appropriate `error`.
+        Retrieves a `Double` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `Double`, this property returns `.Failure` with an appropriate `error`.
     */
     var number: Result<Double> {
-        return bind { jsonValue in
-            if let num = jsonValue.number {
+        return bind { json in
+            if let num = json.number {
                 return Result(success: num)
             } else {
-                return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Double.self))
+                return Result(failure: json.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Double.self))
             }
         }
     }
     
     /**
-        Retrieves a `String` from the `Result`.  If the target value's type inside of the `JSONValue` instance does not match `String`, this property returns `.Failure` with an appropriate `error`.
+        Retrieves a `String` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `String`, this property returns `.Failure` with an appropriate `error`.
     */
     var string: Result<String> {
-        return bind { jsonValue in
-            if let str = jsonValue.string {
+        return bind { json in
+            if let str = json.string {
                 return Result(success: str)
             } else {
-                return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: String.self))
+                return Result(failure: json.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: String.self))
             }
         }
     }
     
     /**
-        Retrieves a `Bool` from the `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Bool`, this property returns `.Failure` with an appropriate `error`.
+        Retrieves a `Bool` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `Bool`, this property returns `.Failure` with an appropriate `error`.
     */
     var bool: Result<Bool> {
-        return bind { jsonValue in
-            if let b = jsonValue.bool {
+        return bind { json in
+            if let b = json.bool {
                 return Result(success: b)
             } else {
-                return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Bool.self))
+                return Result(failure: json.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Bool.self))
             }
         }
     }
     
     /**
-        Retrieves an `Int` from the `Result`.  If the target value's type inside of the `JSONValue` instance does not match `Int`, this property returns `.Failure` with an appropriate `error`.
+        Retrieves an `Int` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `Int`, this property returns `.Failure` with an appropriate `error`.
     */
     var int: Result<Int> {
-        return bind { jsonValue in
-            if let i = jsonValue.int {
+        return bind { json in
+            if let i = json.int {
                 return Result(success: i)
             } else {
-                return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Int.self))
+                return Result(failure: json.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Int.self))
             }
         }
     }
 
     /**
-        Retrieves `Null` from the `Result`. If the target value's type inside of the `JSONValue` instance does not match `Null`, this property returns `.Failure` with an appropriate `error`.
+        Retrieves `Null` from the `Result`. If the target value's type inside of the `JSON` instance does not match `Null`, this property returns `.Failure` with an appropriate `error`.
     */
     var null: Result<()> {
-        return bind { jsonValue in
-            if jsonValue.isNull {
+        return bind { json in
+            if json.isNull {
                 return Result(success: ())
             } else {
-                return Result(failure: jsonValue.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Int.self))
+                return Result(failure: json.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: Int.self))
             }
         }
     }
@@ -151,14 +172,14 @@ public extension JSONResult {
 
 public extension JSONResult {
     subscript(key: String) -> JSONResult {
-        return bind { jsonValue in
-            return jsonValue[key]
+        return bind { JSON in
+            return JSON[key]
         }
     }
     
     subscript(index: Int) -> JSONResult {
-        return bind { jsonValue in
-            return jsonValue[index]
+        return bind { JSON in
+            return JSON[index]
         }
     }
 }
@@ -211,4 +232,19 @@ public func splitResult<U, T>(result: Result<[U]>, f: U -> Result<T>) -> (succes
         failures.append(error)
     }
     return (successes, failures)
+}
+
+// MARK: - Test Equality
+
+public func ==(lhs: JSONResult, rhs: JSONResult) -> Bool {
+    switch (lhs.r, rhs.r) {
+    case (.Failure(let error), _):
+        return false
+    case (_, .Failure(let error)):
+        return false
+    case (.Success(let lhsValue), .Success(let rhsValue)):
+        return lhsValue.value == rhsValue.value
+    default:
+        return false
+    }
 }
