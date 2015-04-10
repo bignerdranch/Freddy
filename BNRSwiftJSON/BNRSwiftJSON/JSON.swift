@@ -12,7 +12,7 @@ import Swift
 /**
     An enum to describe the structure of JSON.
 */
-public enum JSON {
+public enum JSON: Equatable {
     case Array([JSON])
     case Dictionary([Swift.String: JSON])
     case Number(Double)
@@ -97,6 +97,12 @@ public enum JSON {
         return .Dictionary(dict)
     }
     
+    // MARK: - Serialize JSON
+    /**
+        Serializes `JSON` into an `AnyObject`.
+    
+        :returns: An instance of `AnyObject`.
+    */
     internal func serializeJSON() -> AnyObject {
         switch self {
         case .Array(let jsonArray):
@@ -114,15 +120,13 @@ public enum JSON {
         }
     }
     
-    private func serializeJSONArray(jsonArray: [JSON]) -> [AnyObject] {
-        var jsonDataArray = [AnyObject]()
-        for item in jsonArray {
-            let jsonData: AnyObject = item.serializeJSON()
-            jsonDataArray.append(jsonData)
-        }
-        return jsonDataArray
-    }
+    /**
+        A function to help with the serialization of `JSON` into a `Dictionary`.
     
+        :param: jsonDict A `Dictionary` of type `[Swift.String: JSON]` to serialize.
+    
+        :returns: A `Dictionary` of type `[Swift.String: AnyObject]`.
+    */
     private func serializeJSONDictionary(jsonDict: [Swift.String: JSON]) -> [Swift.String: AnyObject] {
         var dict: [Swift.String: AnyObject] = Swift.Dictionary(minimumCapacity: jsonDict.count)
         for (key, value) in jsonDict {
@@ -300,5 +304,26 @@ extension JSON {
             let errorDict = [NSLocalizedFailureReasonErrorKey: "Could not parse JSON. Check the `NSData` instance."]
             return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
         }
+    }
+}
+
+// MARK: - Test Equality
+
+public func ==(lhs: JSON, rhs: JSON) -> Bool {
+    switch (lhs, rhs) {
+    case (.Array(let arrL), .Array(let arrR)):
+        return arrL == arrR
+    case (.Dictionary(let dictL), .Dictionary(let dictR)):
+        return dictL == dictR
+    case (.String(let strL), .String(let strR)):
+        return strL == strR
+    case (.Number(let numL), .Number(let numR)):
+        return numL == numR
+    case (.Bool(let bL), .Bool(let bR)):
+        return bL == bR
+    case (.Null, .Null):
+        return true
+    default:
+        return false
     }
 }

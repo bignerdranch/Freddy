@@ -14,7 +14,7 @@ extension NSError: ErrorType {}
 /**
     A newtype for Result<JSON> that provides additional properties for extracting typed JSON data.
 */
-public struct JSONResult {
+public struct JSONResult: Equatable {
     private let r: Result<JSON>
 
     internal init(success: JSON) {
@@ -55,6 +55,11 @@ public struct JSONResult {
 // MARK: - Serialize JSONResult
 
 public extension JSONResult {
+    /**
+        A function to serialize an instance to NSData.
+    
+        :returns: An optional instance of NSData if the serialization is successfull.
+    */
     public func serialize() -> NSData? {
         if self.isFailure {
             return nil
@@ -229,4 +234,19 @@ public func splitResult<U, T>(result: Result<[U]>, f: U -> Result<T>) -> (succes
         failures.append(error)
     }
     return (successes, failures)
+}
+
+// MARK: - Test Equality
+
+public func ==(lhs: JSONResult, rhs: JSONResult) -> Bool {
+    switch (lhs.r, rhs.r) {
+    case (.Failure(let error), _):
+        return false
+    case (_, .Failure(let error)):
+        return false
+    case (.Success(let lhsValue), .Success(let rhsValue)):
+        return lhsValue.value == rhsValue.value
+    default:
+        return false
+    }
 }

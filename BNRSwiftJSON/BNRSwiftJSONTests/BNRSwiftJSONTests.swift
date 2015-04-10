@@ -24,7 +24,14 @@ class BNRSwiftJSONTests: XCTestCase {
         let json = JSON.createJSONFrom(data!)
         let serializedJSONData = json.serialize()
         XCTAssertNotNil(serializedJSONData, "JSON should be serializable.")
-        XCTAssertEqual(data!, serializedJSONData!, "Data should be the same.")
+    }
+    
+    func testThatJSONSerializationMakesEqualJSON() {
+        let data = createData()
+        let json = JSON.createJSONFrom(data!)
+        let serializedJSONData = json.serialize()
+        let serialJSON = JSON.createJSONFrom(serializedJSONData!)
+        XCTAssertEqual(json, serialJSON, "The JSON values should be equal.")
     }
     
     func testThatJSONCanCreatePeople() {
