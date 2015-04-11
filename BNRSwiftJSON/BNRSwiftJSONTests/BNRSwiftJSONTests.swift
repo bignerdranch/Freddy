@@ -179,7 +179,7 @@ class BNRSwiftJSONTests: XCTestCase {
             XCTFail("There should be no people.")
         case .Failure(let errorType):
             let error = errorType as! NSError
-            XCTAssertEqual(error.code, JSON.BNRSwiftJSONErrorCode.KeyNotFound.rawValue, "The error should be due to the key not being found.")
+            XCTAssertEqual(error.code, JSON.ErrorCode.KeyNotFound.rawValue, "The error should be due to the key not being found.")
         }
     }
     
@@ -190,7 +190,7 @@ class BNRSwiftJSONTests: XCTestCase {
             XCTFail("There should be no person at index 4.")
         case .Failure(let errorType):
             let error = errorType as! NSError
-            XCTAssertEqual(error.code, JSON.BNRSwiftJSONErrorCode.IndexOutOfBounds.rawValue, "The error should be due to the index being out of bounds.")
+            XCTAssertEqual(error.code, JSON.ErrorCode.IndexOutOfBounds.rawValue, "The error should be due to the index being out of bounds.")
         }
     }
     
@@ -201,7 +201,7 @@ class BNRSwiftJSONTests: XCTestCase {
             XCTFail("The `name` should not be convertible to `number`.")
         case .Failure(let errorType):
             let error = errorType as! NSError
-            XCTAssertEqual(error.code, JSON.BNRSwiftJSONErrorCode.TypeNotConvertible.rawValue, "The error should be due to `name` not being convertible to `number`.")
+            XCTAssertEqual(error.code, JSON.ErrorCode.TypeNotConvertible.rawValue, "The error should be due to `name` not being convertible to `number`.")
         }
     }
     
@@ -212,7 +212,7 @@ class BNRSwiftJSONTests: XCTestCase {
             XCTFail("The `name` key should not be availabe as a subscript for the `Array` `people`.")
         case .Failure(let errorType):
             let error = errorType as! NSError
-            XCTAssertEqual(error.code, JSON.BNRSwiftJSONErrorCode.UnexpectedType.rawValue, "The `people` `Array` is not subscriptable with `String`s.")
+            XCTAssertEqual(error.code, JSON.ErrorCode.UnexpectedType.rawValue, "The `people` `Array` is not subscriptable with `String`s.")
         }
     }
 }
