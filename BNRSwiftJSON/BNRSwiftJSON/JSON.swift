@@ -34,7 +34,7 @@ public enum JSON: Equatable {
         if let obj: AnyObject = jsonObject {
             return JSONResult(success: makeJSON(obj))
         } else {
-            let error = NSError(domain: "com.bignerdranch.BNRSwiftJSON", code: JSON.BNRSwiftJSONErrorCode.CouldNotParseJSON.rawValue, userInfo: [NSLocalizedFailureReasonErrorKey: "Could not parse `NSData`."])
+            let error = NSError(domain: "com.bignerdranch.BNRSwiftJSON", code: JSON.ErrorCode.CouldNotParseJSON.rawValue, userInfo: [NSLocalizedFailureReasonErrorKey: "Could not parse `NSData`."])
             return JSONResult(failure: error)
         }
     }
@@ -241,10 +241,10 @@ public extension JSON {
                 if let obj = jsonDict[key] {
                     return JSONResult(success: obj)
                 } else {
-                    return JSONResult(failure: JSON.makeError(BNRSwiftJSONErrorCode.KeyNotFound, problem: key))
+                    return JSONResult(failure: JSON.makeError(ErrorCode.KeyNotFound, problem: key))
                 }
             default:
-                return JSONResult(failure: JSON.makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: key))
+                return JSONResult(failure: JSON.makeError(ErrorCode.UnexpectedType, problem: key))
             }
         }
     }
@@ -256,10 +256,10 @@ public extension JSON {
                 if index <= jsonArray.count - 1 {
                     return JSONResult(success: jsonArray[index])
                 } else {
-                    return JSONResult(failure: JSON.makeError(BNRSwiftJSONErrorCode.IndexOutOfBounds, problem: index))
+                    return JSONResult(failure: JSON.makeError(ErrorCode.IndexOutOfBounds, problem: index))
                 }
             default:
-                return JSONResult(failure: JSON.makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: index))
+                return JSONResult(failure: JSON.makeError(ErrorCode.UnexpectedType, problem: index))
             }
         }
     }
@@ -278,7 +278,7 @@ extension JSON: NilLiteralConvertible {
 public extension JSON {
     static let errorDomain = "com.bignerdranch.BNRSwiftJSON"
     
-    enum BNRSwiftJSONErrorCode: Int {
+    enum ErrorCode: Int {
         case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible, CouldNotParseJSON, CouldNotSerializeJSON
     }
 }
@@ -286,7 +286,7 @@ public extension JSON {
 // MARK: - Make Errors
 
 extension JSON {
-    static func makeError<T>(reason: BNRSwiftJSONErrorCode, problem: T) -> NSError {
+    static func makeError<T>(reason: ErrorCode, problem: T) -> NSError {
         switch reason {
         case .IndexOutOfBounds:
             let errorDict = [NSLocalizedFailureReasonErrorKey: "`\(problem)` is out of bounds."]
