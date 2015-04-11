@@ -267,8 +267,8 @@ public extension JSON {
 
 // MARK: - NilLiteralConvertible
 
-public extension JSON {
-    init(nilLiteral: ()) {
+extension JSON: NilLiteralConvertible {
+    public init(nilLiteral: ()) {
         self.init(nilLiteral: ())
     }
 }
