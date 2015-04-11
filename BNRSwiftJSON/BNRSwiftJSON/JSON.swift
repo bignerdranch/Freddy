@@ -49,16 +49,19 @@ public enum JSON: Equatable {
     */
     private static func makeJSON(object: AnyObject) -> JSON {
         switch object {
+        case let n as NSNumber:
+            switch n {
+            case _ where CFNumberGetType(n) == .CharType || CFGetTypeID(n) == CFBooleanGetTypeID():
+                return .Bool(n.boolValue)
+            default:
+                return .Number(n.doubleValue)
+            }
         case let arr as [AnyObject]:
             return makeJSONArray(arr)
         case let dict as [Swift.String: AnyObject]:
             return makeJSONDictionary(dict)
-        case let n as Double:
-            return .Number(n)
         case let s as Swift.String:
             return .String(s)
-        case let b as Swift.Bool:
-            return .Bool(b)
         default:
             return .Null
         }
@@ -209,15 +212,8 @@ public extension JSON {
     */
     var bool: Swift.Bool? {
         switch self {
-        case .Number(let b):
-            switch b {
-            case 0:
-                return false
-            case 1:
-                return true
-            default:
-                return nil
-            }
+        case .Bool(let b):
+            return b
         default:
             return nil
         }
