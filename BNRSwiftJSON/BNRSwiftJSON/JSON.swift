@@ -241,10 +241,10 @@ public extension JSON {
                 if let obj = jsonDict[key] {
                     return JSONResult(success: obj)
                 } else {
-                    return JSONResult(failure: makeError(BNRSwiftJSONErrorCode.KeyNotFound, problem: key))
+                    return JSONResult(failure: JSON.makeError(BNRSwiftJSONErrorCode.KeyNotFound, problem: key))
                 }
             default:
-                return JSONResult(failure: makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: key))
+                return JSONResult(failure: JSON.makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: key))
             }
         }
     }
@@ -256,10 +256,10 @@ public extension JSON {
                 if index <= jsonArray.count - 1 {
                     return JSONResult(success: jsonArray[index])
                 } else {
-                    return JSONResult(failure: makeError(BNRSwiftJSONErrorCode.IndexOutOfBounds, problem: index))
+                    return JSONResult(failure: JSON.makeError(BNRSwiftJSONErrorCode.IndexOutOfBounds, problem: index))
                 }
             default:
-                return JSONResult(failure: makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: index))
+                return JSONResult(failure: JSON.makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: index))
             }
         }
     }
@@ -276,7 +276,7 @@ extension JSON: NilLiteralConvertible {
 // MARK: - Errors
 
 public extension JSON {
-    var errorDomain: Swift.String { return "com.bignerdranch.BNRSwiftJSON" }
+    static let errorDomain = "com.bignerdranch.BNRSwiftJSON"
     
     enum BNRSwiftJSONErrorCode: Int {
         case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible, CouldNotParseJSON, CouldNotSerializeJSON
@@ -286,7 +286,7 @@ public extension JSON {
 // MARK: - Make Errors
 
 extension JSON {
-    func makeError<T>(reason: BNRSwiftJSONErrorCode, problem: T) -> NSError {
+    static func makeError<T>(reason: BNRSwiftJSONErrorCode, problem: T) -> NSError {
         switch reason {
         case .IndexOutOfBounds:
             let errorDict = [NSLocalizedFailureReasonErrorKey: "`\(problem)` is out of bounds."]

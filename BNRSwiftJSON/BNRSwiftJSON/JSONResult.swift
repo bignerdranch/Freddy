@@ -67,7 +67,7 @@ public extension JSONResult {
             if let jd = jsonData {
                 return Result(success: jd)
             } else {
-                return Result(failure: json.makeError(JSON.BNRSwiftJSONErrorCode.CouldNotSerializeJSON, problem: data))
+                return Result(failure: JSON.makeError(JSON.BNRSwiftJSONErrorCode.CouldNotSerializeJSON, problem: data))
             }
         }
     }
@@ -81,7 +81,7 @@ public extension JSONResult {
             if let converted = f(json) {
                 return Result(success: converted)
             } else {
-                return Result(failure: json.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: problem))
+                return Result(failure: JSON.makeError(JSON.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: problem))
             }
         }
     }
