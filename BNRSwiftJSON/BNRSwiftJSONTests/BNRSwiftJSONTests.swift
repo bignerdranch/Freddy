@@ -75,6 +75,18 @@ class BNRSwiftJSONTests: XCTestCase {
             XCTFail("Failed with error: \(error)")
         }
     }
+
+    func testThatJSONSerializationHandlesBoolsCorrectly() {
+        let json = JSON.Dictionary([
+            "foo": .Bool(true),
+            "bar": .Bool(false),
+            "baz": .Number(123),
+        ])
+        let data = json.serialize().successValue!
+        let deserializedResult = JSON.createJSONFrom(data).dictionary
+        let deserialized = JSON.Dictionary(deserializedResult.successValue!)
+        XCTAssertEqual(json, deserialized, "Serialize/Deserialize succeed with Bools")
+    }
     
     func testThatJSONCanCreatePeople() {
         let peopleArray = json["people"].array

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Swift
+import Result
 
 /**
     An enum to describe the structure of JSON.
@@ -49,16 +49,19 @@ public enum JSON: Equatable {
     */
     private static func makeJSON(object: AnyObject) -> JSON {
         switch object {
+        case let n as NSNumber:
+            switch n {
+            case _ where CFNumberGetType(n) == .CharType || CFGetTypeID(n) == CFBooleanGetTypeID():
+                return .Bool(n.boolValue)
+            default:
+                return .Number(n.doubleValue)
+            }
         case let arr as [AnyObject]:
             return makeJSONArray(arr)
         case let dict as [Swift.String: AnyObject]:
             return makeJSONDictionary(dict)
-        case let n as Double:
-            return .Number(n)
         case let s as Swift.String:
             return .String(s)
-        case let b as Swift.Bool:
-            return .Bool(b)
         default:
             return .Null
         }
@@ -99,16 +102,35 @@ public enum JSON: Equatable {
     
     // MARK: - Serialize JSON
     /**
-        Serializes `JSON` into an `AnyObject`.
-    
-        :returns: An instance of `AnyObject`.
+        Attempt to serialize `JSON` into an `NSData`.
+
+        :returns: A `Result` with `NSData` in the `.Success` case, `.Failure` with an `NSError` otherwise.
     */
-    internal func serializeJSON() -> AnyObject {
+    public func serialize() -> Result<NSData> {
+        let obj: AnyObject = toNSJSONSerializationObject()
+        var error: NSError?
+        if let data = NSJSONSerialization.dataWithJSONObject(obj, options: nil, error: &error) {
+            return Result(success: data)
+        } else {
+            return Result(failure: error!)
+        }
+    }
+
+    /**
+        A function to help with the serialization of `JSON`.
+
+        :returns: An `AnyObject` suitable for `NSJSONSerialization`'s use.
+    */
+    private func toNSJSONSerializationObject() -> AnyObject {
         switch self {
         case .Array(let jsonArray):
-            return map(jsonArray) { $0.serializeJSON() }
+            return map(jsonArray) { $0.toNSJSONSerializationObject() }
         case .Dictionary(let jsonDictionary):
-            return serializeJSONDictionary(jsonDictionary)
+            var dict: [Swift.String: AnyObject] = Swift.Dictionary(minimumCapacity: jsonDictionary.count)
+            for (key, value) in jsonDictionary {
+                dict[key] = value.toNSJSONSerializationObject()
+            }
+            return dict
         case .String(let str):
             return str
         case .Number(let num):
@@ -118,21 +140,7 @@ public enum JSON: Equatable {
         case .Null:
             return NSNull()
         }
-    }
-    
-    /**
-        A function to help with the serialization of `JSON` into a `Dictionary`.
-    
-        :param: jsonDict A `Dictionary` of type `[Swift.String: JSON]` to serialize.
-    
-        :returns: A `Dictionary` of type `[Swift.String: AnyObject]`.
-    */
-    private func serializeJSONDictionary(jsonDict: [Swift.String: JSON]) -> [Swift.String: AnyObject] {
-        var dict: [Swift.String: AnyObject] = Swift.Dictionary(minimumCapacity: jsonDict.count)
-        for (key, value) in jsonDict {
-            dict[key] = value.serializeJSON()
-        }
-        return dict
+
     }
 }
 
@@ -204,15 +212,8 @@ public extension JSON {
     */
     var bool: Swift.Bool? {
         switch self {
-        case .Number(let b):
-            switch b {
-            case 0:
-                return false
-            case 1:
-                return true
-            default:
-                return nil
-            }
+        case .Bool(let b):
+            return b
         default:
             return nil
         }
@@ -279,7 +280,7 @@ public extension JSON {
     static let errorDomain = "com.bignerdranch.BNRSwiftJSON"
     
     enum ErrorCode: Int {
-        case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible, CouldNotParseJSON, CouldNotSerializeJSON
+        case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible, CouldNotParseJSON
     }
 }
 
@@ -302,9 +303,6 @@ extension JSON {
             return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
         case .CouldNotParseJSON:
             let errorDict = [NSLocalizedFailureReasonErrorKey: "Could not parse `JSON`. Check the `NSData` instance."]
-            return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
-        case .CouldNotSerializeJSON:
-            let errorDict = [NSLocalizedFailureReasonErrorKey: "Could not serialize \(problem) into `NSData`. Check the `JSON` instance."]
             return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
         }
     }
