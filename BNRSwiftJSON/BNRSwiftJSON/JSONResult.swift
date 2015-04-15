@@ -305,6 +305,60 @@ public func mapAll<T1,T2,T3,T4,T5,T6,U>(r1: Result<T1>, r2: Result<T2>, r3: Resu
     }
 }
 
+/**
+    A function to `map` all of the `Result` values into a single function call.
+
+    :param: r1...r7 The `Result`s.
+    :param: f The function to call.
+
+    :returns: A `Result<U>`.
+*/
+public func mapAll<T1,T2,T3,T4,T5,T6,T7,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, r4: Result<T4>, r5: Result<T5>, r6: Result<T6>, r7: Result<T7>, f: (T1,T2,T3,T4,T5,T6,T7) -> U) -> Result<U> {
+    return r1.bind { s1 in
+        r2.bind { s2 in
+            r3.bind { s3 in
+                r4.bind { s4 in
+                    r5.bind { s5 in
+                        r6.bind { s6 in
+                            r7.map { s7 in
+                                f(s1, s2, s3, s4, s5, s6, s7)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+    A function to `map` all of the `Result` values into a single function call.
+
+    :param: r1...r8 The `Result`s.
+    :param: f The function to call.
+
+    :returns: A `Result<U>`.
+*/
+public func mapAll<T1,T2,T3,T4,T5,T6,T7,T8,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, r4: Result<T4>, r5: Result<T5>, r6: Result<T6>, r7: Result<T7>, r8: Result<T8>, f: (T1,T2,T3,T4,T5,T6,T7,T8) -> U) -> Result<U> {
+    return r1.bind { s1 in
+        r2.bind { s2 in
+            r3.bind { s3 in
+                r4.bind { s4 in
+                    r5.bind { s5 in
+                        r6.bind { s6 in
+                            r7.bind { s7 in
+                                r8.map { s8 in
+                                    f(s1, s2, s3, s4, s5, s6, s7, s8)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 // MARK: - Test Equality
 
 public func ==(lhs: JSONResult, rhs: JSONResult) -> Bool {
