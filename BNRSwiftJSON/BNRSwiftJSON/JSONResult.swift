@@ -191,6 +191,120 @@ public func splitResult<U, T>(result: Result<[U]>, f: U -> Result<T>) -> Result<
     }
 }
 
+/**
+    A function to `map` the `Result` value into a function call.
+
+    :param: r1 The `Result`.
+    :param: f The function to call.
+
+    :returns: A `Result<U>`.
+*/
+public func mapAll<T1,U>(r1: Result<T1>, f: (T1) -> U) -> Result<U> {
+    return r1.map { s1 in
+        f(s1)
+    }
+}
+
+/**
+    A function to `map` all of the `Result` values into a single function call.
+
+    :param: r1...r2 The `Result`s.
+    :param: f The function to call.
+
+    :returns: A `Result<U>`.
+*/
+public func mapAll<T1,T2,U>(r1: Result<T1>, r2: Result<T2>, f: (T1,T2) -> U) -> Result<U> {
+    return r1.bind { s1 in
+        r2.map { s2 in
+            f(s1, s2)
+        }
+    }
+}
+
+/**
+    A function to `map` all of the `Result` values into a single function call.
+
+    :param: r1...r3 The `Result`s.
+    :param: f The function to call.
+
+    :returns: A `Result<U>`.
+*/
+public func mapAll<T1,T2,T3,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, f: (T1,T2,T3) -> U) -> Result<U> {
+    return r1.bind { s1 in
+        r2.bind { s2 in
+            r3.map { s3 in
+                f(s1, s2, s3)
+            }
+        }
+    }
+}
+
+/**
+    A function to `map` all of the `Result` values into a single function call.
+
+    :param: r1...r4 The `Result`s.
+    :param: f The function to call.
+
+    :returns: A `Result<U>`.
+*/
+public func mapAll<T1,T2,T3,T4,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, r4: Result<T4>, f: (T1,T2,T3,T4) -> U) -> Result<U> {
+    return r1.bind { s1 in
+        r2.bind { s2 in
+            r3.bind { s3 in
+                r4.map { s4 in
+                    f(s1, s2, s3, s4)
+                }
+            }
+        }
+    }
+}
+
+/**
+    A function to `map` all of the `Result` values into a single function call.
+
+    :param: r1...r5 The `Result`s.
+    :param: f The function to call.
+
+    :returns: A `Result<U>`.
+*/
+public func mapAll<T1,T2,T3,T4,T5,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, r4: Result<T4>, r5: Result<T5>, f: (T1,T2,T3,T4,T5) -> U) -> Result<U> {
+    return r1.bind { s1 in
+        r2.bind { s2 in
+            r3.bind { s3 in
+                r4.bind { s4 in
+                    r5.map { s5 in
+                        f(s1, s2, s3, s4, s5)
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+    A function to `map` all of the `Result` values into a single function call.
+
+    :param: r1...r6 The `Result`s.
+    :param: f The function to call.
+
+    :returns: A `Result<U>`.
+*/
+public func mapAll<T1,T2,T3,T4,T5,T6,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, r4: Result<T4>, r5: Result<T5>, r6: Result<T6>, f: (T1,T2,T3,T4,T5,T6) -> U) -> Result<U> {
+    return r1.bind { s1 in
+        r2.bind { s2 in
+            r3.bind { s3 in
+                r4.bind { s4 in
+                    r5.bind { s5 in
+                        r6.map { s6 in
+                            f(s1, s2, s3, s4, s5, s6)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 // MARK: - Test Equality
 
 public func ==(lhs: JSONResult, rhs: JSONResult) -> Bool {

@@ -32,12 +32,12 @@ extension Person: JSONDecodable {
         let age = value["age"].int
         let isMarried = value["spouse"].bool
         
-        return name.bind { n in
-            age.bind { a in
-                isMarried.map { im in
-                    return self.init(name: n, age: a, spouse: im)
-                }
-            }
-        }
+        return mapAll(name, age, isMarried, Person.create)
+    }
+}
+
+extension Person {
+    private static func create(name: String, age: Int, spouse: Bool) -> Person {
+        return self.init(name: name, age: age, spouse: spouse)
     }
 }
