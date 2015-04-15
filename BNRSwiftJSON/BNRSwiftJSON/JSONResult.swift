@@ -154,7 +154,7 @@ public extension JSONResult {
 
     :returns: A `Result<[T]>` such that all successes are collected within an array of the `.Success` case.
 */
-public func collectResults<T>(results: [Result<T>]) -> Result<[T]> {
+public func collectAllSuccesses<T>(results: [Result<T>]) -> Result<[T]> {
     var successes = [T]()
     for result in results {
         switch result {
@@ -175,24 +175,20 @@ public func collectResults<T>(results: [Result<T>]) -> Result<[T]> {
 
     :returns: A tuple of `successes` and `failures`.
 */
-public func splitResult<U, T>(result: Result<[U]>, f: U -> Result<T>) -> (successes: [T], failures: [ErrorType]) {
+public func splitResult<U, T>(result: Result<[U]>, f: U -> Result<T>) -> Result<(successes: [T], failures: [ErrorType])> {
     var successes = [T]()
     var failures = [ErrorType]()
-    switch result {
-    case .Success(let results):
-        for result in results.value {
-            let res = f(result)
-            switch res {
+    return result.bind { results in
+        for result in results {
+            switch f(result) {
             case .Success(let r):
                 successes.append(r.value)
             case .Failure(let error):
                 failures.append(error)
             }
         }
-    case .Failure(let error):
-        failures.append(error)
+        return Result(success:(successes, failures))
     }
-    return (successes, failures)
 }
 
 // MARK: - Test Equality
