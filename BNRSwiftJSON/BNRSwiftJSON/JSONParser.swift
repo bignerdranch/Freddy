@@ -143,7 +143,7 @@ private struct Parser {
                 return decodeNumberNegative(loc)
 
             case Literal.zero:
-                return decodeNumberLeadingZero(loc)
+                return decodeNumberLeadingZero(loc, sign: 1.0)
 
             case Literal.one
             ,    Literal.two
@@ -154,7 +154,7 @@ private struct Parser {
             ,    Literal.seven
             ,    Literal.eight
             ,    Literal.nine:
-                return decodeNumberPreDecimalDigits(loc)
+                return decodeNumberPreDecimalDigits(loc, sign: 1.0)
 
             case Literal.n:
                 return decodeNull()
@@ -430,7 +430,7 @@ private struct Parser {
 
         switch input[loc] {
         case Literal.zero:
-            return decodeNumberLeadingZero(start)
+            return decodeNumberLeadingZero(start, sign: -1)
 
         case Literal.one
         ,    Literal.two
@@ -441,30 +441,33 @@ private struct Parser {
         ,    Literal.seven
         ,    Literal.eight
         ,    Literal.nine:
-            return decodeNumberPreDecimalDigits(start)
+            return decodeNumberPreDecimalDigits(start, sign: -1)
 
         default:
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
     }
 
-    mutating func decodeNumberLeadingZero(start: Int) -> Result {
+    mutating func decodeNumberLeadingZero(start: Int, sign: Double) -> Result {
         if ++loc >= input.count {
-            return convertNumberFromPosition(start)
+            return .Ok(.Number(0))
         }
 
         switch input[loc] {
         case Literal.PERIOD:
-            return decodeNumberDecimal(start)
+            return decodeNumberDecimal(start, sign: sign, value: 0)
 
         default:
-            return convertNumberFromPosition(start)
+            return .Ok(.Number(0))
         }
     }
 
-    mutating func decodeNumberPreDecimalDigits(start: Int) -> Result {
-        while ++loc < input.count {
-            switch input[loc] {
+    mutating func decodeNumberPreDecimalDigits(start: Int, sign: Double) -> Result {
+        var value: Double = 0
+
+        while loc < input.count {
+            let c = input[loc]
+            switch c {
             case Literal.zero
             ,    Literal.one
             ,    Literal.two
@@ -475,23 +478,23 @@ private struct Parser {
             ,    Literal.seven
             ,    Literal.eight
             ,    Literal.nine:
-                // loop again
-                break
+                value = 10 * value + Double(c - Literal.zero)
+                ++loc
 
             case Literal.PERIOD:
-                return decodeNumberDecimal(start)
+                return decodeNumberDecimal(start, sign: sign, value: value)
 
             case Literal.e, Literal.E:
-                return decodeNumberExponent(start)
+                return decodeNumberExponent(start, sign: sign, value: value)
 
             default:
-                return convertNumberFromPosition(start)
+                return .Ok(.Number(sign * value))
             }
         }
-        return convertNumberFromPosition(start)
+        return .Ok(.Number(sign * value))
     }
 
-    mutating func decodeNumberDecimal(start: Int) -> Result {
+    mutating func decodeNumberDecimal(start: Int, sign: Double, value: Double) -> Result {
         if ++loc >= input.count {
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
@@ -507,16 +510,19 @@ private struct Parser {
         ,    Literal.seven
         ,    Literal.eight
         ,    Literal.nine:
-            return decodeNumberPostDecimalDigits(start)
+            return decodeNumberPostDecimalDigits(start, sign: sign, value: value)
 
         default:
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
     }
 
-    mutating func decodeNumberPostDecimalDigits(start: Int) -> Result {
-        while ++loc < input.count {
-            switch input[loc] {
+    mutating func decodeNumberPostDecimalDigits(start: Int, sign: Double, var value: Double) -> Result {
+        var position = 0.1
+
+        while loc < input.count {
+            let c = input[loc]
+            switch c {
             case Literal.zero
             ,    Literal.one
             ,    Literal.two
@@ -527,20 +533,21 @@ private struct Parser {
             ,    Literal.seven
             ,    Literal.eight
             ,    Literal.nine:
-                // loop again
-                break
+                value += position * Double(c - Literal.zero)
+                position /= 10
+                ++loc
 
             case Literal.e, Literal.E:
-                return decodeNumberExponent(start)
+                return decodeNumberExponent(start, sign: sign, value: value)
 
             default:
-                return convertNumberFromPosition(start)
+                return .Ok(.Number(sign * value))
             }
         }
-        return convertNumberFromPosition(start)
+        return .Ok(.Number(sign * value))
     }
 
-    mutating func decodeNumberExponent(start: Int) -> Result {
+    mutating func decodeNumberExponent(start: Int, sign: Double, value: Double) -> Result {
         if ++loc >= input.count {
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
@@ -556,17 +563,20 @@ private struct Parser {
         ,    Literal.seven
         ,    Literal.eight
         ,    Literal.nine:
-            return decodeNumberExponentDigits(start)
+            return decodeNumberExponentDigits(start, sign: sign, value: value, expSign: 1.0)
 
-        case Literal.PLUS, Literal.MINUS:
-            return decodeNumberExponentSign(start)
+        case Literal.PLUS:
+            return decodeNumberExponentSign(start, sign: sign, value: value, expSign: 1.0)
+
+        case Literal.MINUS:
+            return decodeNumberExponentSign(start, sign: sign, value: value, expSign: -1.0)
 
         default:
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
     }
 
-    mutating func decodeNumberExponentSign(start: Int) -> Result {
+    mutating func decodeNumberExponentSign(start: Int, sign: Double, value: Double, expSign: Double) -> Result {
         if ++loc >= input.count {
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
@@ -581,16 +591,18 @@ private struct Parser {
         ,    Literal.seven
         ,    Literal.eight
         ,    Literal.nine:
-            return decodeNumberExponentDigits(start)
+            return decodeNumberExponentDigits(start, sign: sign, value: value, expSign: expSign)
 
         default:
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
     }
 
-    mutating func decodeNumberExponentDigits(start: Int) -> Result {
-        while ++loc < input.count {
-            switch input[loc] {
+    mutating func decodeNumberExponentDigits(start: Int, sign: Double, value: Double, expSign: Double) -> Result {
+        var exponent: Double = 0
+        while loc < input.count {
+            let c = input[loc]
+            switch c {
             case Literal.zero
             ,    Literal.one
             ,    Literal.two
@@ -601,30 +613,13 @@ private struct Parser {
             ,    Literal.seven
             ,    Literal.eight
             ,    Literal.nine:
-                // stay in same state
-                break
+                exponent = exponent * 10 + Double(c - Literal.zero)
+                ++loc
 
             default:
-                return convertNumberFromPosition(start)
+                return .Ok(.Number(sign * value * pow(10, expSign * exponent)))
             }
         }
-        return convertNumberFromPosition(start)
-    }
-    
-    var convertNumberBuffer = [UInt8]()
-    mutating func convertNumberFromPosition(start: Int) -> Result {
-        convertNumberBuffer.removeAll(keepCapacity: true)
-        for i in start ..< loc {
-            convertNumberBuffer.append(input[i])
-        }
-        convertNumberBuffer.append(0)
-        return convertNumberBuffer.withUnsafeBufferPointer { buffer -> Result in
-            let value = strtod(UnsafePointer<CChar>(buffer.baseAddress), nil)
-            if value.isFinite {
-                return .Ok(.Number(value))
-            } else {
-                return makeParseError("invalid number at position \(start)")
-            }
-        }
+        return .Ok(.Number(sign * value * pow(10, expSign * exponent)))
     }
 }
