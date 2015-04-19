@@ -101,13 +101,6 @@ private struct Parser {
         self.input = input
     }
 
-    func head() -> UInt8? {
-        if loc < input.count {
-            return input[loc]
-        }
-        return nil
-    }
-
     mutating func parse() -> Result {
         switch parseValue() {
         case let .Ok(value):
@@ -125,8 +118,8 @@ private struct Parser {
     }
 
     mutating func parseValue() -> Result {
-        while let c = head() {
-            switch c {
+        while loc < input.count {
+            switch input[loc] {
             case Literal.SPACE, Literal.TAB, Literal.RETURN, Literal.NEWLINE:
                 ++loc
 
@@ -173,8 +166,8 @@ private struct Parser {
     }
 
     mutating func skipWhitespace() {
-        while let c = head() {
-            switch c {
+        while loc < input.count {
+            switch input[loc] {
             case Literal.SPACE, Literal.TAB, Literal.RETURN, Literal.NEWLINE:
                 ++loc
 
@@ -342,13 +335,13 @@ private struct Parser {
         while loc < input.count {
             skipWhitespace()
 
-            if head() == Literal.RIGHT_BRACKET {
+            if loc < input.count && input[loc] == Literal.RIGHT_BRACKET {
                 ++loc
                 return .Ok(.Array(items))
             }
 
             if !items.isEmpty {
-                if head() == Literal.COMMA {
+                if loc < input.count && input[loc] == Literal.COMMA {
                     ++loc
                 } else {
                     return makeParseError("invalid array at position \(start) - missing `,` between elements")
@@ -375,7 +368,7 @@ private struct Parser {
         while loc < input.count {
             skipWhitespace()
 
-            if head() == Literal.RIGHT_BRACE {
+            if loc < input.count && input[loc] == Literal.RIGHT_BRACE {
                 ++loc
                 var obj = [String:JSON](minimumCapacity: pairs.count)
                 for (k, v) in pairs {
@@ -385,7 +378,7 @@ private struct Parser {
             }
 
             if !pairs.isEmpty {
-                if head() == Literal.COMMA {
+                if loc < input.count && input[loc] == Literal.COMMA {
                     ++loc
                     skipWhitespace()
                 } else {
@@ -394,7 +387,7 @@ private struct Parser {
             }
 
             let key: String
-            if head() == Literal.DOUBLE_QUOTE {
+            if loc < input.count && input[loc] == Literal.DOUBLE_QUOTE {
                 switch decodeString() {
                 case .Ok(let json):
                     key = json.string!
@@ -406,7 +399,7 @@ private struct Parser {
             }
 
             skipWhitespace()
-            if head() == Literal.COLON {
+            if loc < input.count && input[loc] == Literal.COLON {
                 ++loc
             } else {
                 return makeParseError("invalid object at position \(start) - missing `:` between key and value")
