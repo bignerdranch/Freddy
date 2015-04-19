@@ -360,10 +360,36 @@ private struct Parser {
         return makeParseError("unexpected end of data while parsing array at position \(start)")
     }
 
+    // Decoding objects can be recursive, so we have to keep more than one
+    // buffer around for building up key/value pairs (to reduce allocations
+    // when parsing large JSON documents).
+    //
+    // Rough estimate of the difference between this and using a fresh
+    // [(String,JSON)] for the `pairs` variable in decodeObject() below is
+    // about 12% on an iPhone 5.
+    struct DecodeObjectBuffers {
+        var buffers = [[(String,JSON)]]()
+
+        mutating func getBuffer() -> [(String,JSON)] {
+            if !buffers.isEmpty {
+                var buffer = buffers.removeLast()
+                buffer.removeAll(keepCapacity: true)
+                return buffer
+            }
+            return [(String,JSON)]()
+        }
+
+        mutating func putBuffer(buffer: [(String,JSON)]) {
+            buffers.append(buffer)
+        }
+    }
+
+    var decodeObjectBuffers = DecodeObjectBuffers()
+
     mutating func decodeObject() -> Result {
         let start = loc
         ++loc
-        var pairs = [(String,JSON)]()
+        var pairs = decodeObjectBuffers.getBuffer()
 
         while loc < input.count {
             skipWhitespace()
@@ -374,6 +400,7 @@ private struct Parser {
                 for (k, v) in pairs {
                     obj[k] = v
                 }
+                decodeObjectBuffers.putBuffer(pairs)
                 return .Ok(.Dictionary(obj))
             }
 
@@ -407,7 +434,8 @@ private struct Parser {
 
             switch parseValue() {
             case .Ok(let json):
-                pairs.append((key, json))
+                let tuple = (key, json)
+                pairs.append(tuple)
             case let error:
                 return error
             }
