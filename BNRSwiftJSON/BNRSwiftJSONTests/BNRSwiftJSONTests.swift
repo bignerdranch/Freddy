@@ -106,8 +106,8 @@ class BNRSwiftJSONTests: XCTestCase {
         }
     }
     
-    func testThatCollectResultsCanCreateArrayOfPeople() {
-        let peopleArray = json["people"].array.bind { collectResults(map($0, Person.createWithJSON)) }
+    func testThatCollectAllSuccessesCanCreateArrayOfPeople() {
+        let peopleArray = json["people"].array.bind { collectAllSuccesses(map($0, Person.createWithJSON)) }
         switch peopleArray {
         case .Success(let box):
             for person in box.value {
@@ -132,14 +132,31 @@ class BNRSwiftJSONTests: XCTestCase {
     
     func testSplitResultCanGatherPeopleInSuccesses() {
         let people = splitResult(json["people"].array, Person.createWithJSON)
-        XCTAssertGreaterThan(people.successes.count, 0, "There should be people in `successes`.")
-        XCTAssertEqual(people.failures.count, 0, "There should be no errors in `failures`.")
+        switch people {
+        case .Success(let result):
+            XCTAssertGreaterThan(result.value.successes.count, 0, "There should be people in `successes`.")
+            XCTAssertEqual(result.value.failures.count, 0, "There should be no errors in `failures`.")
+        case .Failure(let error):
+            XCTFail("There should be no error.")
+        }
     }
     
     func testSplitResultCanGatherErrorsInFailures() {
-        let peopl = splitResult(json["peopl"].array, Person.createWithJSON)
-        XCTAssertEqual(peopl.successes.count, 0, "There should be no people in `successes`.")
-        XCTAssertGreaterThan(peopl.failures.count, 0, "There should be errors in `failures`.")
+        let json = JSON.Array([
+                JSON.Dictionary(["name": JSON.String("Matt Mathias"), "age": JSON.Number(32), "spouse": JSON.Bool(true)]),
+                JSON.Dictionary(["name": JSON.String("Drew Mathias"), "age": JSON.Number(33), "spouse": JSON.Bool(true)]),
+                JSON.Dictionary(["name": JSON.String("Sargeant Pepper"), "age": JSON.Number(25)])
+            ])
+        let data = json.serialize().successValue!
+        let deserializedResult = JSON.createJSONFrom(data).array
+        let people = splitResult(deserializedResult, Person.createWithJSON)
+        switch people {
+        case .Success(let result):
+            XCTAssertEqual(result.value.successes.count, 2, "There should be two people in `successes`.")
+            XCTAssertEqual(result.value.failures.count, 1, "There should be one error in `failures`.")
+        case .Failure(let errorType):
+            XCTFail("The result should `succeed` with errors in tuple, and not fail with an `NSError` in `.Failure`.")
+        }
     }
     
     func testThatSubscriptingJSONWorksForTopLevelObject() {
