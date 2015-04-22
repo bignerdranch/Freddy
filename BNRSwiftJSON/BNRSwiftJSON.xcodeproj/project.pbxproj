@@ -16,6 +16,8 @@
 		1CD8E2B51AC37D110035F303 /* JSONDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD8E2B11AC37D110035F303 /* JSONDecodable.swift */; };
 		1CD8E2B71AC37D4D0035F303 /* sample.JSON in Resources */ = {isa = PBXBuildFile; fileRef = 1CD8E2B61AC37D4D0035F303 /* sample.JSON */; };
 		1CD8E2B91AC37D550035F303 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD8E2B81AC37D550035F303 /* Person.swift */; };
+		522975AA1AE2EB1E0037260D /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522975A91AE2EB1E0037260D /* JSONParser.swift */; };
+		522975AF1AE2EED30037260D /* JSONParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522975AE1AE2EED30037260D /* JSONParserTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +78,8 @@
 		1CD8E2B11AC37D110035F303 /* JSONDecodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONDecodable.swift; sourceTree = "<group>"; };
 		1CD8E2B61AC37D4D0035F303 /* sample.JSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample.JSON; sourceTree = "<group>"; };
 		1CD8E2B81AC37D550035F303 /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
+		522975A91AE2EB1E0037260D /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
+		522975AE1AE2EED30037260D /* JSONParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParserTests.swift; sourceTree = "<group>"; };
 		52D461BA1AD6287000614571 /* Result.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Result.xcodeproj; path = ../Carthage/Checkouts/Result/Result.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -123,6 +127,7 @@
 				1CD8E2971AC37CF70035F303 /* BNRSwiftJSON.h */,
 				1CD8E2AE1AC37D110035F303 /* JSON.swift */,
 				1CD8E2AF1AC37D110035F303 /* JSONResult.swift */,
+				522975A91AE2EB1E0037260D /* JSONParser.swift */,
 				1CD8E2B11AC37D110035F303 /* JSONDecodable.swift */,
 				1CD8E2951AC37CF70035F303 /* Supporting Files */,
 			);
@@ -141,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				1CD8E2A41AC37CF70035F303 /* BNRSwiftJSONTests.swift */,
+				522975AE1AE2EED30037260D /* JSONParserTests.swift */,
 				1CD8E2A21AC37CF70035F303 /* Supporting Files */,
 			);
 			path = BNRSwiftJSONTests;
@@ -317,6 +323,7 @@
 			files = (
 				1CD8E2B51AC37D110035F303 /* JSONDecodable.swift in Sources */,
 				1CD8E2B31AC37D110035F303 /* JSONResult.swift in Sources */,
+				522975AA1AE2EB1E0037260D /* JSONParser.swift in Sources */,
 				1CD8E2B21AC37D110035F303 /* JSON.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -325,6 +332,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				522975AF1AE2EED30037260D /* JSONParserTests.swift in Sources */,
 				1CD8E2B91AC37D550035F303 /* Person.swift in Sources */,
 				1CD8E2A51AC37CF70035F303 /* BNRSwiftJSONTests.swift in Sources */,
 			);

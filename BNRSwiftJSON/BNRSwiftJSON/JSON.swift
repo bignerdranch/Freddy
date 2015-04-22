@@ -19,7 +19,20 @@ public enum JSON: Equatable {
     case String(Swift.String)
     case Bool(Swift.Bool)
     case Null
-    
+
+    /// Enum describing the available backend parsers that can produce `JSONResult`s from `NSData`.
+    public enum Parser {
+        /// A pure Swift JSON parser. This parser is much faster than the NSJSONSerialization-based
+        /// parser (due to the overhead of having to dynamically cast the Objective-C objects to
+        /// determine their type); however, it is much newer and has restrictions that the
+        /// NSJSONSerialization parser does not. Two restrictions in particular are that it requires
+        /// UTF8 data as input and it does not allow trailing commas in arrays or dictionaries.
+        case PureSwift
+
+        /// Use the built-in, Objective-C based JSON parser.
+        case NSJSONSerialization
+    }
+
     // MARK: Decode NSData
     /**
         Creates an optional instance of `JSON` from `NSData`.
@@ -28,14 +41,25 @@ public enum JSON: Equatable {
     
         :returns: An optional instance of `JSON`.
     */
-    public static func createJSONFrom(data: NSData) -> JSONResult {
-        let jsonObject: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
-        
-        if let obj: AnyObject = jsonObject {
-            return JSONResult(success: makeJSON(obj))
-        } else {
-            let error = NSError(domain: "com.bignerdranch.BNRSwiftJSON", code: JSON.ErrorCode.CouldNotParseJSON.rawValue, userInfo: [NSLocalizedFailureReasonErrorKey: "Could not parse `NSData`."])
-            return JSONResult(failure: error)
+    public static func createJSONFrom(data: NSData, usingParser parser: Parser = .PureSwift) -> JSONResult {
+        switch parser {
+        case .PureSwift:
+            switch JSONFromUTF8Data(data) {
+            case .Success(let boxed):
+                return JSONResult(success: boxed.value)
+            case .Failure(let error):
+                return JSONResult(failure: error)
+            }
+
+        case .NSJSONSerialization:
+            var error: NSError?
+            let jsonObject: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &error)
+            
+            if let obj: AnyObject = jsonObject {
+                return JSONResult(success: makeJSON(obj))
+            } else {
+                return JSONResult(failure: error!)
+            }
         }
     }
     
@@ -302,7 +326,7 @@ extension JSON {
             let errorDict = [NSLocalizedFailureReasonErrorKey: "Unexpected type. `\(self)` is not convertible to `\(problem)`."]
             return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
         case .CouldNotParseJSON:
-            let errorDict = [NSLocalizedFailureReasonErrorKey: "Could not parse `JSON`. Check the `NSData` instance."]
+            let errorDict = [NSLocalizedFailureReasonErrorKey: "Could not parse `JSON`: \(problem)"]
             return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
         }
     }

@@ -5,17 +5,17 @@
 		{
 			"name": "Matt Mathias",
             "age": 32,
-            "spouse": true,
+            "spouse": true
 		},
 		{
 			"name": "Drew Mathias",
 			"age": 33,
-            "spouse": true,
+            "spouse": true
 		},
         {
             "name": "Sargeant Pepper",
             "age": 25,
-            "spouse": false,
+            "spouse": false
         }
 	],
 	"jobs": [
