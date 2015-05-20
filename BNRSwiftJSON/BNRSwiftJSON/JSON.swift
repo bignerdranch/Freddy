@@ -346,3 +346,22 @@ public func ==(lhs: JSON, rhs: JSON) -> Bool {
 }
 
 extension JSON: Equatable {}
+
+// MARK: - Printing
+
+extension JSON: Printable {
+
+    public var description: Swift.String {
+        switch self {
+        case .String(let str): return str
+        case .Number(let double): return toString(double)
+        case .Bool(let bool): return toString(bool)
+        case .Null: return "null"
+        default:
+            return serialize().map {
+                NSString(data: $0, encoding: NSUTF8StringEncoding) as! Swift.String
+            }.successValue ?? "unknown"
+        }
+    }
+
+}
