@@ -290,14 +290,6 @@ public extension JSON {
     }
 }
 
-// MARK: - NilLiteralConvertible
-
-extension JSON: NilLiteralConvertible {
-    public init(nilLiteral: ()) {
-        self.init(nilLiteral: ())
-    }
-}
-
 // MARK: - Errors
 
 public extension JSON {
