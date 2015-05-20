@@ -143,15 +143,7 @@ private struct Parser {
             case Literal.zero:
                 return decodeNumberLeadingZero(loc, sign: .Positive)
 
-            case Literal.one
-            ,    Literal.two
-            ,    Literal.three
-            ,    Literal.four
-            ,    Literal.five
-            ,    Literal.six
-            ,    Literal.seven
-            ,    Literal.eight
-            ,    Literal.nine:
+            case Literal.one...Literal.nine:
                 return decodeNumberPreDecimalDigits(loc, sign: .Positive)
 
             case Literal.n:
@@ -286,32 +278,13 @@ private struct Parser {
         for i in from ..< from + 4 {
             let nibble: UInt16
             switch input[i] {
-            case Literal.zero
-            ,    Literal.one
-            ,    Literal.two
-            ,    Literal.three
-            ,    Literal.four
-            ,    Literal.five
-            ,    Literal.six
-            ,    Literal.seven
-            ,    Literal.eight
-            ,    Literal.nine:
+            case Literal.zero...Literal.nine:
                 nibble = UInt16(input[i] - Literal.zero)
 
-            case Literal.a
-            ,    Literal.b
-            ,    Literal.c
-            ,    Literal.d
-            ,    Literal.e
-            ,    Literal.f:
+            case Literal.a...Literal.f:
                 nibble = 10 + UInt16(input[i] - Literal.a)
 
-            case Literal.A
-            ,    Literal.B
-            ,    Literal.C
-            ,    Literal.D
-            ,    Literal.E
-            ,    Literal.F:
+            case Literal.A...Literal.F:
                 nibble = 10 + UInt16(input[i] - Literal.A)
 
             default:
@@ -458,15 +431,7 @@ private struct Parser {
         case Literal.zero:
             return decodeNumberLeadingZero(start, sign: .Negative)
 
-        case Literal.one
-        ,    Literal.two
-        ,    Literal.three
-        ,    Literal.four
-        ,    Literal.five
-        ,    Literal.six
-        ,    Literal.seven
-        ,    Literal.eight
-        ,    Literal.nine:
+        case Literal.one...Literal.nine:
             return decodeNumberPreDecimalDigits(start, sign: .Negative)
 
         default:
@@ -494,16 +459,7 @@ private struct Parser {
         while loc < input.count {
             let c = input[loc]
             switch c {
-            case Literal.zero
-            ,    Literal.one
-            ,    Literal.two
-            ,    Literal.three
-            ,    Literal.four
-            ,    Literal.five
-            ,    Literal.six
-            ,    Literal.seven
-            ,    Literal.eight
-            ,    Literal.nine:
+            case Literal.zero...Literal.nine:
                 value = 10 * value + Double(c - Literal.zero)
                 ++loc
 
@@ -526,16 +482,7 @@ private struct Parser {
         }
 
         switch input[loc] {
-        case Literal.zero
-        ,    Literal.one
-        ,    Literal.two
-        ,    Literal.three
-        ,    Literal.four
-        ,    Literal.five
-        ,    Literal.six
-        ,    Literal.seven
-        ,    Literal.eight
-        ,    Literal.nine:
+        case Literal.zero...Literal.nine:
             return decodeNumberPostDecimalDigits(start, sign: sign, value: value)
 
         default:
@@ -549,16 +496,7 @@ private struct Parser {
         while loc < input.count {
             let c = input[loc]
             switch c {
-            case Literal.zero
-            ,    Literal.one
-            ,    Literal.two
-            ,    Literal.three
-            ,    Literal.four
-            ,    Literal.five
-            ,    Literal.six
-            ,    Literal.seven
-            ,    Literal.eight
-            ,    Literal.nine:
+            case Literal.zero...Literal.nine:
                 value += position * Double(c - Literal.zero)
                 position /= 10
                 ++loc
@@ -579,16 +517,7 @@ private struct Parser {
         }
 
         switch input[loc] {
-        case Literal.zero
-        ,    Literal.one
-        ,    Literal.two
-        ,    Literal.three
-        ,    Literal.four
-        ,    Literal.five
-        ,    Literal.six
-        ,    Literal.seven
-        ,    Literal.eight
-        ,    Literal.nine:
+        case Literal.zero...Literal.nine:
             return decodeNumberExponentDigits(start, sign: sign, value: value, expSign: .Positive)
 
         case Literal.PLUS:
@@ -607,16 +536,7 @@ private struct Parser {
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
         switch input[loc] {
-        case Literal.zero
-        ,    Literal.one
-        ,    Literal.two
-        ,    Literal.three
-        ,    Literal.four
-        ,    Literal.five
-        ,    Literal.six
-        ,    Literal.seven
-        ,    Literal.eight
-        ,    Literal.nine:
+        case Literal.zero...Literal.nine:
             return decodeNumberExponentDigits(start, sign: sign, value: value, expSign: expSign)
 
         default:
@@ -629,16 +549,7 @@ private struct Parser {
         while loc < input.count {
             let c = input[loc]
             switch c {
-            case Literal.zero
-            ,    Literal.one
-            ,    Literal.two
-            ,    Literal.three
-            ,    Literal.four
-            ,    Literal.five
-            ,    Literal.six
-            ,    Literal.seven
-            ,    Literal.eight
-            ,    Literal.nine:
+            case Literal.zero...Literal.nine:
                 exponent = exponent * 10 + Double(c - Literal.zero)
                 ++loc
 
