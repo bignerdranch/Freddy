@@ -344,3 +344,5 @@ public func ==(lhs: JSON, rhs: JSON) -> Bool {
         return false
     }
 }
+
+extension JSON: Equatable {}
