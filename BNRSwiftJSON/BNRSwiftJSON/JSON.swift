@@ -15,7 +15,7 @@ import Result
 public enum JSON: Equatable {
     case Array([JSON])
     case Dictionary([Swift.String: JSON])
-    case Number(Double)
+    case Double(Swift.Double)
     case Int(Swift.Int)
     case String(Swift.String)
     case Bool(Swift.Bool)
@@ -81,7 +81,7 @@ public enum JSON: Equatable {
             case _ where CFNumberIsFloatType(n) == 0:
                 return .Int(n.integerValue)
             default:
-                return .Number(n.doubleValue)
+                return .Double(n.doubleValue)
             }
         case let arr as [AnyObject]:
             return makeJSONArray(arr)
@@ -156,7 +156,7 @@ public enum JSON: Equatable {
             return dict
         case .String(let str):
             return str
-        case .Number(let num):
+        case .Double(let num):
             return num
         case .Int(let int):
             return int
@@ -211,12 +211,12 @@ public extension JSON {
     /**
         Retrieves a `Double` from the `JSON`.  If the target value's type inside of the `JSON` instance does not match `Double`, this property returns `nil`.
     */
-    var number: Swift.Double? {
+    var double: Swift.Double? {
         switch self {
-        case .Number(let dbl):
+        case .Double(let dbl):
             return dbl
         case .Int(let int):
-            return Double(int)
+            return Swift.Double(int)
         case .Bool(let bool):
             return bool ? 1 : 0
         default:
@@ -229,7 +229,7 @@ public extension JSON {
     */
     var int: Swift.Int? {
         switch self {
-        case .Number(let dbl):
+        case .Double(let dbl):
             return Swift.Int(dbl)
         case .Int(let int):
             return int
@@ -343,13 +343,13 @@ public func ==(lhs: JSON, rhs: JSON) -> Bool {
         return dictL == dictR
     case (.String(let strL), .String(let strR)):
         return strL == strR
-    case (.Number(let dubL), .Number(let dubR)):
+    case (.Double(let dubL), .Double(let dubR)):
         return dubL == dubR
-    case (.Number(let dubL), .Int(let intR)):
+    case (.Double(let dubL), .Int(let intR)):
         return dubL == Double(intR)
     case (.Int(let intL), .Int(let intR)):
         return intL == intR
-    case (.Int(let intL), .Number(let dubR)):
+    case (.Int(let intL), .Double(let dubR)):
         return Double(intL) == dubR
     case (.Bool(let bL), .Bool(let bR)):
         return bL == bR
@@ -369,7 +369,7 @@ extension JSON: Printable {
     public var description: Swift.String {
         switch self {
         case .String(let str): return str
-        case .Number(let double): return toString(double)
+        case .Double(let double): return toString(double)
         case .Int(let int): return toString(int)
         case .Bool(let bool): return toString(bool)
         case .Null: return "null"

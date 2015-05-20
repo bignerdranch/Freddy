@@ -97,7 +97,7 @@ public extension JSONResult {
         Retrieves a `Double` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `Double`, this property returns `.Failure` with an appropriate `error`.
     */
     var number: Result<Double> {
-        return convertType("Double", { $0.number })
+        return convertType("Double", { $0.double })
     }
 
     /**

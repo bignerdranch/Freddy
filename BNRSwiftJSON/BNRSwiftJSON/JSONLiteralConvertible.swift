@@ -35,7 +35,7 @@ extension JSON: DictionaryLiteralConvertible {
 extension JSON: FloatLiteralConvertible {
     
     public init(floatLiteral value: FloatLiteralType) {
-        self = .Number(value)
+        self = .Double(value)
     }
     
 }

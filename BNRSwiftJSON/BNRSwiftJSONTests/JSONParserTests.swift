@@ -142,7 +142,7 @@ class JSONParserTests: XCTestCase {
         ] {
             switch JSONFromString(s) {
             case .Success(let boxed):
-                XCTAssertEqualWithAccuracy(boxed.value.number!, shouldBeDouble, DBL_EPSILON)
+                XCTAssertEqualWithAccuracy(boxed.value.double!, shouldBeDouble, DBL_EPSILON)
             case .Failure(let error):
                 XCTFail("Unexpected error \(error)")
             default:

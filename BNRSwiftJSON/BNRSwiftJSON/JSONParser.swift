@@ -524,10 +524,10 @@ private struct Parser {
                 return decodeNumberExponent(start, sign: sign, value: value)
 
             default:
-                return .Ok(.Number(Double(sign.rawValue) * value))
+                return .Ok(.Double(Double(sign.rawValue) * value))
             }
         }
-        return .Ok(.Number(Double(sign.rawValue) * value))
+        return .Ok(.Double(Double(sign.rawValue) * value))
     }
 
     mutating func decodeNumberExponent(start: Int, sign: Sign, value: Double) -> Result {
@@ -573,9 +573,9 @@ private struct Parser {
                 ++loc
 
             default:
-                return .Ok(.Number(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent)))
+                return .Ok(.Double(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent)))
             }
         }
-        return .Ok(.Number(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent)))
+        return .Ok(.Double(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent)))
     }
 }
