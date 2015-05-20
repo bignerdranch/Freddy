@@ -18,6 +18,7 @@
 		1CD8E2B91AC37D550035F303 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD8E2B81AC37D550035F303 /* Person.swift */; };
 		522975AA1AE2EB1E0037260D /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522975A91AE2EB1E0037260D /* JSONParser.swift */; };
 		522975AF1AE2EED30037260D /* JSONParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522975AE1AE2EED30037260D /* JSONParserTests.swift */; };
+		DB2688C31B0CCFCA00435BEE /* JSONTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2688C21B0CCFCA00435BEE /* JSONTypeTests.swift */; };
 		DB529D2A1B0C05CC00DD74D7 /* JSONLiteralConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB529D291B0C05CC00DD74D7 /* JSONLiteralConvertible.swift */; };
 		DB529D2F1B0C05FD00DD74D7 /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB529D2E1B0C05FD00DD74D7 /* Dictionary.swift */; };
 /* End PBXBuildFile section */
@@ -83,6 +84,7 @@
 		522975A91AE2EB1E0037260D /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
 		522975AE1AE2EED30037260D /* JSONParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParserTests.swift; sourceTree = "<group>"; };
 		52D461BA1AD6287000614571 /* Result.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Result.xcodeproj; path = ../Carthage/Checkouts/Result/Result.xcodeproj; sourceTree = "<group>"; };
+		DB2688C21B0CCFCA00435BEE /* JSONTypeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONTypeTests.swift; sourceTree = "<group>"; };
 		DB529D291B0C05CC00DD74D7 /* JSONLiteralConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONLiteralConvertible.swift; sourceTree = "<group>"; };
 		DB529D2E1B0C05FD00DD74D7 /* Dictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dictionary.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -153,6 +155,7 @@
 			children = (
 				1CD8E2A41AC37CF70035F303 /* BNRSwiftJSONTests.swift */,
 				522975AE1AE2EED30037260D /* JSONParserTests.swift */,
+				DB2688C21B0CCFCA00435BEE /* JSONTypeTests.swift */,
 				1CD8E2A21AC37CF70035F303 /* Supporting Files */,
 			);
 			path = BNRSwiftJSONTests;
@@ -341,6 +344,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				522975AF1AE2EED30037260D /* JSONParserTests.swift in Sources */,
+				DB2688C31B0CCFCA00435BEE /* JSONTypeTests.swift in Sources */,
 				1CD8E2B91AC37D550035F303 /* Person.swift in Sources */,
 				1CD8E2A51AC37CF70035F303 /* BNRSwiftJSONTests.swift in Sources */,
 			);
