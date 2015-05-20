@@ -138,7 +138,7 @@ private struct Parser {
             return makeParseError("Exceeded nesting limit around position character \(loc)")
         }
 
-        while loc < input.count {
+        advancing: while loc < input.count {
             switch input[loc] {
             case Literal.LEFT_BRACKET:
                 return increaseDepth(decodeArray)
@@ -171,7 +171,7 @@ private struct Parser {
                 ++loc
 
             default:
-                return makeParseError("did not find start of valid JSON data")
+                break advancing
             }
         }
         
@@ -475,7 +475,7 @@ private struct Parser {
     mutating func decodeNumberPreDecimalDigits(start: Int, sign: Sign = .Positive) -> Result {
         var value = 0
 
-        while loc < input.count {
+        advancing: while loc < input.count {
             let c = input[loc]
             switch c {
             case Literal.zero...Literal.nine:
@@ -489,9 +489,10 @@ private struct Parser {
                 return decodeNumberExponent(start, sign: sign, value: Double(value))
 
             default:
-                return .Ok(.Int(sign.rawValue * value))
+                break advancing
             }
         }
+
         return .Ok(.Int(sign.rawValue * value))
     }
 
@@ -512,7 +513,7 @@ private struct Parser {
     mutating func decodeNumberPostDecimalDigits(start: Int, sign: Sign, var value: Double) -> Result {
         var position = 0.1
 
-        while loc < input.count {
+        advancing: while loc < input.count {
             let c = input[loc]
             switch c {
             case Literal.zero...Literal.nine:
@@ -524,9 +525,10 @@ private struct Parser {
                 return decodeNumberExponent(start, sign: sign, value: value)
 
             default:
-                return .Ok(.Double(Double(sign.rawValue) * value))
+                break advancing
             }
         }
+
         return .Ok(.Double(Double(sign.rawValue) * value))
     }
 
@@ -565,7 +567,8 @@ private struct Parser {
 
     mutating func decodeNumberExponentDigits(start: Int, sign: Sign, value: Double, expSign: Sign) -> Result {
         var exponent: Double = 0
-        while loc < input.count {
+
+        advancing: while loc < input.count {
             let c = input[loc]
             switch c {
             case Literal.zero...Literal.nine:
@@ -573,9 +576,10 @@ private struct Parser {
                 ++loc
 
             default:
-                return .Ok(.Double(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent)))
+                break advancing
             }
         }
+
         return .Ok(.Double(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent)))
     }
 }
