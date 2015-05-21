@@ -150,11 +150,11 @@ public extension JSONResult {
 /**
     A function to collect `Result` instances into an array of `T` in the `.Success` case.
 
-    :param: results An array of `Result<T>`: `[Result<T>]`.
+    :param: results Any sequence of `Result<T>`: `[Result<T>]`.
 
     :returns: A `Result<[T]>` such that all successes are collected within an array of the `.Success` case.
 */
-public func collectAllSuccesses<T>(results: [Result<T>]) -> Result<[T]> {
+public func collectAllSuccesses<T, Seq: SequenceType where Seq.Generator.Element == Result<T>>(results: Seq) -> Result<[T]> {
     var successes = [T]()
     for result in results {
         switch result {
