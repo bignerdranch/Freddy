@@ -88,6 +88,8 @@ private struct Literal {
     static let nine  = UInt8(ascii: "9")
 }
 
+let ParserMaximumDepth = 512
+
 private struct Parser {
     enum Result {
         case Ok(JSON)
@@ -101,6 +103,8 @@ private struct Parser {
 
     let input: UnsafeBufferPointer<UInt8>
     var loc = 0
+
+    var depth = 0
 
     init(input: UnsafeBufferPointer<UInt8>) {
         self.input = input
@@ -122,14 +126,25 @@ private struct Parser {
         }
     }
 
+    mutating func increaseDepth<R>(@noescape fn: () -> R) -> R {
+        ++depth
+        let ret = fn()
+        --depth
+        return ret
+    }
+
     mutating func parseValue() -> Result {
+        if depth > ParserMaximumDepth {
+            return makeParseError("Exceeded nesting limit around position character \(loc)")
+        }
+
         while loc < input.count {
             switch input[loc] {
             case Literal.LEFT_BRACKET:
-                return decodeArray()
+                return increaseDepth(decodeArray)
 
             case Literal.LEFT_BRACE:
-                return decodeObject()
+                return increaseDepth(decodeObject)
 
             case Literal.DOUBLE_QUOTE:
                 return decodeString()
