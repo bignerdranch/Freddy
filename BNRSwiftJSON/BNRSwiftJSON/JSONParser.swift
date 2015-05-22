@@ -125,17 +125,23 @@ private struct Parser {
     mutating func parseValue() -> Result {
         while loc < input.count {
             switch input[loc] {
-            case Literal.SPACE, Literal.TAB, Literal.RETURN, Literal.NEWLINE:
-                ++loc
+            case Literal.LEFT_BRACKET:
+                return decodeArray()
 
             case Literal.LEFT_BRACE:
                 return decodeObject()
 
-            case Literal.LEFT_BRACKET:
-                return decodeArray()
-
             case Literal.DOUBLE_QUOTE:
                 return decodeString()
+
+            case Literal.f:
+                return decodeFalse()
+
+            case Literal.n:
+                return decodeNull()
+
+            case Literal.t:
+                return decodeTrue()
 
             case Literal.MINUS:
                 return decodeNumberNegative(loc)
@@ -146,20 +152,15 @@ private struct Parser {
             case Literal.one...Literal.nine:
                 return decodeNumberPreDecimalDigits(loc, sign: .Positive)
 
-            case Literal.n:
-                return decodeNull()
-
-            case Literal.t:
-                return decodeTrue()
-
-            case Literal.f:
-                return decodeFalse()
+            case Literal.SPACE, Literal.TAB, Literal.RETURN, Literal.NEWLINE:
+                ++loc
 
             default:
                 return makeParseError("did not find start of valid JSON data")
             }
         }
-        return makeParseError("did not find start of valid JSON data")
+        
+        return makeParseError("Invalid value around character \(loc)")
     }
 
     mutating func skipWhitespace() {
