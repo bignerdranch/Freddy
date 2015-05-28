@@ -17,7 +17,7 @@ extension NSError: ErrorType {}
 public struct JSONResult: Equatable {
     private let r: Result<JSON>
 
-    internal init(success: JSON) {
+    public init(success: JSON) {
         r = Result(success: success)
     }
 
@@ -33,7 +33,7 @@ public struct JSONResult: Equatable {
         return JSONResult(r: r.bind { value in f(value).r })
     }
 
-    private func bind<T>(f: JSON -> Result<T>) -> Result<T> {
+    public func bind<T>(f: JSON -> Result<T>) -> Result<T> {
         return r.bind(f)
     }
 
