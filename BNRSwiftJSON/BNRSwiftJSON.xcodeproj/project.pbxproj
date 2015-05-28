@@ -18,6 +18,7 @@
 		1CD8E2B91AC37D550035F303 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD8E2B81AC37D550035F303 /* Person.swift */; };
 		522975AA1AE2EB1E0037260D /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522975A91AE2EB1E0037260D /* JSONParser.swift */; };
 		522975AF1AE2EED30037260D /* JSONParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522975AE1AE2EED30037260D /* JSONParserTests.swift */; };
+		DB529D2F1B0C05FD00DD74D7 /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB529D2E1B0C05FD00DD74D7 /* Dictionary.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,7 @@
 		522975A91AE2EB1E0037260D /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
 		522975AE1AE2EED30037260D /* JSONParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParserTests.swift; sourceTree = "<group>"; };
 		52D461BA1AD6287000614571 /* Result.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Result.xcodeproj; path = ../Carthage/Checkouts/Result/Result.xcodeproj; sourceTree = "<group>"; };
+		DB529D2E1B0C05FD00DD74D7 /* Dictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dictionary.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				1CD8E2971AC37CF70035F303 /* BNRSwiftJSON.h */,
+				DB529D2E1B0C05FD00DD74D7 /* Dictionary.swift */,
 				1CD8E2AE1AC37D110035F303 /* JSON.swift */,
 				1CD8E2AF1AC37D110035F303 /* JSONResult.swift */,
 				522975A91AE2EB1E0037260D /* JSONParser.swift */,
@@ -325,6 +328,7 @@
 				1CD8E2B31AC37D110035F303 /* JSONResult.swift in Sources */,
 				522975AA1AE2EB1E0037260D /* JSONParser.swift in Sources */,
 				1CD8E2B21AC37D110035F303 /* JSON.swift in Sources */,
+				DB529D2F1B0C05FD00DD74D7 /* Dictionary.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
