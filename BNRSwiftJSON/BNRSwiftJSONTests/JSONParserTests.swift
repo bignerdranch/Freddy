@@ -7,6 +7,13 @@
 //
 
 import XCTest
+
+#if os(OSX)
+import Cocoa
+#elseif os(iOS)
+import UIKit
+#endif
+
 import BNRSwiftJSON
 
 // In at least one unit test file, Swift 1.2 requires importing the respective

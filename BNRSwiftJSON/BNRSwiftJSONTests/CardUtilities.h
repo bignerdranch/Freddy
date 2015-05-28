@@ -1,0 +1,26 @@
+//
+//  CardUtilities.h
+//  BNRSwiftJSON
+//
+//  Created by Zachary Waldowski on 5/20/15.
+//  Copyright (c) 2015 Big Nerd Ranch Inc. All rights reserved.
+//
+
+@import Foundation;
+
+NS_ASSUME_NONNULL_BEGIN
+
+typedef NS_ENUM(NSInteger, ReleaseDateKind) {
+    ReleaseDateKindNone,
+    ReleaseDateKindFull,
+    ReleaseDateKindMonth,
+    ReleaseDateKindYear
+};
+
+extern NSDateFormatter *ReleaseDateFullFormatter(void);
+extern NSDateFormatter *ReleaseDateMonthFormatter(void);
+extern NSDateFormatter *ReleaseDateYearFormatter(void);
+extern NSDateComponents *__nullable ReleaseDateFromString(NSString *__nullable string, ReleaseDateKind *outKind);
+extern NSString *__nullable ReleaseDateToString(NSDateComponents *__nullable components, ReleaseDateKind kind);
+
+NS_ASSUME_NONNULL_END
