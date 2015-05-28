@@ -6,9 +6,17 @@
 //  Copyright (c) 2015 Big Nerd Ranch Inc. Licensed under MIT.
 //
 
-import UIKit
 import XCTest
 import BNRSwiftJSON
+
+// In at least one unit test file, Swift 1.2 requires importing the respective
+// platform UI toolkit in order to copy all the overlay libraries into the
+// test target.
+#if os(OSX)
+import Cocoa
+#elseif os(iOS)
+import UIKit
+#endif
 
 class JSONParserTests: XCTestCase {
 

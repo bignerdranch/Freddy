@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Big Nerd Ranch Inc. Licensed under MIT.
 //
 
-import Foundation
 import XCTest
 import BNRSwiftJSON
+import Foundation
 
 class JSONTypeTests: XCTestCase {
     

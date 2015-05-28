@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Big Nerd Ranch Inc. Licensed under MIT.
 //
 
-import UIKit
 import XCTest
 import BNRSwiftJSON
 import Result
