@@ -29,8 +29,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1CD8E29C1AC37CF70035F303"
-               BuildableName = "BNRSwiftJSONTests-iOS.xctest"
-               BlueprintName = "BNRSwiftJSONTests-iOS"
+               BuildableName = "BNRSwiftJSON-iOSTests.xctest"
+               BlueprintName = "BNRSwiftJSON-iOSTests"
                ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,8 +47,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1CD8E29C1AC37CF70035F303"
-               BuildableName = "BNRSwiftJSONTests-iOS.xctest"
-               BlueprintName = "BNRSwiftJSONTests-iOS"
+               BuildableName = "BNRSwiftJSON-iOSTests.xctest"
+               BlueprintName = "BNRSwiftJSON-iOSTests"
                ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
             </BuildableReference>
          </TestableReference>

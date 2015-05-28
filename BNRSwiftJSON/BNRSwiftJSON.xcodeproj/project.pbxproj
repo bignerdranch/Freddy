@@ -95,7 +95,7 @@
 		1CD8E2921AC37CF70035F303 /* BNRSwiftJSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BNRSwiftJSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CD8E2961AC37CF70035F303 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CD8E2971AC37CF70035F303 /* BNRSwiftJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BNRSwiftJSON.h; sourceTree = "<group>"; };
-		1CD8E29D1AC37CF70035F303 /* BNRSwiftJSONTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = BNRSwiftJSONTests.xctest; path = "BNRSwiftJSONTests-iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CD8E29D1AC37CF70035F303 /* BNRSwiftJSONTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = BNRSwiftJSONTests.xctest; path = "BNRSwiftJSON-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CD8E2A31AC37CF70035F303 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CD8E2A41AC37CF70035F303 /* BNRSwiftJSONTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BNRSwiftJSONTests.swift; sourceTree = "<group>"; };
 		1CD8E2AE1AC37D110035F303 /* JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
@@ -275,9 +275,9 @@
 			productReference = 1CD8E2921AC37CF70035F303 /* BNRSwiftJSON.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		1CD8E29C1AC37CF70035F303 /* BNRSwiftJSONTests-iOS */ = {
+		1CD8E29C1AC37CF70035F303 /* BNRSwiftJSON-iOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1CD8E2AB1AC37CF70035F303 /* Build configuration list for PBXNativeTarget "BNRSwiftJSONTests-iOS" */;
+			buildConfigurationList = 1CD8E2AB1AC37CF70035F303 /* Build configuration list for PBXNativeTarget "BNRSwiftJSON-iOSTests" */;
 			buildPhases = (
 				1CD8E2991AC37CF70035F303 /* Sources */,
 				1CD8E29A1AC37CF70035F303 /* Frameworks */,
@@ -288,7 +288,7 @@
 			dependencies = (
 				1CD8E2A01AC37CF70035F303 /* PBXTargetDependency */,
 			);
-			name = "BNRSwiftJSONTests-iOS";
+			name = "BNRSwiftJSON-iOSTests";
 			productName = BNRSwiftJSONTests;
 			productReference = 1CD8E29D1AC37CF70035F303 /* BNRSwiftJSONTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -371,7 +371,7 @@
 			projectRoot = "";
 			targets = (
 				1CD8E2911AC37CF70035F303 /* BNRSwiftJSON-iOS */,
-				1CD8E29C1AC37CF70035F303 /* BNRSwiftJSONTests-iOS */,
+				1CD8E29C1AC37CF70035F303 /* BNRSwiftJSON-iOSTests */,
 				DBE2CD401B176CF6007E1499 /* BNRSwiftJSON-Mac */,
 				DBE2CD4A1B176CF6007E1499 /* BNRSwiftJSON-MacTests */,
 			);
@@ -770,7 +770,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1CD8E2AB1AC37CF70035F303 /* Build configuration list for PBXNativeTarget "BNRSwiftJSONTests-iOS" */ = {
+		1CD8E2AB1AC37CF70035F303 /* Build configuration list for PBXNativeTarget "BNRSwiftJSON-iOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1CD8E2AC1AC37CF70035F303 /* Debug */,
