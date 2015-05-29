@@ -117,11 +117,7 @@ public enum JSON: Equatable {
         :returns: An instance of `JSON` matching the dictionary.
     */
     private static func makeJSONDictionary(jsonDict: [Swift.String: AnyObject]) -> JSON {
-        var dict: [Swift.String: JSON] = [:]
-        for (key, value) in jsonDict {
-            dict[key as Swift.String] = makeJSON(value)
-        }
-        return .Dictionary(dict)
+        return .Dictionary(jsonDict.map { makeJSON($1) })
     }
     
     // MARK: - Serialize JSON
