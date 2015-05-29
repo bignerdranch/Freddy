@@ -154,7 +154,7 @@ public extension JSONResult {
 
     :returns: A `Result<[T]>` such that all successes are collected within an array of the `.Success` case.
 */
-public func collectAllSuccesses<T, Seq: SequenceType where Seq.Generator.Element == Result<T>>(results: Seq) -> Result<[T]> {
+public func collectAllSuccesses<T, S: SequenceType where S.Generator.Element == Result<T>>(results: S) -> Result<[T]> {
     var successes = [T]()
     for result in results {
         switch result {
