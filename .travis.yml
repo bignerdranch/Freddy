@@ -1,6 +1,5 @@
 language: objective-c # lies
 osx_image: beta-xcode6.3
-before_install: brew upgrade xctool
 xcode_project: BNRSwiftJSON/BNRSwiftJSON.xcodeproj
 matrix:
   include:
