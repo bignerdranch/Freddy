@@ -1,0 +1,6 @@
+language: objective-c # lies
+osx_image: beta-xcode6.3
+xcode_project: BNRSwiftJSON/BNRSwiftJSON.xcodeproj
+xcode_scheme:
+  - BNRSwiftJSON iOS
+  - BNRSwiftJSON Mac
