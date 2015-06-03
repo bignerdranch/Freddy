@@ -9,7 +9,7 @@
 import Foundation
 import Result
 
-public func JSONFromString(s: String) -> Result<JSON> {
+public func JSONFromString(s: String) -> Result<JSON, NSError> {
     return s.nulTerminatedUTF8.withUnsafeBufferPointer { nulTerminatedBuffer in
         // don't want to include the nul termination in the buffer - trim it off
         let buffer = UnsafeBufferPointer(start: nulTerminatedBuffer.baseAddress, count: nulTerminatedBuffer.count - 1)
@@ -17,18 +17,18 @@ public func JSONFromString(s: String) -> Result<JSON> {
     }
 }
 
-public func JSONFromUTF8Data(data: NSData) -> Result<JSON> {
+public func JSONFromUTF8Data(data: NSData) -> Result<JSON, NSError> {
     let buffer = UnsafeBufferPointer(start: UnsafePointer<UInt8>(data.bytes), count: data.length)
     return JSONFromUnsafeBufferPointer(buffer)
 }
 
-public func JSONFromUnsafeBufferPointer(buffer: UnsafeBufferPointer<UInt8>) -> Result<JSON> {
+public func JSONFromUnsafeBufferPointer(buffer: UnsafeBufferPointer<UInt8>) -> Result<JSON, NSError> {
     var parser = Parser(input: buffer)
     switch parser.parse() {
     case .Ok(let json):
-        return Result(success: json)
+        return Result(value: json)
     case .Err(let error):
-        return Result(failure: error)
+        return Result(error: error)
     }
 }
 

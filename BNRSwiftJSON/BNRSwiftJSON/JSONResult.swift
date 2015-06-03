@@ -9,46 +9,44 @@
 import Foundation
 import Result
 
-extension NSError: ErrorType {}
-
 /**
     A newtype for Result<JSON> that provides additional properties for extracting typed JSON data.
 */
 public struct JSONResult: Equatable {
-    private let r: Result<JSON>
+    private let r: Result<JSON, NSError>
 
-    internal init(success: JSON) {
-        r = Result(success: success)
+    internal init(value: JSON) {
+        r = Result(value: value)
     }
 
-    internal init(failure: ErrorType) {
-        r = Result(failure: failure)
+    internal init(error: NSError) {
+        r = Result(error: error)
     }
 
-    private init(r: Result<JSON>) {
-        self.r = r
+    internal init(result: Result<JSON, NSError>) {
+        self.r = result
     }
 
-    private func bind(f: JSON -> JSONResult) -> JSONResult {
-        return JSONResult(r: r.bind { value in f(value).r })
+    private func flatMap(f: JSON -> JSONResult) -> JSONResult {
+        return JSONResult(result: r.flatMap { value in f(value).r })
     }
 
-    private func bind<T>(f: JSON -> Result<T>) -> Result<T> {
-        return r.bind(f)
+    private func flatMap<T>(f: JSON -> Result<T, NSError>) -> Result<T, NSError> {
+        return r.flatMap(f)
     }
 
     /**
         Returns `true` if the target's underlying `Result` is in the `.Success` case.
     */
     public var isSuccess: Bool {
-        return r.isSuccess
+        return r.value != nil
     }
 
     /**
         Returns `true` if the target's underlying `Result` is in the `.Failure` case.
     */
     public var isFailure: Bool {
-        return r.isFailure
+        return r.error != nil
     }
 }
 
@@ -60,71 +58,70 @@ public extension JSONResult {
     
         :returns: A `Result` with `NSData` in the `.Success` case, `.Failure` with an `NSError` otherwise.
     */
-    public func serialize() -> Result<NSData> {
-        return bind { $0.serialize() }
+    public func serialize() -> Result<NSData, NSError> {
+        return flatMap { $0.serialize() }
     }
 }
 
 // MARK: - JSONResult Computed Properties
 
 public extension JSONResult {
-    private func convertType<T>(problem: String, _ f: (JSON) -> T?) -> Result<T> {
-        return bind { json in
+    private func convertType<T>(problem: String, _ f: (JSON) -> T?) -> Result<T, NSError> {
+        return flatMap { json in
             if let converted = f(json) {
-                return Result(success: converted)
+                return Result(value: converted)
             } else {
-                return Result(failure: JSON.makeError(JSON.ErrorCode.TypeNotConvertible, problem: problem))
+                return Result(error: JSON.makeError(JSON.ErrorCode.TypeNotConvertible, problem: problem))
             }
         }
     }
 
-
     /**
         Retrieves an `Array` of `JSON`s from the given `Result`.  If the target value's type inside of the `JSON` instance does not match `Array`, this property returns `.Failure` with an appropriate `error`.
     */
-    var array: Result<[JSON]> {
+    var array: Result<[JSON], NSError> {
         return convertType("Array", { $0.array })
     }
     
     /**
         Retrieves a `Dictionary` `JSON`s from the given `Result`.  If the target value's type inside of the `JSON` instance does not match `Dictionary`, this property returns `.Failure` with an appropriate `error`.
     */
-    var dictionary: Result<[String: JSON]> {
+    var dictionary: Result<[String: JSON], NSError> {
         return convertType("Dictionary", { $0.dictionary })
     }
     
     /**
         Retrieves a `Double` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `Double`, this property returns `.Failure` with an appropriate `error`.
     */
-    var number: Result<Double> {
+    var number: Result<Double, NSError> {
         return convertType("Double", { $0.number })
     }
 
     /**
         Retrieves a `String` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `String`, this property returns `.Failure` with an appropriate `error`.
     */
-    var string: Result<String> {
+    var string: Result<String, NSError> {
         return convertType("String", { $0.string })
     }
     
     /**
         Retrieves a `Bool` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `Bool`, this property returns `.Failure` with an appropriate `error`.
     */
-    var bool: Result<Bool> {
+    var bool: Result<Bool, NSError> {
         return convertType("Bool", { $0.bool })
     }
     
     /**
         Retrieves an `Int` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `Int`, this property returns `.Failure` with an appropriate `error`.
     */
-    var int: Result<Int> {
+    var int: Result<Int, NSError> {
         return convertType("Int", { $0.int })
     }
 
     /**
         Retrieves `Null` from the `Result`. If the target value's type inside of the `JSON` instance does not match `Null`, this property returns `.Failure` with an appropriate `error`.
     */
-    var null: Result<()> {
+    var null: Result<(), NSError> {
         return convertType("Null", { $0.isNull ? () : nil })
     }
 }
@@ -133,75 +130,20 @@ public extension JSONResult {
 
 public extension JSONResult {
     subscript(key: String) -> JSONResult {
-        return bind { JSON in
+        return flatMap { JSON in
             return JSON[key]
         }
     }
     
     subscript(index: Int) -> JSONResult {
-        return bind { JSON in
+        return flatMap { JSON in
             return JSON[index]
         }
-    }
-}
-
-// MARK: - Additional Result functions
-
-/**
-    A function to collect `Result` instances into an array of `T` in the `.Success` case.
-
-    :param: results Any sequence of `Result<T>`: `[Result<T>]`.
-
-    :returns: A `Result<[T]>` such that all successes are collected within an array of the `.Success` case.
-*/
-public func collectAllSuccesses<T, S: SequenceType where S.Generator.Element == Result<T>>(results: S) -> Result<[T]> {
-    var successes = [T]()
-    for result in results {
-        switch result {
-        case .Success(let res):
-            successes.append(res.value)
-        case .Failure(let error):
-            return Result(failure: error)
-        }
-    }
-    return Result(success: successes)
-}
-
-/**
-    A function to break a `Result` with an array of type `[U]` into a tuple of `successes` and `failures`.
-
-    :param: result The `Result<[U]>`.
-    :param: f The function to be used to create the array given to the `successes` member of the tuple.
-
-    :returns: A tuple of `successes` and `failures`.
-*/
-public func splitResult<U, T>(result: Result<[U]>, f: U -> Result<T>) -> Result<(successes: [T], failures: [ErrorType])> {
-    var successes = [T]()
-    var failures = [ErrorType]()
-    return result.bind { results in
-        for result in results {
-            switch f(result) {
-            case .Success(let r):
-                successes.append(r.value)
-            case .Failure(let error):
-                failures.append(error)
-            }
-        }
-        return Result(success:(successes, failures))
     }
 }
 
 // MARK: - Test Equality
 
 public func ==(lhs: JSONResult, rhs: JSONResult) -> Bool {
-    switch (lhs.r, rhs.r) {
-    case (.Failure(let error), _):
-        return false
-    case (_, .Failure(let error)):
-        return false
-    case (.Success(let lhsValue), .Success(let rhsValue)):
-        return lhsValue.value == rhsValue.value
-    default:
-        return false
-    }
+    return lhs.r == rhs.r
 }

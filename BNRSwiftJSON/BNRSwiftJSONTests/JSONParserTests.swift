@@ -8,6 +8,7 @@
 
 import XCTest
 import BNRSwiftJSON
+import Box
 
 // In at least one unit test file, Swift 1.2 requires importing the respective
 // platform UI toolkit in order to copy all the overlay libraries into the
@@ -55,9 +56,8 @@ class JSONParserTests: XCTestCase {
         switch result {
         case .Success(let boxed):
             XCTFail("Unexpected success")
-        case .Failure(let errorType):
-            let error = errorType as! NSError
-            XCTAssertEqual(error.code, JSON.ErrorCode.CouldNotParseJSON.rawValue)
+        case .Failure(let error):
+            XCTAssertEqual(error.value.code, JSON.ErrorCode.CouldNotParseJSON.rawValue)
         }
     }
 
@@ -153,9 +153,8 @@ class JSONParserTests: XCTestCase {
             switch JSONFromString(s) {
             case .Success(let boxed):
                 XCTFail("Unexpected success for \"\(s)\"")
-            case .Failure(let errorType):
-                let error = errorType as! NSError
-                XCTAssertEqual(error.code, JSON.ErrorCode.CouldNotParseJSON.rawValue)
+            case .Failure(let error):
+                XCTAssertEqual(error.value.code, JSON.ErrorCode.CouldNotParseJSON.rawValue)
             }
         }
     }

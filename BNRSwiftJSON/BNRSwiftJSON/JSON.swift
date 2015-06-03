@@ -44,25 +44,14 @@ public enum JSON: Equatable {
     public static func createJSONFrom(data: NSData, usingParser parser: Parser = .PureSwift) -> JSONResult {
         switch parser {
         case .PureSwift:
-            switch JSONFromUTF8Data(data) {
-            case .Success(let boxed):
-                return JSONResult(success: boxed.value)
-            case .Failure(let error):
-                return JSONResult(failure: error)
-            }
+            return JSONResult(result: JSONFromUTF8Data(data))
 
         case .NSJSONSerialization:
-            var error: NSError?
-            let jsonObject: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &error)
-            
-            if let obj: AnyObject = jsonObject {
-                return JSONResult(success: makeJSON(obj))
-            } else {
-                return JSONResult(failure: error!)
-            }
+            let jsonObject = try { NSJSONSerialization.JSONObjectWithData(data, options: nil, error: $0) }
+            return JSONResult(result: jsonObject.map { makeJSON($0) })
         }
     }
-    
+
     // MARK: Make JSON
     /**
         Makes a `JSON` object by matching its argument to a case in the `JSON` enum.
@@ -126,14 +115,9 @@ public enum JSON: Equatable {
 
         :returns: A `Result` with `NSData` in the `.Success` case, `.Failure` with an `NSError` otherwise.
     */
-    public func serialize() -> Result<NSData> {
+    public func serialize() -> Result<NSData, NSError> {
         let obj: AnyObject = toNSJSONSerializationObject()
-        var error: NSError?
-        if let data = NSJSONSerialization.dataWithJSONObject(obj, options: nil, error: &error) {
-            return Result(success: data)
-        } else {
-            return Result(failure: error!)
-        }
+        return try { NSJSONSerialization.dataWithJSONObject(obj, options: nil, error: $0) }
     }
 
     /**
@@ -260,12 +244,12 @@ public extension JSON {
             switch self {
             case .Dictionary(let jsonDict):
                 if let obj = jsonDict[key] {
-                    return JSONResult(success: obj)
+                    return JSONResult(value: obj)
                 } else {
-                    return JSONResult(failure: JSON.makeError(ErrorCode.KeyNotFound, problem: key))
+                    return JSONResult(error: JSON.makeError(ErrorCode.KeyNotFound, problem: key))
                 }
             default:
-                return JSONResult(failure: JSON.makeError(ErrorCode.UnexpectedType, problem: key))
+                return JSONResult(error: JSON.makeError(ErrorCode.UnexpectedType, problem: key))
             }
         }
     }
@@ -275,12 +259,12 @@ public extension JSON {
             switch self {
             case .Array(let jsonArray):
                 if index <= jsonArray.count - 1 {
-                    return JSONResult(success: jsonArray[index])
+                    return JSONResult(value: jsonArray[index])
                 } else {
-                    return JSONResult(failure: JSON.makeError(ErrorCode.IndexOutOfBounds, problem: index))
+                    return JSONResult(error: JSON.makeError(ErrorCode.IndexOutOfBounds, problem: index))
                 }
             default:
-                return JSONResult(failure: JSON.makeError(ErrorCode.UnexpectedType, problem: index))
+                return JSONResult(error: JSON.makeError(ErrorCode.UnexpectedType, problem: index))
             }
         }
     }
@@ -356,7 +340,7 @@ extension JSON: Printable {
         default:
             return serialize().map {
                 NSString(data: $0, encoding: NSUTF8StringEncoding) as! Swift.String
-            }.successValue ?? "unknown"
+            } ?? "unknown"
         }
     }
 
