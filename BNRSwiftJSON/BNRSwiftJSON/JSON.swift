@@ -1,9 +1,9 @@
 //
 //  JSON.swift
-//  JSONParser
+//  BNRSwiftJSON
 //
 //  Created by Matthew D. Mathias on 3/17/15.
-//  Copyright (c) 2015 BigNerdRanch. All rights reserved.
+//  Copyright (c) 2015 Big Nerd Ranch Inc. Licensed under MIT.
 //
 
 import Foundation
@@ -117,11 +117,7 @@ public enum JSON: Equatable {
         :returns: An instance of `JSON` matching the dictionary.
     */
     private static func makeJSONDictionary(jsonDict: [Swift.String: AnyObject]) -> JSON {
-        var dict: [Swift.String: JSON] = [:]
-        for (key, value) in jsonDict {
-            dict[key as Swift.String] = makeJSON(value)
-        }
-        return .Dictionary(dict)
+        return .Dictionary(jsonDict.map { makeJSON($1) })
     }
     
     // MARK: - Serialize JSON
@@ -290,14 +286,6 @@ public extension JSON {
     }
 }
 
-// MARK: - NilLiteralConvertible
-
-extension JSON: NilLiteralConvertible {
-    public init(nilLiteral: ()) {
-        self.init(nilLiteral: ())
-    }
-}
-
 // MARK: - Errors
 
 public extension JSON {
@@ -351,4 +339,25 @@ public func ==(lhs: JSON, rhs: JSON) -> Bool {
     default:
         return false
     }
+}
+
+extension JSON: Equatable {}
+
+// MARK: - Printing
+
+extension JSON: Printable {
+
+    public var description: Swift.String {
+        switch self {
+        case .String(let str): return str
+        case .Number(let double): return toString(double)
+        case .Bool(let bool): return toString(bool)
+        case .Null: return "null"
+        default:
+            return serialize().map {
+                NSString(data: $0, encoding: NSUTF8StringEncoding) as! Swift.String
+            }.successValue ?? "unknown"
+        }
+    }
+
 }

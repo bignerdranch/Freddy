@@ -3,7 +3,7 @@
 //  BNRSwiftJSON
 //
 //  Created by John Gallagher on 4/18/15.
-//  Copyright (c) 2015 BigNerdRanch. All rights reserved.
+//  Copyright (c) 2015 Big Nerd Ranch Inc. Licensed under MIT.
 //
 
 import Foundation
@@ -88,6 +88,8 @@ private struct Literal {
     static let nine  = UInt8(ascii: "9")
 }
 
+let ParserMaximumDepth = 512
+
 private struct Parser {
     enum Result {
         case Ok(JSON)
@@ -101,6 +103,8 @@ private struct Parser {
 
     let input: UnsafeBufferPointer<UInt8>
     var loc = 0
+
+    var depth = 0
 
     init(input: UnsafeBufferPointer<UInt8>) {
         self.input = input
@@ -122,37 +126,31 @@ private struct Parser {
         }
     }
 
+    mutating func increaseDepth<R>(@noescape fn: () -> R) -> R {
+        ++depth
+        let ret = fn()
+        --depth
+        return ret
+    }
+
     mutating func parseValue() -> Result {
+        if depth > ParserMaximumDepth {
+            return makeParseError("Exceeded nesting limit around position character \(loc)")
+        }
+
         while loc < input.count {
             switch input[loc] {
-            case Literal.SPACE, Literal.TAB, Literal.RETURN, Literal.NEWLINE:
-                ++loc
+            case Literal.LEFT_BRACKET:
+                return increaseDepth(decodeArray)
 
             case Literal.LEFT_BRACE:
-                return decodeObject()
-
-            case Literal.LEFT_BRACKET:
-                return decodeArray()
+                return increaseDepth(decodeObject)
 
             case Literal.DOUBLE_QUOTE:
                 return decodeString()
 
-            case Literal.MINUS:
-                return decodeNumberNegative(loc)
-
-            case Literal.zero:
-                return decodeNumberLeadingZero(loc, sign: .Positive)
-
-            case Literal.one
-            ,    Literal.two
-            ,    Literal.three
-            ,    Literal.four
-            ,    Literal.five
-            ,    Literal.six
-            ,    Literal.seven
-            ,    Literal.eight
-            ,    Literal.nine:
-                return decodeNumberPreDecimalDigits(loc, sign: .Positive)
+            case Literal.f:
+                return decodeFalse()
 
             case Literal.n:
                 return decodeNull()
@@ -160,14 +158,24 @@ private struct Parser {
             case Literal.t:
                 return decodeTrue()
 
-            case Literal.f:
-                return decodeFalse()
+            case Literal.MINUS:
+                return decodeNumberNegative(loc)
+
+            case Literal.zero:
+                return decodeNumberLeadingZero(loc, sign: .Positive)
+
+            case Literal.one...Literal.nine:
+                return decodeNumberPreDecimalDigits(loc, sign: .Positive)
+
+            case Literal.SPACE, Literal.TAB, Literal.RETURN, Literal.NEWLINE:
+                ++loc
 
             default:
                 return makeParseError("did not find start of valid JSON data")
             }
         }
-        return makeParseError("did not find start of valid JSON data")
+        
+        return makeParseError("Invalid value around character \(loc)")
     }
 
     mutating func skipWhitespace() {
@@ -286,32 +294,13 @@ private struct Parser {
         for i in from ..< from + 4 {
             let nibble: UInt16
             switch input[i] {
-            case Literal.zero
-            ,    Literal.one
-            ,    Literal.two
-            ,    Literal.three
-            ,    Literal.four
-            ,    Literal.five
-            ,    Literal.six
-            ,    Literal.seven
-            ,    Literal.eight
-            ,    Literal.nine:
+            case Literal.zero...Literal.nine:
                 nibble = UInt16(input[i] - Literal.zero)
 
-            case Literal.a
-            ,    Literal.b
-            ,    Literal.c
-            ,    Literal.d
-            ,    Literal.e
-            ,    Literal.f:
+            case Literal.a...Literal.f:
                 nibble = 10 + UInt16(input[i] - Literal.a)
 
-            case Literal.A
-            ,    Literal.B
-            ,    Literal.C
-            ,    Literal.D
-            ,    Literal.E
-            ,    Literal.F:
+            case Literal.A...Literal.F:
                 nibble = 10 + UInt16(input[i] - Literal.A)
 
             default:
@@ -458,15 +447,7 @@ private struct Parser {
         case Literal.zero:
             return decodeNumberLeadingZero(start, sign: .Negative)
 
-        case Literal.one
-        ,    Literal.two
-        ,    Literal.three
-        ,    Literal.four
-        ,    Literal.five
-        ,    Literal.six
-        ,    Literal.seven
-        ,    Literal.eight
-        ,    Literal.nine:
+        case Literal.one...Literal.nine:
             return decodeNumberPreDecimalDigits(start, sign: .Negative)
 
         default:
@@ -494,16 +475,7 @@ private struct Parser {
         while loc < input.count {
             let c = input[loc]
             switch c {
-            case Literal.zero
-            ,    Literal.one
-            ,    Literal.two
-            ,    Literal.three
-            ,    Literal.four
-            ,    Literal.five
-            ,    Literal.six
-            ,    Literal.seven
-            ,    Literal.eight
-            ,    Literal.nine:
+            case Literal.zero...Literal.nine:
                 value = 10 * value + Double(c - Literal.zero)
                 ++loc
 
@@ -526,16 +498,7 @@ private struct Parser {
         }
 
         switch input[loc] {
-        case Literal.zero
-        ,    Literal.one
-        ,    Literal.two
-        ,    Literal.three
-        ,    Literal.four
-        ,    Literal.five
-        ,    Literal.six
-        ,    Literal.seven
-        ,    Literal.eight
-        ,    Literal.nine:
+        case Literal.zero...Literal.nine:
             return decodeNumberPostDecimalDigits(start, sign: sign, value: value)
 
         default:
@@ -549,16 +512,7 @@ private struct Parser {
         while loc < input.count {
             let c = input[loc]
             switch c {
-            case Literal.zero
-            ,    Literal.one
-            ,    Literal.two
-            ,    Literal.three
-            ,    Literal.four
-            ,    Literal.five
-            ,    Literal.six
-            ,    Literal.seven
-            ,    Literal.eight
-            ,    Literal.nine:
+            case Literal.zero...Literal.nine:
                 value += position * Double(c - Literal.zero)
                 position /= 10
                 ++loc
@@ -579,16 +533,7 @@ private struct Parser {
         }
 
         switch input[loc] {
-        case Literal.zero
-        ,    Literal.one
-        ,    Literal.two
-        ,    Literal.three
-        ,    Literal.four
-        ,    Literal.five
-        ,    Literal.six
-        ,    Literal.seven
-        ,    Literal.eight
-        ,    Literal.nine:
+        case Literal.zero...Literal.nine:
             return decodeNumberExponentDigits(start, sign: sign, value: value, expSign: .Positive)
 
         case Literal.PLUS:
@@ -607,16 +552,7 @@ private struct Parser {
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
         switch input[loc] {
-        case Literal.zero
-        ,    Literal.one
-        ,    Literal.two
-        ,    Literal.three
-        ,    Literal.four
-        ,    Literal.five
-        ,    Literal.six
-        ,    Literal.seven
-        ,    Literal.eight
-        ,    Literal.nine:
+        case Literal.zero...Literal.nine:
             return decodeNumberExponentDigits(start, sign: sign, value: value, expSign: expSign)
 
         default:
@@ -629,16 +565,7 @@ private struct Parser {
         while loc < input.count {
             let c = input[loc]
             switch c {
-            case Literal.zero
-            ,    Literal.one
-            ,    Literal.two
-            ,    Literal.three
-            ,    Literal.four
-            ,    Literal.five
-            ,    Literal.six
-            ,    Literal.seven
-            ,    Literal.eight
-            ,    Literal.nine:
+            case Literal.zero...Literal.nine:
                 exponent = exponent * 10 + Double(c - Literal.zero)
                 ++loc
 

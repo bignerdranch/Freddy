@@ -1,9 +1,9 @@
 //
 //  JSONValueDecodable.swift
-//  Test
+//  BNRSwiftJSON
 //
 //  Created by Matthew D. Mathias on 3/24/15.
-//  Copyright (c) 2015 BigNerdRanch. All rights reserved.
+//  Copyright (c) 2015 Big Nerd Ranch Inc. Licensed under MIT.
 //
 
 import Foundation

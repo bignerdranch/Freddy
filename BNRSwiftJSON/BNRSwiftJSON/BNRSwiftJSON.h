@@ -3,10 +3,10 @@
 //  BNRSwiftJSON
 //
 //  Created by Matthew D. Mathias on 3/25/15.
-//  Copyright (c) 2015 BigNerdRanch. All rights reserved.
+//  Copyright (c) 2015 Big Nerd Ranch Inc. Licensed under MIT.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for BNRSwiftJSON.
 FOUNDATION_EXPORT double BNRSwiftJSONVersionNumber;

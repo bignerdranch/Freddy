@@ -1,9 +1,9 @@
 //
 //  JSONResult.swift
-//  Test
+//  BNRSwiftJSON
 //
 //  Created by Matthew D. Mathias on 3/24/15.
-//  Copyright (c) 2015 BigNerdRanch. All rights reserved.
+//  Copyright (c) 2015 Big Nerd Ranch Inc. Licensed under MIT.
 //
 
 import Foundation
@@ -150,11 +150,11 @@ public extension JSONResult {
 /**
     A function to collect `Result` instances into an array of `T` in the `.Success` case.
 
-    :param: results An array of `Result<T>`: `[Result<T>]`.
+    :param: results Any sequence of `Result<T>`: `[Result<T>]`.
 
     :returns: A `Result<[T]>` such that all successes are collected within an array of the `.Success` case.
 */
-public func collectAllSuccesses<T>(results: [Result<T>]) -> Result<[T]> {
+public func collectAllSuccesses<T, S: SequenceType where S.Generator.Element == Result<T>>(results: S) -> Result<[T]> {
     var successes = [T]()
     for result in results {
         switch result {
