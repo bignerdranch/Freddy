@@ -13,6 +13,12 @@ extension Bool: ErrorType {}
 
 class ResultTests: XCTestCase {
 
+    func testThatNSErrorIsAValidErrorType() {
+        let error = NSError(domain: "com.bignerdranch", code: 0, userInfo: nil)
+        let result: Result<Int> = Result(failure: error)
+        XCTAssertEqual(result.failureValue as! NSError, error)
+    }
+
     func testPartitionResults() {
         let results: [Result<Int>] = [
             Result(success: 1),

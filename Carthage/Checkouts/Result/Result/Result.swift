@@ -112,11 +112,7 @@ A function to `map` all of the `Result` values into a single function call.
 :returns: A `Result<U>`.
 */
 public func mapAll<T1,T2,U>(r1: Result<T1>, r2: Result<T2>, f: (T1,T2) -> U) -> Result<U> {
-    return r1.bind { s1 in
-        r2.map { s2 in
-            f(s1, s2)
-        }
-    }
+    return r1.bind { s1 in mapAll(r2) { f(s1, $0) } }
 }
 
 /**
@@ -128,13 +124,7 @@ A function to `map` all of the `Result` values into a single function call.
 :returns: A `Result<U>`.
 */
 public func mapAll<T1,T2,T3,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, f: (T1,T2,T3) -> U) -> Result<U> {
-    return r1.bind { s1 in
-        r2.bind { s2 in
-            r3.map { s3 in
-                f(s1, s2, s3)
-            }
-        }
-    }
+    return r1.bind { s1 in mapAll(r2, r3) { f(s1, $0, $1) } }
 }
 
 /**
@@ -146,15 +136,7 @@ A function to `map` all of the `Result` values into a single function call.
 :returns: A `Result<U>`.
 */
 public func mapAll<T1,T2,T3,T4,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, r4: Result<T4>, f: (T1,T2,T3,T4) -> U) -> Result<U> {
-    return r1.bind { s1 in
-        r2.bind { s2 in
-            r3.bind { s3 in
-                r4.map { s4 in
-                    f(s1, s2, s3, s4)
-                }
-            }
-        }
-    }
+    return r1.bind { s1 in mapAll(r2, r3, r4) { f(s1, $0, $1, $2) } }
 }
 
 /**
@@ -166,17 +148,7 @@ A function to `map` all of the `Result` values into a single function call.
 :returns: A `Result<U>`.
 */
 public func mapAll<T1,T2,T3,T4,T5,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, r4: Result<T4>, r5: Result<T5>, f: (T1,T2,T3,T4,T5) -> U) -> Result<U> {
-    return r1.bind { s1 in
-        r2.bind { s2 in
-            r3.bind { s3 in
-                r4.bind { s4 in
-                    r5.map { s5 in
-                        f(s1, s2, s3, s4, s5)
-                    }
-                }
-            }
-        }
-    }
+    return r1.bind { s1 in mapAll(r2, r3, r4, r5) { f(s1, $0, $1, $2, $3) } }
 }
 
 /**
@@ -188,19 +160,7 @@ A function to `map` all of the `Result` values into a single function call.
 :returns: A `Result<U>`.
 */
 public func mapAll<T1,T2,T3,T4,T5,T6,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, r4: Result<T4>, r5: Result<T5>, r6: Result<T6>, f: (T1,T2,T3,T4,T5,T6) -> U) -> Result<U> {
-    return r1.bind { s1 in
-        r2.bind { s2 in
-            r3.bind { s3 in
-                r4.bind { s4 in
-                    r5.bind { s5 in
-                        r6.map { s6 in
-                            f(s1, s2, s3, s4, s5, s6)
-                        }
-                    }
-                }
-            }
-        }
-    }
+    return r1.bind { s1 in mapAll(r2, r3, r4, r5, r6) { f(s1, $0, $1, $2, $3, $4) } }
 }
 
 /**
@@ -212,21 +172,7 @@ A function to `map` all of the `Result` values into a single function call.
 :returns: A `Result<U>`.
 */
 public func mapAll<T1,T2,T3,T4,T5,T6,T7,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, r4: Result<T4>, r5: Result<T5>, r6: Result<T6>, r7: Result<T7>, f: (T1,T2,T3,T4,T5,T6,T7) -> U) -> Result<U> {
-    return r1.bind { s1 in
-        r2.bind { s2 in
-            r3.bind { s3 in
-                r4.bind { s4 in
-                    r5.bind { s5 in
-                        r6.bind { s6 in
-                            r7.map { s7 in
-                                f(s1, s2, s3, s4, s5, s6, s7)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+    return r1.bind { s1 in mapAll(r2, r3, r4, r5, r6, r7) { f(s1, $0, $1, $2, $3, $4, $5) } }
 }
 
 /**
@@ -238,23 +184,7 @@ A function to `map` all of the `Result` values into a single function call.
 :returns: A `Result<U>`.
 */
 public func mapAll<T1,T2,T3,T4,T5,T6,T7,T8,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, r4: Result<T4>, r5: Result<T5>, r6: Result<T6>, r7: Result<T7>, r8: Result<T8>, f: (T1,T2,T3,T4,T5,T6,T7,T8) -> U) -> Result<U> {
-    return r1.bind { s1 in
-        r2.bind { s2 in
-            r3.bind { s3 in
-                r4.bind { s4 in
-                    r5.bind { s5 in
-                        r6.bind { s6 in
-                            r7.bind { s7 in
-                                r8.map { s8 in
-                                    f(s1, s2, s3, s4, s5, s6, s7, s8)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+    return r1.bind { s1 in mapAll(r2, r3, r4, r5, r6, r7, r8) { f(s1, $0, $1, $2, $3, $4, $5, $6) } }
 }
 
 /**
@@ -280,11 +210,7 @@ A function to `bind` all of the `Result` values into a single function call.
 :returns: A `Result<U>`.
 */
 public func bindAll<T1,T2,U>(r1: Result<T1>, r2: Result<T2>, f: (T1,T2) -> Result<U>) -> Result<U> {
-    return r1.bind { s1 in
-        r2.bind { s2 in
-            f(s1, s2)
-        }
-    }
+    return r1.bind { s1 in bindAll(r2) { f(s1, $0) } }
 }
 
 /**
@@ -296,13 +222,7 @@ A function to `bind` all of the `Result` values into a single function call.
 :returns: A `Result<U>`.
 */
 public func bindAll<T1,T2,T3,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, f: (T1,T2,T3) -> Result<U>) -> Result<U> {
-    return r1.bind { s1 in
-        r2.bind { s2 in
-            r3.bind { s3 in
-                f(s1, s2, s3)
-            }
-        }
-    }
+    return r1.bind { s1 in bindAll(r2, r3) { f(s1, $0, $1) } }
 }
 
 /**
@@ -314,15 +234,7 @@ A function to `bind` all of the `Result` values into a single function call.
 :returns: A `Result<U>`.
 */
 public func bindAll<T1,T2,T3,T4,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, r4: Result<T4>, f: (T1,T2,T3,T4) -> Result<U>) -> Result<U> {
-    return r1.bind { s1 in
-        r2.bind { s2 in
-            r3.bind { s3 in
-                r4.bind { s4 in
-                    f(s1, s2, s3, s4)
-                }
-            }
-        }
-    }
+    return r1.bind { s1 in bindAll(r2, r3, r4) { f(s1, $0, $1, $2) } }
 }
 
 /**
@@ -334,17 +246,7 @@ A function to `bind` all of the `Result` values into a single function call.
 :returns: A `Result<U>`.
 */
 public func bindAll<T1,T2,T3,T4,T5,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, r4: Result<T4>, r5: Result<T5>, f: (T1,T2,T3,T4,T5) -> Result<U>) -> Result<U> {
-    return r1.bind { s1 in
-        r2.bind { s2 in
-            r3.bind { s3 in
-                r4.bind { s4 in
-                    r5.bind { s5 in
-                        f(s1, s2, s3, s4, s5)
-                    }
-                }
-            }
-        }
-    }
+    return r1.bind { s1 in bindAll(r2, r3, r4, r5) { f(s1, $0, $1, $2, $3) } }
 }
 
 /**
@@ -356,19 +258,7 @@ A function to `bind` all of the `Result` values into a single function call.
 :returns: A `Result<U>`.
 */
 public func bindAll<T1,T2,T3,T4,T5,T6,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, r4: Result<T4>, r5: Result<T5>, r6: Result<T6>, f: (T1,T2,T3,T4,T5,T6) -> Result<U>) -> Result<U> {
-    return r1.bind { s1 in
-        r2.bind { s2 in
-            r3.bind { s3 in
-                r4.bind { s4 in
-                    r5.bind { s5 in
-                        r6.bind { s6 in
-                            f(s1, s2, s3, s4, s5, s6)
-                        }
-                    }
-                }
-            }
-        }
-    }
+    return r1.bind { s1 in bindAll(r2, r3, r4, r5, r6) { f(s1, $0, $1, $2, $3, $4) } }
 }
 
 /**
@@ -380,21 +270,7 @@ A function to `bind` all of the `Result` values into a single function call.
 :returns: A `Result<U>`.
 */
 public func bindAll<T1,T2,T3,T4,T5,T6,T7,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, r4: Result<T4>, r5: Result<T5>, r6: Result<T6>, r7: Result<T7>, f: (T1,T2,T3,T4,T5,T6,T7) -> Result<U>) -> Result<U> {
-    return r1.bind { s1 in
-        r2.bind { s2 in
-            r3.bind { s3 in
-                r4.bind { s4 in
-                    r5.bind { s5 in
-                        r6.bind { s6 in
-                            r7.bind { s7 in
-                                f(s1, s2, s3, s4, s5, s6, s7)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+    return r1.bind { s1 in bindAll(r2, r3, r4, r5, r6, r7) { f(s1, $0, $1, $2, $3, $4, $5) } }
 }
 
 /**
@@ -406,21 +282,5 @@ A function to `bind` all of the `Result` values into a single function call.
 :returns: A `Result<U>`.
 */
 public func bindAll<T1,T2,T3,T4,T5,T6,T7,T8,U>(r1: Result<T1>, r2: Result<T2>, r3: Result<T3>, r4: Result<T4>, r5: Result<T5>, r6: Result<T6>, r7: Result<T7>, r8: Result<T8>, f: (T1,T2,T3,T4,T5,T6,T7,T8) -> Result<U>) -> Result<U> {
-    return r1.bind { s1 in
-        r2.bind { s2 in
-            r3.bind { s3 in
-                r4.bind { s4 in
-                    r5.bind { s5 in
-                        r6.bind { s6 in
-                            r7.bind { s7 in
-                                r8.bind { s8 in
-                                    f(s1, s2, s3, s4, s5, s6, s7, s8)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+    return r1.bind { s1 in bindAll(r2, r3, r4, r5, r6, r7, r8) { f(s1, $0, $1, $2, $3, $4, $5, $6) } }
 }

@@ -10,3 +10,6 @@ import Foundation
 
 public protocol ErrorType: Printable {
 }
+
+extension NSError: ErrorType {
+}
