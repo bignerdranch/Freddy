@@ -41,6 +41,6 @@ public func != <B: BoxType where B.Value: Equatable> (lhs: B, rhs: B) -> Bool {
 // MARK: Map
 
 /// Maps the value of a box into a new box.
-public func map<B: BoxType, C: BoxType>(v: B, f: B.Value -> C.Value) -> C {
+public func map<B: BoxType, C: BoxType>(v: B, @noescape f: B.Value -> C.Value) -> C {
 	return C(f(v.value))
 }

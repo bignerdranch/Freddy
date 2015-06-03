@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "52B9AE9A19C35B1D0039E5D7"
+               BlueprintIdentifier = "D454807C1A957361009D7229"
                BuildableName = "Result.framework"
                BlueprintName = "Result-iOS"
                ReferencedContainer = "container:Result.xcodeproj">
@@ -22,13 +22,13 @@
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
-            buildForRunning = "YES"
+            buildForRunning = "NO"
             buildForProfiling = "NO"
             buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
+            buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5216BFDD1AD5FFA900789F1B"
+               BlueprintIdentifier = "D45480861A957362009D7229"
                BuildableName = "Result-iOSTests.xctest"
                BlueprintName = "Result-iOSTests"
                ReferencedContainer = "container:Result.xcodeproj">
@@ -46,7 +46,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5216BFDD1AD5FFA900789F1B"
+               BlueprintIdentifier = "D45480861A957362009D7229"
                BuildableName = "Result-iOSTests.xctest"
                BlueprintName = "Result-iOSTests"
                ReferencedContainer = "container:Result.xcodeproj">
@@ -56,7 +56,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "52B9AE9A19C35B1D0039E5D7"
+            BlueprintIdentifier = "D454807C1A957361009D7229"
             BuildableName = "Result.framework"
             BlueprintName = "Result-iOS"
             ReferencedContainer = "container:Result.xcodeproj">
@@ -75,7 +75,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "52B9AE9A19C35B1D0039E5D7"
+            BlueprintIdentifier = "D454807C1A957361009D7229"
             BuildableName = "Result.framework"
             BlueprintName = "Result-iOS"
             ReferencedContainer = "container:Result.xcodeproj">
@@ -93,7 +93,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "52B9AE9A19C35B1D0039E5D7"
+            BlueprintIdentifier = "D454807C1A957361009D7229"
             BuildableName = "Result.framework"
             BlueprintName = "Result-iOS"
             ReferencedContainer = "container:Result.xcodeproj">
