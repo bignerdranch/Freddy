@@ -45,7 +45,7 @@ extension JSON: FloatLiteralConvertible {
 extension JSON: IntegerLiteralConvertible {
     
     public init(integerLiteral value: IntegerLiteralType) {
-        self = .Number(Double(value))
+        self = .Int(value)
     }
     
 }

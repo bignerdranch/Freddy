@@ -96,9 +96,9 @@ private struct Parser {
         case Err(NSError)
     }
 
-    enum Sign: Double {
-        case Positive = 1.0
-        case Negative = -1.0
+    enum Sign: Int {
+        case Positive = 1
+        case Negative = -1
     }
 
     let input: UnsafeBufferPointer<UInt8>
@@ -455,41 +455,44 @@ private struct Parser {
         }
     }
 
-    mutating func decodeNumberLeadingZero(start: Int, sign: Sign) -> Result {
+    mutating func decodeNumberLeadingZero(start: Int, sign: Sign = .Positive) -> Result {
         if ++loc >= input.count {
-            return .Ok(.Number(0))
+            return .Ok(0)
         }
 
-        switch input[loc] {
-        case Literal.PERIOD:
+        switch (input[loc], sign) {
+        case (Literal.PERIOD, _):
             return decodeNumberDecimal(start, sign: sign, value: 0)
 
+        case (_, .Negative):
+            return .Ok(-0.0)
+
         default:
-            return .Ok(.Number(0))
+            return .Ok(0)
         }
     }
 
-    mutating func decodeNumberPreDecimalDigits(start: Int, sign: Sign) -> Result {
-        var value: Double = 0
+    mutating func decodeNumberPreDecimalDigits(start: Int, sign: Sign = .Positive) -> Result {
+        var value = 0
 
         while loc < input.count {
             let c = input[loc]
             switch c {
             case Literal.zero...Literal.nine:
-                value = 10 * value + Double(c - Literal.zero)
+                value = 10 * value + Int(c - Literal.zero)
                 ++loc
 
             case Literal.PERIOD:
-                return decodeNumberDecimal(start, sign: sign, value: value)
+                return decodeNumberDecimal(start, sign: sign, value: Double(value))
 
             case Literal.e, Literal.E:
-                return decodeNumberExponent(start, sign: sign, value: value)
+                return decodeNumberExponent(start, sign: sign, value: Double(value))
 
             default:
-                return .Ok(.Number(sign.rawValue * value))
+                return .Ok(.Int(sign.rawValue * value))
             }
         }
-        return .Ok(.Number(sign.rawValue * value))
+        return .Ok(.Int(sign.rawValue * value))
     }
 
     mutating func decodeNumberDecimal(start: Int, sign: Sign, value: Double) -> Result {
@@ -521,10 +524,10 @@ private struct Parser {
                 return decodeNumberExponent(start, sign: sign, value: value)
 
             default:
-                return .Ok(.Number(sign.rawValue * value))
+                return .Ok(.Number(Double(sign.rawValue) * value))
             }
         }
-        return .Ok(.Number(sign.rawValue * value))
+        return .Ok(.Number(Double(sign.rawValue) * value))
     }
 
     mutating func decodeNumberExponent(start: Int, sign: Sign, value: Double) -> Result {
@@ -570,9 +573,9 @@ private struct Parser {
                 ++loc
 
             default:
-                return .Ok(.Number(sign.rawValue * value * pow(10, expSign.rawValue * exponent)))
+                return .Ok(.Number(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent)))
             }
         }
-        return .Ok(.Number(sign.rawValue * value * pow(10, expSign.rawValue * exponent)))
+        return .Ok(.Number(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent)))
     }
 }

@@ -101,6 +101,13 @@ public extension JSONResult {
     }
 
     /**
+        Retrieves an `Int` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `Int`, this property returns `.Failure` with an appropriate `error`.
+    */
+    var int: Result<Int> {
+        return convertType("Int", { $0.int })
+    }
+
+    /**
         Retrieves a `String` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `String`, this property returns `.Failure` with an appropriate `error`.
     */
     var string: Result<String> {
@@ -112,13 +119,6 @@ public extension JSONResult {
     */
     var bool: Result<Bool> {
         return convertType("Bool", { $0.bool })
-    }
-    
-    /**
-        Retrieves an `Int` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `Int`, this property returns `.Failure` with an appropriate `error`.
-    */
-    var int: Result<Int> {
-        return convertType("Int", { $0.int })
     }
 
     /**

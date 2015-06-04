@@ -16,6 +16,7 @@ public enum JSON: Equatable {
     case Array([JSON])
     case Dictionary([Swift.String: JSON])
     case Number(Double)
+    case Int(Swift.Int)
     case String(Swift.String)
     case Bool(Swift.Bool)
     case Null
@@ -77,6 +78,8 @@ public enum JSON: Equatable {
             switch n {
             case _ where CFNumberGetType(n) == .CharType || CFGetTypeID(n) == CFBooleanGetTypeID():
                 return .Bool(n.boolValue)
+            case _ where CFNumberIsFloatType(n) == 0:
+                return .Int(n.integerValue)
             default:
                 return .Number(n.doubleValue)
             }
@@ -155,6 +158,8 @@ public enum JSON: Equatable {
             return str
         case .Number(let num):
             return num
+        case .Int(let int):
+            return int
         case .Bool(let b):
             return b
         case .Null:
@@ -206,10 +211,14 @@ public extension JSON {
     /**
         Retrieves a `Double` from the `JSON`.  If the target value's type inside of the `JSON` instance does not match `Double`, this property returns `nil`.
     */
-    var number: Double? {
+    var number: Swift.Double? {
         switch self {
-        case .Number(let dub):
-            return Double(dub)
+        case .Number(let dbl):
+            return dbl
+        case .Int(let int):
+            return Double(int)
+        case .Bool(let bool):
+            return bool ? 1 : 0
         default:
             return nil
         }
@@ -218,10 +227,14 @@ public extension JSON {
     /**
         Retrieves an `Int` from the `JSON`.  If the target value's type inside of the `JSON` instance does not match `Int`, this property returns `nil`.
     */
-    var int: Int? {
+    var int: Swift.Int? {
         switch self {
-        case .Number(let num):
-            return Int(num)
+        case .Number(let dbl):
+            return Swift.Int(dbl)
+        case .Int(let int):
+            return int
+        case .Bool(let bool):
+            return bool ? 1 : 0
         default:
             return nil
         }
@@ -270,7 +283,7 @@ public extension JSON {
         }
     }
     
-    subscript(index: Int) -> JSONResult {
+    subscript(index: Swift.Int) -> JSONResult {
         get {
             switch self {
             case .Array(let jsonArray):
@@ -291,7 +304,7 @@ public extension JSON {
 public extension JSON {
     static let errorDomain = "com.bignerdranch.BNRSwiftJSON"
     
-    enum ErrorCode: Int {
+    enum ErrorCode: Swift.Int {
         case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible, CouldNotParseJSON
     }
 }
@@ -330,8 +343,14 @@ public func ==(lhs: JSON, rhs: JSON) -> Bool {
         return dictL == dictR
     case (.String(let strL), .String(let strR)):
         return strL == strR
-    case (.Number(let numL), .Number(let numR)):
-        return numL == numR
+    case (.Number(let dubL), .Number(let dubR)):
+        return dubL == dubR
+    case (.Number(let dubL), .Int(let intR)):
+        return dubL == Double(intR)
+    case (.Int(let intL), .Int(let intR)):
+        return intL == intR
+    case (.Int(let intL), .Number(let dubR)):
+        return Double(intL) == dubR
     case (.Bool(let bL), .Bool(let bR)):
         return bL == bR
     case (.Null, .Null):
@@ -351,6 +370,7 @@ extension JSON: Printable {
         switch self {
         case .String(let str): return str
         case .Number(let double): return toString(double)
+        case .Int(let int): return toString(int)
         case .Bool(let bool): return toString(bool)
         case .Null: return "null"
         default:
