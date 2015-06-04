@@ -1,0 +1,26 @@
+{
+  "numerics": {
+    "int": 5,
+    "int64": 9007199254740992,
+    "double": 3.4,
+    "float": 1.1,
+    "int_opt": 4
+  },
+  "bool": false,
+  "string_array": [
+    "hello",
+    "world"
+  ],
+  "string_array_opt": null,
+  "embedded": {
+    "string_array": [
+      "hello",
+      "world"
+    ],
+    "string_array_opt": []
+  },
+  "user_opt": {
+    "id": 6,
+    "name": "Cooler User"
+  }
+}

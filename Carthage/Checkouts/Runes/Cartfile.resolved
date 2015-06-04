@@ -1,0 +1,4 @@
+github "jeffh/Fox" "889c5171957b72df3c3ae01ba7ef4e57b8cd92ae"
+github "Quick/Nimble" "v0.4.1"
+github "Quick/Quick" "v0.3.0"
+github "thoughtbot/NimbleFox" "v1.0.0"
