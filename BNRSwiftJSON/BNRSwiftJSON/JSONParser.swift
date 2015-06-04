@@ -26,9 +26,9 @@ public func JSONFromUnsafeBufferPointer(buffer: UnsafeBufferPointer<UInt8>) -> R
     var parser = Parser(input: buffer)
     switch parser.parse() {
     case .Ok(let json):
-        return Result(value: json)
+        return Result.success(json)
     case .Err(let error):
-        return Result(error: error)
+        return Result.failure(error)
     }
 }
 

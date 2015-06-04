@@ -15,20 +15,20 @@ import Result
 public struct JSONResult: Equatable {
     private let r: Result<JSON, NSError>
 
-    internal init(value: JSON) {
-        r = Result(value: value)
+    internal static func success(success: JSON) -> JSONResult {
+        return JSONResult(Result.success(success))
     }
 
-    internal init(error: NSError) {
-        r = Result(error: error)
+    internal static func failure(error: NSError) -> JSONResult {
+        return JSONResult(Result.failure(error))
     }
 
-    internal init(result: Result<JSON, NSError>) {
+    internal init(_ result: Result<JSON, NSError>) {
         self.r = result
     }
 
     private func flatMap(f: JSON -> JSONResult) -> JSONResult {
-        return JSONResult(result: r.flatMap { value in f(value).r })
+        return JSONResult(r.flatMap { value in f(value).r })
     }
 
     private func flatMap<T>(f: JSON -> Result<T, NSError>) -> Result<T, NSError> {
@@ -69,9 +69,9 @@ public extension JSONResult {
     private func convertType<T>(problem: String, _ f: (JSON) -> T?) -> Result<T, NSError> {
         return flatMap { json in
             if let converted = f(json) {
-                return Result(value: converted)
+                return Result.success(converted)
             } else {
-                return Result(error: JSON.makeError(JSON.ErrorCode.TypeNotConvertible, problem: problem))
+                return Result.failure(JSON.makeError(JSON.ErrorCode.TypeNotConvertible, problem: problem))
             }
         }
     }

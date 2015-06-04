@@ -23,10 +23,10 @@ public func collectAllSuccesses<T, Error, S: SequenceType where S.Generator.Elem
         case .Success(let res):
             successes.append(res.value)
         case .Failure(let error):
-            return Result(error: error.value)
+            return Result.failure(error.value)
         }
     }
-    return Result(value: successes)
+    return Result.success(successes)
 }
 
 /**
