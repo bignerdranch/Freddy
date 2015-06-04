@@ -457,7 +457,7 @@ private struct Parser {
 
     mutating func decodeNumberLeadingZero(start: Int, sign: Sign = .Positive) -> Result {
         if ++loc >= input.count {
-            return .Ok(0)
+            return .Ok(.Int(0))
         }
 
         switch (input[loc], sign) {
@@ -465,10 +465,10 @@ private struct Parser {
             return decodeNumberDecimal(start, sign: sign, value: 0)
 
         case (_, .Negative):
-            return .Ok(-0.0)
+            return .Ok(.Double(-0.0))
 
         default:
-            return .Ok(0)
+            return .Ok(.Int(0))
         }
     }
 
