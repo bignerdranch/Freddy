@@ -9,7 +9,7 @@
 import Foundation
 import Result
 
-public func JSONFromString(s: String) -> Result<JSON, NSError> {
+public func JSONFromString(s: String) -> Result<JSON, JSON.Error> {
     return s.nulTerminatedUTF8.withUnsafeBufferPointer { nulTerminatedBuffer in
         // don't want to include the nul termination in the buffer - trim it off
         let buffer = UnsafeBufferPointer(start: nulTerminatedBuffer.baseAddress, count: nulTerminatedBuffer.count - 1)
@@ -17,12 +17,12 @@ public func JSONFromString(s: String) -> Result<JSON, NSError> {
     }
 }
 
-public func JSONFromUTF8Data(data: NSData) -> Result<JSON, NSError> {
+public func JSONFromUTF8Data(data: NSData) -> Result<JSON, JSON.Error> {
     let buffer = UnsafeBufferPointer(start: UnsafePointer<UInt8>(data.bytes), count: data.length)
     return JSONFromUnsafeBufferPointer(buffer)
 }
 
-public func JSONFromUnsafeBufferPointer(buffer: UnsafeBufferPointer<UInt8>) -> Result<JSON, NSError> {
+public func JSONFromUnsafeBufferPointer(buffer: UnsafeBufferPointer<UInt8>) -> Result<JSON, JSON.Error> {
     var parser = Parser(input: buffer)
     switch parser.parse() {
     case .Ok(let json):
@@ -33,7 +33,7 @@ public func JSONFromUnsafeBufferPointer(buffer: UnsafeBufferPointer<UInt8>) -> R
 }
 
 private func makeParseError(reason: String) -> Parser.Result {
-    return .Err(JSON.makeError(.CouldNotParseJSON, problem: reason))
+    return .Err(.ParseError(reason))
 }
 
 private struct Literal {
@@ -93,7 +93,7 @@ let ParserMaximumDepth = 512
 private struct Parser {
     enum Result {
         case Ok(JSON)
-        case Err(NSError)
+        case Err(JSON.Error)
     }
 
     enum Sign: Int {

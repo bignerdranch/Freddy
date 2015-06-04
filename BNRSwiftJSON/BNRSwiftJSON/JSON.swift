@@ -49,7 +49,10 @@ public enum JSON: Equatable {
 
         case .NSJSONSerialization:
             let jsonObject = try { NSJSONSerialization.JSONObjectWithData(data, options: nil, error: $0) }
-            return JSONResult(jsonObject.map { makeJSON($0) })
+            return JSONResult(jsonObject.analysis(
+                ifSuccess: { Result.success(makeJSON($0)) },
+                ifFailure: { Result.failure(.NSJSONSerializationError($0)) }
+            ))
         }
     }
 
@@ -259,10 +262,10 @@ public extension JSON {
                 if let obj = jsonDict[key] {
                     return JSONResult.success(obj)
                 } else {
-                    return JSONResult.failure(JSON.makeError(ErrorCode.KeyNotFound, problem: key))
+                    return JSONResult.failure(.KeyNotFound(key))
                 }
             default:
-                return JSONResult.failure(JSON.makeError(ErrorCode.UnexpectedType, problem: key))
+                return JSONResult.failure(.SubscriptTypeMismatch(Swift.String.self))
             }
         }
     }
@@ -274,10 +277,10 @@ public extension JSON {
                 if index <= jsonArray.count - 1 {
                     return JSONResult.success(jsonArray[index])
                 } else {
-                    return JSONResult.failure(JSON.makeError(ErrorCode.IndexOutOfBounds, problem: index))
+                    return JSONResult.failure(.IndexOutOfBounds(index))
                 }
             default:
-                return JSONResult.failure(JSON.makeError(ErrorCode.UnexpectedType, problem: index))
+                return JSONResult.failure(.SubscriptTypeMismatch(Swift.Int.self))
             }
         }
     }
@@ -287,32 +290,62 @@ public extension JSON {
 
 public extension JSON {
     static let errorDomain = "com.bignerdranch.BNRSwiftJSON"
-    
+
     enum ErrorCode: Swift.Int {
-        case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible, CouldNotParseJSON
+        case IndexOutOfBounds, KeyNotFound, TypeMismatch, SubscriptTypeMismatch, ParseError, NSJSONSerializationError
     }
-}
 
-// MARK: - Make Errors
+    /// Enum describing various errors that could be encountered parsing JSON.
+    enum Error {
+        /// Attempted to index past the end of a JSON array.
+        case IndexOutOfBounds(Swift.Int)
 
-extension JSON {
-    static func makeError<T>(reason: ErrorCode, problem: T) -> NSError {
-        switch reason {
-        case .IndexOutOfBounds:
-            let errorDict = [NSLocalizedFailureReasonErrorKey: "`\(problem)` is out of bounds."]
-            return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
-        case .KeyNotFound:
-            let errorDict = [NSLocalizedFailureReasonErrorKey: "`\(problem)` is not a key within the JSON."]
-            return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
-        case .UnexpectedType:
-            let errorDict = [NSLocalizedFailureReasonErrorKey: "`\(self)` is not subscriptable with `\(problem)`."]
-            return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
-        case .TypeNotConvertible:
-            let errorDict = [NSLocalizedFailureReasonErrorKey: "Unexpected type. `\(self)` is not convertible to `\(problem)`."]
-            return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
-        case .CouldNotParseJSON:
-            let errorDict = [NSLocalizedFailureReasonErrorKey: "Could not parse `JSON`: \(problem)"]
-            return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
+        /// Attempted to access a non-existent key in a JSON object.
+        case KeyNotFound(Swift.String)
+
+        /// Attempted to access a JSON value as an incorrect type.
+        /// The associated value is the expected type; e.g., if you attempt to
+        /// access a JSON value of "a string" as an array, the associated type
+        /// will be Array.self.
+        case TypeMismatch(Any.Type)
+
+        /// Attempted to subscript a JSON value with an incorrect type.
+        /// E.g., if you attempt to subscript an array with a string, you
+        /// will get a SubscriptTypeMismatch error with associated value
+        /// String.self.
+        case SubscriptTypeMismatch(Any.Type)
+
+        /// Parsing the input data failed.
+        case ParseError(Swift.String)
+
+        /// NSJSONSerialization returned an error.
+        case NSJSONSerializationError(NSError)
+
+        internal func toNSError() -> NSError {
+            let code: Swift.Int
+            let reason: Swift.String
+            switch self {
+            case let .IndexOutOfBounds(i):
+                code = ErrorCode.IndexOutOfBounds.rawValue
+                reason = "Index \(i) is out of bounds"
+            case let .KeyNotFound(key):
+                code = ErrorCode.KeyNotFound.rawValue
+                reason = "Key \(key) not found"
+            case let .TypeMismatch(type):
+                code = ErrorCode.TypeMismatch.rawValue
+                reason = "Incorrectly attempted to treat value as \(type)"
+            case let .SubscriptTypeMismatch(type):
+                code = ErrorCode.SubscriptTypeMismatch.rawValue
+                reason = "Incorrectly attempted to subscript using a \(type)"
+            case let .ParseError(err):
+                code = ErrorCode.ParseError.rawValue
+                reason = "Could not parse JSON: \(err)"
+            case let .NSJSONSerializationError(err):
+                return err
+            }
+            return NSError(domain: JSON.errorDomain, code: code, userInfo: [
+                NSLocalizedFailureReasonErrorKey: reason
+            ])
         }
     }
 }
@@ -364,4 +397,42 @@ extension JSON: Printable {
         }
     }
 
+}
+
+// MARK: - Error Equality
+
+public func ==(lhs: JSON.Error, rhs: JSON.Error) -> Bool {
+    switch (lhs, rhs) {
+    case let (.IndexOutOfBounds(lhsIndex), .IndexOutOfBounds(rhsIndex)):
+        return lhsIndex == rhsIndex
+    case let (.KeyNotFound(lhsKey), .KeyNotFound(rhsKey)):
+        return lhsKey == rhsKey
+    case let (.TypeMismatch(lhsType), .TypeMismatch(rhsType)):
+        return ObjectIdentifier(lhsType) == ObjectIdentifier(rhsType)
+    case let (.SubscriptTypeMismatch(lhsType), .SubscriptTypeMismatch(rhsType)):
+        return ObjectIdentifier(lhsType) == ObjectIdentifier(rhsType)
+    case let (.ParseError(lhsError), .ParseError(rhsError)):
+        return lhsError == rhsError
+    case let (.NSJSONSerializationError(lhsError), .NSJSONSerializationError(rhsError)):
+        return lhsError == rhsError
+    default:
+        return false
+    }
+}
+
+extension JSON.Error: Equatable {}
+
+// MARK: - Error Printing
+
+extension JSON.Error: Printable {
+    public var description: Swift.String {
+        switch self {
+        case .IndexOutOfBounds(let i):         return ".IndexOutOfBounds(\(i))"
+        case .KeyNotFound(let s):              return ".KeyNotFound(\(s))"
+        case .TypeMismatch(let t):             return ".TypeMismatch(\(t))"
+        case .SubscriptTypeMismatch(let t):    return ".SubscriptTypeMismatch(\(t))"
+        case .ParseError(let e):               return ".ParseError(\(e))"
+        case .NSJSONSerializationError(let e): return ".NSJSONSerializationError(\(e))"
+        }
+    }
 }

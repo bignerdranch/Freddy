@@ -19,6 +19,15 @@ import Cocoa
 import UIKit
 #endif
 
+private extension JSON.Error {
+    var parseError: String? {
+        switch self {
+        case .ParseError(let s): return s
+        default: return nil
+        }
+    }
+}
+
 class JSONParserTests: XCTestCase {
 
     func testThatParserUnderstandsNull() {
@@ -57,7 +66,7 @@ class JSONParserTests: XCTestCase {
         case .Success(let boxed):
             XCTFail("Unexpected success")
         case .Failure(let error):
-            XCTAssertEqual(error.value.code, JSON.ErrorCode.CouldNotParseJSON.rawValue)
+            XCTAssertNotNil(error.value.parseError)
         }
     }
 
@@ -167,7 +176,7 @@ class JSONParserTests: XCTestCase {
             case .Success(let boxed):
                 XCTFail("Unexpected success for \"\(s)\"")
             case .Failure(let error):
-                XCTAssertEqual(error.value.code, JSON.ErrorCode.CouldNotParseJSON.rawValue)
+                XCTAssertNotNil(error.value.parseError)
             }
         }
     }
