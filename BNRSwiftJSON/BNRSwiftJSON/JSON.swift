@@ -209,7 +209,7 @@ public extension JSON {
     }
     
     /**
-        Retrieves a `Double` from the `JSON`.  If the target value's type inside of the `JSON` instance does not match `Double`, this property returns `nil`.
+        Retrieves a `Double` from the `JSON`.  If the target value's type inside of the `JSON` instance is not a numeric type, this property returns `nil`.
     */
     var double: Swift.Double? {
         switch self {
@@ -225,7 +225,7 @@ public extension JSON {
     }
     
     /**
-        Retrieves an `Int` from the `JSON`.  If the target value's type inside of the `JSON` instance does not match `Int`, this property returns `nil`.
+        Retrieves an `Int` from the `JSON`.  If the target value's type inside of the `JSON` instance is not a numeric type, this property returns `nil`.  Any fractional parts contained by the `JSON` instance will be discarded.
     */
     var int: Swift.Int? {
         switch self {
