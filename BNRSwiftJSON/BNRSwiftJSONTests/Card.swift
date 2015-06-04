@@ -96,7 +96,7 @@ extension Card: Decodable {
 
 }
 
-// TODO: - BNRSwiftJSON-style
+// MARK: - BNRSwiftJSON-style
 
 extension Card: JSONDecodable {
 
@@ -141,5 +141,3 @@ extension Card: JSONDecodable {
     }
 
 }
-
-// TODO: - Pistachio-style/Lenses

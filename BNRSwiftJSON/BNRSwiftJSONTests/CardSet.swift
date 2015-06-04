@@ -24,17 +24,16 @@ struct CardSet {
     private(set) var type: String = ""
     private(set) var block: String?
     private(set) var isOnlineOnly: Bool = false
-    private(set) var booster: [String] = []
     private(set) var cards: [Card] = []
 
 }
 
-// TODO: - Argo-style
+// MARK: - Argo-style
 
 extension CardSet: Decodable {
 
-    static func create(name: String)(_ code: String)(_ gathererCode: String?)(_ oldCode: String?)(_ magicCardsInfoCode: String?)(_ releaseDate: ReleaseDate)(_ border: String)(_ type: String)(_ block: String?)(_ isOnlineOnly: Bool?)(_ booster: [String]?)(_ cards: [Card]) -> CardSet {
-        return CardSet(name: name, code: code, gathererCode: gathererCode, oldCode: oldCode, magicCardsInfoCode: magicCardsInfoCode, releaseDate: releaseDate, border: border, type: type, block: block, isOnlineOnly: isOnlineOnly ?? false, booster: booster ?? [], cards: cards)
+    static func create(name: String)(_ code: String)(_ gathererCode: String?)(_ oldCode: String?)(_ magicCardsInfoCode: String?)(_ releaseDate: ReleaseDate)(_ border: String)(_ type: String)(_ block: String?)(_ isOnlineOnly: Bool?)(_ cards: [Card]) -> CardSet {
+        return CardSet(name: name, code: code, gathererCode: gathererCode, oldCode: oldCode, magicCardsInfoCode: magicCardsInfoCode, releaseDate: releaseDate, border: border, type: type, block: block, isOnlineOnly: isOnlineOnly ?? false, cards: cards)
     }
 
     static func decode(j: Argo.JSON) -> Decoded<CardSet> {
@@ -51,7 +50,6 @@ extension CardSet: Decodable {
             <*> j <| "type"
             <*> j <|? "block"
             <*> j <|? "onlineOnly"
-            <*> j <||? "booster"
             <*> j <|| "cards"
 
         return f2
@@ -59,7 +57,7 @@ extension CardSet: Decodable {
 
 }
 
-// TODO: - BNRSwiftJSON-style
+// MARK: - BNRSwiftJSON-style
 
 extension CardSet {
 
@@ -74,16 +72,13 @@ extension CardSet {
         let type = json["type"].string
         let block = optional(json["block"].string)
         let isOnlineOnly = fallback(json["onlineOnly"].bool, false)
-        let booster = fallback(arrayOf(json["booster"], { $0.string }), [])
         let cards = arrayOf(json["cards"]) as Result<[Card]>
 
         return bindAll(name, code, gathererCode, oldCode, magicCardsInfoCode, releaseDate, border, type) { (name, code, gathererCode, oldCode, magicCardsInfoCode, releaseDate, border, type) in
-            mapAll(block, isOnlineOnly, booster, cards) { (block, isOnlineOnly, booster, cards) in
-                CardSet(name: name, code: code, gathererCode: gathererCode, oldCode: oldCode, magicCardsInfoCode: magicCardsInfoCode, releaseDate: releaseDate, border: border, type: type, block: block, isOnlineOnly: isOnlineOnly, booster: booster, cards: cards)
+            mapAll(block, isOnlineOnly, cards) { (block, isOnlineOnly, cards) in
+                CardSet(name: name, code: code, gathererCode: gathererCode, oldCode: oldCode, magicCardsInfoCode: magicCardsInfoCode, releaseDate: releaseDate, border: border, type: type, block: block, isOnlineOnly: isOnlineOnly, cards: cards)
             }
         }
     }
 
 }
-
-// TODO: - Pistachio-style/Lenses

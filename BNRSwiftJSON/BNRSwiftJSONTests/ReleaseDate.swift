@@ -11,6 +11,8 @@ import Argo
 import BNRSwiftJSON
 import Result
 
+extension NSError: ErrorType {}
+
 enum ReleaseDate {
     case Full(NSDate)
     case Month(NSDateComponents)
