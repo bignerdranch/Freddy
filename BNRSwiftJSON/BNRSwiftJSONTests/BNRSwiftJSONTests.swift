@@ -226,10 +226,10 @@ class BNRSwiftJSONTests: XCTestCase {
         let matt = json["people"][0]["name"].int
         switch matt {
         case .Success(let name):
-            XCTFail("The `name` should not be convertible to `number`.")
+            XCTFail("The `name` should not be convertible to `int`.")
         case .Failure(let errorType):
             let error = errorType as! NSError
-            XCTAssertEqual(error.code, JSON.ErrorCode.TypeNotConvertible.rawValue, "The error should be due to `name` not being convertible to `number`.")
+            XCTAssertEqual(error.code, JSON.ErrorCode.TypeNotConvertible.rawValue, "The error should be due to `name` not being convertible to `int`.")
         }
     }
     

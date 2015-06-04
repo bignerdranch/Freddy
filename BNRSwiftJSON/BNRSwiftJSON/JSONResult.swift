@@ -96,7 +96,7 @@ public extension JSONResult {
     /**
         Retrieves a `Double` from the `Result`.  If the target value's type inside of the `JSON` instance is not a numeric type, this property returns `.Failure` with an appropriate `error`.
     */
-    var number: Result<Double> {
+    var double: Result<Double> {
         return convertType("Double", { $0.double })
     }
 
