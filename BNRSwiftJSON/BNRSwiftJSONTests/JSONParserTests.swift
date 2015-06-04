@@ -20,9 +20,9 @@ import UIKit
 #endif
 
 private extension JSON.Error {
-    var parseError: String? {
+    var parseError: BNRSwiftJSON.ParseError? {
         switch self {
-        case .ParseError(let s): return s
+        case .ParseError(let e): return e
         default: return nil
         }
     }
@@ -66,7 +66,7 @@ class JSONParserTests: XCTestCase {
         case .Success(let boxed):
             XCTFail("Unexpected success")
         case .Failure(let error):
-            XCTAssertNotNil(error.value.parseError)
+            XCTAssert(error.value.parseError != nil)
         }
     }
 
@@ -176,7 +176,7 @@ class JSONParserTests: XCTestCase {
             case .Success(let boxed):
                 XCTFail("Unexpected success for \"\(s)\"")
             case .Failure(let error):
-                XCTAssertNotNil(error.value.parseError)
+                XCTAssert(error.value.parseError != nil)
             }
         }
     }

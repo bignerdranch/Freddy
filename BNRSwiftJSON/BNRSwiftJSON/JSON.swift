@@ -316,7 +316,7 @@ public extension JSON {
         case SubscriptTypeMismatch(Any.Type)
 
         /// Parsing the input data failed.
-        case ParseError(Swift.String)
+        case ParseError(BNRSwiftJSON.ParseError)
 
         /// NSJSONSerialization returned an error.
         case NSJSONSerializationError(NSError)

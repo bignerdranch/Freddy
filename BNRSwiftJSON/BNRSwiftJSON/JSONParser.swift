@@ -32,8 +32,8 @@ public func JSONFromUnsafeBufferPointer(buffer: UnsafeBufferPointer<UInt8>) -> R
     }
 }
 
-private func makeParseError(reason: String) -> Parser.Result {
-    return .Err(.ParseError(reason))
+private func makeParseError(error: ParseError) -> Parser.Result {
+    return .Err(.ParseError(error))
 }
 
 private struct Literal {
@@ -90,6 +90,63 @@ private struct Literal {
 
 let ParserMaximumDepth = 512
 
+public enum ParseError: Equatable, Printable {
+    case UnexpectedTrailingData
+    case UnexpectedEndOfInput
+
+    /// Associated value is the character position where the recursion depth was exceeded.
+    case ExcessiveRecursionDepth(Int)
+
+    /// Associated value is the character position of the invalid character.
+    case InvalidCharacter(Int)
+
+    /// Associated value is the character position of the escape sequence.
+    case InvalidUnicodeEscapeSequence(Int)
+
+    /// Assocated value is the character position of the beginning of the string.
+    case InvalidString(Int)
+
+    /// Associated value is the character position where we encountered an invalid character while parsing an array.
+    case InvalidCharacterInsideArray(Int)
+
+    /// Associated value is the character position where we encountered an invalid character while parsing an object.
+    case InvalidCharacterInsideObject(Int)
+
+    /// Associated values are the character position at the beginning of the token, and
+    /// the token we expected to find.
+    case InvalidToken(Int, String)
+
+    public var description: String {
+        switch self {
+        case .UnexpectedTrailingData:                return "Encountered unexpected trailing data"
+        case .UnexpectedEndOfInput:                  return "Unexpected end of input"
+        case .ExcessiveRecursionDepth(let pos):      return "Exceeded allowed parser recursion depth at position \(pos)"
+        case .InvalidCharacter(let pos):             return "Invalid character at position \(pos)"
+        case .InvalidUnicodeEscapeSequence(let pos): return "Invalid Unicode escape sequence at position \(pos)"
+        case .InvalidString(let pos):                return "Invalid string beginning at position \(pos)"
+        case .InvalidCharacterInsideArray(let pos):  return "Invalid character encountered at position \(pos) while parsing array"
+        case .InvalidCharacterInsideObject(let pos): return "Invalid character encountered at position \(pos) while parsing object"
+        case .InvalidToken(let pos, let token):      return "Invalid character at position \(pos); expected \(token)"
+        }
+    }
+}
+
+public func ==(lhs: ParseError, rhs: ParseError) -> Bool {
+    switch (lhs, rhs) {
+    case (.UnexpectedTrailingData, .UnexpectedTrailingData):                               return true
+    case (.UnexpectedEndOfInput, .UnexpectedEndOfInput):                                   return true
+    case let (.ExcessiveRecursionDepth(lhPos), .ExcessiveRecursionDepth(rhPos)):           return lhPos == rhPos
+    case let (.InvalidCharacter(lhPos), .InvalidCharacter(rhPos)):                         return lhPos == rhPos
+    case let (.InvalidUnicodeEscapeSequence(lhPos), .InvalidUnicodeEscapeSequence(rhPos)): return lhPos == rhPos
+    case let (.InvalidString(lhPos), .InvalidString(rhPos)):                               return lhPos == rhPos
+    case let (.InvalidCharacterInsideArray(lhPos), .InvalidCharacterInsideArray(rhPos)):   return lhPos == rhPos
+    case let (.InvalidCharacterInsideObject(lhPos), .InvalidCharacterInsideObject(rhPos)): return lhPos == rhPos
+    case let (.InvalidToken(lhPos, lhToken), .InvalidToken(rhPos, rhToken)):               return lhPos == rhPos && lhToken == rhToken
+
+    default: return false
+    }
+}
+
 private struct Parser {
     enum Result {
         case Ok(JSON)
@@ -116,7 +173,7 @@ private struct Parser {
             if loc != input.count {
                 skipWhitespace()
                 if loc != input.count {
-                    return makeParseError("unexpected data after parsed JSON")
+                    return makeParseError(.UnexpectedTrailingData)
                 }
             }
             return .Ok(value)
@@ -135,10 +192,10 @@ private struct Parser {
 
     mutating func parseValue() -> Result {
         if depth > ParserMaximumDepth {
-            return makeParseError("Exceeded nesting limit around position character \(loc)")
+            return makeParseError(.ExcessiveRecursionDepth(loc))
         }
 
-        advancing: while loc < input.count {
+        while loc < input.count {
             switch input[loc] {
             case Literal.LEFT_BRACKET:
                 return increaseDepth(decodeArray)
@@ -159,23 +216,23 @@ private struct Parser {
                 return decodeTrue()
 
             case Literal.MINUS:
-                return decodeNumberNegative(loc)
+                return decodeNumberNegative()
 
             case Literal.zero:
-                return decodeNumberLeadingZero(loc, sign: .Positive)
+                return decodeNumberLeadingZero(sign: .Positive)
 
             case Literal.one...Literal.nine:
-                return decodeNumberPreDecimalDigits(loc, sign: .Positive)
+                return decodeNumberPreDecimalDigits(sign: .Positive)
 
             case Literal.SPACE, Literal.TAB, Literal.RETURN, Literal.NEWLINE:
                 ++loc
 
             default:
-                break advancing
+                return makeParseError(.InvalidCharacter(loc))
             }
         }
         
-        return makeParseError("Invalid value around character \(loc)")
+        return makeParseError(.UnexpectedEndOfInput)
     }
 
     mutating func skipWhitespace() {
@@ -192,13 +249,13 @@ private struct Parser {
 
     mutating func decodeNull() -> Result {
         if loc + 4 > input.count {
-            return makeParseError("invalid token at position \(loc) - expected `null`")
+            return makeParseError(.UnexpectedEndOfInput)
         }
 
         if     input[loc+1] != Literal.u
             || input[loc+2] != Literal.l
             || input[loc+3] != Literal.l {
-                return makeParseError("invalid token at position \(loc) - expected `null`")
+                return makeParseError(.InvalidToken(loc, "null"))
         }
 
         loc += 4
@@ -207,13 +264,13 @@ private struct Parser {
 
     mutating func decodeTrue() -> Result {
         if loc + 4 > input.count {
-            return makeParseError("invalid token at position \(loc) - expected `true`")
+            return makeParseError(.UnexpectedEndOfInput)
         }
 
         if     input[loc+1] != Literal.r
             || input[loc+2] != Literal.u
             || input[loc+3] != Literal.e {
-            return makeParseError("invalid token at position \(loc) - expected `true`")
+            return makeParseError(.InvalidToken(loc, "true"))
         }
 
         loc += 4
@@ -222,14 +279,14 @@ private struct Parser {
 
     mutating func decodeFalse() -> Result {
         if loc + 5 > input.count {
-            return makeParseError("invalid token at position \(loc) - expected `false`")
+            return makeParseError(.UnexpectedEndOfInput)
         }
 
         if     input[loc+1] != Literal.a
             || input[loc+2] != Literal.l
             || input[loc+3] != Literal.s
             || input[loc+4] != Literal.e {
-            return makeParseError("invalid token at position \(loc) - expected `false`")
+            return makeParseError(.InvalidToken(loc, "false"))
         }
 
         loc += 5
@@ -258,11 +315,11 @@ private struct Parser {
                         stringDecodingBuffer.extend(escaped)
                         loc += 4
                     } else {
-                        return makeParseError("invalid unicode escape sequence at position \(loc)")
+                        return makeParseError(.InvalidUnicodeEscapeSequence(loc))
                     }
 
                 default:
-                    return makeParseError("invalid escape sequence at position \(loc)")
+                    return makeParseError(.InvalidUnicodeEscapeSequence(loc))
                 }
                 ++loc
 
@@ -273,7 +330,7 @@ private struct Parser {
                     if let s = String.fromCString(UnsafePointer<CChar>(buffer.baseAddress)) {
                         return .Ok(.String(s))
                     } else {
-                        return makeParseError("invalid string at position \(start) - possibly malformed unicode characters")
+                        return makeParseError(.InvalidString(start))
                     }
                 }
 
@@ -283,7 +340,7 @@ private struct Parser {
             }
         }
 
-        return makeParseError("unexpected end of data while parsing string at position \(start)")
+        return makeParseError(.UnexpectedEndOfInput)
     }
 
     func readUnicodeEscape(from: Int) -> [UInt8]? {
@@ -322,7 +379,6 @@ private struct Parser {
     }
 
     mutating func decodeArray() -> Result {
-        let start = loc
         ++loc
         var items = [JSON]()
 
@@ -338,7 +394,7 @@ private struct Parser {
                 if loc < input.count && input[loc] == Literal.COMMA {
                     ++loc
                 } else {
-                    return makeParseError("invalid array at position \(start) - missing `,` between elements")
+                    return makeParseError(.InvalidCharacterInsideArray(loc))
                 }
             }
 
@@ -351,7 +407,7 @@ private struct Parser {
             }
         }
 
-        return makeParseError("unexpected end of data while parsing array at position \(start)")
+        return makeParseError(.UnexpectedEndOfInput)
     }
 
     // Decoding objects can be recursive, so we have to keep more than one
@@ -381,7 +437,6 @@ private struct Parser {
     var decodeObjectBuffers = DecodeObjectBuffers()
 
     mutating func decodeObject() -> Result {
-        let start = loc
         ++loc
         var pairs = decodeObjectBuffers.getBuffer()
 
@@ -403,7 +458,7 @@ private struct Parser {
                     ++loc
                     skipWhitespace()
                 } else {
-                    return makeParseError("invalid object at position \(start) - missing `,` between elements")
+                    return makeParseError(.InvalidCharacterInsideObject(loc))
                 }
             }
 
@@ -416,14 +471,14 @@ private struct Parser {
                     return error
                 }
             } else {
-                return makeParseError("invalid object at position \(start) - missing key")
+                return makeParseError(.InvalidCharacterInsideObject(loc))
             }
 
             skipWhitespace()
             if loc < input.count && input[loc] == Literal.COLON {
                 ++loc
             } else {
-                return makeParseError("invalid object at position \(start) - missing `:` between key and value")
+                return makeParseError(.InvalidCharacterInsideObject(loc))
             }
 
             switch parseValue() {
@@ -435,34 +490,34 @@ private struct Parser {
             }
         }
 
-        return makeParseError("unexpected end of data while parsing object at position \(start)")
+        return makeParseError(.UnexpectedEndOfInput)
     }
 
-    mutating func decodeNumberNegative(start: Int) -> Result {
+    mutating func decodeNumberNegative() -> Result {
         if ++loc >= input.count {
-            return makeParseError("unexpected end of data while parsing number at position \(start)")
+            return makeParseError(.UnexpectedEndOfInput)
         }
 
         switch input[loc] {
         case Literal.zero:
-            return decodeNumberLeadingZero(start, sign: .Negative)
+            return decodeNumberLeadingZero(sign: .Negative)
 
         case Literal.one...Literal.nine:
-            return decodeNumberPreDecimalDigits(start, sign: .Negative)
+            return decodeNumberPreDecimalDigits(sign: .Negative)
 
         default:
-            return makeParseError("unexpected end of data while parsing number at position \(start)")
+            return makeParseError(.InvalidCharacter(loc))
         }
     }
 
-    mutating func decodeNumberLeadingZero(start: Int, sign: Sign = .Positive) -> Result {
+    mutating func decodeNumberLeadingZero(sign: Sign = .Positive) -> Result {
         if ++loc >= input.count {
             return .Ok(.Int(0))
         }
 
         switch (input[loc], sign) {
         case (Literal.PERIOD, _):
-            return decodeNumberDecimal(start, sign: sign, value: 0)
+            return decodeNumberDecimal(sign: sign, value: 0)
 
         case (_, .Negative):
             return .Ok(.Double(-0.0))
@@ -472,7 +527,7 @@ private struct Parser {
         }
     }
 
-    mutating func decodeNumberPreDecimalDigits(start: Int, sign: Sign = .Positive) -> Result {
+    mutating func decodeNumberPreDecimalDigits(sign: Sign = .Positive) -> Result {
         var value = 0
 
         advancing: while loc < input.count {
@@ -483,10 +538,10 @@ private struct Parser {
                 ++loc
 
             case Literal.PERIOD:
-                return decodeNumberDecimal(start, sign: sign, value: Double(value))
+                return decodeNumberDecimal(sign: sign, value: Double(value))
 
             case Literal.e, Literal.E:
-                return decodeNumberExponent(start, sign: sign, value: Double(value))
+                return decodeNumberExponent(sign: sign, value: Double(value))
 
             default:
                 break advancing
@@ -496,21 +551,21 @@ private struct Parser {
         return .Ok(.Int(sign.rawValue * value))
     }
 
-    mutating func decodeNumberDecimal(start: Int, sign: Sign, value: Double) -> Result {
+    mutating func decodeNumberDecimal(#sign: Sign, value: Double) -> Result {
         if ++loc >= input.count {
-            return makeParseError("unexpected end of data while parsing number at position \(start)")
+            return makeParseError(.UnexpectedEndOfInput)
         }
 
         switch input[loc] {
         case Literal.zero...Literal.nine:
-            return decodeNumberPostDecimalDigits(start, sign: sign, value: value)
+            return decodeNumberPostDecimalDigits(sign: sign, value: value)
 
         default:
-            return makeParseError("unexpected end of data while parsing number at position \(start)")
+            return makeParseError(.InvalidCharacter(loc))
         }
     }
 
-    mutating func decodeNumberPostDecimalDigits(start: Int, sign: Sign, var value: Double) -> Result {
+    mutating func decodeNumberPostDecimalDigits(#sign: Sign, var value: Double) -> Result {
         var position = 0.1
 
         advancing: while loc < input.count {
@@ -522,7 +577,7 @@ private struct Parser {
                 ++loc
 
             case Literal.e, Literal.E:
-                return decodeNumberExponent(start, sign: sign, value: value)
+                return decodeNumberExponent(sign: sign, value: value)
 
             default:
                 break advancing
@@ -532,40 +587,40 @@ private struct Parser {
         return .Ok(.Double(Double(sign.rawValue) * value))
     }
 
-    mutating func decodeNumberExponent(start: Int, sign: Sign, value: Double) -> Result {
+    mutating func decodeNumberExponent(#sign: Sign, value: Double) -> Result {
         if ++loc >= input.count {
-            return makeParseError("unexpected end of data while parsing number at position \(start)")
+            return makeParseError(.UnexpectedEndOfInput)
         }
 
         switch input[loc] {
         case Literal.zero...Literal.nine:
-            return decodeNumberExponentDigits(start, sign: sign, value: value, expSign: .Positive)
+            return decodeNumberExponentDigits(sign: sign, value: value, expSign: .Positive)
 
         case Literal.PLUS:
-            return decodeNumberExponentSign(start, sign: sign, value: value, expSign: .Positive)
+            return decodeNumberExponentSign(sign: sign, value: value, expSign: .Positive)
 
         case Literal.MINUS:
-            return decodeNumberExponentSign(start, sign: sign, value: value, expSign: .Negative)
+            return decodeNumberExponentSign(sign: sign, value: value, expSign: .Negative)
 
         default:
-            return makeParseError("unexpected end of data while parsing number at position \(start)")
+            return makeParseError(.InvalidCharacter(loc))
         }
     }
 
-    mutating func decodeNumberExponentSign(start: Int, sign: Sign, value: Double, expSign: Sign) -> Result {
+    mutating func decodeNumberExponentSign(#sign: Sign, value: Double, expSign: Sign) -> Result {
         if ++loc >= input.count {
-            return makeParseError("unexpected end of data while parsing number at position \(start)")
+            return makeParseError(.UnexpectedEndOfInput)
         }
         switch input[loc] {
         case Literal.zero...Literal.nine:
-            return decodeNumberExponentDigits(start, sign: sign, value: value, expSign: expSign)
+            return decodeNumberExponentDigits(sign: sign, value: value, expSign: expSign)
 
         default:
-            return makeParseError("unexpected end of data while parsing number at position \(start)")
+            return makeParseError(.InvalidCharacter(loc))
         }
     }
 
-    mutating func decodeNumberExponentDigits(start: Int, sign: Sign, value: Double, expSign: Sign) -> Result {
+    mutating func decodeNumberExponentDigits(#sign: Sign, value: Double, expSign: Sign) -> Result {
         var exponent: Double = 0
 
         advancing: while loc < input.count {
