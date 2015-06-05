@@ -151,7 +151,7 @@
 		1CD8E2921AC37CF70035F303 /* BNRSwiftJSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BNRSwiftJSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CD8E2961AC37CF70035F303 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CD8E2971AC37CF70035F303 /* BNRSwiftJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BNRSwiftJSON.h; sourceTree = "<group>"; };
-		1CD8E29D1AC37CF70035F303 /* BNRSwiftJSONTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = BNRSwiftJSONTests.xctest; path = "BNRSwiftJSON-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CD8E29D1AC37CF70035F303 /* BNRSwiftJSON-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BNRSwiftJSON-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CD8E2A31AC37CF70035F303 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CD8E2A41AC37CF70035F303 /* BNRSwiftJSONTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BNRSwiftJSONTests.swift; sourceTree = "<group>"; };
 		1CD8E2AE1AC37D110035F303 /* JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
@@ -226,7 +226,7 @@
 			isa = PBXGroup;
 			children = (
 				1CD8E2921AC37CF70035F303 /* BNRSwiftJSON.framework */,
-				1CD8E29D1AC37CF70035F303 /* BNRSwiftJSONTests.xctest */,
+				1CD8E29D1AC37CF70035F303 /* BNRSwiftJSON-iOSTests.xctest */,
 				DBE2CD411B176CF6007E1499 /* BNRSwiftJSON.framework */,
 				DBE2CD4B1B176CF6007E1499 /* BNRSwiftJSON-MacTests.xctest */,
 			);
@@ -385,7 +385,7 @@
 			);
 			name = "BNRSwiftJSON-iOSTests";
 			productName = BNRSwiftJSONTests;
-			productReference = 1CD8E29D1AC37CF70035F303 /* BNRSwiftJSONTests.xctest */;
+			productReference = 1CD8E29D1AC37CF70035F303 /* BNRSwiftJSON-iOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		DBE2CD401B176CF6007E1499 /* BNRSwiftJSON-Mac */ = {

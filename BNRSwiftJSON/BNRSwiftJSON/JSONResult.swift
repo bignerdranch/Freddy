@@ -50,6 +50,25 @@ public struct JSONResult: Equatable {
     }
 }
 
+// MARK: Fallback to a given value
+
+public extension JSONResult {
+    /**
+    A function to default to a given value should the `JSONResult` instance be subscripted with a bad key.
+    
+    :param: fallback An instance of `JSON` providing the default value.
+    
+    :returns: An instance of `JSONResult` matching the current instance of `JSONResult`, or a new instance made with the default value.
+    */
+    func or(fallback: JSON) -> JSONResult {
+        if self.isSuccess {
+            return self
+        } else {
+            return JSONResult(success: fallback)
+        }
+    }
+}
+
 // MARK: - Serialize JSONResult
 
 public extension JSONResult {

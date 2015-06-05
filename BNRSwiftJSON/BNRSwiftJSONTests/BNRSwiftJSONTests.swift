@@ -239,4 +239,27 @@ class BNRSwiftJSONTests: XCTestCase {
             XCTAssertEqual(error.value.code, JSON.ErrorCode.UnexpectedType.rawValue, "The `people` `Array` is not subscriptable with `String`s.")
         }
     }
+    
+    func testThatJSONResultOrFallsback() {
+        let intBenchmark = 42
+        let intFallback = json["badIntKey"].or(42).int
+        
+        switch intFallback {
+        case .Success(let fb):
+            XCTAssertEqual(intBenchmark, fb.value, "`intBenchmark` and `intFallback` should be equal.")
+        case .Failure:
+            XCTFail("`intBenchmark` and `intFallback` should be equal.")
+        }
+        
+        let arrayBenchmark = ["This", "Little", "Piggy"]
+        let arrayFallback = json["badArrayKey"].or(["This", "Little", "Piggy"]).array
+        
+        switch arrayFallback {
+        case .Success(let arrFB):
+            let successArray = map(arrFB.value) { $0.string ?? "" }
+            XCTAssertEqual(arrayBenchmark, successArray, "`arrBenchmark` and `intFallback` should be equal")
+        case .Failure:
+            XCTFail("`arrBenchmark` and `intFallback` should be equal")
+        }
+    }
 }
