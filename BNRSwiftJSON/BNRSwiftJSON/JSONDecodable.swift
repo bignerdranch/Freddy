@@ -13,6 +13,8 @@ import Result
     A protocol to provide functionality of creating a model object with a `JSONValue`.
 */
 public protocol JSONDecodable {
+    typealias Error
+
     /**
         Creates an instance of a model with a `JSONValue` instance.
     
@@ -20,5 +22,5 @@ public protocol JSONDecodable {
     
         :returns: An optional instance of  `self`.
     */
-    static func createWithJSON(value: JSON) -> Result<Self>
+    static func createWithJSON(value: JSON) -> Result<Self, Error>
 }

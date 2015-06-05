@@ -15,7 +15,7 @@ public final class MutableBox<T>: MutableBoxType, Printable {
 	public var value: T
 
 	/// Constructs a new MutableBox by transforming `value` by `f`.
-	public func map<U>(f: T -> U) -> MutableBox<U> {
+	public func map<U>(@noescape f: T -> U) -> MutableBox<U> {
 		return MutableBox<U>(f(value))
 	}
 

@@ -476,6 +476,7 @@
 				PRODUCT_NAME = Box;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -495,6 +496,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = Box;
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};

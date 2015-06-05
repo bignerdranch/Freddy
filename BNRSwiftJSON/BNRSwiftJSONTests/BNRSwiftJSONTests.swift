@@ -81,9 +81,9 @@ class BNRSwiftJSONTests: XCTestCase {
             "bar": .Bool(false),
             "baz": .Int(123),
         ])
-        let data = json.serialize().successValue!
+        let data = json.serialize().value!
         let deserializedResult = JSON.createJSONFrom(data).dictionary
-        let deserialized = JSON.Dictionary(deserializedResult.successValue!)
+        let deserialized = JSON.Dictionary(deserializedResult.value!)
         XCTAssertEqual(json, deserialized, "Serialize/Deserialize succeed with Bools")
     }
     
@@ -106,7 +106,7 @@ class BNRSwiftJSONTests: XCTestCase {
     }
     
     func testThatCollectAllSuccessesCanCreateArrayOfPeople() {
-        let peopleArray = json["people"].array.bind { collectAllSuccesses(map($0, Person.createWithJSON)) }
+        let peopleArray = json["people"].array.flatMap { collectAllSuccesses(map($0, Person.createWithJSON)) }
         switch peopleArray {
         case .Success(let box):
             for person in box.value {
@@ -146,14 +146,14 @@ class BNRSwiftJSONTests: XCTestCase {
                 JSON.Dictionary(["name": JSON.String("Drew Mathias"), "age": JSON.Int(33), "spouse": JSON.Bool(true)]),
                 JSON.Dictionary(["name": JSON.String("Sargeant Pepper"), "age": JSON.Int(25)])
             ])
-        let data = json.serialize().successValue!
+        let data = json.serialize().value!
         let deserializedResult = JSON.createJSONFrom(data).array
         let people = splitResult(deserializedResult, Person.createWithJSON)
         switch people {
         case .Success(let result):
             XCTAssertEqual(result.value.successes.count, 2, "There should be two people in `successes`.")
             XCTAssertEqual(result.value.failures.count, 1, "There should be one error in `failures`.")
-        case .Failure(let errorType):
+        case .Failure(let error):
             XCTFail("The result should `succeed` with errors in tuple, and not fail with an `NSError` in `.Failure`.")
         }
     }
@@ -205,9 +205,8 @@ class BNRSwiftJSONTests: XCTestCase {
         switch peopl {
         case .Success:
             XCTFail("There should be no people.")
-        case .Failure(let errorType):
-            let error = errorType as! NSError
-            XCTAssertEqual(error.code, JSON.ErrorCode.KeyNotFound.rawValue, "The error should be due to the key not being found.")
+        case .Failure(let error):
+            XCTAssertEqual(error.value.code, JSON.ErrorCode.KeyNotFound.rawValue, "The error should be due to the key not being found.")
         }
     }
     
@@ -216,9 +215,8 @@ class BNRSwiftJSONTests: XCTestCase {
         switch person {
         case .Success:
             XCTFail("There should be no person at index 4.")
-        case .Failure(let errorType):
-            let error = errorType as! NSError
-            XCTAssertEqual(error.code, JSON.ErrorCode.IndexOutOfBounds.rawValue, "The error should be due to the index being out of bounds.")
+        case .Failure(let error):
+            XCTAssertEqual(error.value.code, JSON.ErrorCode.IndexOutOfBounds.rawValue, "The error should be due to the index being out of bounds.")
         }
     }
     
@@ -227,9 +225,8 @@ class BNRSwiftJSONTests: XCTestCase {
         switch matt {
         case .Success(let name):
             XCTFail("The `name` should not be convertible to `int`.")
-        case .Failure(let errorType):
-            let error = errorType as! NSError
-            XCTAssertEqual(error.code, JSON.ErrorCode.TypeNotConvertible.rawValue, "The error should be due to `name` not being convertible to `int`.")
+        case .Failure(let error):
+            XCTAssertEqual(error.value.code, JSON.ErrorCode.TypeNotConvertible.rawValue, "The error should be due to `name` not being convertible to `int`.")
         }
     }
     
@@ -238,9 +235,8 @@ class BNRSwiftJSONTests: XCTestCase {
         switch matt {
         case .Success:
             XCTFail("The `name` key should not be availabe as a subscript for the `Array` `people`.")
-        case .Failure(let errorType):
-            let error = errorType as! NSError
-            XCTAssertEqual(error.code, JSON.ErrorCode.UnexpectedType.rawValue, "The `people` `Array` is not subscriptable with `String`s.")
+        case .Failure(let error):
+            XCTAssertEqual(error.value.code, JSON.ErrorCode.UnexpectedType.rawValue, "The `people` `Array` is not subscriptable with `String`s.")
         }
     }
 }

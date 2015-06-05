@@ -20,7 +20,7 @@ public final class Box<T>: BoxType, Printable {
 	public let value: T
 
 	/// Constructs a new Box by transforming `value` by `f`.
-	public func map<U>(f: T -> U) -> Box<U> {
+	public func map<U>(@noescape f: T -> U) -> Box<U> {
 		return Box<U>(f(value))
 	}
 
