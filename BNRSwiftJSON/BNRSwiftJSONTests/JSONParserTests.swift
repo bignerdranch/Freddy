@@ -116,11 +116,22 @@ class JSONParserTests: XCTestCase {
     }
 
     func testThatParserUnderstandsNumbers() {
-        for (s, expect) in [
-            ("  -0  ", 0.0),
-            ("  0  ", 0.0),
-            ("123", 123.0),
+        for (s, shouldBeInt) in [
+            ("  0  ", 0),
+            ("123", 123),
             ("  -20  ", -20),
+        ] {
+            switch JSONFromString(s) {
+            case .Success(let boxed):
+                XCTAssertEqual(boxed.value.int!, shouldBeInt)
+            case .Failure(let error):
+                XCTFail("Unexpected error \(error)")
+            }
+        }
+
+        for (s, shouldBeDouble) in [
+            ("  -0  ", -0.0),
+            ("  -0.0  ", 0.0),
             ("123.0", 123.0),
             ("123.456", 123.456),
             ("-123.456", -123.456),
@@ -131,9 +142,11 @@ class JSONParserTests: XCTestCase {
         ] {
             switch JSONFromString(s) {
             case .Success(let boxed):
-                XCTAssertEqualWithAccuracy(boxed.value.number!, expect, 0.001)
+                XCTAssertEqualWithAccuracy(boxed.value.double!, shouldBeDouble, DBL_EPSILON)
             case .Failure(let error):
                 XCTFail("Unexpected error \(error)")
+            default:
+                XCTFail("Unexpected downcast failure")
             }
         }
     }

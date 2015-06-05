@@ -96,9 +96,9 @@ private struct Parser {
         case Err(NSError)
     }
 
-    enum Sign: Double {
-        case Positive = 1.0
-        case Negative = -1.0
+    enum Sign: Int {
+        case Positive = 1
+        case Negative = -1
     }
 
     let input: UnsafeBufferPointer<UInt8>
@@ -138,7 +138,7 @@ private struct Parser {
             return makeParseError("Exceeded nesting limit around position character \(loc)")
         }
 
-        while loc < input.count {
+        advancing: while loc < input.count {
             switch input[loc] {
             case Literal.LEFT_BRACKET:
                 return increaseDepth(decodeArray)
@@ -171,7 +171,7 @@ private struct Parser {
                 ++loc
 
             default:
-                return makeParseError("did not find start of valid JSON data")
+                break advancing
             }
         }
         
@@ -455,41 +455,45 @@ private struct Parser {
         }
     }
 
-    mutating func decodeNumberLeadingZero(start: Int, sign: Sign) -> Result {
+    mutating func decodeNumberLeadingZero(start: Int, sign: Sign = .Positive) -> Result {
         if ++loc >= input.count {
-            return .Ok(.Number(0))
+            return .Ok(.Int(0))
         }
 
-        switch input[loc] {
-        case Literal.PERIOD:
+        switch (input[loc], sign) {
+        case (Literal.PERIOD, _):
             return decodeNumberDecimal(start, sign: sign, value: 0)
 
+        case (_, .Negative):
+            return .Ok(.Double(-0.0))
+
         default:
-            return .Ok(.Number(0))
+            return .Ok(.Int(0))
         }
     }
 
-    mutating func decodeNumberPreDecimalDigits(start: Int, sign: Sign) -> Result {
-        var value: Double = 0
+    mutating func decodeNumberPreDecimalDigits(start: Int, sign: Sign = .Positive) -> Result {
+        var value = 0
 
-        while loc < input.count {
+        advancing: while loc < input.count {
             let c = input[loc]
             switch c {
             case Literal.zero...Literal.nine:
-                value = 10 * value + Double(c - Literal.zero)
+                value = 10 * value + Int(c - Literal.zero)
                 ++loc
 
             case Literal.PERIOD:
-                return decodeNumberDecimal(start, sign: sign, value: value)
+                return decodeNumberDecimal(start, sign: sign, value: Double(value))
 
             case Literal.e, Literal.E:
-                return decodeNumberExponent(start, sign: sign, value: value)
+                return decodeNumberExponent(start, sign: sign, value: Double(value))
 
             default:
-                return .Ok(.Number(sign.rawValue * value))
+                break advancing
             }
         }
-        return .Ok(.Number(sign.rawValue * value))
+
+        return .Ok(.Int(sign.rawValue * value))
     }
 
     mutating func decodeNumberDecimal(start: Int, sign: Sign, value: Double) -> Result {
@@ -509,7 +513,7 @@ private struct Parser {
     mutating func decodeNumberPostDecimalDigits(start: Int, sign: Sign, var value: Double) -> Result {
         var position = 0.1
 
-        while loc < input.count {
+        advancing: while loc < input.count {
             let c = input[loc]
             switch c {
             case Literal.zero...Literal.nine:
@@ -521,10 +525,11 @@ private struct Parser {
                 return decodeNumberExponent(start, sign: sign, value: value)
 
             default:
-                return .Ok(.Number(sign.rawValue * value))
+                break advancing
             }
         }
-        return .Ok(.Number(sign.rawValue * value))
+
+        return .Ok(.Double(Double(sign.rawValue) * value))
     }
 
     mutating func decodeNumberExponent(start: Int, sign: Sign, value: Double) -> Result {
@@ -562,7 +567,8 @@ private struct Parser {
 
     mutating func decodeNumberExponentDigits(start: Int, sign: Sign, value: Double, expSign: Sign) -> Result {
         var exponent: Double = 0
-        while loc < input.count {
+
+        advancing: while loc < input.count {
             let c = input[loc]
             switch c {
             case Literal.zero...Literal.nine:
@@ -570,9 +576,10 @@ private struct Parser {
                 ++loc
 
             default:
-                return .Ok(.Number(sign.rawValue * value * pow(10, expSign.rawValue * exponent)))
+                break advancing
             }
         }
-        return .Ok(.Number(sign.rawValue * value * pow(10, expSign.rawValue * exponent)))
+
+        return .Ok(.Double(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent)))
     }
 }

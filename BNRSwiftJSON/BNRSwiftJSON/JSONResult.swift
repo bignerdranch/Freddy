@@ -91,10 +91,17 @@ public extension JSONResult {
     }
     
     /**
-        Retrieves a `Double` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `Double`, this property returns `.Failure` with an appropriate `error`.
+        Retrieves a `Double` from the `Result`.  If the target value's type inside of the `JSON` instance is not a numeric type, this property returns `.Failure` with an appropriate `error`.
     */
-    var number: Result<Double, NSError> {
-        return convertType("Double", { $0.number })
+    var double: Result<Double, NSError> {
+        return convertType("Double", { $0.double })
+    }
+
+    /**
+        Retrieves an `Int` from the `Result`.  If the target value's type inside of the `JSON` instance is not a numeric type, this property returns `.Failure` with an appropriate `error`.  Otherwise, any fractional components are discarded to return a success value.
+    */
+    var int: Result<Int, NSError> {
+        return convertType("Int", { $0.int })
     }
 
     /**
@@ -109,13 +116,6 @@ public extension JSONResult {
     */
     var bool: Result<Bool, NSError> {
         return convertType("Bool", { $0.bool })
-    }
-    
-    /**
-        Retrieves an `Int` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `Int`, this property returns `.Failure` with an appropriate `error`.
-    */
-    var int: Result<Int, NSError> {
-        return convertType("Int", { $0.int })
     }
 
     /**
