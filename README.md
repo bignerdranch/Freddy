@@ -1,12 +1,12 @@
 ## Parsing JSON in Swift
 
-BNRSwiftJSON is a reusable framework for parsing JSON in Swift.
+Freddy is a reusable framework for parsing JSON in Swift.
 Its primary goal is faciliate the safe parsing of JSON, while also preserving the ease of use presented by parsing JSON in Objective-C.
 
 ## Usage
 
 Here are several examples of parsing JSON.
-Many of these examples can also be reviewed in the framework's test target: `BNRSwiftJSONTests`.
+Many of these examples can also be reviewed in the framework's test target: `FreddyTests`.
 
 ### Loading Data
 
@@ -28,7 +28,7 @@ Our example uses the following JSON:
             "spouse": true,
 		},
         {
-            "name": "Sargeant Pepper",
+            "name": "Sergeant Pepper",
             "age": 25,
             "spouse": false,
         }
@@ -57,7 +57,7 @@ For convenience, we model the loading of JSON from a file located in the framewo
 
 ```swift
 func createData() -> NSData? {
-	let testBundle = NSBundle(forClass: BNRSwiftJSONTests.self)
+	let testBundle = NSBundle(forClass: FreddyTests.self)
 	let path = testBundle.pathForResource("sample", ofType: "JSON")
 
 	if let p = path, u = NSURL(fileURLWithPath: p) {
@@ -93,7 +93,7 @@ We can subscript (i.e., `["success"]`) and use computed properties (i.e., `bool`
 Doing so will either give the data to `success` or an error.
 We cover these details in greater depth below, but suffice it to say now that `success` is an enum with one of either two cases: `.Success` or `.Failure`.
 
-We can also use BNRSwiftJSON to access nested keys.
+We can also use Freddy to access nested keys.
 Consider the following code to get access the `"name"` of the first person in the `"people"` array.
 
 ```swift
@@ -114,7 +114,7 @@ Last, we use the computed property `string` to get this key's `String` represent
 At that point, we can `switch` over `matt` to determine if we were successful.
 
 The next section describes how we would typically JSON data to create instances of model objects.
-It then proposes BNRSwiftJSON as a safer solution, and moves on to illustrate how it can be used.
+It then proposes Freddy as a safer solution, and moves on to illustrate how it can be used.
 
 ## The Motivation
 
@@ -143,11 +143,11 @@ Furthermore, the above code is difficult to debug.
 If any of the above optional bindings fail for some reason, then the result is `nil` and we do not have any data.
 We ideally would like the syntax to be clean, while also being able to check informative errors should any arise.
 
-## Using BNRSwiftJSON
+## Using Freddy
 
-`BNRSwiftJSON` is a framework that provides clean syntax, safe typing, and useful information in parsing JSON.
+`Freddy` is a framework that provides clean syntax, safe typing, and useful information in parsing JSON.
 Errors are tracked, stored, and are available to use after parsing.
-Consider the above example of parsing JSON reworked to use `BNRSwiftJSON`.
+Consider the above example of parsing JSON reworked to use `Freddy`.
 
 ```swift
 let data = createData()
@@ -169,7 +169,7 @@ case .Failure(let error):
 }
 ```
 
-`BNRSwiftJSON` provides safety and ease-of-use. 
+`Freddy` provides safety and ease-of-use. 
 `JSONValue` is an enumeration with cases matching each value of JSON that may be returned by a web service.
 The method `createWithJSONValueFrom(_:)` takes an instance of `NSData` and returns an instance of `JSONValueResult`.
 This type has two cases: `.Success` that will have an associated value of type `JSONValue`, and `.Failure` with an associated value of type `NSError`.
@@ -269,7 +269,7 @@ public static func createJSONValueFrom(data: NSData) -> JSONValueResult {
         return .Success(makeJSONValue(obj)
     } else {
         let errorDictionary = [NSLocalizedFailureReasonErrorKey: "Could not parse `NSData`."
-        let error = NSError(domain: "com.bignerdranch.BNRSwiftJSON", code: JSONValue.BNRSwiftJSONErrorCode.CouldNotParseJSON.rawValue, userInfo: errorDictionary)
+        let error = NSError(domain: "com.bignerdranch.Freddy", code: JSONValue.FreddyErrorCode.CouldNotParseJSON.rawValue, userInfo: errorDictionary)
         return .Failure(error)
     }
 }
@@ -431,10 +431,10 @@ public extension JSONValue {
                 if let obj = jsonDict[key] {
                     return .Success(obj)
                 } else {
-                    return .Failure(makeError(BNRSwiftJSONErrorCode.KeyNotFound, problem: key))
+                    return .Failure(makeError(FreddyErrorCode.KeyNotFound, problem: key))
                 }
             default:
-                return .Failure(makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: key))
+                return .Failure(makeError(FreddyErrorCode.UnexpectedType, problem: key))
             }
         }
     }
@@ -446,10 +446,10 @@ public extension JSONValue {
                 if index <= jsonArray.count - 1 {
                     return .Success(jsonArray[index])
                 } else {
-                    return .Failure(makeError(BNRSwiftJSONErrorCode.IndexOutOfBounds, problem: index))
+                    return .Failure(makeError(FreddyErrorCode.IndexOutOfBounds, problem: index))
                 }
             default:
-	            return .Failure(makeError(BNRSwiftJSONErrorCode.UnexpectedType, problem: index))
+	            return .Failure(makeError(FreddyErrorCode.UnexpectedType, problem: index))
 	        }
         }
     }
@@ -517,7 +517,7 @@ Subscripting in this manner satisfies the contract established by `bind`'s argum
 
 ### Computed Properties
 
-Recall the following line of code from the first example of using `BNRSwiftJSON`.
+Recall the following line of code from the first example of using `Freddy`.
 
 ```swift
 let data = createData()
@@ -541,7 +541,7 @@ public extension JSONValueResult {
             if let array = jsonValue.array {
                 return .Success(Box(array))
             } else {
-                return .Failure(jsonValue.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Array"))
+                return .Failure(jsonValue.makeError(JSONValue.FreddyErrorCode.TypeNotConvertible, problem: "Array"))
             }
         }
     }
@@ -702,7 +702,7 @@ public extension JSONValueResult {
             if let array = jsonValue.array {
                 return .Success(Box(array))
             } else {
-                return .Failure(jsonValue.makeError(JSONValue.BNRSwiftJSONErrorCode.TypeNotConvertible, problem: "Array"))
+                return .Failure(jsonValue.makeError(JSONValue.FreddyErrorCode.TypeNotConvertible, problem: "Array"))
             }
         }
     }
@@ -773,7 +773,7 @@ For example, that means we can ask the `value` for the person's name.
 
 ## `JSONValueDecodable`
 
-We mentioned before that `BNRSwiftJSON` provides a protocol to help model objects create instances from `JSONValue`s.
+We mentioned before that `Freddy` provides a protocol to help model objects create instances from `JSONValue`s.
 It is time to take a look at the protocol.
 
 ```swift
@@ -1076,7 +1076,7 @@ If we find `.Failure`, then we can handle that case as needed because the error 
 
 ## Conclusion
 
-The primary goal of BNRSwiftJSON is to provide an elegant and safe solution to parsing JSON in Swift.
+The primary goal of Freddy is to provide an elegant and safe solution to parsing JSON in Swift.
 A related, if not secondary, goal is to provide an idiomatic solution to JSON parsing.
 The solution we have provided involves a fair amount concepts borrowed from Functional Programming, a fact that isn't all that important to know.
 
@@ -1086,6 +1086,6 @@ The primary benefit is to ensure that parsing JSON reliably either provides the 
 
 Last, it is important to note that while `bind` and `map` are not strictly required to use.
 If you prefer to use `for` loops and `switch` statements together, then feel free!
-You will still benefit from BNRSwiftJSON's safety and error handling.
-Nonetheless, `bind` and `map` can help your usage of `BNRSwiftJSON` to be more concise.
+You will still benefit from Freddy's safety and error handling.
+Nonetheless, `bind` and `map` can help your usage of `Freddy` to be more concise.
 They also follow the spirit of the framework, and make it easier to use once you master their complexity.
