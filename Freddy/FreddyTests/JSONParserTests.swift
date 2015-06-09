@@ -1,13 +1,13 @@
 //
 //  JSONParserTests.swift
-//  BNRSwiftJSONTests
+//  FreddyTests
 //
 //  Created by John Gallagher on 4/18/15.
 //  Copyright (c) 2015 Big Nerd Ranch Inc. Licensed under MIT.
 //
 
 import XCTest
-import BNRSwiftJSON
+import Freddy
 import Box
 
 // In at least one unit test file, Swift 1.2 requires importing the respective

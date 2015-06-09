@@ -1,19 +1,19 @@
 //
-//  BNRSwiftJSONTests.swift
-//  BNRSwiftJSONTests
+//  FreddyTests.swift
+//  FreddyTests
 //
 //  Created by Matthew D. Mathias on 3/25/15.
 //  Copyright (c) 2015 Big Nerd Ranch Inc. Licensed under MIT.
 //
 
 import XCTest
-import BNRSwiftJSON
+import Freddy
 import Result
 
-class BNRSwiftJSONTests: XCTestCase {
+class FreddyTests: XCTestCase {
     
     lazy var data: NSData? = {
-        let testBundle = NSBundle(forClass: BNRSwiftJSONTests.self)
+        let testBundle = NSBundle(forClass: FreddyTests.self)
         let path = testBundle.pathForResource("sample", ofType: "JSON")
         
         if let p = path, u = NSURL(fileURLWithPath: p) {
@@ -24,7 +24,7 @@ class BNRSwiftJSONTests: XCTestCase {
     }()
     
     lazy var noWhiteSpaceData: NSData? = {
-        let testBundle = NSBundle(forClass: BNRSwiftJSONTests.self)
+        let testBundle = NSBundle(forClass: FreddyTests.self)
         let path = testBundle.pathForResource("sampleNoWhiteSpace", ofType: "JSON")
         
         if let p = path, u = NSURL(fileURLWithPath: p) {

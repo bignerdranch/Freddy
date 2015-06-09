@@ -1,13 +1,13 @@
 //
 //  Person.swift
-//  BNRSwiftJSONTests
+//  FreddyTests
 //
 //  Created by Matthew D. Mathias on 3/21/15.
 //  Copyright (c) 2015 Big Nerd Ranch Inc. Licensed under MIT.
 //
 
 import Foundation
-import BNRSwiftJSON
+import Freddy
 import Result
 
 public struct Person: Printable {
