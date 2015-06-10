@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1CD8E2911AC37CF70035F303"
-               BuildableName = "BNRSwiftJSON.framework"
-               BlueprintName = "BNRSwiftJSON-iOS"
-               ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
+               BuildableName = "Freddy.framework"
+               BlueprintName = "Freddy-iOS"
+               ReferencedContainer = "container:Freddy.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1CD8E29C1AC37CF70035F303"
-               BuildableName = "BNRSwiftJSON-iOSTests.xctest"
-               BlueprintName = "BNRSwiftJSON-iOSTests"
-               ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
+               BuildableName = "Freddy-iOSTests.xctest"
+               BlueprintName = "Freddy-iOSTests"
+               ReferencedContainer = "container:Freddy.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,9 +47,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1CD8E29C1AC37CF70035F303"
-               BuildableName = "BNRSwiftJSON-iOSTests.xctest"
-               BlueprintName = "BNRSwiftJSON-iOSTests"
-               ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
+               BuildableName = "Freddy-iOSTests.xctest"
+               BlueprintName = "Freddy-iOSTests"
+               ReferencedContainer = "container:Freddy.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -57,9 +57,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1CD8E2911AC37CF70035F303"
-            BuildableName = "BNRSwiftJSON.framework"
-            BlueprintName = "BNRSwiftJSON-iOS"
-            ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
+            BuildableName = "Freddy.framework"
+            BlueprintName = "Freddy-iOS"
+            ReferencedContainer = "container:Freddy.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -76,9 +76,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1CD8E2911AC37CF70035F303"
-            BuildableName = "BNRSwiftJSON.framework"
-            BlueprintName = "BNRSwiftJSON-iOS"
-            ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
+            BuildableName = "Freddy.framework"
+            BlueprintName = "Freddy-iOS"
+            ReferencedContainer = "container:Freddy.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -94,9 +94,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1CD8E2911AC37CF70035F303"
-            BuildableName = "BNRSwiftJSON.framework"
-            BlueprintName = "BNRSwiftJSON-iOS"
-            ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
+            BuildableName = "Freddy.framework"
+            BlueprintName = "Freddy-iOS"
+            ReferencedContainer = "container:Freddy.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
