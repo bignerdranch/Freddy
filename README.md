@@ -83,7 +83,7 @@ case .Failure(let error):
 }
 ```
 
-After we load in the data, we create an instance of `JSONValue`, the workhorse of this framework. This allows us to access the values from the JSON data. Here, we access the `"success"` key, and also use computer properties to access the value as a bool. You can read more about these computer properties on the wiki [here](https://github.com/bignerdranch/bnr-swift-json/wiki). This returns a `Result` type that can be checked for `.Success` or `.Failure`.
+After we load in the data, we create an instance of `JSONValue`, the workhorse of this framework. This allows us to access the values from the JSON data. Here, we access the `"success"` key, and also use computer properties to access the value as a bool. You can read more about these computer properties on the wiki [here](https://github.com/bignerdranch/bnr-swift-json/wiki/Computed-Properties). This returns a `Result` type that can be checked for `.Success` or `.Failure`.
 
 Now, let's look an example that parses the data into a data class:
 
@@ -142,7 +142,7 @@ public struct Person: JSONValueDecodable, Printable {
 }
 ```
 
-This struct makes use of the protocol `JSONValueDecodable` which implements the method `public static func createWithJSONValue(value: JSONValue) -> Result<Person>` . This creates a `Person` object from the given `JSONValue` by parsing the child values into variables. This also makes use of the computed type properties as well as the `map` and `bind` methods. You can read more about those methods in the [wiki](https://github.com/bignerdranch/bnr-swift-json/wiki).
+This struct makes use of the protocol `JSONValueDecodable` which implements the method `public static func createWithJSONValue(value: JSONValue) -> Result<Person>` . This creates a `Person` object from the given `JSONValue` by parsing the child values into variables. This also makes use of the computed type properties as well as the `map` and `bind` methods. You can read more about those methods in the [wiki](https://github.com/bignerdranch/bnr-swift-json/Methods-in-Result).
 
 ## Documentation
 
