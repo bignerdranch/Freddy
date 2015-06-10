@@ -51,7 +51,7 @@
 			containerPortal = 1CD8E2891AC37CF70035F303 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 1CD8E2911AC37CF70035F303;
-			remoteInfo = BNRSwiftJSON;
+			remoteInfo = Freddy;
 		};
 		52875A081B1F85A50090E5C5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -142,7 +142,7 @@
 			containerPortal = 1CD8E2891AC37CF70035F303 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = DBE2CD401B176CF6007E1499;
-			remoteInfo = "BNRSwiftJSON-Mac";
+			remoteInfo = "Freddy-Mac";
 		};
 /* End PBXContainerItemProxy section */
 
