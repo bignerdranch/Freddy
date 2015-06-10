@@ -141,7 +141,7 @@ public struct Person: JSONValueDecodable, Printable {
 }
 ```
 
-This struct makes use of the protocol `JSONValueDecodable` which implements the method `public static func createWithJSONValue(value: JSONValue) -> Result<Person>` . This creates a `Person` object from the given `JSONValue` by parsing the child values into variables. This also makes use of the computed type properties as well as the `map` and `bind` methods. You can read more about those methods in the [wiki](https://github.com/bignerdranch/bnr-swift-json/Methods-in-Result).
+This struct makes use of the protocol `JSONValueDecodable` which implements the method `public static func createWithJSONValue(value: JSONValue) -> Result<Person>` . This creates a `Person` object from the given `JSONValue` by parsing the child values into variables. This also makes use of the computed type properties as well as the `map` and `bind` methods. You can read more about those methods in the [wiki](https://github.com/bignerdranch/bnr-swift-json/wiki/Methods-in-Result).
 
 ## Documentation
 
