@@ -1,5 +1,4 @@
 # BNRSwiftJSON
---------------
 BNRSwiftJSON is a reusable framework for parsing JSON in Swift.
 
 Its primary goal is faciliate the safe parsing of JSON, while also preserving the ease of use presented by parsing JSON in Objective-C.
