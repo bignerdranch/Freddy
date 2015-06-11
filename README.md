@@ -121,10 +121,10 @@ public struct Person: JSONDecodable, Printable {
         self.spouse = spouse
     }
 
-    public static func createWithJSON(json: JSON) -> Result<Person> {
-        let name = json["name"].string
-        let age = json["age"].int
-        let isMarried = json["spouse"].bool
+    public static func createWithJSON(value: JSON) -> Result<Person> {
+        let name = value["name"].string
+        let age = value["age"].int
+        let isMarried = value["spouse"].bool
 
         return name.flatMap { n in 
             age.flatMap { a in
