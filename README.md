@@ -53,7 +53,7 @@ Here is some example JSON data:
 }
 ```
 
-We wrote a quick method to load this JSON data locally for testing:
+We wrote a quick method to load this JSON data locally for testing. This is where you would put your code to load your own JSON data.
 
 ```swift
 func createData() -> NSData? {
