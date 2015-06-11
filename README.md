@@ -82,7 +82,7 @@ case .Failure(let error):
 }
 ```
 
-After we load in the data, we create an instance of `JSON`, the workhorse of this framework. This allows us to access the values from the JSON data. Here, we access the `"success"` key, and also use computer properties to access the value as a bool. You can read more about these computer properties on the wiki [here](https://github.com/bignerdranch/bnr-swift-json/wiki/Computed-Properties). This returns a `Result` type that can be checked for `.Success` or `.Failure`.
+After we load in the data, we create an instance of `JSON`, the workhorse of this framework. This allows us to access the values from the JSON data. Here, we access the `"success"` key, and also use computed properties to access the value as a bool. You can read more about these computer properties on the wiki [here](https://github.com/bignerdranch/bnr-swift-json/wiki/Computed-Properties). This returns a `Result` type that can be checked for `.Success` or `.Failure`.
 
 Now, let's look an example that parses the data into a data class:
 
