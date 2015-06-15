@@ -15,6 +15,11 @@ import Result
 public struct JSONResult: Equatable {
     private let r: Result<JSON, JSON.Error>
 
+    // errorAge is used to implement `or`, where we need to know if, when `r` is in
+    // the Failure case, the error happened immediately prior to the `or` call or
+    // earlier up the chain.
+    private let errorAge: Int
+
     internal static func success(success: JSON) -> JSONResult {
         return JSONResult(Result.success(success))
     }
@@ -25,10 +30,21 @@ public struct JSONResult: Equatable {
 
     internal init(_ result: Result<JSON, JSON.Error>) {
         self.r = result
+        self.errorAge = 0
+    }
+
+    internal init(_ result: Result<JSON, JSON.Error>, errorAge: Int) {
+        self.r = result
+        self.errorAge = errorAge
     }
 
     private func flatMap(f: JSON -> JSONResult) -> JSONResult {
-        return JSONResult(r.flatMap { value in f(value).r })
+        if let success = r.value {
+            return f(success)
+        } else {
+            // r is in the failure case, so increment our error age
+            return JSONResult(r, errorAge: errorAge + 1)
+        }
     }
 
     private func flatMap<T>(f: JSON -> Result<T, JSON.Error>) -> Result<T, JSON.Error> {
@@ -51,6 +67,24 @@ public struct JSONResult: Equatable {
     */
     public var isFailure: Bool {
         return r.error != nil
+    }
+}
+
+// MARK: - Fallback to a given value
+
+public extension JSONResult {
+    func or(fallback: JSON) -> JSONResult {
+        return JSONResult(r.analysis(
+            ifSuccess: Result.success,
+            ifFailure: { error in
+                switch error {
+                case .IndexOutOfBounds, .KeyNotFound where self.errorAge == 0:
+                    return Result.success(fallback)
+
+                default:
+                    return Result.failure(error)
+                }
+        }))
     }
 }
 

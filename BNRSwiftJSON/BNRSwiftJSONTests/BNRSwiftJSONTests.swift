@@ -239,4 +239,29 @@ class BNRSwiftJSONTests: XCTestCase {
             XCTAssertEqual(error.value.code, JSON.ErrorCode.SubscriptTypeMismatch.rawValue, "The `people` `Array` is not subscriptable with `String`s.")
         }
     }
+
+    func testThatOrFallsBackOnMissingKeys() {
+        let height = json["people"][0]["height"].or(6.1).double
+        BNRAssertEqualWithAccuracy(height.value, 6.1, DBL_EPSILON)
+    }
+
+    func testThatOrDoesNotFallBackOnMissingKeysEarlierInAChain() {
+        let height = json["peopl"][0]["height"].or(6.1).double
+        BNRAssertEqual(height.error?.code, JSON.ErrorCode.KeyNotFound.rawValue)
+    }
+
+    func testThatOrFallsBackOnMissingIndices() {
+        let dev = json["jobs"][10].or("developer").string
+        BNRAssertEqual(dev.value, "developer")
+    }
+
+    func testThatOrDoesNotFallBackOnTypeMismatches() {
+        for r in [
+            json["people"]["name"].or("test").string,
+            json["people"][0][1].or("test").string,
+            json["people"][0]["age"].or("test").string,
+        ] {
+            XCTAssert(r.error != nil, "Unexpected successful parse: \(r)")
+        }
+    }
 }
