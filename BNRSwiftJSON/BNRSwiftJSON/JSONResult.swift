@@ -78,7 +78,7 @@ public extension JSONResult {
             ifSuccess: Result.success,
             ifFailure: { error in
                 switch error {
-                case .IndexOutOfBounds, .KeyNotFound where self.errorAge == 0:
+                case .IndexOutOfBounds, .KeyNotFound where errorAge == 0:
                     return Result.success(fallback)
 
                 default:
