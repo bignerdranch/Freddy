@@ -88,7 +88,7 @@ public extension JSONResult {
     }
     
     /**
-        Retrieves a `Dictionary` `JSON`s from the given `Result`.  If the target value's type inside of the `JSON` instance does not match `Dictionary`, this property returns `.Failure` with an appropriate `error`.
+        Retrieves a `Dictionary` of `JSON`s from the given `Result`.  If the target value's type inside of the `JSON` instance does not match `Dictionary`, this property returns `.Failure` with an appropriate `error`.
     */
     var dictionary: Result<[String: JSON], NSError> {
         return convertType(Dictionary<String, JSON>.self, { $0.dictionary })
