@@ -17,7 +17,8 @@ public struct JSONResult: Equatable {
 
     // errorAge is used to implement `or`, where we need to know if, when `r` is in
     // the Failure case, the error happened immediately prior to the `or` call or
-    // earlier up the chain.
+    // earlier up the chain. If `errorAge` is 0, then error occurred immediately
+    /// prior to the `fallback` value, and we want to default to that.
     private let errorAge: Int
 
     internal static func success(success: JSON) -> JSONResult {
@@ -73,6 +74,13 @@ public struct JSONResult: Equatable {
 // MARK: - Fallback to a given value
 
 public extension JSONResult {
+    /**
+        A function to 'fallback' to a given default value if the previous `Result` contains the appropriate error.
+
+        :param: fallback The value of `JSON` to default to.
+
+        :returns: Returns an instance of `JSONResult` with the fallback value in the success case, or an error in the failure case.
+    */
     func or(fallback: JSON) -> JSONResult {
         return JSONResult(r.analysis(
             ifSuccess: Result.success,
