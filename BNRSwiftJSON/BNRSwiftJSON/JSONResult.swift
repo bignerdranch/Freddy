@@ -13,7 +13,7 @@ import Result
     A newtype for Result<JSON> that provides additional properties for extracting typed JSON data.
 */
 public struct JSONResult: Equatable {
-    private let result: Result<JSON, NSError>
+    public let result: Result<JSON, NSError>
 
     internal static func success(success: JSON) -> JSONResult {
         return JSONResult(Result.success(success))
