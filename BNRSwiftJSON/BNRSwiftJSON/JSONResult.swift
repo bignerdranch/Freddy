@@ -13,7 +13,7 @@ import Result
     A newtype for Result<JSON> that provides additional properties for extracting typed JSON data.
 */
 public struct JSONResult: Equatable {
-    private let r: Result<JSON, NSError>
+    private let result: Result<JSON, NSError>
 
     internal static func success(success: JSON) -> JSONResult {
         return JSONResult(Result.success(success))
@@ -24,29 +24,29 @@ public struct JSONResult: Equatable {
     }
 
     internal init(_ result: Result<JSON, NSError>) {
-        self.r = result
+        self.result = result
     }
 
     private func flatMap(f: JSON -> JSONResult) -> JSONResult {
-        return JSONResult(r.flatMap { value in f(value).r })
+        return JSONResult(result.flatMap { value in f(value).result })
     }
 
     private func flatMap<T>(f: JSON -> Result<T, NSError>) -> Result<T, NSError> {
-        return r.flatMap(f)
+        return result.flatMap(f)
     }
 
     /**
         Returns `true` if the target's underlying `Result` is in the `.Success` case.
     */
     public var isSuccess: Bool {
-        return r.value != nil
+        return result.value != nil
     }
 
     /**
         Returns `true` if the target's underlying `Result` is in the `.Failure` case.
     */
     public var isFailure: Bool {
-        return r.error != nil
+        return result.error != nil
     }
 }
 
@@ -145,5 +145,5 @@ public extension JSONResult {
 // MARK: - Test Equality
 
 public func ==(lhs: JSONResult, rhs: JSONResult) -> Bool {
-    return lhs.r == rhs.r
+    return lhs.result == rhs.result
 }
