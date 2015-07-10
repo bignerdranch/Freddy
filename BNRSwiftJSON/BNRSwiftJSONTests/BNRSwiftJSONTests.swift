@@ -220,23 +220,23 @@ class BNRSwiftJSONTests: XCTestCase {
         }
     }
     
-    func testJSONErrorTypeNotConvertible() {
+    func testJSONErrorTypeMismatch() {
         let matt = json["people"][0]["name"].int
         switch matt {
         case .Success(let name):
             XCTFail("The `name` should not be convertible to `int`.")
         case .Failure(let error):
-            XCTAssertEqual(error.value.code, JSON.ErrorCode.TypeNotConvertible.rawValue, "The error should be due to `name` not being convertible to `int`.")
+            XCTAssertEqual(error.value.code, JSON.ErrorCode.TypeMismatch.rawValue, "The error should be due to `name` not being convertible to `int`.")
         }
     }
     
-    func testJSONErrorUnexpectedType() {
+    func testJSONErrorSubscriptTypeMismatch() {
         let matt = json["people"]["name"].string
         switch matt {
         case .Success:
             XCTFail("The `name` key should not be availabe as a subscript for the `Array` `people`.")
         case .Failure(let error):
-            XCTAssertEqual(error.value.code, JSON.ErrorCode.UnexpectedType.rawValue, "The `people` `Array` is not subscriptable with `String`s.")
+            XCTAssertEqual(error.value.code, JSON.ErrorCode.SubscriptTypeMismatch.rawValue, "The `people` `Array` is not subscriptable with `String`s.")
         }
     }
 }

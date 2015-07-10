@@ -13,17 +13,17 @@ import Result
     A newtype for Result<JSON> that provides additional properties for extracting typed JSON data.
 */
 public struct JSONResult: Equatable {
-    private let r: Result<JSON, NSError>
+    private let r: Result<JSON, JSON.Error>
 
     internal static func success(success: JSON) -> JSONResult {
         return JSONResult(Result.success(success))
     }
 
-    internal static func failure(error: NSError) -> JSONResult {
+    internal static func failure(error: JSON.Error) -> JSONResult {
         return JSONResult(Result.failure(error))
     }
 
-    internal init(_ result: Result<JSON, NSError>) {
+    internal init(_ result: Result<JSON, JSON.Error>) {
         self.r = result
     }
 
@@ -31,8 +31,12 @@ public struct JSONResult: Equatable {
         return JSONResult(r.flatMap { value in f(value).r })
     }
 
-    private func flatMap<T>(f: JSON -> Result<T, NSError>) -> Result<T, NSError> {
+    private func flatMap<T>(f: JSON -> Result<T, JSON.Error>) -> Result<T, JSON.Error> {
         return r.flatMap(f)
+    }
+
+    private func flatMap<T>(f: JSON -> Result<T, NSError>) -> Result<T, NSError> {
+        return r.analysis(ifSuccess: f, ifFailure: { Result.failure($0.toNSError()) })
     }
 
     /**
@@ -66,12 +70,12 @@ public extension JSONResult {
 // MARK: - JSONResult Computed Properties
 
 public extension JSONResult {
-    private func convertType<T>(problem: String, _ f: (JSON) -> T?) -> Result<T, NSError> {
+    private func convertType<T>(expectedType: Any.Type, _ f: (JSON) -> T?) -> Result<T, NSError> {
         return flatMap { json in
             if let converted = f(json) {
                 return Result.success(converted)
             } else {
-                return Result.failure(JSON.makeError(JSON.ErrorCode.TypeNotConvertible, problem: problem))
+                return Result.failure(JSON.Error.TypeMismatch(expectedType).toNSError())
             }
         }
     }
@@ -80,49 +84,49 @@ public extension JSONResult {
         Retrieves an `Array` of `JSON`s from the given `Result`.  If the target value's type inside of the `JSON` instance does not match `Array`, this property returns `.Failure` with an appropriate `error`.
     */
     var array: Result<[JSON], NSError> {
-        return convertType("Array", { $0.array })
+        return convertType(Array<JSON>.self, { $0.array })
     }
     
     /**
-        Retrieves a `Dictionary` `JSON`s from the given `Result`.  If the target value's type inside of the `JSON` instance does not match `Dictionary`, this property returns `.Failure` with an appropriate `error`.
+        Retrieves a `Dictionary` of `JSON`s from the given `Result`.  If the target value's type inside of the `JSON` instance does not match `Dictionary`, this property returns `.Failure` with an appropriate `error`.
     */
     var dictionary: Result<[String: JSON], NSError> {
-        return convertType("Dictionary", { $0.dictionary })
+        return convertType(Dictionary<String, JSON>.self, { $0.dictionary })
     }
     
     /**
         Retrieves a `Double` from the `Result`.  If the target value's type inside of the `JSON` instance is not a numeric type, this property returns `.Failure` with an appropriate `error`.
     */
     var double: Result<Double, NSError> {
-        return convertType("Double", { $0.double })
+        return convertType(Double.self, { $0.double })
     }
 
     /**
         Retrieves an `Int` from the `Result`.  If the target value's type inside of the `JSON` instance is not a numeric type, this property returns `.Failure` with an appropriate `error`.  Otherwise, any fractional components are discarded to return a success value.
     */
     var int: Result<Int, NSError> {
-        return convertType("Int", { $0.int })
+        return convertType(Int.self, { $0.int })
     }
 
     /**
         Retrieves a `String` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `String`, this property returns `.Failure` with an appropriate `error`.
     */
     var string: Result<String, NSError> {
-        return convertType("String", { $0.string })
+        return convertType(String.self, { $0.string })
     }
     
     /**
         Retrieves a `Bool` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `Bool`, this property returns `.Failure` with an appropriate `error`.
     */
     var bool: Result<Bool, NSError> {
-        return convertType("Bool", { $0.bool })
+        return convertType(Bool.self, { $0.bool })
     }
 
     /**
         Retrieves `Null` from the `Result`. If the target value's type inside of the `JSON` instance does not match `Null`, this property returns `.Failure` with an appropriate `error`.
     */
     var null: Result<(), NSError> {
-        return convertType("Null", { $0.isNull ? () : nil })
+        return convertType(Void.self, { $0.isNull ? () : nil })
     }
 }
 

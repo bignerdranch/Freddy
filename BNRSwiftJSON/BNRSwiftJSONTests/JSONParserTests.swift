@@ -19,100 +19,64 @@ import Cocoa
 import UIKit
 #endif
 
+private extension JSON.Error {
+    var parseError: BNRSwiftJSON.ParseError? {
+        switch self {
+        case .ParseError(let e): return e
+        default: return nil
+        }
+    }
+}
+
 class JSONParserTests: XCTestCase {
 
     func testThatParserUnderstandsNull() {
         let result = JSONFromString("null")
-        switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.Null)
-        case .Failure(let error):
-            XCTFail("Unexpected error \(error)")
-        }
+        BNRAssertEqual(result.value, JSON.Null)
     }
 
     func testThatParserSkipsLeadingWhitespace() {
         let result = JSONFromString("   \t\r\nnull")
-        switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.Null)
-        case .Failure(let error):
-            XCTFail("Unexpected error \(error)")
-        }
+        BNRAssertEqual(result.value, JSON.Null)
     }
 
     func testThatParserAllowsTrailingWhitespace() {
         let result = JSONFromString("null   ")
-        switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.Null)
-        case .Failure(let error):
-            XCTFail("Unexpected error \(error)")
-        }
+        BNRAssertEqual(result.value, JSON.Null)
     }
 
     func testThatParserFailsWhenTrailingDataIsPresent() {
         let result = JSONFromString("null   true")
-        switch result {
-        case .Success(let boxed):
-            XCTFail("Unexpected success")
-        case .Failure(let error):
-            XCTAssertEqual(error.value.code, JSON.ErrorCode.CouldNotParseJSON.rawValue)
-        }
+        BNRAssertEqual(result.error?.parseError, ParseError.UnexpectedTrailingData)
     }
 
     func testThatParserUnderstandsTrue() {
         let result = JSONFromString("true")
-        switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.Bool(true))
-        case .Failure(let error):
-            XCTFail("Unexpected error \(error)")
-        }
+        BNRAssertEqual(result.value, JSON.Bool(true))
     }
 
     func testThatParserUnderstandsFalse() {
         let result = JSONFromString("false")
-        switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.Bool(false))
-        case .Failure(let error):
-            XCTFail("Unexpected error \(error)")
-        }
+        BNRAssertEqual(result.value, JSON.Bool(false))
     }
 
     func testThatParserUnderstandsStringsWithoutEscapes() {
         let s = "a b c d 😀 x y z"
         let result = JSONFromString("\"\(s)\"")
-        switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.String(s))
-        case .Failure(let error):
-            XCTFail("Unexpected error \(error)")
-        }
+        BNRAssertEqual(result.value, JSON.String(s))
     }
 
     func testThatParserUnderstandsStringsWithEscapedCharacters() {
         let expect = " \" \\ / \n \r \t \u{000c} \u{0008} "
         let result = JSONFromString("\" \\\" \\\\ \\/ \\n \\r \\t \\f \\b \"")
-        switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.String(expect))
-        case .Failure(let error):
-            XCTFail("Unexpected error \(error)")
-        }
+        BNRAssertEqual(result.value, JSON.String(expect))
     }
 
     func testThatParserUnderstandsStringsWithEscapedUnicode() {
         // try 1-, 2-, and 3-byte UTF8 sequences
         let expect = "\u{0060}\u{012a}\u{12AB}"
         let result = JSONFromString("\"\\u0060\\u012a\\u12AB\"")
-        switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.String(expect))
-        case .Failure(let error):
-            XCTFail("Unexpected error \(error)")
-        }
+        BNRAssertEqual(result.value, JSON.String(expect))
     }
 
     func testThatParserUnderstandsNumbers() {
@@ -140,48 +104,53 @@ class JSONParserTests: XCTestCase {
             ("123.45e+2", 123.45e+2),
             ("-123.45e-2", -123.45e-2),
         ] {
-            switch JSONFromString(s) {
-            case .Success(let boxed):
-                XCTAssertEqualWithAccuracy(boxed.value.double!, shouldBeDouble, DBL_EPSILON)
-            case .Failure(let error):
-                XCTFail("Unexpected error \(error)")
-            default:
-                XCTFail("Unexpected downcast failure")
-            }
+            let result = JSONFromString(s)
+            BNRAssertEqualWithAccuracy(result.value?.double, shouldBeDouble, DBL_EPSILON)
         }
     }
 
-    func testThatParserRejectsInvalidNumbers() {
+    func testThatParserRejectsNumbersWithTrailingNumbers() {
         for s in [
             "012",
             "0.1.2",
-            "-.123",
-            ".123",
+        ] {
+            let result = JSONFromString(s)
+            BNRAssertEqual(result.error?.parseError, ParseError.UnexpectedTrailingData)
+        }
+    }
+
+    func testThatParserRejectsNumbersThatBeginWithPeriod() {
+        for (s, pos) in [
+            ("-.123", 1),
+            (".123", 0),
+        ] {
+            let result = JSONFromString(s)
+            BNRAssertEqual(result.error?.parseError, ParseError.InvalidCharacter(pos))
+        }
+    }
+
+    func testThatParserRejectsNumbersThatEndAbruptly() {
+        for s in [
             "1.",
             "1.0e",
             "1.0e+",
             "1.0e-",
-            "0e1",
         ] {
-            switch JSONFromString(s) {
-            case .Success(let boxed):
-                XCTFail("Unexpected success for \"\(s)\"")
-            case .Failure(let error):
-                XCTAssertEqual(error.value.code, JSON.ErrorCode.CouldNotParseJSON.rawValue)
-            }
+            let result = JSONFromString(s)
+            BNRAssertEqual(result.error?.parseError, ParseError.UnexpectedEndOfInput)
         }
+    }
+
+    func testThatParserRejectsScientficNotationWithZeroCoefficient() {
+        let result = JSONFromString("0e1")
+        BNRAssertEqual(result.error?.parseError, ParseError.UnexpectedTrailingData)
     }
 
     func testThatParserUnderstandsEmptyArrays() {
         let expect = JSON.Array([])
         for s in ["[]", "[  ]", "  [  ]  "] {
             let result = JSONFromString(s)
-            switch result {
-            case .Success(let boxed):
-                XCTAssertEqual(boxed.value, expect)
-            case .Failure(let error):
-                XCTFail("Unexpected error \(error)")
-            }
+            BNRAssertEqual(result.value, expect)
         }
     }
 
@@ -192,12 +161,7 @@ class JSONParserTests: XCTestCase {
             ("[ [\"nested\"]]", [JSON.Array([.String("nested")])])
         ] {
             let result = JSONFromString(s)
-            switch result {
-            case .Success(let boxed):
-                XCTAssertEqual(boxed.value, JSON.Array(expect))
-            case .Failure(let error):
-                XCTFail("Unexpected error \(error)")
-            }
+            BNRAssertEqual(result.value, JSON.Array(expect))
         }
     }
 
@@ -210,24 +174,14 @@ class JSONParserTests: XCTestCase {
                  .Array([.Array([.String("doubly"), .Bool(true)])])])
         ] {
             let result = JSONFromString(s)
-            switch result {
-            case .Success(let boxed):
-                XCTAssertEqual(boxed.value, JSON.Array(expect))
-            case .Failure(let error):
-                XCTFail("Unexpected error \(error)")
-            }
+            BNRAssertEqual(result.value, JSON.Array(expect))
         }
     }
 
     func testThatParserUnderstandsEmptyObjects() {
         for s in ["{}", "  {   }  "] {
             let result = JSONFromString(s)
-            switch result {
-            case .Success(let boxed):
-                XCTAssertEqual(boxed.value, JSON.Dictionary([:]))
-            case .Failure(let error):
-                XCTFail("Unexpected error \(error)")
-            }
+            BNRAssertEqual(result.value, JSON.Dictionary([:]))
         }
     }
 
@@ -238,12 +192,7 @@ class JSONParserTests: XCTestCase {
             ("{  \"a\" : { \"b\": true }  }", ["a": JSON.Dictionary(["b":.Bool(true)])]),
         ] {
             let result = JSONFromString(s)
-            switch result {
-            case .Success(let boxed):
-                XCTAssertEqual(boxed.value, JSON.Dictionary(expect))
-            case .Failure(let error):
-                XCTFail("Unexpected error \(error)")
-            }
+            BNRAssertEqual(result.value, JSON.Dictionary(expect))
         }
     }
 
@@ -258,12 +207,7 @@ class JSONParserTests: XCTestCase {
                  "c": .Dictionary(["x": .Bool(true), "y": .Null])]),
         ] {
             let result = JSONFromString(s)
-            switch result {
-            case .Success(let boxed):
-                XCTAssertEqual(boxed.value, JSON.Dictionary(expect))
-            case .Failure(let error):
-                XCTFail("Unexpected error \(error)")
-            }
+            BNRAssertEqual(result.value, JSON.Dictionary(expect))
         }
     }
 }

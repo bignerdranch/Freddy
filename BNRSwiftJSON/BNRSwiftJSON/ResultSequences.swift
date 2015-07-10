@@ -38,7 +38,7 @@ A function to break a `Result` containing a sequence into a tuple of `successes`
 :returns: If `result` is in the success case, returns a tuple of `successes` and `failures`. Otherwise,
 returns the error currently in `result`.
 */
-public func splitResult<T, U, Error, S: SequenceType where S.Generator.Element == T>(result: Result<S, Error>, f: T -> Result<U, Error>) -> Result<(successes: [U], failures: [Error]), Error> {
+public func splitResult<T, E1, U, E2, S: SequenceType where S.Generator.Element == T>(result: Result<S, E1>, f: T -> Result<U, E2>) -> Result<(successes: [U], failures: [E2]), E1> {
     return result.map { partitionResults(map($0, f)) }
 }
 
