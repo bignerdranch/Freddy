@@ -13,7 +13,7 @@ import Result
     A protocol to provide functionality of creating a model object with a `JSONValue`.
 */
 public protocol JSONDecodable {
-    typealias Error
+    typealias Error: ErrorType
 
     /**
         Creates an instance of a model with a `JSONValue` instance.

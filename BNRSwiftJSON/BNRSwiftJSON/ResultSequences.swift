@@ -16,17 +16,17 @@ A function to collect `Result` instances into an array of `T` in the `.Success` 
 
 :returns: A `Result<[T], Error>` such that all successes are collected within an array of the `.Success` case.
 */
-public func collectAllSuccesses<T, Error, S: SequenceType where S.Generator.Element == Result<T, Error>>(results: S) -> Result<[T], Error> {
+public func collectAllSuccesses<T, Error: ErrorType, S: SequenceType where S.Generator.Element == Result<T, Error>>(results: S) -> Result<[T], Error> {
     var successes = [T]()
     for result in results {
         switch result {
         case .Success(let res):
-            successes.append(res.value)
+            successes.append(res)
         case .Failure(let error):
-            return Result.failure(error.value)
+            return .Failure(error)
         }
     }
-    return Result.success(successes)
+    return .Success(successes)
 }
 
 /**
@@ -38,8 +38,8 @@ A function to break a `Result` containing a sequence into a tuple of `successes`
 :returns: If `result` is in the success case, returns a tuple of `successes` and `failures`. Otherwise,
 returns the error currently in `result`.
 */
-public func splitResult<T, U, Error, S: SequenceType where S.Generator.Element == T>(result: Result<S, Error>, f: T -> Result<U, Error>) -> Result<(successes: [U], failures: [Error]), Error> {
-    return result.map { partitionResults(map($0, f)) }
+public func splitResult<T, U, Error, S: SequenceType where S.Generator.Element == T>(result: Result<S, Error>, _ f: T -> Result<U, Error>) -> Result<(successes: [U], failures: [Error]), Error> {
+    return result.map { partitionResults($0.map(f)) }
 }
 
 /**
@@ -49,14 +49,14 @@ A function to partition an array of results into successes and failure.
 
 :returns: A tuple of successes and failures.
 */
-public func partitionResults<T, Error, S: SequenceType where S.Generator.Element == Result<T, Error>>(results: S) -> ([T], [Error]) {
+public func partitionResults<T, Error: ErrorType, S: SequenceType where S.Generator.Element == Result<T, Error>>(results: S) -> ([T], [Error]) {
     var successes = [T]()
     var failures = [Error]()
 
     for result in results {
         switch result {
-        case let .Success(boxed): successes.append(boxed.value)
-        case let .Failure(error): failures.append(error.value)
+        case let .Success(value): successes.append(value)
+        case let .Failure(error): failures.append(error)
         }
     }
 

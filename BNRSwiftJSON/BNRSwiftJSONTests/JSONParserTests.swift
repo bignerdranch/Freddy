@@ -8,24 +8,14 @@
 
 import XCTest
 import BNRSwiftJSON
-import Box
-
-// In at least one unit test file, Swift 1.2 requires importing the respective
-// platform UI toolkit in order to copy all the overlay libraries into the
-// test target.
-#if os(OSX)
-import Cocoa
-#elseif os(iOS)
-import UIKit
-#endif
 
 class JSONParserTests: XCTestCase {
 
     func testThatParserUnderstandsNull() {
         let result = JSONFromString("null")
         switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.Null)
+        case .Success(let value):
+            XCTAssertEqual(value, JSON.Null)
         case .Failure(let error):
             XCTFail("Unexpected error \(error)")
         }
@@ -34,8 +24,8 @@ class JSONParserTests: XCTestCase {
     func testThatParserSkipsLeadingWhitespace() {
         let result = JSONFromString("   \t\r\nnull")
         switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.Null)
+        case .Success(let value):
+            XCTAssertEqual(value, JSON.Null)
         case .Failure(let error):
             XCTFail("Unexpected error \(error)")
         }
@@ -44,8 +34,8 @@ class JSONParserTests: XCTestCase {
     func testThatParserAllowsTrailingWhitespace() {
         let result = JSONFromString("null   ")
         switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.Null)
+        case .Success(let value):
+            XCTAssertEqual(value, JSON.Null)
         case .Failure(let error):
             XCTFail("Unexpected error \(error)")
         }
@@ -54,18 +44,18 @@ class JSONParserTests: XCTestCase {
     func testThatParserFailsWhenTrailingDataIsPresent() {
         let result = JSONFromString("null   true")
         switch result {
-        case .Success(let boxed):
+        case .Success:
             XCTFail("Unexpected success")
         case .Failure(let error):
-            XCTAssertEqual(error.value.code, JSON.ErrorCode.CouldNotParseJSON.rawValue)
+            XCTAssertEqual(error.code, JSON.ErrorCode.CouldNotParseJSON.rawValue)
         }
     }
 
     func testThatParserUnderstandsTrue() {
         let result = JSONFromString("true")
         switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.Bool(true))
+        case .Success(let value):
+            XCTAssertEqual(value, JSON.Bool(true))
         case .Failure(let error):
             XCTFail("Unexpected error \(error)")
         }
@@ -74,8 +64,8 @@ class JSONParserTests: XCTestCase {
     func testThatParserUnderstandsFalse() {
         let result = JSONFromString("false")
         switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.Bool(false))
+        case .Success(let value):
+            XCTAssertEqual(value, JSON.Bool(false))
         case .Failure(let error):
             XCTFail("Unexpected error \(error)")
         }
@@ -85,8 +75,8 @@ class JSONParserTests: XCTestCase {
         let s = "a b c d 😀 x y z"
         let result = JSONFromString("\"\(s)\"")
         switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.String(s))
+        case .Success(let value):
+            XCTAssertEqual(value, JSON.String(s))
         case .Failure(let error):
             XCTFail("Unexpected error \(error)")
         }
@@ -96,8 +86,8 @@ class JSONParserTests: XCTestCase {
         let expect = " \" \\ / \n \r \t \u{000c} \u{0008} "
         let result = JSONFromString("\" \\\" \\\\ \\/ \\n \\r \\t \\f \\b \"")
         switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.String(expect))
+        case .Success(let value):
+            XCTAssertEqual(value, JSON.String(expect))
         case .Failure(let error):
             XCTFail("Unexpected error \(error)")
         }
@@ -108,8 +98,8 @@ class JSONParserTests: XCTestCase {
         let expect = "\u{0060}\u{012a}\u{12AB}"
         let result = JSONFromString("\"\\u0060\\u012a\\u12AB\"")
         switch result {
-        case .Success(let boxed):
-            XCTAssertEqual(boxed.value, JSON.String(expect))
+        case .Success(let value):
+            XCTAssertEqual(value, JSON.String(expect))
         case .Failure(let error):
             XCTFail("Unexpected error \(error)")
         }
@@ -122,8 +112,8 @@ class JSONParserTests: XCTestCase {
             ("  -20  ", -20),
         ] {
             switch JSONFromString(s) {
-            case .Success(let boxed):
-                XCTAssertEqual(boxed.value.int!, shouldBeInt)
+            case .Success(let value):
+                XCTAssertEqual(value.int!, shouldBeInt)
             case .Failure(let error):
                 XCTFail("Unexpected error \(error)")
             }
@@ -141,12 +131,10 @@ class JSONParserTests: XCTestCase {
             ("-123.45e-2", -123.45e-2),
         ] {
             switch JSONFromString(s) {
-            case .Success(let boxed):
-                XCTAssertEqualWithAccuracy(boxed.value.double!, shouldBeDouble, DBL_EPSILON)
+            case .Success(let value):
+                XCTAssertEqualWithAccuracy(value.double!, shouldBeDouble, accuracy: DBL_EPSILON)
             case .Failure(let error):
                 XCTFail("Unexpected error \(error)")
-            default:
-                XCTFail("Unexpected downcast failure")
             }
         }
     }
@@ -164,10 +152,10 @@ class JSONParserTests: XCTestCase {
             "0e1",
         ] {
             switch JSONFromString(s) {
-            case .Success(let boxed):
+            case .Success:
                 XCTFail("Unexpected success for \"\(s)\"")
             case .Failure(let error):
-                XCTAssertEqual(error.value.code, JSON.ErrorCode.CouldNotParseJSON.rawValue)
+                XCTAssertEqual(error.code, JSON.ErrorCode.CouldNotParseJSON.rawValue)
             }
         }
     }
@@ -177,8 +165,8 @@ class JSONParserTests: XCTestCase {
         for s in ["[]", "[  ]", "  [  ]  "] {
             let result = JSONFromString(s)
             switch result {
-            case .Success(let boxed):
-                XCTAssertEqual(boxed.value, expect)
+            case .Success(let value):
+                XCTAssertEqual(value, expect)
             case .Failure(let error):
                 XCTFail("Unexpected error \(error)")
             }
@@ -193,8 +181,8 @@ class JSONParserTests: XCTestCase {
         ] {
             let result = JSONFromString(s)
             switch result {
-            case .Success(let boxed):
-                XCTAssertEqual(boxed.value, JSON.Array(expect))
+            case .Success(let value):
+                XCTAssertEqual(value, JSON.Array(expect))
             case .Failure(let error):
                 XCTFail("Unexpected error \(error)")
             }
@@ -211,8 +199,8 @@ class JSONParserTests: XCTestCase {
         ] {
             let result = JSONFromString(s)
             switch result {
-            case .Success(let boxed):
-                XCTAssertEqual(boxed.value, JSON.Array(expect))
+            case .Success(let value):
+                XCTAssertEqual(value, JSON.Array(expect))
             case .Failure(let error):
                 XCTFail("Unexpected error \(error)")
             }
@@ -223,8 +211,8 @@ class JSONParserTests: XCTestCase {
         for s in ["{}", "  {   }  "] {
             let result = JSONFromString(s)
             switch result {
-            case .Success(let boxed):
-                XCTAssertEqual(boxed.value, JSON.Dictionary([:]))
+            case .Success(let value):
+                XCTAssertEqual(value, JSON.Dictionary([:]))
             case .Failure(let error):
                 XCTFail("Unexpected error \(error)")
             }
@@ -239,8 +227,8 @@ class JSONParserTests: XCTestCase {
         ] {
             let result = JSONFromString(s)
             switch result {
-            case .Success(let boxed):
-                XCTAssertEqual(boxed.value, JSON.Dictionary(expect))
+            case .Success(let value):
+                XCTAssertEqual(value, JSON.Dictionary(expect))
             case .Failure(let error):
                 XCTFail("Unexpected error \(error)")
             }
@@ -259,8 +247,8 @@ class JSONParserTests: XCTestCase {
         ] {
             let result = JSONFromString(s)
             switch result {
-            case .Success(let boxed):
-                XCTAssertEqual(boxed.value, JSON.Dictionary(expect))
+            case .Success(let value):
+                XCTAssertEqual(value, JSON.Dictionary(expect))
             case .Failure(let error):
                 XCTFail("Unexpected error \(error)")
             }

@@ -81,34 +81,6 @@
 			remoteGlobalIDString = D45480871A957362009D7229;
 			remoteInfo = "Result-iOSTests";
 		};
-		52875A171B1F85B20090E5C5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 52875A101B1F85B20090E5C5 /* Box.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D470AC3719E86128003DA6C6;
-			remoteInfo = "Box-Mac";
-		};
-		52875A191B1F85B20090E5C5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 52875A101B1F85B20090E5C5 /* Box.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D470AC4219E86128003DA6C6;
-			remoteInfo = "Box-MacTests";
-		};
-		52875A1B1B1F85B20090E5C5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 52875A101B1F85B20090E5C5 /* Box.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F8BB81D31A939B66001AA352;
-			remoteInfo = "Box-iOS";
-		};
-		52875A1D1B1F85B20090E5C5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 52875A101B1F85B20090E5C5 /* Box.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F8BB81DD1A939B67001AA352;
-			remoteInfo = "Box-iOSTests";
-		};
 		52D461C21AD6287100614571 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 52D461BA1AD6287000614571 /* Result.xcodeproj */;
@@ -144,6 +116,34 @@
 			remoteGlobalIDString = DBE2CD401B176CF6007E1499;
 			remoteInfo = "BNRSwiftJSON-Mac";
 		};
+		DBE98DC51B6AFADD00132F0B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 52875A011B1F85A50090E5C5 /* Result.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D03579A31B2B788F005D26AE;
+			remoteInfo = "Result-watchOS";
+		};
+		DBE98DC71B6AFADD00132F0B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 52875A011B1F85A50090E5C5 /* Result.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D03579B01B2B78A1005D26AE;
+			remoteInfo = "Result-watchOSTests";
+		};
+		DBE98DCB1B6AFADD00132F0B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 52D461BA1AD6287000614571 /* Result.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D03579A31B2B788F005D26AE;
+			remoteInfo = "Result-watchOS";
+		};
+		DBE98DCD1B6AFADD00132F0B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 52D461BA1AD6287000614571 /* Result.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D03579B01B2B78A1005D26AE;
+			remoteInfo = "Result-watchOSTests";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -162,7 +162,6 @@
 		522975A91AE2EB1E0037260D /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
 		522975AE1AE2EED30037260D /* JSONParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParserTests.swift; sourceTree = "<group>"; };
 		52875A011B1F85A50090E5C5 /* Result.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Result.xcodeproj; path = ../Carthage/Checkouts/Result/Result.xcodeproj; sourceTree = "<group>"; };
-		52875A101B1F85B20090E5C5 /* Box.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Box.xcodeproj; path = ../Carthage/Checkouts/Result/Carthage/Checkouts/Box/Box.xcodeproj; sourceTree = "<group>"; };
 		52875A231B1F89C60090E5C5 /* ResultMapping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultMapping.swift; sourceTree = "<group>"; };
 		52875A281B1F8B300090E5C5 /* ResultSequences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultSequences.swift; sourceTree = "<group>"; };
 		52875A2B1B1F8D760090E5C5 /* ResultFlatMapping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultFlatMapping.swift; sourceTree = "<group>"; };
@@ -213,7 +212,6 @@
 		1CD8E2881AC37CF70035F303 = {
 			isa = PBXGroup;
 			children = (
-				52875A101B1F85B20090E5C5 /* Box.xcodeproj */,
 				52875A011B1F85A50090E5C5 /* Result.xcodeproj */,
 				1CD8E2941AC37CF70035F303 /* BNRSwiftJSON */,
 				1CD8E2A11AC37CF70035F303 /* BNRSwiftJSONTests */,
@@ -286,17 +284,8 @@
 				52875A0B1B1F85A50090E5C5 /* Result-MacTests.xctest */,
 				52875A0D1B1F85A50090E5C5 /* Result.framework */,
 				52875A0F1B1F85A50090E5C5 /* Result-iOSTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		52875A111B1F85B20090E5C5 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				52875A181B1F85B20090E5C5 /* Box.framework */,
-				52875A1A1B1F85B20090E5C5 /* Box-MacTests.xctest */,
-				52875A1C1B1F85B20090E5C5 /* Box.framework */,
-				52875A1E1B1F85B20090E5C5 /* Box-iOSTests.xctest */,
+				DBE98DC61B6AFADD00132F0B /* Result.framework */,
+				DBE98DC81B6AFADD00132F0B /* Result-watchOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -318,6 +307,8 @@
 				52D461C91AD6287100614571 /* Result-MacTests.xctest */,
 				52D461C31AD6287100614571 /* Result.framework */,
 				52D461C51AD6287100614571 /* Result-iOSTests.xctest */,
+				DBE98DCC1B6AFADD00132F0B /* Result.framework */,
+				DBE98DCE1B6AFADD00132F0B /* Result-watchOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -430,7 +421,9 @@
 		1CD8E2891AC37CF70035F303 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Big Nerd Ranch Inc";
 				TargetAttributes = {
 					1CD8E2911AC37CF70035F303 = {
@@ -458,10 +451,6 @@
 			productRefGroup = 1CD8E2931AC37CF70035F303 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
-				{
-					ProductGroup = 52875A111B1F85B20090E5C5 /* Products */;
-					ProjectRef = 52875A101B1F85B20090E5C5 /* Box.xcodeproj */;
-				},
 				{
 					ProductGroup = 52875A021B1F85A50090E5C5 /* Products */;
 					ProjectRef = 52875A011B1F85A50090E5C5 /* Result.xcodeproj */;
@@ -510,34 +499,6 @@
 			remoteRef = 52875A0E1B1F85A50090E5C5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		52875A181B1F85B20090E5C5 /* Box.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Box.framework;
-			remoteRef = 52875A171B1F85B20090E5C5 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		52875A1A1B1F85B20090E5C5 /* Box-MacTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "Box-MacTests.xctest";
-			remoteRef = 52875A191B1F85B20090E5C5 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		52875A1C1B1F85B20090E5C5 /* Box.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Box.framework;
-			remoteRef = 52875A1B1B1F85B20090E5C5 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		52875A1E1B1F85B20090E5C5 /* Box-iOSTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "Box-iOSTests.xctest";
-			remoteRef = 52875A1D1B1F85B20090E5C5 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		52D461C31AD6287100614571 /* Result.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -564,6 +525,34 @@
 			fileType = wrapper.cfbundle;
 			path = "Result-MacTests.xctest";
 			remoteRef = 52D461C81AD6287100614571 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DBE98DC61B6AFADD00132F0B /* Result.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Result.framework;
+			remoteRef = DBE98DC51B6AFADD00132F0B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DBE98DC81B6AFADD00132F0B /* Result-watchOSTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Result-watchOSTests.xctest";
+			remoteRef = DBE98DC71B6AFADD00132F0B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DBE98DCC1B6AFADD00132F0B /* Result.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Result.framework;
+			remoteRef = DBE98DCB1B6AFADD00132F0B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DBE98DCE1B6AFADD00132F0B /* Result-watchOSTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Result-watchOSTests.xctest";
+			remoteRef = DBE98DCD1B6AFADD00132F0B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -696,6 +685,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -778,6 +768,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bignerdranch.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = BNRSwiftJSON;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -797,6 +788,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bignerdranch.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = BNRSwiftJSON;
 				SKIP_INSTALL = YES;
 			};
@@ -815,6 +807,7 @@
 				);
 				INFOPLIST_FILE = BNRSwiftJSONTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bignerdranch.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -828,6 +821,7 @@
 				);
 				INFOPLIST_FILE = BNRSwiftJSONTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bignerdranch.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -850,6 +844,7 @@
 				INFOPLIST_FILE = BNRSwiftJSON/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bignerdranch.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = BNRSwiftJSON;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -869,6 +864,7 @@
 				INFOPLIST_FILE = BNRSwiftJSON/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bignerdranch.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = BNRSwiftJSON;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -891,6 +887,7 @@
 				INFOPLIST_FILE = BNRSwiftJSONTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bignerdranch.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -907,6 +904,7 @@
 				INFOPLIST_FILE = BNRSwiftJSONTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bignerdranch.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};

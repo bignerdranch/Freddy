@@ -10,7 +10,7 @@ import Foundation
 import BNRSwiftJSON
 import Result
 
-public struct Person: Printable {
+public struct Person: CustomStringConvertible {
     public let name: String
     public var age: Int
     public let spouse: Bool
