@@ -16,11 +16,11 @@ public struct JSONResult: Equatable {
     public let result: Result<JSON, NSError>
 
     internal static func success(success: JSON) -> JSONResult {
-        return JSONResult(Result.success(success))
+        return JSONResult(.Success(success))
     }
 
     internal static func failure(error: NSError) -> JSONResult {
-        return JSONResult(Result.failure(error))
+        return JSONResult(.Failure(error))
     }
 
     internal init(_ result: Result<JSON, NSError>) {
@@ -69,9 +69,9 @@ public extension JSONResult {
     private func convertType<T>(problem: String, _ f: (JSON) -> T?) -> Result<T, NSError> {
         return flatMap { json in
             if let converted = f(json) {
-                return Result.success(converted)
+                return .Success(converted)
             } else {
-                return Result.failure(JSON.makeError(JSON.ErrorCode.TypeNotConvertible, problem: problem))
+                return .Failure(JSON.makeError(JSON.ErrorCode.TypeNotConvertible, problem: problem))
             }
         }
     }

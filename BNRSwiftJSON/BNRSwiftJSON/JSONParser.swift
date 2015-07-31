@@ -26,9 +26,9 @@ public func JSONFromUnsafeBufferPointer(buffer: UnsafeBufferPointer<UInt8>) -> R
     var parser = Parser(input: buffer)
     switch parser.parse() {
     case .Ok(let json):
-        return Result.success(json)
+        return .Success(json)
     case .Err(let error):
-        return Result.failure(error)
+        return .Failure(error)
     }
 }
 
@@ -141,10 +141,14 @@ private struct Parser {
         advancing: while loc < input.count {
             switch input[loc] {
             case Literal.LEFT_BRACKET:
-                return increaseDepth(decodeArray)
+                return increaseDepth {
+                    decodeArray()
+                }
 
             case Literal.LEFT_BRACE:
-                return increaseDepth(decodeObject)
+                return increaseDepth {
+                    decodeObject()
+                }
 
             case Literal.DOUBLE_QUOTE:
                 return decodeString()

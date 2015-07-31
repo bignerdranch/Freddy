@@ -12,7 +12,7 @@ extension Dictionary {
     
     func map<NewValue>(@noescape transform: (Key, Value) -> NewValue) -> Dictionary<Key, NewValue> {
         let initial = Dictionary<Key, NewValue>(minimumCapacity: count)
-        return reduce(self, initial) { (var dictionary, element) in
+        return reduce(initial) { (var dictionary, element) in
             dictionary[element.0] = transform(element.0, element.1)
             return dictionary
         }

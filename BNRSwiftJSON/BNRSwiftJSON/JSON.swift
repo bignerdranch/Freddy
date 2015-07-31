@@ -12,7 +12,7 @@ import Result
 /**
     An enum to describe the structure of JSON.
 */
-public enum JSON: Equatable {
+public enum JSON {
     case Array([JSON])
     case Dictionary([Swift.String: JSON])
     case Double(Swift.Double)
@@ -48,8 +48,12 @@ public enum JSON: Equatable {
             return JSONResult(JSONFromUTF8Data(data))
 
         case .NSJSONSerialization:
-            let jsonObject = try { NSJSONSerialization.JSONObjectWithData(data, options: nil, error: $0) }
-            return JSONResult(jsonObject.map { makeJSON($0) })
+            do {
+                let json = try NSJSONSerialization.JSONObjectWithData(data, options: [])
+                return JSONResult.success(makeJSON(json))
+            } catch {
+                return JSONResult.failure(error as NSError)
+            }
         }
     }
 
@@ -120,7 +124,12 @@ public enum JSON: Equatable {
     */
     public func serialize() -> Result<NSData, NSError> {
         let obj: AnyObject = toNSJSONSerializationObject()
-        return try { NSJSONSerialization.dataWithJSONObject(obj, options: nil, error: $0) }
+        do {
+            let result = try NSJSONSerialization.dataWithJSONObject(obj, options: [])
+            return .Success(result)
+        } catch {
+            return .Failure(error as NSError)
+        }
     }
 
     /**
@@ -131,13 +140,9 @@ public enum JSON: Equatable {
     private func toNSJSONSerializationObject() -> AnyObject {
         switch self {
         case .Array(let jsonArray):
-            return map(jsonArray) { $0.toNSJSONSerializationObject() }
+            return jsonArray.map { $0.toNSJSONSerializationObject() }
         case .Dictionary(let jsonDictionary):
-            var dict: [Swift.String: AnyObject] = Swift.Dictionary(minimumCapacity: jsonDictionary.count)
-            for (key, value) in jsonDictionary {
-                dict[key] = value.toNSJSONSerializationObject()
-            }
-            return dict
+            return jsonDictionary.map { $1.toNSJSONSerializationObject() } as [NSObject: AnyObject]
         case .String(let str):
             return str
         case .Double(let num):
@@ -348,14 +353,14 @@ extension JSON: Equatable {}
 
 // MARK: - Printing
 
-extension JSON: Printable {
+extension JSON: CustomStringConvertible {
 
     public var description: Swift.String {
         switch self {
         case .String(let str): return str
-        case .Double(let double): return toString(double)
-        case .Int(let int): return toString(int)
-        case .Bool(let bool): return toString(bool)
+        case .Double(let double): return Swift.String(double)
+        case .Int(let int): return Swift.String(int)
+        case .Bool(let bool): return Swift.String(bool)
         case .Null: return "null"
         default:
             return serialize().map {
