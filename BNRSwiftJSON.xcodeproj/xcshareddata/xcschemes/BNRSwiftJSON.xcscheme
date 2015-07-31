@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DBE2CD401B176CF6007E1499"
+               BlueprintIdentifier = "DBE98DD81B6B0D4900132F0B"
                BuildableName = "BNRSwiftJSON.framework"
-               BlueprintName = "BNRSwiftJSON-Mac"
+               BlueprintName = "BNRSwiftJSON"
                ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,9 +28,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DBE2CD4A1B176CF6007E1499"
-               BuildableName = "BNRSwiftJSON-MacTests.xctest"
-               BlueprintName = "BNRSwiftJSON-MacTests"
+               BlueprintIdentifier = "DBE98E011B6B0D7200132F0B"
+               BuildableName = "BNRSwiftJSONTests.xctest"
+               BlueprintName = "BNRSwiftJSONTests"
                ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -40,15 +40,16 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DBE2CD4A1B176CF6007E1499"
-               BuildableName = "BNRSwiftJSON-MacTests.xctest"
-               BlueprintName = "BNRSwiftJSON-MacTests"
+               BlueprintIdentifier = "DBE98E011B6B0D7200132F0B"
+               BuildableName = "BNRSwiftJSONTests.xctest"
+               BlueprintName = "BNRSwiftJSONTests"
                ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -56,9 +57,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DBE2CD401B176CF6007E1499"
+            BlueprintIdentifier = "DBE98DD81B6B0D4900132F0B"
             BuildableName = "BNRSwiftJSON.framework"
-            BlueprintName = "BNRSwiftJSON-Mac"
+            BlueprintName = "BNRSwiftJSON"
             ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -78,9 +79,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DBE2CD401B176CF6007E1499"
+            BlueprintIdentifier = "DBE98DD81B6B0D4900132F0B"
             BuildableName = "BNRSwiftJSON.framework"
-            BlueprintName = "BNRSwiftJSON-Mac"
+            BlueprintName = "BNRSwiftJSON"
             ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -96,9 +97,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DBE2CD401B176CF6007E1499"
+            BlueprintIdentifier = "DBE98DD81B6B0D4900132F0B"
             BuildableName = "BNRSwiftJSON.framework"
-            BlueprintName = "BNRSwiftJSON-Mac"
+            BlueprintName = "BNRSwiftJSON"
             ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
