@@ -3,7 +3,7 @@
 //  BNRSwiftJSON
 //
 //  Created by Zachary Waldowski on 5/11/15.
-//  Copyright (c) 2015 Big Nerd Ranch Inc. Licensed under MIT.
+//  Copyright © 2015 Big Nerd Ranch. Licensed under MIT.
 //
 
 // MARK: - ArrayLiteralConvertible
