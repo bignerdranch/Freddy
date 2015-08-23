@@ -10,11 +10,6 @@ import Foundation
 import Result
 
 // TODO: use error types
-private func makeParseError(reason: String) -> JSONParser.Result {
-    return .Err(JSON.makeError(.CouldNotParseJSON, problem: reason))
-}
-
-// TODO: this is a duplicate
 private func makeParseError(reason: String) -> Result<JSON, NSError> {
     return .Failure(JSON.makeError(.CouldNotParseJSON, problem: reason))
 }
@@ -71,17 +66,9 @@ private struct Literal {
     static let nine  = UInt8(ascii: "9")
 }
 
-// TODO: fix the aliasing
-public typealias _JSONResult = Result<JSON, NSError>
-
 private let ParserMaximumDepth = 512
 
 public struct JSONParser {
-
-    private enum Result {
-        case Ok(JSON)
-        case Err(NSError)
-    }
 
     private enum Sign: Int {
         case Positive = 1
@@ -98,9 +85,9 @@ public struct JSONParser {
         self.owner = owner
     }
 
-    public mutating func parse() -> _JSONResult {
+    public mutating func parse() -> Result<JSON, NSError> {
         switch parseValue() {
-        case let .Ok(value):
+        case let .Success(value):
             if loc != input.count {
                 skipWhitespace()
                 if loc != input.count {
@@ -109,7 +96,7 @@ public struct JSONParser {
             }
             return .Success(value)
 
-        case let .Err(error):
+        case let .Failure(error):
             return .Failure(error)
         }
     }
@@ -121,7 +108,7 @@ public struct JSONParser {
         return ret
     }
 
-    private mutating func parseValue() -> Result {
+    private mutating func parseValue() -> Result<JSON, NSError> {
         if depth > ParserMaximumDepth {
             return makeParseError("Exceeded nesting limit around position character \(loc)")
         }
@@ -182,7 +169,7 @@ public struct JSONParser {
         }
     }
 
-    private mutating func decodeNull() -> Result {
+    private mutating func decodeNull() -> Result<JSON, NSError> {
         if loc + 4 > input.count {
             return makeParseError("invalid token at position \(loc) - expected `null`")
         }
@@ -194,10 +181,10 @@ public struct JSONParser {
         }
 
         loc += 4
-        return .Ok(.Null)
+        return .Success(.Null)
     }
 
-    private mutating func decodeTrue() -> Result {
+    private mutating func decodeTrue() -> Result<JSON, NSError> {
         if loc + 4 > input.count {
             return makeParseError("invalid token at position \(loc) - expected `true`")
         }
@@ -209,10 +196,10 @@ public struct JSONParser {
         }
 
         loc += 4
-        return .Ok(.Bool(true))
+        return .Success(.Bool(true))
     }
 
-    private mutating func decodeFalse() -> Result {
+    private mutating func decodeFalse() -> Result<JSON, NSError> {
         if loc + 5 > input.count {
             return makeParseError("invalid token at position \(loc) - expected `false`")
         }
@@ -225,11 +212,11 @@ public struct JSONParser {
         }
 
         loc += 5
-        return .Ok(.Bool(false))
+        return .Success(.Bool(false))
     }
 
     private var stringDecodingBuffer = [UInt8]()
-    private mutating func decodeString() -> Result {
+    private mutating func decodeString() -> Result<JSON, NSError> {
         let start = loc
         ++loc
         stringDecodingBuffer.removeAll(keepCapacity: true)
@@ -261,9 +248,9 @@ public struct JSONParser {
             case Literal.DOUBLE_QUOTE:
                 ++loc
                 stringDecodingBuffer.append(0)
-                return stringDecodingBuffer.withUnsafeBufferPointer { buffer -> Result in
+                return stringDecodingBuffer.withUnsafeBufferPointer { buffer -> Result<JSON, NSError> in
                     if let s = String.fromCString(UnsafePointer<CChar>(buffer.baseAddress)) {
-                        return .Ok(.String(s))
+                        return .Success(.String(s))
                     } else {
                         return makeParseError("invalid string at position \(start) - possibly malformed unicode characters")
                     }
@@ -313,7 +300,7 @@ public struct JSONParser {
         }
     }
 
-    private mutating func decodeArray() -> Result {
+    private mutating func decodeArray() -> Result<JSON, NSError> {
         let start = loc
         ++loc
         var items = [JSON]()
@@ -323,7 +310,7 @@ public struct JSONParser {
 
             if loc < input.count && input[loc] == Literal.RIGHT_BRACKET {
                 ++loc
-                return .Ok(.Array(items))
+                return .Success(.Array(items))
             }
 
             if !items.isEmpty {
@@ -335,7 +322,7 @@ public struct JSONParser {
             }
 
             switch parseValue() {
-            case .Ok(let json):
+            case .Success(let json):
                 items.append(json)
 
             case let error:
@@ -372,7 +359,7 @@ public struct JSONParser {
 
     private var decodeObjectBuffers = DecodeObjectBuffers()
 
-    private mutating func decodeObject() -> Result {
+    private mutating func decodeObject() -> Result<JSON, NSError> {
         let start = loc
         ++loc
         var pairs = decodeObjectBuffers.getBuffer()
@@ -387,7 +374,7 @@ public struct JSONParser {
                     obj[k] = v
                 }
                 decodeObjectBuffers.putBuffer(pairs)
-                return .Ok(.Dictionary(obj))
+                return .Success(.Dictionary(obj))
             }
 
             if !pairs.isEmpty {
@@ -402,7 +389,7 @@ public struct JSONParser {
             let key: String
             if loc < input.count && input[loc] == Literal.DOUBLE_QUOTE {
                 switch decodeString() {
-                case .Ok(let json):
+                case .Success(let json):
                     key = json.string!
                 case let error:
                     return error
@@ -419,7 +406,7 @@ public struct JSONParser {
             }
 
             switch parseValue() {
-            case .Ok(let json):
+            case .Success(let json):
                 let tuple = (key, json)
                 pairs.append(tuple)
             case let error:
@@ -430,7 +417,7 @@ public struct JSONParser {
         return makeParseError("unexpected end of data while parsing object at position \(start)")
     }
 
-    private mutating func decodeNumberNegative(start: Int) -> Result {
+    private mutating func decodeNumberNegative(start: Int) -> Result<JSON, NSError> {
         if ++loc >= input.count {
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
@@ -447,9 +434,9 @@ public struct JSONParser {
         }
     }
 
-    private mutating func decodeNumberLeadingZero(start: Int, sign: Sign = .Positive) -> Result {
+    private mutating func decodeNumberLeadingZero(start: Int, sign: Sign = .Positive) -> Result<JSON, NSError> {
         if ++loc >= input.count {
-            return .Ok(.Int(0))
+            return .Success(.Int(0))
         }
 
         switch (input[loc], sign) {
@@ -457,14 +444,14 @@ public struct JSONParser {
             return decodeNumberDecimal(start, sign: sign, value: 0)
 
         case (_, .Negative):
-            return .Ok(.Double(-0.0))
+            return .Success(.Double(-0.0))
 
         default:
-            return .Ok(.Int(0))
+            return .Success(.Int(0))
         }
     }
 
-    private mutating func decodeNumberPreDecimalDigits(start: Int, sign: Sign = .Positive) -> Result {
+    private mutating func decodeNumberPreDecimalDigits(start: Int, sign: Sign = .Positive) -> Result<JSON, NSError> {
         var value = 0
 
         advancing: while loc < input.count {
@@ -485,10 +472,10 @@ public struct JSONParser {
             }
         }
 
-        return .Ok(.Int(sign.rawValue * value))
+        return .Success(.Int(sign.rawValue * value))
     }
 
-    private mutating func decodeNumberDecimal(start: Int, sign: Sign, value: Double) -> Result {
+    private mutating func decodeNumberDecimal(start: Int, sign: Sign, value: Double) -> Result<JSON, NSError> {
         if ++loc >= input.count {
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
@@ -502,7 +489,7 @@ public struct JSONParser {
         }
     }
 
-    private mutating func decodeNumberPostDecimalDigits(start: Int, sign: Sign, var value: Double) -> Result {
+    private mutating func decodeNumberPostDecimalDigits(start: Int, sign: Sign, var value: Double) -> Result<JSON, NSError> {
         var position = 0.1
 
         advancing: while loc < input.count {
@@ -521,10 +508,10 @@ public struct JSONParser {
             }
         }
 
-        return .Ok(.Double(Double(sign.rawValue) * value))
+        return .Success(.Double(Double(sign.rawValue) * value))
     }
 
-    private mutating func decodeNumberExponent(start: Int, sign: Sign, value: Double) -> Result {
+    private mutating func decodeNumberExponent(start: Int, sign: Sign, value: Double) -> Result<JSON, NSError> {
         if ++loc >= input.count {
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
@@ -544,7 +531,7 @@ public struct JSONParser {
         }
     }
 
-    private mutating func decodeNumberExponentSign(start: Int, sign: Sign, value: Double, expSign: Sign) -> Result {
+    private mutating func decodeNumberExponentSign(start: Int, sign: Sign, value: Double, expSign: Sign) -> Result<JSON, NSError> {
         if ++loc >= input.count {
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
@@ -557,7 +544,7 @@ public struct JSONParser {
         }
     }
 
-    private mutating func decodeNumberExponentDigits(start: Int, sign: Sign, value: Double, expSign: Sign) -> Result {
+    private mutating func decodeNumberExponentDigits(start: Int, sign: Sign, value: Double, expSign: Sign) -> Result<JSON, NSError> {
         var exponent: Double = 0
 
         advancing: while loc < input.count {
@@ -572,7 +559,7 @@ public struct JSONParser {
             }
         }
 
-        return .Ok(.Double(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent)))
+        return .Success(.Double(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent)))
     }
 }
 
