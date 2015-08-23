@@ -561,11 +561,6 @@ public struct JSONParser {
 
 public extension JSONParser {
     
-    init(buffer: UnsafeBufferPointer<UInt8>) {
-        self.input = buffer
-        self.owner = nil
-    }
-    
     init(utf8Data data: NSData) {
         let buffer = UnsafeBufferPointer(start: UnsafePointer<UInt8>(data.bytes), count: data.length)
         self.init(buffer: buffer, owner: data)
