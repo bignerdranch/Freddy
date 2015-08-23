@@ -10,6 +10,27 @@ import XCTest
 import BNRSwiftJSON
 import Result
 
+private func ~=<T>(lhs: T.Type, rhs: Any.Type) -> Bool {
+    return lhs == rhs
+}
+
+private func ~=(lhs: JSON.Error, rhs: JSON.Error) -> Bool {
+    switch (lhs, rhs) {
+    case let (.IndexOutOfBounds(lInt), .IndexOutOfBounds(rInt)):
+        return lInt == rInt
+    case let (.KeyNotFound(lString), .KeyNotFound(rString)):
+        return lString == rString
+    case let (.UnexpectedSubscript(lType), .UnexpectedSubscript(rType)):
+        return lType == rType
+    case let (.TypeNotConvertible(lType), .TypeNotConvertible(rType)):
+        return lType == rType
+    case let (.CouldNotParse(lError), .CouldNotParse(rError)):
+        return (lError as NSError) == (rError as NSError)
+    case (_, _):
+        return false
+    }
+}
+
 class BNRSwiftJSONTests: XCTestCase {
     
     lazy var data: NSData? = {
@@ -62,7 +83,7 @@ class BNRSwiftJSONTests: XCTestCase {
         switch serializedJSONData {
         case .Success(let data):
             let serialJSON = JSON.createJSONFrom(data)
-            XCTAssert(json == serialJSON, "The JSON values should be equal.")
+            XCTAssert(json.value == serialJSON.value, "The JSON values should be equal.")
         case .Failure(let error):
             XCTFail("Failed with error: \(error)")
         }
@@ -198,8 +219,10 @@ class BNRSwiftJSONTests: XCTestCase {
         switch peopl {
         case .Success:
             XCTFail("There should be no people.")
+        case .Failure(JSON.Error.KeyNotFound("peopl")):
+            break
         case .Failure(let error):
-            XCTAssertEqual(error.code, JSON.ErrorCode.KeyNotFound.rawValue, "The error should be due to the key not being found.")
+            XCTFail("The error should be due to the key not being found, but was: \(error).")
         }
     }
     
@@ -208,8 +231,10 @@ class BNRSwiftJSONTests: XCTestCase {
         switch person {
         case .Success:
             XCTFail("There should be no person at index 4.")
+        case .Failure(JSON.Error.IndexOutOfBounds(4)):
+            break
         case .Failure(let error):
-            XCTAssertEqual(error.code, JSON.ErrorCode.IndexOutOfBounds.rawValue, "The error should be due to the index being out of bounds.")
+            XCTFail("The error should be due to the index being out of bounds, but was: \(error).")
         }
     }
     
@@ -218,18 +243,22 @@ class BNRSwiftJSONTests: XCTestCase {
         switch matt {
         case .Success:
             XCTFail("The `name` should not be convertible to `int`.")
+        case .Failure(JSON.Error.TypeNotConvertible(Swift.Int.self)):
+            break
         case .Failure(let error):
-            XCTAssertEqual(error.code, JSON.ErrorCode.TypeNotConvertible.rawValue, "The error should be due to `name` not being convertible to `int`.")
+            XCTFail("The error should be due to `name` not being convertible to `int`, but was: \(error).")
         }
     }
     
-    func testJSONErrorUnexpectedType() {
+    func testJSONErrorUnexpectedSubscript() {
         let matt = json["people"]["name"].string
         switch matt {
         case .Success:
             XCTFail("The `name` key should not be availabe as a subscript for the `Array` `people`.")
+        case .Failure(JSON.Error.UnexpectedSubscript(String.self)):
+            break
         case .Failure(let error):
-            XCTAssertEqual(error.code, JSON.ErrorCode.UnexpectedType.rawValue, "The `people` `Array` is not subscriptable with `String`s.")
+            XCTFail("The error should be due to the `people` `Array` not being subscriptable with `String`s, but was: \(error).")
         }
     }
 }

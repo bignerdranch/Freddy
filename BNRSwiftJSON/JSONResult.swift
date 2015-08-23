@@ -9,7 +9,7 @@
 import Foundation
 import Result
 
-public typealias JSONResult = Result<JSON, NSError>
+public typealias JSONResult = Result<JSON, JSON.Error>
 
 // MARK: - Serialize JSON Result
 
@@ -30,85 +30,76 @@ public extension ResultType where Value == JSON {
 
 // MARK: - JSON Result Computed Properties
 
-public extension ResultType where Value == JSON {
-    private func convertType<T>(problem: String, @noescape _ getter: JSON -> T?) -> Result<T, NSError> {
+public extension ResultType where Value == JSON, Error == JSON.Error {
+    private func convertType<T>(@noescape getter: JSON -> T?) -> Result<T, JSON.Error> {
         return analysis(ifSuccess: { json in
-            if let converted = getter(json) {
-                return .Success(converted)
-            } else {
-                return .Failure(JSON.makeError(JSON.ErrorCode.TypeNotConvertible, problem: problem))
-            }
-        }, ifFailure: { error in
-            .Failure(error as NSError)
-        })
+            Result(getter(json), failWith: JSON.Error.TypeNotConvertible(T.self))
+        }, ifFailure: Result.Failure)
     }
 
     /**
         Retrieves an `Array` of `JSON`s from the given `Result`.  If the target value's type inside of the `JSON` instance does not match `Array`, this property returns `.Failure` with an appropriate `error`.
     */
-    var array: Result<[JSON], NSError> {
-        return convertType("Array", { $0.array })
+    var array: Result<[JSON], JSON.Error> {
+        return convertType { $0.array }
     }
     
     /**
         Retrieves a `Dictionary` `JSON`s from the given `Result`.  If the target value's type inside of the `JSON` instance does not match `Dictionary`, this property returns `.Failure` with an appropriate `error`.
     */
-    var dictionary: Result<[String: JSON], NSError> {
-        return convertType("Dictionary", { $0.dictionary })
+    var dictionary: Result<[String: JSON], JSON.Error> {
+        return convertType { $0.dictionary }
     }
     
     /**
         Retrieves a `Double` from the `Result`.  If the target value's type inside of the `JSON` instance is not a numeric type, this property returns `.Failure` with an appropriate `error`.
     */
-    var double: Result<Double, NSError> {
-        return convertType("Double", { $0.double })
+    var double: Result<Double, JSON.Error> {
+        return convertType { $0.double }
     }
 
     /**
         Retrieves an `Int` from the `Result`.  If the target value's type inside of the `JSON` instance is not a numeric type, this property returns `.Failure` with an appropriate `error`.  Otherwise, any fractional components are discarded to return a success value.
     */
-    var int: Result<Int, NSError> {
-        return convertType("Int", { $0.int })
+    var int: Result<Int, JSON.Error> {
+        return convertType { $0.int }
     }
 
     /**
         Retrieves a `String` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `String`, this property returns `.Failure` with an appropriate `error`.
     */
-    var string: Result<String, NSError> {
-        return convertType("String", { $0.string })
+    var string: Result<String, JSON.Error> {
+        return convertType { $0.string }
     }
     
     /**
         Retrieves a `Bool` from the `Result`.  If the target value's type inside of the `JSON` instance does not match `Bool`, this property returns `.Failure` with an appropriate `error`.
     */
-    var bool: Result<Bool, NSError> {
-        return convertType("Bool", { $0.bool })
+    var bool: Result<Bool, JSON.Error> {
+        return convertType { $0.bool }
     }
 
     /**
         Retrieves `Null` from the `Result`. If the target value's type inside of the `JSON` instance does not match `Null`, this property returns `.Failure` with an appropriate `error`.
     */
-    var null: Result<(), NSError> {
-        return convertType("Null", { $0.isNull ? () : nil })
+    var null: Result<Void, JSON.Error> {
+        return convertType { $0.isNull ? () : nil }
     }
 }
 
 // MARK: - Subscript JSONResult
 
-public extension ResultType where Value == JSON {
+public extension ResultType where Value == JSON, Error == JSON.Error {
     subscript(key: String) -> JSONResult {
         return analysis(ifSuccess: { JSON in
             JSON[key]
-        }, ifFailure: { error in
-            .Failure(error as NSError)
-        })
+        }, ifFailure: Result.Failure)
     }
     
     subscript(index: Int) -> JSONResult {
         return analysis(ifSuccess: { JSON in
             JSON[index]
-        }, ifFailure: { error in
-            .Failure(error as NSError)
-        })
+        }, ifFailure: Result.Failure)
     }
 }
+
