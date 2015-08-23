@@ -45,7 +45,8 @@ public enum JSON {
     public static func createJSONFrom(data: NSData, usingParser parser: Parser = .PureSwift) -> JSONResult {
         switch parser {
         case .PureSwift:
-            return JSONResult(JSONFromUTF8Data(data))
+            var parser = JSONParser(utf8Data: data)
+            return JSONResult(parser.parse())
 
         case .NSJSONSerialization:
             do {
