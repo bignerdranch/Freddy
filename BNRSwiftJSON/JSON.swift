@@ -48,17 +48,17 @@ public enum JSON {
             var parser = JSONParser(utf8Data: data)
             switch parser.parse() {
             case .Success(let json):
-                return JSONResult.success(json)
+                return .Success(json)
             case .Failure(let error):
-                return JSONResult.failure(error as NSError)
+                return .Failure(error as NSError)
             }
 
         case .NSJSONSerialization:
             do {
                 let json = try NSJSONSerialization.JSONObjectWithData(data, options: [])
-                return JSONResult.success(makeJSON(json))
+                return .Success(makeJSON(json))
             } catch {
-                return JSONResult.failure(error as NSError)
+                return .Failure(error as NSError)
             }
         }
     }
@@ -268,12 +268,12 @@ public extension JSON {
             switch self {
             case .Dictionary(let jsonDict):
                 if let obj = jsonDict[key] {
-                    return JSONResult.success(obj)
+                    return .Success(obj)
                 } else {
-                    return JSONResult.failure(JSON.makeError(ErrorCode.KeyNotFound, problem: key))
+                    return .Failure(JSON.makeError(ErrorCode.KeyNotFound, problem: key))
                 }
             default:
-                return JSONResult.failure(JSON.makeError(ErrorCode.UnexpectedType, problem: key))
+                return .Failure(JSON.makeError(ErrorCode.UnexpectedType, problem: key))
             }
         }
     }
@@ -283,12 +283,12 @@ public extension JSON {
             switch self {
             case .Array(let jsonArray):
                 if index <= jsonArray.count - 1 {
-                    return JSONResult.success(jsonArray[index])
+                    return .Success(jsonArray[index])
                 } else {
-                    return JSONResult.failure(JSON.makeError(ErrorCode.IndexOutOfBounds, problem: index))
+                    return .Failure(JSON.makeError(ErrorCode.IndexOutOfBounds, problem: index))
                 }
             default:
-                return JSONResult.failure(JSON.makeError(ErrorCode.UnexpectedType, problem: index))
+                return .Failure(JSON.makeError(ErrorCode.UnexpectedType, problem: index))
             }
         }
     }
