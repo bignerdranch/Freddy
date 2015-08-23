@@ -293,7 +293,7 @@ public extension JSON {
 public extension JSON {
     static let errorDomain = "com.bignerdranch.BNRSwiftJSON"
     
-    enum ErrorCode: Swift.Int {
+    enum ErrorCode: Swift.Int, ErrorType {
         case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible, CouldNotParseJSON
     }
 }
