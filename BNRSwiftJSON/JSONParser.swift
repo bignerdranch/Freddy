@@ -9,31 +9,14 @@
 import Foundation
 import Result
 
-public func JSONFromString(s: String) -> Result<JSON, NSError> {
-    return s.nulTerminatedUTF8.withUnsafeBufferPointer { nulTerminatedBuffer in
-        // don't want to include the nul termination in the buffer - trim it off
-        let buffer = UnsafeBufferPointer(start: nulTerminatedBuffer.baseAddress, count: nulTerminatedBuffer.count - 1)
-        return JSONFromUnsafeBufferPointer(buffer)
-    }
-}
-
-public func JSONFromUTF8Data(data: NSData) -> Result<JSON, NSError> {
-    let buffer = UnsafeBufferPointer(start: UnsafePointer<UInt8>(data.bytes), count: data.length)
-    return JSONFromUnsafeBufferPointer(buffer)
-}
-
-public func JSONFromUnsafeBufferPointer(buffer: UnsafeBufferPointer<UInt8>) -> Result<JSON, NSError> {
-    var parser = Parser(input: buffer)
-    switch parser.parse() {
-    case .Ok(let json):
-        return .Success(json)
-    case .Err(let error):
-        return .Failure(error)
-    }
-}
-
-private func makeParseError(reason: String) -> Parser.Result {
+// TODO: use error types
+private func makeParseError(reason: String) -> JSONParser.Result {
     return .Err(JSON.makeError(.CouldNotParseJSON, problem: reason))
+}
+
+// TODO: this is a duplicate
+private func makeParseError(reason: String) -> Result<JSON, NSError> {
+    return .Failure(JSON.makeError(.CouldNotParseJSON, problem: reason))
 }
 
 private struct Literal {
@@ -88,29 +71,34 @@ private struct Literal {
     static let nine  = UInt8(ascii: "9")
 }
 
-let ParserMaximumDepth = 512
+// TODO: fix the aliasing
+public typealias _JSONResult = Result<JSON, NSError>
 
-private struct Parser {
-    enum Result {
+private let ParserMaximumDepth = 512
+
+public struct JSONParser {
+
+    private enum Result {
         case Ok(JSON)
         case Err(NSError)
     }
 
-    enum Sign: Int {
+    private enum Sign: Int {
         case Positive = 1
         case Negative = -1
     }
 
-    let input: UnsafeBufferPointer<UInt8>
-    var loc = 0
-
-    var depth = 0
-
-    init(input: UnsafeBufferPointer<UInt8>) {
-        self.input = input
+    private let input: UnsafeBufferPointer<UInt8>
+    private let owner: Any?
+    private var loc = 0
+    private var depth = 0
+    
+    private init<T>(buffer: UnsafeBufferPointer<UInt8>, owner: T) {
+        self.input = buffer
+        self.owner = owner
     }
 
-    mutating func parse() -> Result {
+    public mutating func parse() -> _JSONResult {
         switch parseValue() {
         case let .Ok(value):
             if loc != input.count {
@@ -119,21 +107,21 @@ private struct Parser {
                     return makeParseError("unexpected data after parsed JSON")
                 }
             }
-            return .Ok(value)
+            return .Success(value)
 
-        case let result:
-            return result
+        case let .Err(error):
+            return .Failure(error)
         }
     }
 
-    mutating func increaseDepth<R>(@noescape fn: () -> R) -> R {
+    private mutating func increaseDepth<R>(@noescape fn: () -> R) -> R {
         ++depth
         let ret = fn()
         --depth
         return ret
     }
 
-    mutating func parseValue() -> Result {
+    private mutating func parseValue() -> Result {
         if depth > ParserMaximumDepth {
             return makeParseError("Exceeded nesting limit around position character \(loc)")
         }
@@ -182,7 +170,7 @@ private struct Parser {
         return makeParseError("Invalid value around character \(loc)")
     }
 
-    mutating func skipWhitespace() {
+    private mutating func skipWhitespace() {
         while loc < input.count {
             switch input[loc] {
             case Literal.SPACE, Literal.TAB, Literal.RETURN, Literal.NEWLINE:
@@ -194,7 +182,7 @@ private struct Parser {
         }
     }
 
-    mutating func decodeNull() -> Result {
+    private mutating func decodeNull() -> Result {
         if loc + 4 > input.count {
             return makeParseError("invalid token at position \(loc) - expected `null`")
         }
@@ -209,7 +197,7 @@ private struct Parser {
         return .Ok(.Null)
     }
 
-    mutating func decodeTrue() -> Result {
+    private mutating func decodeTrue() -> Result {
         if loc + 4 > input.count {
             return makeParseError("invalid token at position \(loc) - expected `true`")
         }
@@ -224,7 +212,7 @@ private struct Parser {
         return .Ok(.Bool(true))
     }
 
-    mutating func decodeFalse() -> Result {
+    private mutating func decodeFalse() -> Result {
         if loc + 5 > input.count {
             return makeParseError("invalid token at position \(loc) - expected `false`")
         }
@@ -240,8 +228,8 @@ private struct Parser {
         return .Ok(.Bool(false))
     }
 
-    var stringDecodingBuffer = [UInt8]()
-    mutating func decodeString() -> Result {
+    private var stringDecodingBuffer = [UInt8]()
+    private mutating func decodeString() -> Result {
         let start = loc
         ++loc
         stringDecodingBuffer.removeAll(keepCapacity: true)
@@ -290,7 +278,7 @@ private struct Parser {
         return makeParseError("unexpected end of data while parsing string at position \(start)")
     }
 
-    func readUnicodeEscape(from: Int) -> [UInt8]? {
+    private func readUnicodeEscape(from: Int) -> [UInt8]? {
         if from + 4 > input.count {
             return nil
         }
@@ -325,7 +313,7 @@ private struct Parser {
         }
     }
 
-    mutating func decodeArray() -> Result {
+    private mutating func decodeArray() -> Result {
         let start = loc
         ++loc
         var items = [JSON]()
@@ -365,7 +353,7 @@ private struct Parser {
     // Rough estimate of the difference between this and using a fresh
     // [(String,JSON)] for the `pairs` variable in decodeObject() below is
     // about 12% on an iPhone 5.
-    struct DecodeObjectBuffers {
+    private struct DecodeObjectBuffers {
         var buffers = [[(String,JSON)]]()
 
         mutating func getBuffer() -> [(String,JSON)] {
@@ -382,9 +370,9 @@ private struct Parser {
         }
     }
 
-    var decodeObjectBuffers = DecodeObjectBuffers()
+    private var decodeObjectBuffers = DecodeObjectBuffers()
 
-    mutating func decodeObject() -> Result {
+    private mutating func decodeObject() -> Result {
         let start = loc
         ++loc
         var pairs = decodeObjectBuffers.getBuffer()
@@ -442,7 +430,7 @@ private struct Parser {
         return makeParseError("unexpected end of data while parsing object at position \(start)")
     }
 
-    mutating func decodeNumberNegative(start: Int) -> Result {
+    private mutating func decodeNumberNegative(start: Int) -> Result {
         if ++loc >= input.count {
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
@@ -459,7 +447,7 @@ private struct Parser {
         }
     }
 
-    mutating func decodeNumberLeadingZero(start: Int, sign: Sign = .Positive) -> Result {
+    private mutating func decodeNumberLeadingZero(start: Int, sign: Sign = .Positive) -> Result {
         if ++loc >= input.count {
             return .Ok(.Int(0))
         }
@@ -476,7 +464,7 @@ private struct Parser {
         }
     }
 
-    mutating func decodeNumberPreDecimalDigits(start: Int, sign: Sign = .Positive) -> Result {
+    private mutating func decodeNumberPreDecimalDigits(start: Int, sign: Sign = .Positive) -> Result {
         var value = 0
 
         advancing: while loc < input.count {
@@ -500,7 +488,7 @@ private struct Parser {
         return .Ok(.Int(sign.rawValue * value))
     }
 
-    mutating func decodeNumberDecimal(start: Int, sign: Sign, value: Double) -> Result {
+    private mutating func decodeNumberDecimal(start: Int, sign: Sign, value: Double) -> Result {
         if ++loc >= input.count {
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
@@ -514,7 +502,7 @@ private struct Parser {
         }
     }
 
-    mutating func decodeNumberPostDecimalDigits(start: Int, sign: Sign, var value: Double) -> Result {
+    private mutating func decodeNumberPostDecimalDigits(start: Int, sign: Sign, var value: Double) -> Result {
         var position = 0.1
 
         advancing: while loc < input.count {
@@ -536,7 +524,7 @@ private struct Parser {
         return .Ok(.Double(Double(sign.rawValue) * value))
     }
 
-    mutating func decodeNumberExponent(start: Int, sign: Sign, value: Double) -> Result {
+    private mutating func decodeNumberExponent(start: Int, sign: Sign, value: Double) -> Result {
         if ++loc >= input.count {
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
@@ -556,7 +544,7 @@ private struct Parser {
         }
     }
 
-    mutating func decodeNumberExponentSign(start: Int, sign: Sign, value: Double, expSign: Sign) -> Result {
+    private mutating func decodeNumberExponentSign(start: Int, sign: Sign, value: Double, expSign: Sign) -> Result {
         if ++loc >= input.count {
             return makeParseError("unexpected end of data while parsing number at position \(start)")
         }
@@ -569,7 +557,7 @@ private struct Parser {
         }
     }
 
-    mutating func decodeNumberExponentDigits(start: Int, sign: Sign, value: Double, expSign: Sign) -> Result {
+    private mutating func decodeNumberExponentDigits(start: Int, sign: Sign, value: Double, expSign: Sign) -> Result {
         var exponent: Double = 0
 
         advancing: while loc < input.count {
@@ -586,4 +574,27 @@ private struct Parser {
 
         return .Ok(.Double(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent)))
     }
+}
+
+public extension JSONParser {
+    
+    init(buffer: UnsafeBufferPointer<UInt8>) {
+        self.input = buffer
+        self.owner = nil
+    }
+    
+    init(utf8Data data: NSData) {
+        let buffer = UnsafeBufferPointer(start: UnsafePointer<UInt8>(data.bytes), count: data.length)
+        self.init(buffer: buffer, owner: data)
+    }
+    
+    init(string: String) {
+        let codePoints = string.nulTerminatedUTF8
+        let buffer = codePoints.withUnsafeBufferPointer { nulTerminatedBuffer in
+            // don't want to include the nul termination in the buffer - trim it off
+            UnsafeBufferPointer(start: nulTerminatedBuffer.baseAddress, count: nulTerminatedBuffer.count - 1)
+        }
+        self.init(buffer: buffer, owner: codePoints)
+    }
+    
 }
