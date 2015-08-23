@@ -8,6 +8,12 @@
 
 import XCTest
 import BNRSwiftJSON
+import Result
+
+private func JSONFromString(s: String) -> Result<JSON, NSError> {
+    var parser = JSONParser(string: s)
+    return parser.parse()
+}
 
 class JSONParserTests: XCTestCase {
 
