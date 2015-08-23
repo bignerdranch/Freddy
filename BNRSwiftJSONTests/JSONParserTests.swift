@@ -10,9 +10,44 @@ import XCTest
 import BNRSwiftJSON
 import Result
 
-private func JSONFromString(s: String) -> Result<JSON, NSError> {
+private func JSONFromString(s: String) -> Result<JSON, JSONParser.Error> {
     var parser = JSONParser(string: s)
     return parser.parse()
+}
+
+private func ~=(lhs: JSONParser.Error, rhs: JSONParser.Error) -> Bool {
+    switch (lhs, rhs) {
+    case (.EndOfStreamUnexpected, .EndOfStreamUnexpected):
+        return true
+    case let (.EndOfStreamGarbage(lOffset), .EndOfStreamGarbage(rOffset)):
+        return lOffset == rOffset
+    case let (.TooManyNestedObjects(lOffset), .TooManyNestedObjects(rOffset)):
+        return lOffset == rOffset
+    case let (.ValueInvalid(lOffset), .ValueInvalid(rOffset)):
+        return lOffset == rOffset
+    case let (.EscapeUnfinished(lOffset), .EscapeUnfinished(rOffset)):
+        return lOffset == rOffset
+    case let (.UnicodeEscapeInvalid(lOffset), .UnicodeEscapeInvalid(rOffset)):
+        return lOffset == rOffset
+    case let (.LiteralNilInvalid(lOffset), .LiteralNilInvalid(rOffset)):
+        return lOffset == rOffset
+    case let (.LiteralTrueInvalid(lOffset), .LiteralTrueInvalid(rOffset)):
+        return lOffset == rOffset
+    case let (.LiteralFalseInvalid(lOffset), .LiteralFalseInvalid(rOffset)):
+        return lOffset == rOffset
+    case let (.LiteralMissingSeparator(lOffset), .LiteralMissingSeparator(rOffset)):
+        return lOffset == rOffset
+    case let (.LiteralMissingKey(lOffset), .LiteralMissingKey(rOffset)):
+        return lOffset == rOffset
+    case let (.LiteralNumberNoDigits(lOffset), .LiteralNumberNoDigits(rOffset)):
+        return lOffset == rOffset
+    case let (.LiteralNumberSymbolInvalid(lOffset), .LiteralNumberSymbolInvalid(rOffset)):
+        return lOffset == rOffset
+    case let (.LiteralNumberExponentInvalid(lOffset), .LiteralNumberExponentInvalid(rOffset)):
+        return lOffset == rOffset
+    case (_, _):
+        return false
+    }
 }
 
 class JSONParserTests: XCTestCase {
@@ -52,8 +87,10 @@ class JSONParserTests: XCTestCase {
         switch result {
         case .Success:
             XCTFail("Unexpected success")
+        case .Failure(JSONParser.Error.EndOfStreamGarbage(offset: 7)):
+            break
         case .Failure(let error):
-            XCTAssertEqual(error.code, JSON.ErrorCode.CouldNotParseJSON.rawValue)
+            XCTFail("Unexpected error \(error)")
         }
     }
 
@@ -146,22 +183,24 @@ class JSONParserTests: XCTestCase {
     }
 
     func testThatParserRejectsInvalidNumbers() {
-        for s in [
-            "012",
-            "0.1.2",
-            "-.123",
-            ".123",
-            "1.",
-            "1.0e",
-            "1.0e+",
-            "1.0e-",
-            "0e1",
+        for (s, expectedError) in [
+            ("012",   JSONParser.Error.EndOfStreamGarbage(offset: 1)),
+            ("0.1.2", JSONParser.Error.EndOfStreamGarbage(offset: 3)),
+            ("-.123", JSONParser.Error.LiteralNumberSymbolInvalid(offset: 0)),
+            (".123",  JSONParser.Error.ValueInvalid(offset: 0)),
+            ("1.",    JSONParser.Error.EndOfStreamUnexpected),
+            ("1.0e",  JSONParser.Error.EndOfStreamUnexpected),
+            ("1.0e+", JSONParser.Error.EndOfStreamUnexpected),
+            ("1.0e-", JSONParser.Error.EndOfStreamUnexpected),
+            ("0e1",   JSONParser.Error.EndOfStreamGarbage(offset: 1)),
         ] {
             switch JSONFromString(s) {
             case .Success:
                 XCTFail("Unexpected success for \"\(s)\"")
+            case .Failure(expectedError):
+                break
             case .Failure(let error):
-                XCTAssertEqual(error.code, JSON.ErrorCode.CouldNotParseJSON.rawValue)
+                XCTFail("Unexpected error \(error) in \(s)")
             }
         }
     }
