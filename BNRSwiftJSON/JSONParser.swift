@@ -413,7 +413,7 @@ public struct JSONParser {
     }
 
     private mutating func decodeNumberNegative(start: Int) -> Result<JSON, Error> {
-        if ++loc >= input.count {
+        guard ++loc < input.count else {
             return .Failure(Error.EndOfStreamUnexpected)
         }
 
@@ -430,7 +430,7 @@ public struct JSONParser {
     }
 
     private mutating func decodeNumberLeadingZero(start: Int, sign: Sign = .Positive) -> Result<JSON, Error> {
-        if ++loc >= input.count {
+        guard ++loc < input.count else {
             return .Success(.Int(0))
         }
 
@@ -471,7 +471,7 @@ public struct JSONParser {
     }
 
     private mutating func decodeNumberDecimal(start: Int, sign: Sign, value: Double) -> Result<JSON, Error> {
-        if ++loc >= input.count {
+        guard ++loc < input.count else {
             return .Failure(Error.EndOfStreamUnexpected)
         }
 
@@ -507,7 +507,7 @@ public struct JSONParser {
     }
 
     private mutating func decodeNumberExponent(start: Int, sign: Sign, value: Double) -> Result<JSON, Error> {
-        if ++loc >= input.count {
+        guard ++loc < input.count else {
             return .Failure(Error.EndOfStreamUnexpected)
         }
 
@@ -527,7 +527,7 @@ public struct JSONParser {
     }
 
     private mutating func decodeNumberExponentSign(start: Int, sign: Sign, value: Double, expSign: Sign) -> Result<JSON, Error> {
-        if ++loc >= input.count {
+        guard ++loc < input.count else {
             return .Failure(Error.EndOfStreamUnexpected)
         }
         
