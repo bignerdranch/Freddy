@@ -71,7 +71,7 @@ public enum JSON {
             switch n {
             case _ where CFNumberGetType(n) == .CharType || CFGetTypeID(n) == CFBooleanGetTypeID():
                 return .Bool(n.boolValue)
-            case _ where CFNumberIsFloatType(n) == 0:
+            case _ where !CFNumberIsFloatType(n):
                 return .Int(n.integerValue)
             default:
                 return .Double(n.doubleValue)
