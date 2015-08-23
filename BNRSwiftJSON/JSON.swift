@@ -46,7 +46,12 @@ public enum JSON {
         switch parser {
         case .PureSwift:
             var parser = JSONParser(utf8Data: data)
-            return JSONResult(parser.parse())
+            switch parser.parse() {
+            case .Success(let json):
+                return JSONResult.success(json)
+            case .Failure(let error):
+                return JSONResult.failure(error as NSError)
+            }
 
         case .NSJSONSerialization:
             do {
