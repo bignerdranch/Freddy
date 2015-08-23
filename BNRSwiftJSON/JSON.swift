@@ -130,12 +130,7 @@ public enum JSON {
     */
     public func serialize() -> Result<NSData, NSError> {
         let obj: AnyObject = toNSJSONSerializationObject()
-        do {
-            let result = try NSJSONSerialization.dataWithJSONObject(obj, options: [])
-            return .Success(result)
-        } catch {
-            return .Failure(error as NSError)
-        }
+        return Result(try NSJSONSerialization.dataWithJSONObject(obj, options: []))
     }
 
     /**
