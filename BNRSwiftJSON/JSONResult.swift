@@ -9,71 +9,38 @@
 import Foundation
 import Result
 
-/**
-    A newtype for Result<JSON> that provides additional properties for extracting typed JSON data.
-*/
-public struct JSONResult: Equatable {
-    public let result: Result<JSON, NSError>
+public typealias JSONResult = Result<JSON, NSError>
 
-    internal static func success(success: JSON) -> JSONResult {
-        return JSONResult(.Success(success))
-    }
+// MARK: - Serialize JSON Result
 
-    internal static func failure(error: NSError) -> JSONResult {
-        return JSONResult(.Failure(error))
-    }
-
-    internal init(_ result: Result<JSON, NSError>) {
-        self.result = result
-    }
-
-    private func flatMap(f: JSON -> JSONResult) -> JSONResult {
-        return JSONResult(result.flatMap { value in f(value).result })
-    }
-
-    private func flatMap<T>(f: JSON -> Result<T, NSError>) -> Result<T, NSError> {
-        return result.flatMap(f)
-    }
-
-    /**
-        Returns `true` if the target's underlying `Result` is in the `.Success` case.
-    */
-    public var isSuccess: Bool {
-        return result.value != nil
-    }
-
-    /**
-        Returns `true` if the target's underlying `Result` is in the `.Failure` case.
-    */
-    public var isFailure: Bool {
-        return result.error != nil
-    }
-}
-
-// MARK: - Serialize JSONResult
-
-public extension JSONResult {
+public extension ResultType where Value == JSON {
     /**
         A function to serialize an instance to NSData.
     
         :returns: A `Result` with `NSData` in the `.Success` case, `.Failure` with an `NSError` otherwise.
     */
     public func serialize() -> Result<NSData, NSError> {
-        return flatMap { $0.serialize() }
+        return analysis(ifSuccess: {
+            $0.serialize()
+        }, ifFailure: { error in
+            .Failure(error as NSError)
+        })
     }
 }
 
-// MARK: - JSONResult Computed Properties
+// MARK: - JSON Result Computed Properties
 
-public extension JSONResult {
-    private func convertType<T>(problem: String, _ f: (JSON) -> T?) -> Result<T, NSError> {
-        return flatMap { json in
-            if let converted = f(json) {
+public extension ResultType where Value == JSON {
+    private func convertType<T>(problem: String, @noescape _ getter: JSON -> T?) -> Result<T, NSError> {
+        return analysis(ifSuccess: { json in
+            if let converted = getter(json) {
                 return .Success(converted)
             } else {
                 return .Failure(JSON.makeError(JSON.ErrorCode.TypeNotConvertible, problem: problem))
             }
-        }
+        }, ifFailure: { error in
+            .Failure(error as NSError)
+        })
     }
 
     /**
@@ -128,22 +95,20 @@ public extension JSONResult {
 
 // MARK: - Subscript JSONResult
 
-public extension JSONResult {
+public extension ResultType where Value == JSON {
     subscript(key: String) -> JSONResult {
-        return flatMap { JSON in
-            return JSON[key]
-        }
+        return analysis(ifSuccess: { JSON in
+            JSON[key]
+        }, ifFailure: { error in
+            .Failure(error as NSError)
+        })
     }
     
     subscript(index: Int) -> JSONResult {
-        return flatMap { JSON in
-            return JSON[index]
-        }
+        return analysis(ifSuccess: { JSON in
+            JSON[index]
+        }, ifFailure: { error in
+            .Failure(error as NSError)
+        })
     }
-}
-
-// MARK: - Test Equality
-
-public func ==(lhs: JSONResult, rhs: JSONResult) -> Bool {
-    return lhs.result == rhs.result
 }

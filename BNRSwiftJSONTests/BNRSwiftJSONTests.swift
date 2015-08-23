@@ -27,7 +27,12 @@ class BNRSwiftJSONTests: XCTestCase {
     }()
     
     func testThatJSONCanCreateInstanceWithData() {
-        XCTAssertTrue(json.isSuccess, "The sample JSON data should be parsed successfully.")
+        switch json {
+        case .Success(_):
+            break
+        case .Failure(let error):
+            XCTFail("The sample JSON data unexpectedly failed to parse: \(error).")
+        }
     }
     
     func testThatJSONCanBeSerialized() {
@@ -57,7 +62,7 @@ class BNRSwiftJSONTests: XCTestCase {
         switch serializedJSONData {
         case .Success(let data):
             let serialJSON = JSON.createJSONFrom(data)
-            XCTAssertEqual(json, serialJSON, "The JSON values should be equal.")
+            XCTAssert(json == serialJSON, "The JSON values should be equal.")
         case .Failure(let error):
             XCTFail("Failed with error: \(error)")
         }
