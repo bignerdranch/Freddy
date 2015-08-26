@@ -259,7 +259,7 @@ private struct Parser {
                 case Literal.n:            stringDecodingBuffer.append(Literal.NEWLINE)
                 case Literal.u:
                     if let escaped = readUnicodeEscape(loc + 1) {
-                        stringDecodingBuffer.extend(escaped)
+                        stringDecodingBuffer.appendContentsOf(escaped)
                         loc += 4
                     } else {
                         return makeParseError("invalid unicode escape sequence at position \(loc)")
