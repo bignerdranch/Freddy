@@ -11,9 +11,13 @@ import BNRSwiftJSON
 import Result
 
 class BNRSwiftJSONTests: XCTestCase {
-    
+
     private var json: JSON!
     private var noWhiteSpaceData: NSData!
+
+    func parser() -> JSONParserType.Type {
+        return JSONParser.self
+    }
 
     override func setUp() {
         super.setUp()
@@ -25,7 +29,7 @@ class BNRSwiftJSONTests: XCTestCase {
         }
 
         do {
-            self.json = try JSON(data: data)
+            self.json = try JSON(data: data, usingParser: parser())
         } catch {
             XCTFail("Could not parse sample JSON: \(error)")
             return
@@ -51,7 +55,7 @@ class BNRSwiftJSONTests: XCTestCase {
     
     func testThatJSONDataIsEqual() {
         let serializedJSONData = json.serialize()
-        let noWhiteSpaceJSON = try! JSON(data: noWhiteSpaceData)
+        let noWhiteSpaceJSON = try! JSON(data: noWhiteSpaceData, usingParser: parser())
         let noWhiteSpaceSerializedJSONData = noWhiteSpaceJSON.serialize()
         switch (serializedJSONData, noWhiteSpaceSerializedJSONData) {
         case (.Success(let sjd), .Success(let nwssjd)):
@@ -65,7 +69,7 @@ class BNRSwiftJSONTests: XCTestCase {
         let serializedJSONData = json.serialize()
         switch serializedJSONData {
         case .Success(let data):
-            let serialJSON = try? JSON(data: data)
+            let serialJSON = try? JSON(data: data, usingParser: parser())
             XCTAssertEqual(json, serialJSON, "The JSON values should be equal.")
         case .Failure(let error):
             XCTFail("Failed with error: \(error)")
@@ -79,7 +83,7 @@ class BNRSwiftJSONTests: XCTestCase {
             "baz": .Int(123),
         ])
         let data = json.serialize().value!
-        let deserializedResult = try! JSON(data: data).dictionary()
+        let deserializedResult = try! JSON(data: data, usingParser: parser()).dictionary()
         let deserialized = JSON.Dictionary(deserializedResult)
         XCTAssertEqual(json, deserialized, "Serialize/Deserialize succeed with Bools")
     }
@@ -119,7 +123,7 @@ class BNRSwiftJSONTests: XCTestCase {
             [ "name": "Sargeant Pepper" ]
         ]
         let data = jsonArray.serialize().value!
-        let deserializedArray = try! JSON(data: data).array()
+        let deserializedArray = try! JSON(data: data, usingParser: parser()).array()
         let (successes, failures) = deserializedArray.mapAndPartition(Person.init)
         XCTAssertEqual(failures.count, 1, "There should be one error in `failures`.")
         XCTAssertEqual(successes.count, 2, "There should be two people in `successes`.")
@@ -184,4 +188,12 @@ class BNRSwiftJSONTests: XCTestCase {
             XCTFail("The error should be due to the `people` `Array` not being subscriptable with `String`s, but was: \(error).")
         }
     }
+}
+
+class BNRSwiftJSONWithNSJSONTests: BNRSwiftJSONTests {
+
+    override func parser() -> JSONParserType.Type {
+        return NSJSONSerialization.self
+    }
+
 }
