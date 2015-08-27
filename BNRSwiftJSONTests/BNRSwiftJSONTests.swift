@@ -157,7 +157,7 @@ class BNRSwiftJSONTests: XCTestCase {
         do {
             _ = try json.int("people", 0, "name")
         } catch JSON.Error.ValueNotConvertible(let type) {
-            XCTAssert(type == Swift.Int.self, "The error should be due the value not being an `Int` case, but was \(type).")
+            XCTAssert(type == Swift.IntMax.self, "The error should be due the value not being an `Int` case, but was \(type).")
         } catch {
             XCTFail("The error should be due to `name` not being convertible to `int`, but was: \(error).")
         }

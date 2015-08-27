@@ -70,7 +70,7 @@ input and it does not allow trailing commas in arrays or dictionaries.
 **/
 public struct JSONParser {
 
-    private enum Sign: Int {
+    private enum Sign: IntMax {
         case Positive = 1
         case Negative = -1
     }
@@ -419,13 +419,13 @@ public struct JSONParser {
     }
 
     private mutating func decodeNumberPreDecimalDigits(start: Int, sign: Sign = .Positive) throws -> JSON {
-        var value = 0
+        var value: IntMax = 0
 
         advancing: while loc < input.count {
             let c = input[loc]
             switch c {
             case Literal.zero...Literal.nine:
-                value = 10 * value + Int(c - Literal.zero)
+                value = 10 * value + numericCast(c - Literal.zero)
                 ++loc
 
             case Literal.PERIOD:

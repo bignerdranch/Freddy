@@ -55,7 +55,7 @@ extension NSJSONSerialization: JSONParserType {
             case _ where CFNumberGetType(n) == .CharType || CFGetTypeID(n) == CFBooleanGetTypeID():
                 return .Bool(n.boolValue)
             case _ where !CFNumberIsFloatType(n):
-                return .Int(n.integerValue)
+                return .Int(n.longLongValue)
             default:
                 return .Double(n.doubleValue)
             }
@@ -133,7 +133,7 @@ extension JSON {
         case .Double(let num):
             return num
         case .Int(let int):
-            return int
+            return NSNumber(longLong: int)
         case .Bool(let b):
             return b
         case .Null:

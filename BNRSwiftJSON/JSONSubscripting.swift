@@ -18,6 +18,7 @@ public protocol JSONPathType {}
 
 extension String: JSONPathType {}
 extension Int: JSONPathType    {}
+extension IntMax: JSONPathType {}
 
 // MARK: - Subscripting
 
@@ -34,6 +35,12 @@ extension JSON {
                 }
                 return next
             case let (.Array(array), index as Swift.Int):
+                guard array.startIndex.advancedBy(index, limit: array.endIndex) != array.endIndex else {
+                    throw Error.IndexOutOfBounds(index: index)
+                }
+                return array[index]
+            case let (.Array(array), bigIndex as Swift.IntMax):
+                let index = Swift.Int(bigIndex)
                 guard array.startIndex.advancedBy(index, limit: array.endIndex) != array.endIndex else {
                     throw Error.IndexOutOfBounds(index: index)
                 }
@@ -132,7 +139,7 @@ extension JSON {
     ///     with the corresponding `JSON` value.
     ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
     ///     the `JSON` instance does not match `Int`.
-    public func int(path: JSONPathType...) throws -> Swift.Int {
+    public func int(path: JSONPathType...) throws -> Swift.IntMax {
         return try memberAtPath(path) { $0.int }
     }
 
@@ -247,7 +254,7 @@ extension JSON {
     ///     with the corresponding `JSON` value.
     ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
     ///     the `JSON` instance does not match `Int`.
-    public func int(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Int) throws -> Swift.Int {
+    public func int(path: JSONPathType..., @autoclosure or fallback: () -> Swift.IntMax) throws -> Swift.IntMax {
         return try memberAtPath(path, or: fallback) { $0.int }
     }
 
@@ -373,7 +380,7 @@ extension JSON {
     ///     `Int` index is outside the bounds of a descendant `JSON` array.
     ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
     ///     the `JSON` instance does not match `Int`.
-    public func int(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Int? {
+    public func int(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.IntMax? {
         return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: false) { $0.int }
     }
 
@@ -484,7 +491,7 @@ extension JSON {
     ///     with the corresponding `JSON` value.
     ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
     ///     the `JSON` instance does not match `Int`.
-    public func int(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Int? {
+    public func int(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.IntMax? {
         return try optionalAtPath(path, ifNotFound: false, ifNull: ifNull) { $0.int }
     }
 
