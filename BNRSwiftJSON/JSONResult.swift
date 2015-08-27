@@ -21,7 +21,11 @@ public extension ResultType where Value == JSON {
     */
     public func serialize() -> Result<NSData, NSError> {
         return analysis(ifSuccess: {
-            $0.serialize()
+            do {
+                return .Success(try $0.serialize())
+            } catch {
+                return .Failure(error as NSError)
+            }
         }, ifFailure: { error in
             .Failure(error as NSError)
         })
