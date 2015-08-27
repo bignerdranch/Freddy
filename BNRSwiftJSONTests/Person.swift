@@ -8,7 +8,6 @@
 
 import Foundation
 import BNRSwiftJSON
-import Result
 
 public struct Person: CustomStringConvertible {
     public let name: String

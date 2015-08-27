@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Result
 
 // MARK: - Deserialize JSON
 
