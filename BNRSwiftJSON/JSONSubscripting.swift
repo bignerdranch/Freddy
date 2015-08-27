@@ -8,6 +8,8 @@
 
 import Foundation
 
+// MARK: - JSON Path
+
 /// A protocol representing known paths to a descendant of a `JSON` structure.
 ///
 /// Do not declare new conformances to this protocol; they will not be
@@ -17,9 +19,13 @@ public protocol JSONPathType {}
 extension String: JSONPathType {}
 extension Int: JSONPathType    {}
 
+// MARK: - Subscripting
+
 extension JSON {
 
-    private func descendantAtPath(path: [JSONPathType]) throws -> JSON {
+    // MARK: Native subscripting
+
+    private func descendantAtPath<Sequence: SequenceType where Sequence.Generator.Element == JSONPathType>(path: Sequence) throws -> JSON {
         return try path.reduce(self) { json, path in
             switch (json, path) {
             case let (.Dictionary(dict), key as Swift.String):
@@ -38,6 +44,24 @@ extension JSON {
         }
     }
 
+    public subscript(key: Swift.String) -> JSON? {
+        do {
+            return try descendantAtPath(CollectionOfOne(key))
+        } catch {
+            return nil
+        }
+    }
+
+    public subscript(index: Swift.Int) -> JSON? {
+        do {
+            return try descendantAtPath(CollectionOfOne(index))
+        } catch {
+            return nil
+        }
+    }
+
+    // MARK: Simple member unpacking
+
     private func memberAtPath<T>(path: [JSONPathType], @noescape getter: JSON -> T?) throws -> T {
         let descendant = try descendantAtPath(path)
 
@@ -47,8 +71,6 @@ extension JSON {
 
         return child
     }
-
-    // MARK: Simple member unpacking
 
     /// Retrieves a `[JSON]` from a path into the recieving structure.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`

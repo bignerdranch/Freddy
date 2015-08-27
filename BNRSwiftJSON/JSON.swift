@@ -118,41 +118,6 @@ public extension JSON {
     }
 }
 
-// MARK: - Subscript JSON
-
-public extension JSON {
-    subscript(key: Swift.String) -> JSONResult {
-        get {
-            switch self {
-            case .Dictionary(let jsonDict):
-                if let obj = jsonDict[key] {
-                    return .Success(obj)
-                } else {
-                    return .Failure(Error.KeyNotFound(key: key))
-                }
-            default:
-                return .Failure(Error.UnexpectedSubscript(type: Swift.String.self))
-            }
-        }
-    }
-    
-    subscript(index: Swift.Int) -> JSONResult {
-        get {
-            switch self {
-            case .Array(let jsonArray):
-                if index <= jsonArray.count - 1 {
-                    return .Success(jsonArray[index])
-                } else {
-                    return .Failure(Error.IndexOutOfBounds(index: index))
-                }
-            default:
-                return .Failure(Error.UnexpectedSubscript(type: Swift.Int.self))
-            }
-
-        }
-    }
-}
-
 // MARK: - Errors
 
 extension JSON {
@@ -165,7 +130,7 @@ extension JSON {
         case KeyNotFound(key: Swift.String)
         
         /// The JSON is not subscriptable with `type`
-        case UnexpectedSubscript(type: Any.Type)
+        case UnexpectedSubscript(type: JSONPathType.Type)
         
         /// Unexpected JSON was found that is not convertible to `type`
         case ValueNotConvertible(type: Any.Type)

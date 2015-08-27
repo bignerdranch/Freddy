@@ -90,19 +90,3 @@ public extension ResultType where Value == JSON, Error == JSON.Error {
         return convertType { $0.isNull ? () : nil }
     }
 }
-
-// MARK: - Subscript JSONResult
-
-public extension ResultType where Value == JSON, Error == JSON.Error {
-    subscript(key: String) -> JSONResult {
-        return analysis(ifSuccess: { JSON in
-            JSON[key]
-        }, ifFailure: Result.Failure)
-    }
-    
-    subscript(index: Int) -> JSONResult {
-        return analysis(ifSuccess: { JSON in
-            JSON[index]
-        }, ifFailure: Result.Failure)
-    }
-}
