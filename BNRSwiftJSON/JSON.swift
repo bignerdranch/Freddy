@@ -166,8 +166,6 @@ extension JSON {
         case UnexpectedSubscript(Any.Type)
         /// Unexpected JSON was found that is not convertible to the given type.
         case TypeNotConvertible(Any.Type)
-        /// An error occurred while parsing JSON text.
-        case CouldNotParse(ErrorType)
     }
 
 }

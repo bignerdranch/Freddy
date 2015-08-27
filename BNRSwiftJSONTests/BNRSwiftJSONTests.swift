@@ -24,9 +24,10 @@ class BNRSwiftJSONTests: XCTestCase {
             return
         }
         
-        let result = JSON.createJSONFrom(data)
-        guard let JSON = result.value else {
-            XCTFail("Could not parse sample JSON: \(result.error!)")
+        do {
+            self.json = try JSON(data: data)
+        } catch {
+            XCTFail("Could not parse sample JSON: \(error)")
             return
         }
         
@@ -35,7 +36,6 @@ class BNRSwiftJSONTests: XCTestCase {
             return
         }
         
-        self.json = JSON
         self.noWhiteSpaceData = noWhiteSpaceData
     }
     
@@ -51,7 +51,7 @@ class BNRSwiftJSONTests: XCTestCase {
     
     func testThatJSONDataIsEqual() {
         let serializedJSONData = json.serialize()
-        let noWhiteSpaceJSON = JSON.createJSONFrom(noWhiteSpaceData)
+        let noWhiteSpaceJSON = try! JSON(data: noWhiteSpaceData)
         let noWhiteSpaceSerializedJSONData = noWhiteSpaceJSON.serialize()
         switch (serializedJSONData, noWhiteSpaceSerializedJSONData) {
         case (.Success(let sjd), .Success(let nwssjd)):
@@ -65,8 +65,8 @@ class BNRSwiftJSONTests: XCTestCase {
         let serializedJSONData = json.serialize()
         switch serializedJSONData {
         case .Success(let data):
-            let serialJSON = JSON.createJSONFrom(data)
-            XCTAssert(json == serialJSON.value, "The JSON values should be equal.")
+            let serialJSON = try? JSON(data: data)
+            XCTAssertEqual(json, serialJSON, "The JSON values should be equal.")
         case .Failure(let error):
             XCTFail("Failed with error: \(error)")
         }
@@ -79,8 +79,8 @@ class BNRSwiftJSONTests: XCTestCase {
             "baz": .Int(123),
         ])
         let data = json.serialize().value!
-        let deserializedResult = JSON.createJSONFrom(data).dictionary
-        let deserialized = JSON.Dictionary(deserializedResult.value!)
+        let deserializedResult = try! JSON(data: data).dictionary()
+        let deserialized = JSON.Dictionary(deserializedResult)
         XCTAssertEqual(json, deserialized, "Serialize/Deserialize succeed with Bools")
     }
     
@@ -119,7 +119,7 @@ class BNRSwiftJSONTests: XCTestCase {
             [ "name": "Sargeant Pepper" ]
         ]
         let data = jsonArray.serialize().value!
-        let deserializedArray = JSON.createJSONFrom(data).value!.array!
+        let deserializedArray = try! JSON(data: data).array()
         let (successes, failures) = deserializedArray.mapAndPartition(Person.init)
         XCTAssertEqual(failures.count, 1, "There should be one error in `failures`.")
         XCTAssertEqual(successes.count, 2, "There should be two people in `successes`.")

@@ -11,49 +11,33 @@ import Result
 
 // MARK: - Deserialize JSON
 
+/// Protocol describing a backend parser that can produce `JSON` from `NSData`.
+public protocol JSONParserType {
+    
+    /// Creates an instance of `JSON` from `NSData`.
+    static func createJSONFromData(data: NSData) throws -> JSON
+
+}
+
 extension JSON {
     
-    /// Enum describing the available backend parsers that can produce `JSONResult`s from `NSData`.
-    public enum Parser {
-        /// A pure Swift JSON parser. This parser is much faster than the NSJSONSerialization-based
-        /// parser (due to the overhead of having to dynamically cast the Objective-C objects to
-        /// determine their type); however, it is much newer and has restrictions that the
-        /// NSJSONSerialization parser does not. Two restrictions in particular are that it requires
-        /// UTF8 data as input and it does not allow trailing commas in arrays or dictionaries.
-        case PureSwift
-        
-        /// Use the built-in, Objective-C based JSON parser.
-        case NSJSONSerialization
+    /// Create `JSON` from UTF-8 `data`. By default, parses using the
+    /// Swift-native `JSONParser` backend.
+    public init(data: NSData, usingParser parser: JSONParserType.Type = JSONParser.self) throws {
+        self = try parser.createJSONFromData(data)
     }
+    
+}
+
+// MARK: - NSJSONSerialization
+
+extension NSJSONSerialization: JSONParserType {
     
     // MARK: Decode NSData
     
-    /**
-    Creates an optional instance of `JSON` from `NSData`.
-    
-    :param: data The instance of `NSData` from the web service.
-    
-    :returns: An optional instance of `JSON`.
-    */
-    public static func createJSONFrom(data: NSData, usingParser parser: Parser = .PureSwift) -> JSONResult {
-        switch parser {
-        case .PureSwift:
-            var parser = JSONParser(utf8Data: data)
-            switch parser.parse() {
-            case .Success(let json):
-                return .Success(json)
-            case .Failure(let error):
-                return .Failure(.CouldNotParse(error))
-            }
-            
-        case .NSJSONSerialization:
-            do {
-                let json = try NSJSONSerialization.JSONObjectWithData(data, options: [])
-                return .Success(makeJSON(json))
-            } catch {
-                return .Failure(.CouldNotParse(error))
-            }
-        }
+    /// Use the built-in, Objective-C based JSON parser to create `JSON`.
+    public static func createJSONFromData(data: NSData) throws -> JSON {
+        return makeJSON(try NSJSONSerialization.JSONObjectWithData(data, options: []))
     }
     
     // MARK: Make JSON
