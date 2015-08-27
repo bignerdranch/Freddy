@@ -27,17 +27,9 @@ public struct Person: CustomStringConvertible {
 }
 
 extension Person: JSONDecodable {
-    public static func createWithJSON(value: JSON) -> Result<Person, JSON.Error> {
-        let name = value["name"].string
-        let age = value["age"].int
-        let isMarried = value["spouse"].bool
-        
-        return mapAll(name, age, isMarried, Person.create)
-    }
-}
-
-extension Person {
-    private static func create(name: String, age: Int, spouse: Bool) -> Person {
-        return self.init(name: name, age: age, spouse: spouse)
+    public init(json value: JSON) throws {
+        name = try value.string("name")
+        age = try value.int("age")
+        spouse = try value.bool("spouse")
     }
 }
