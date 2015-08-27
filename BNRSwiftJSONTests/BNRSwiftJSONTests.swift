@@ -8,7 +8,6 @@
 
 import XCTest
 import BNRSwiftJSON
-import Result
 
 class BNRSwiftJSONTests: XCTestCase {
     

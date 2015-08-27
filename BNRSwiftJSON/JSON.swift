@@ -6,9 +6,6 @@
 //  Copyright © 2015 Big Nerd Ranch. Licensed under MIT.
 //
 
-import Foundation
-import Result
-
 /**
     An enum to describe the structure of JSON.
 */
