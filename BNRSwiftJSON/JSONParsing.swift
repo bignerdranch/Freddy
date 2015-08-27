@@ -98,7 +98,9 @@ extension NSJSONSerialization: JSONParserType {
     :returns: An instance of `JSON` matching the dictionary.
     */
     private static func makeJSONDictionary(jsonDict: [Swift.String: AnyObject]) -> JSON {
-        return .Dictionary(jsonDict.map { makeJSON($1) })
+        return JSON(jsonDict.lazy.map {
+            ($0.0, makeJSON($0.1))
+        })
     }
 
 }
@@ -126,7 +128,11 @@ extension JSON {
         case .Array(let jsonArray):
             return jsonArray.map { $0.toNSJSONSerializationObject() }
         case .Dictionary(let jsonDictionary):
-            return jsonDictionary.map { $1.toNSJSONSerializationObject() } as [NSObject: AnyObject]
+            var cocoaDictionary = Swift.Dictionary<Swift.String, AnyObject>(minimumCapacity: jsonDictionary.count)
+            for (key, json) in jsonDictionary {
+                cocoaDictionary[key] = json.toNSJSONSerializationObject()
+            }
+            return cocoaDictionary
         case .String(let str):
             return str
         case .Double(let num):
