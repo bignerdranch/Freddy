@@ -23,9 +23,6 @@
 		DBE98E221B6B0EDD00132F0B /* BNRSwiftJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = DBE98DDC1B6B0D4900132F0B /* BNRSwiftJSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DBE98E231B6B0EDE00132F0B /* BNRSwiftJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = DBE98DDC1B6B0D4900132F0B /* BNRSwiftJSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DBE98E241B6B0EEB00132F0B /* BNRSwiftJSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E041B6B0D7200132F0B /* BNRSwiftJSONTests.swift */; };
-		DBE98E6B1B6B0F7F00132F0B /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E621B6B0F7F00132F0B /* Dictionary.swift */; };
-		DBE98E6C1B6B0F7F00132F0B /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E621B6B0F7F00132F0B /* Dictionary.swift */; };
-		DBE98E6D1B6B0F7F00132F0B /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E621B6B0F7F00132F0B /* Dictionary.swift */; };
 		DBE98E6E1B6B0F7F00132F0B /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E631B6B0F7F00132F0B /* JSON.swift */; };
 		DBE98E6F1B6B0F7F00132F0B /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E631B6B0F7F00132F0B /* JSON.swift */; };
 		DBE98E701B6B0F7F00132F0B /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E631B6B0F7F00132F0B /* JSON.swift */; };
@@ -85,7 +82,6 @@
 		DBE98E1F1B6B0D8C00132F0B /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		DBE98E201B6B0D8C00132F0B /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		DBE98E211B6B0D8C00132F0B /* Tests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Tests.xcconfig; sourceTree = "<group>"; };
-		DBE98E621B6B0F7F00132F0B /* Dictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dictionary.swift; sourceTree = "<group>"; };
 		DBE98E631B6B0F7F00132F0B /* JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
 		DBE98E641B6B0F7F00132F0B /* JSONDecodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONDecodable.swift; sourceTree = "<group>"; };
 		DBE98E651B6B0F7F00132F0B /* JSONLiteralConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONLiteralConvertible.swift; sourceTree = "<group>"; };
@@ -164,7 +160,6 @@
 			isa = PBXGroup;
 			children = (
 				DBE98DDC1B6B0D4900132F0B /* BNRSwiftJSON.h */,
-				DBE98E621B6B0F7F00132F0B /* Dictionary.swift */,
 				DBE98E631B6B0F7F00132F0B /* JSON.swift */,
 				DBE98E641B6B0F7F00132F0B /* JSONDecodable.swift */,
 				DBE98E651B6B0F7F00132F0B /* JSONLiteralConvertible.swift */,
@@ -430,7 +425,6 @@
 				DB1D60D81B8EC8BD007D0D8C /* JSONParsing.swift in Sources */,
 				DBE98E711B6B0F7F00132F0B /* JSONDecodable.swift in Sources */,
 				DBE98E771B6B0F7F00132F0B /* JSONParser.swift in Sources */,
-				DBE98E6B1B6B0F7F00132F0B /* Dictionary.swift in Sources */,
 				DBE98E6E1B6B0F7F00132F0B /* JSON.swift in Sources */,
 				DB1D60CD1B8EB948007D0D8C /* JSONSubscripting.swift in Sources */,
 				DBE98E741B6B0F7F00132F0B /* JSONLiteralConvertible.swift in Sources */,
@@ -445,7 +439,6 @@
 				DB1D60D91B8EC8BD007D0D8C /* JSONParsing.swift in Sources */,
 				DBE98E721B6B0F7F00132F0B /* JSONDecodable.swift in Sources */,
 				DBE98E781B6B0F7F00132F0B /* JSONParser.swift in Sources */,
-				DBE98E6C1B6B0F7F00132F0B /* Dictionary.swift in Sources */,
 				DBE98E6F1B6B0F7F00132F0B /* JSON.swift in Sources */,
 				DB1D60CE1B8EB948007D0D8C /* JSONSubscripting.swift in Sources */,
 				DBE98E751B6B0F7F00132F0B /* JSONLiteralConvertible.swift in Sources */,
@@ -460,7 +453,6 @@
 				DB1D60DA1B8EC8BD007D0D8C /* JSONParsing.swift in Sources */,
 				DBE98E731B6B0F7F00132F0B /* JSONDecodable.swift in Sources */,
 				DBE98E791B6B0F7F00132F0B /* JSONParser.swift in Sources */,
-				DBE98E6D1B6B0F7F00132F0B /* Dictionary.swift in Sources */,
 				DBE98E701B6B0F7F00132F0B /* JSON.swift in Sources */,
 				DB1D60CF1B8EB948007D0D8C /* JSONSubscripting.swift in Sources */,
 				DBE98E761B6B0F7F00132F0B /* JSONLiteralConvertible.swift in Sources */,
