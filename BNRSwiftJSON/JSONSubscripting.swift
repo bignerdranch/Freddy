@@ -161,6 +161,8 @@ extension JSON {
         return try memberAtPath(path) { $0.isNull ? () : nil }
     }
     
+    // MARK: Member unpacking with fallback
+    
     private func memberAtPath<T>(path: [JSONPathType], @noescape or fallback: () -> T, @noescape getter: JSON -> T?) throws -> T {
         do {
             return try memberAtPath(path, getter: getter)
@@ -171,26 +173,86 @@ extension JSON {
         }
     }
     
+    /// Retrieves a `[JSON]` from a path into the recieving structure or a
+    /// fallback if not found.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter fallback: Array to use when one is missing at the subscript.
+    /// - returns: An `Array` of `JSON` elements
+    /// - throws:
+    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
+    ///     with the corresponding `JSON` value.
+    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
+    ///     the `JSON` instance does not match `Array`.
     public func array(path: JSONPathType..., @autoclosure or fallback: () -> [JSON]) throws -> [JSON] {
         return try memberAtPath(path, or: fallback) { $0.array }
     }
     
+    /// Retrieves a `[String: JSON]` from a path into the recieving structure or
+    /// a fallback if not found.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter fallback: Dictionary to use when one is missing at the subscript.
+    /// - returns: An `Dictionary` of `String` mapping to `JSON` elements
+    /// - throws:
+    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
+    ///     with the corresponding `JSON` value.
+    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
+    ///     the `JSON` instance does not match `Dictionary`.
     public func dictionary(path: JSONPathType..., @autoclosure or fallback: () -> [Swift.String: JSON]) throws -> [Swift.String: JSON] {
         return try memberAtPath(path, or: fallback) { $0.dictionary }
     }
     
+    /// Retrieves a `Double` from a path into the recieving structure or a
+    /// fallback if not found.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter fallback: Array to use when one is missing at the subscript.
+    /// - returns: A floating-point `Double`
+    /// - throws:
+    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
+    ///     with the corresponding `JSON` value.
+    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
+    ///     the `JSON` instance does not match `Double`.
     public func double(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Double) throws -> Swift.Double {
         return try memberAtPath(path, or: fallback) { $0.double }
     }
     
+    /// Retrieves an `Int` from a path into the recieving structure or a
+    /// fallback if not found.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter fallback: Array to use when one is missing at the subscript.
+    /// - returns: A numeric `Int`
+    /// - throws:
+    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
+    ///     with the corresponding `JSON` value.
+    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
+    ///     the `JSON` instance does not match `Int`.
     public func int(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Int) throws -> Swift.Int {
         return try memberAtPath(path, or: fallback) { $0.int }
     }
     
+    /// Retrieves a `String` from a path into the recieving structure or a
+    /// fallback if not found.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter fallback: Array to use when one is missing at the subscript.
+    /// - returns: A textual `String`
+    /// - throws:
+    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
+    ///     with the corresponding `JSON` value.
+    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
+    ///     the `JSON` instance does not match `String`.
     public func string(path: JSONPathType..., @autoclosure or fallback: () -> Swift.String) throws -> Swift.String {
         return try memberAtPath(path, or: fallback) { $0.string }
     }
     
+    /// Retrieves a `Bool` from a path into the recieving structure or a
+    /// fallback if not found.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter fallback: Array to use when one is missing at the subscript.
+    /// - returns: A truthy `Bool`
+    /// - throws:
+    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
+    ///     with the corresponding `JSON` value.
+    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
+    ///     the `JSON` instance does not match `Bool`.
     public func bool(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Bool) throws -> Swift.Bool {
         return try memberAtPath(path, or: fallback) { $0.bool }
     }
