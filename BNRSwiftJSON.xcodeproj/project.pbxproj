@@ -13,6 +13,9 @@
 		DB1D60D81B8EC8BD007D0D8C /* JSONParsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60D71B8EC8BD007D0D8C /* JSONParsing.swift */; settings = {ASSET_TAGS = (); }; };
 		DB1D60D91B8EC8BD007D0D8C /* JSONParsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60D71B8EC8BD007D0D8C /* JSONParsing.swift */; settings = {ASSET_TAGS = (); }; };
 		DB1D60DA1B8EC8BD007D0D8C /* JSONParsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60D71B8EC8BD007D0D8C /* JSONParsing.swift */; settings = {ASSET_TAGS = (); }; };
+		DB1D60E31B8ECA3A007D0D8C /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */; settings = {ASSET_TAGS = (); }; };
+		DB1D60E41B8ECA3A007D0D8C /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */; settings = {ASSET_TAGS = (); }; };
+		DB1D60E51B8ECA3A007D0D8C /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */; settings = {ASSET_TAGS = (); }; };
 		DBE98DDD1B6B0D4900132F0B /* BNRSwiftJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = DBE98DDC1B6B0D4900132F0B /* BNRSwiftJSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DBE98E051B6B0D7200132F0B /* BNRSwiftJSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E041B6B0D7200132F0B /* BNRSwiftJSONTests.swift */; };
 		DBE98E071B6B0D7200132F0B /* BNRSwiftJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBE98DD91B6B0D4900132F0B /* BNRSwiftJSON.framework */; };
@@ -124,6 +127,7 @@
 /* Begin PBXFileReference section */
 		DB1D60CC1B8EB948007D0D8C /* JSONSubscripting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSubscripting.swift; sourceTree = "<group>"; };
 		DB1D60D71B8EC8BD007D0D8C /* JSONParsing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParsing.swift; sourceTree = "<group>"; };
+		DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSequences.swift; sourceTree = "<group>"; };
 		DBE98DD91B6B0D4900132F0B /* BNRSwiftJSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BNRSwiftJSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBE98DDC1B6B0D4900132F0B /* BNRSwiftJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BNRSwiftJSON.h; sourceTree = "<group>"; };
 		DBE98DDE1B6B0D4900132F0B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -233,6 +237,7 @@
 				DBE98E661B6B0F7F00132F0B /* JSONParser.swift */,
 				DB1D60D71B8EC8BD007D0D8C /* JSONParsing.swift */,
 				DBE98E671B6B0F7F00132F0B /* JSONResult.swift */,
+				DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */,
 				DB1D60CC1B8EB948007D0D8C /* JSONSubscripting.swift */,
 				DBE98E681B6B0F7F00132F0B /* ResultFlatMapping.swift */,
 				DBE98E691B6B0F7F00132F0B /* ResultMapping.swift */,
@@ -563,6 +568,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB1D60E31B8ECA3A007D0D8C /* JSONSequences.swift in Sources */,
 				DBE98E7A1B6B0F7F00132F0B /* JSONResult.swift in Sources */,
 				DB1D60D81B8EC8BD007D0D8C /* JSONParsing.swift in Sources */,
 				DBE98E801B6B0F7F00132F0B /* ResultMapping.swift in Sources */,
@@ -581,6 +587,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB1D60E41B8ECA3A007D0D8C /* JSONSequences.swift in Sources */,
 				DBE98E7B1B6B0F7F00132F0B /* JSONResult.swift in Sources */,
 				DB1D60D91B8EC8BD007D0D8C /* JSONParsing.swift in Sources */,
 				DBE98E811B6B0F7F00132F0B /* ResultMapping.swift in Sources */,
@@ -599,6 +606,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB1D60E51B8ECA3A007D0D8C /* JSONSequences.swift in Sources */,
 				DBE98E7C1B6B0F7F00132F0B /* JSONResult.swift in Sources */,
 				DB1D60DA1B8EC8BD007D0D8C /* JSONParsing.swift in Sources */,
 				DBE98E821B6B0F7F00132F0B /* ResultMapping.swift in Sources */,
