@@ -19,8 +19,8 @@ extension Int: JSONPathType    {}
 
 extension JSON {
     
-    private func memberAtPath<T>(path: [JSONPathType], @noescape getter: JSON -> T?) throws -> T {
-        let descendant = try path.reduce(self) { json, path in
+    private func descendantAtPath(path: [JSONPathType]) throws -> JSON {
+        return try path.reduce(self) { json, path in
             switch (json, path) {
             case let (.Dictionary(dict), key as Swift.String):
                 guard let next = dict[key] else {
@@ -36,6 +36,10 @@ extension JSON {
                 throw Error.UnexpectedSubscript(badSubscript.dynamicType)
             }
         }
+    }
+    
+    private func memberAtPath<T>(path: [JSONPathType], @noescape getter: JSON -> T?) throws -> T {
+        let descendant = try descendantAtPath(path)
         
         guard let child = getter(descendant) else {
             throw Error.TypeNotConvertible(T.self)
@@ -155,6 +159,40 @@ extension JSON {
     ///     the `JSON` instance does not match `Null`.
     public func isNull(path: JSONPathType...) throws {
         return try memberAtPath(path) { $0.isNull ? () : nil }
+    }
+    
+    private func memberAtPath<T>(path: [JSONPathType], @noescape or fallback: () -> T, @noescape getter: JSON -> T?) throws -> T {
+        do {
+            return try memberAtPath(path, getter: getter)
+        } catch Error.KeyNotFound {
+            return fallback()
+        } catch Error.IndexOutOfBounds {
+            return fallback()
+        }
+    }
+    
+    public func array(path: JSONPathType..., @autoclosure or fallback: () -> [JSON]) throws -> [JSON] {
+        return try memberAtPath(path, or: fallback) { $0.array }
+    }
+    
+    public func dictionary(path: JSONPathType..., @autoclosure or fallback: () -> [Swift.String: JSON]) throws -> [Swift.String: JSON] {
+        return try memberAtPath(path, or: fallback) { $0.dictionary }
+    }
+    
+    public func double(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Double) throws -> Swift.Double {
+        return try memberAtPath(path, or: fallback) { $0.double }
+    }
+    
+    public func int(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Int) throws -> Swift.Int {
+        return try memberAtPath(path, or: fallback) { $0.int }
+    }
+    
+    public func string(path: JSONPathType..., @autoclosure or fallback: () -> Swift.String) throws -> Swift.String {
+        return try memberAtPath(path, or: fallback) { $0.string }
+    }
+    
+    public func bool(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Bool) throws -> Swift.Bool {
+        return try memberAtPath(path, or: fallback) { $0.bool }
     }
     
 }
