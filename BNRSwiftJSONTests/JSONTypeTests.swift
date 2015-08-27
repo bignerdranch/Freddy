@@ -51,7 +51,7 @@ class JSONTypeTests: XCTestCase {
     }
 
     func testCastInitializeInt() {
-        let int = 65535 as Int
+        let int = 65535.toIntMax()
         let expected = JSON.Int(int)
         let json = JSON(int)
         XCTAssertEqual(json, expected)

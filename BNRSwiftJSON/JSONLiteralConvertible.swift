@@ -55,12 +55,12 @@ extension JSON: FloatLiteralConvertible {
 // MARK: - IntegerLiteralConvertible
 
 extension JSON: IntegerLiteralConvertible {
-    
-    public init(_ value: Swift.Int) {
-        self = .Int(value)
+
+    public init<Int: IntegerType>(_ value: Int) {
+        self = .Int(value.toIntMax())
     }
-    
-    public init(integerLiteral value: Swift.Int) {
+
+    public init(integerLiteral value: Swift.IntMax) {
         self.init(value)
     }
 

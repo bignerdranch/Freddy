@@ -13,7 +13,7 @@ public enum JSON {
     case Array([JSON])
     case Dictionary([Swift.String: JSON])
     case Double(Swift.Double)
-    case Int(Swift.Int)
+    case Int(Swift.IntMax)
     case String(Swift.String)
     case Bool(Swift.Bool)
     case Null

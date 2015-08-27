@@ -34,7 +34,7 @@ extension Double: JSONDecodable {
     
 }
 
-extension Int: JSONDecodable {
+extension IntMax: JSONDecodable {
     
     public init(json: JSON) throws {
         switch json {
@@ -43,7 +43,7 @@ extension Int: JSONDecodable {
         case let .Int(int):
             self.init(int)
         default:
-            throw JSON.Error.ValueNotConvertible(type: Swift.Int)
+            throw JSON.Error.ValueNotConvertible(type: Swift.IntMax)
         }
     }
     
@@ -95,7 +95,7 @@ extension JSON {
     /// - returns: A numeric `Int`
     /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`.
     /// - seealso: `JSON.decode(type:)`
-    public func int() throws -> Swift.Int {
+    public func int() throws -> Swift.IntMax {
         return try decode()
     }
     
