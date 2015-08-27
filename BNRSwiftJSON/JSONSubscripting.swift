@@ -279,26 +279,126 @@ extension JSON {
         }
     }
 
+    /// Optionally retrieves a `[JSON]` from a path into the recieving structure.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNotFound: If `true`, missing key or index errors are
+    ///             treated as `nil`.
+    /// - parameter ifNull: If `true`, target values matching `Null` are treated
+    ///             as `nil`.
+    /// - returns: An `Array` of `JSON` elements if a value could be found,
+    ///            otherwise `nil`.
+    /// - throws:
+    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
+    ///     with the corresponding `JSON` value.
+    ///   * If `ifNotFound` is `false`, `JSON.Error.KeyNotFound`: A given
+    ///     `String` key does not exist inside a descendant `JSON` dictionary.
+    ///   * If `ifNotFound` is `false`, `JSON.Error.IndexOutOfBounds`: A given
+    ///     `Int` index is outside the bounds of a descendant `JSON` array.
+    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
+    ///     the `JSON` instance does not match `Array`.
     public func array(path: JSONPathType..., ifNotFound: Swift.Bool = false, ifNull: Swift.Bool = false) throws -> [JSON]? {
         return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: ifNull) { $0.array }
     }
 
+    /// Optionally retrieves a `[String: JSON]` from a path into the recieving
+    /// structure.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNotFound: If `true`, missing key or index errors are
+    ///             treated as `nil`.
+    /// - parameter ifNull: If `true`, target values matching `Null` are treated
+    ///             as `nil`.
+    /// - returns: A `Dictionary` of `String` mapping to `JSON` elements if a
+    ///            value could be found, otherwise `nil`.
+    /// - throws:
+    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
+    ///     with the corresponding `JSON` value.
+    ///   * If `ifNotFound` is `false`, `JSON.Error.KeyNotFound`: A given
+    ///     `String` key does not exist inside a descendant `JSON` dictionary.
+    ///   * If `ifNotFound` is `false`, `JSON.Error.IndexOutOfBounds`: A given
+    ///     `Int` index is outside the bounds of a descendant `JSON` array.
+    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
+    ///     the `JSON` instance does not match `Dictionary`.
     public func dictionary(path: JSONPathType..., ifNotFound: Swift.Bool = false, ifNull: Swift.Bool = false) throws -> [Swift.String: JSON]? {
         return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: ifNull) { $0.dictionary }
     }
 
+    /// Optionally retrieves a `Double` from a path into the recieving structure.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNotFound: If `true`, missing key or index errors are
+    ///             treated as `nil`.
+    /// - parameter ifNull: If `true`, target values matching `Null` are treated
+    ///             as `nil`.
+    /// - returns: A `Double` if a value could be found, otherwise `nil`.
+    /// - throws:
+    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
+    ///     with the corresponding `JSON` value.
+    ///   * If `ifNotFound` is `false`, `JSON.Error.KeyNotFound`: A given
+    ///     `String` key does not exist inside a descendant `JSON` dictionary.
+    ///   * If `ifNotFound` is `false`, `JSON.Error.IndexOutOfBounds`: A given
+    ///     `Int` index is outside the
+    ///     bounds of a descendant `JSON` array.
+    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
+    ///     the `JSON` instance does not match `Double`.
     public func double(path: JSONPathType..., ifNotFound: Swift.Bool = false, ifNull: Swift.Bool = false) throws -> Swift.Double? {
         return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: ifNull) { $0.double }
     }
 
+    /// Optionally retrieves a `Int` from a path into the recieving structure.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNotFound: If `true`, missing key or index errors are
+    ///             treated as `nil`.
+    /// - parameter ifNull: If `true`, target values matching `Null` are treated
+    ///             as `nil`.
+    /// - returns: A numeric `Int` if a value could be found, otherwise `nil`.
+    /// - throws:
+    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
+    ///     with the corresponding `JSON` value.
+    ///   * If `ifNotFound` is `false`, `JSON.Error.KeyNotFound`: A given
+    ///     `String` key does not exist inside a descendant `JSON` dictionary.
+    ///   * If `ifNotFound` is `false`, `JSON.Error.IndexOutOfBounds`: A given
+    ///     `Int` index is outside the bounds of a descendant `JSON` array.
+    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
+    ///     the `JSON` instance does not match `Int`.
     public func int(path: JSONPathType..., ifNotFound: Swift.Bool = false, ifNull: Swift.Bool = false) throws -> Swift.Int? {
         return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: ifNull) { $0.int }
     }
 
+    /// Optionally retrieves a `String` from a path into the recieving structure.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNotFound: If `true`, missing key or index errors are
+    ///             treated as `nil`.
+    /// - parameter ifNull: If `true`, target values matching `Null` are treated
+    ///             as `nil`.
+    /// - returns: A text `String` if a value could be found, otherwise `nil`.
+    /// - throws:
+    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
+    ///     with the corresponding `JSON` value.
+    ///   * If `ifNotFound` is `false`, `JSON.Error.KeyNotFound`: A given
+    ///     `String` key does not exist inside a descendant `JSON` dictionary.
+    ///   * If `ifNotFound` is `false`, `JSON.Error.IndexOutOfBounds`: A given
+    ///     `Int` index is outside the bounds of a descendant `JSON` array.
+    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
+    ///     the `JSON` instance does not match `String`.
     public func string(path: JSONPathType..., ifNotFound: Swift.Bool = false, ifNull: Swift.Bool = false) throws -> Swift.String? {
         return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: ifNull) { $0.string }
     }
 
+    /// Optionally retrieves a `Bool` from a path into the recieving structure.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNotFound: If `true`, missing key or index errors are
+    ///             treated as `nil`.
+    /// - parameter ifNull: If `true`, target values matching `Null` are treated
+    ///             as `nil`.
+    /// - returns: A truthy `Bool` if a value could be found, otherwise `nil`.
+    /// - throws:
+    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
+    ///     with the corresponding `JSON` value.
+    ///   * If `ifNotFound` is `false`, `JSON.Error.KeyNotFound`: A given
+    ///     `String` key does not exist inside a descendant `JSON` dictionary.
+    ///   * If `ifNotFound` is `false`, `JSON.Error.IndexOutOfBounds`: A given
+    ///     `Int` index is outside the bounds of a descendant `JSON` array.
+    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
+    ///     the `JSON` instance does not match `Bool`.
     public func bool(path: JSONPathType..., ifNotFound: Swift.Bool = false, ifNull: Swift.Bool = false) throws -> Swift.Bool? {
         return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: ifNull) { $0.bool }
     }
