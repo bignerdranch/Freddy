@@ -169,9 +169,6 @@ extension JSON {
         
         /// Unexpected JSON was found that is not convertible to `type`
         case ValueNotConvertible(type: Any.Type)
-        
-        /// An error occurred while parsing JSON text
-        case CouldNotParse(parseError: ErrorType)
     }
 
 }
