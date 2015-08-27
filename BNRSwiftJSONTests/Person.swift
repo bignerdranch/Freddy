@@ -12,10 +12,10 @@ import Result
 
 public struct Person: CustomStringConvertible {
     public let name: String
-    public var age: Int
+    public var age: IntMax
     public let spouse: Bool
     
-    public init(name: String, age: Int, spouse: Bool) {
+    public init(name: String, age: IntMax, spouse: Bool) {
         self.name = name
         self.age = age
         self.spouse = spouse

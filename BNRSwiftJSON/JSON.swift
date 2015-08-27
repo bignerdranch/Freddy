@@ -13,7 +13,7 @@ public enum JSON {
     case Array([JSON])
     case Dictionary([Swift.String: JSON])
     case Double(Swift.Double)
-    case Int(Swift.Int)
+    case Int(Swift.IntMax)
     case String(Swift.String)
     case Bool(Swift.Bool)
     case Null
@@ -77,10 +77,10 @@ public extension JSON {
     /**
         Retrieves an `Int` from the `JSON`.  If the target value's type inside of the `JSON` instance is not a numeric type, this property returns `nil`.  Any fractional parts contained by the `JSON` instance will be discarded.
     */
-    var int: Swift.Int? {
+    var int: Swift.IntMax? {
         switch self {
         case .Double(let dbl):
-            return Swift.Int(dbl)
+            return Swift.IntMax(dbl)
         case .Int(let int):
             return int
         case .Bool(let bool):
