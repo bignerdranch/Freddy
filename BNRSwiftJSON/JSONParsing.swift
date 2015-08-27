@@ -108,14 +108,13 @@ extension NSJSONSerialization: JSONParserType {
 
 extension JSON {
     
-    /**
-    Attempt to serialize `JSON` into an `NSData`.
-    
-    :returns: A `Result` with `NSData` in the `.Success` case, `.Failure` with an `NSError` otherwise.
-    */
-    public func serialize() -> Result<NSData, NSError> {
+    /// Attempt to serialize `JSON` into an `NSData`.
+    /// - returns: A byte-stream containing the `JSON` ready for wire transfer.
+    /// - throws: Errors that arise from `NSJSONSerialization`.
+    /// - see: Foundation.NSJSONSerialization
+    public func serialize() throws -> NSData {
         let obj: AnyObject = toNSJSONSerializationObject()
-        return Result(try NSJSONSerialization.dataWithJSONObject(obj, options: []))
+        return try NSJSONSerialization.dataWithJSONObject(obj, options: [])
     }
     
     /**

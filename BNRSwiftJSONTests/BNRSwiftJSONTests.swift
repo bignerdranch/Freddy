@@ -44,36 +44,21 @@ class BNRSwiftJSONTests: XCTestCase {
     }
     
     func testThatJSONCanBeSerialized() {
-        let serializedJSONData = json.serialize()
-        switch serializedJSONData {
-        case .Success(let data):
-            XCTAssertGreaterThan(data.length, 0, "There should be data.")
-        case .Failure(let error):
-            XCTFail("Failed with error: \(error)")
-        }
+        let data = try! json.serialize()
+        XCTAssertGreaterThan(data.length, 0, "There should be data.")
     }
     
     func testThatJSONDataIsEqual() {
-        let serializedJSONData = json.serialize()
+        let serializedJSONData = try! json.serialize()
         let noWhiteSpaceJSON = try! JSON(data: noWhiteSpaceData, usingParser: parser())
-        let noWhiteSpaceSerializedJSONData = noWhiteSpaceJSON.serialize()
-        switch (serializedJSONData, noWhiteSpaceSerializedJSONData) {
-        case (.Success(let sjd), .Success(let nwssjd)):
-            XCTAssertEqual(sjd, nwssjd, "Serialized data should be equal.")
-        default:
-            XCTFail("Serialized data should be equal.")
-        }
+        let noWhiteSpaceSerializedJSONData = try! noWhiteSpaceJSON.serialize()
+        XCTAssertEqual(serializedJSONData, noWhiteSpaceSerializedJSONData, "Serialized data should be equal.")
     }
     
     func testThatJSONSerializationMakesEqualJSON() {
-        let serializedJSONData = json.serialize()
-        switch serializedJSONData {
-        case .Success(let data):
-            let serialJSON = try? JSON(data: data, usingParser: parser())
-            XCTAssertEqual(json, serialJSON, "The JSON values should be equal.")
-        case .Failure(let error):
-            XCTFail("Failed with error: \(error)")
-        }
+        let serializedJSONData = try! json.serialize()
+        let serialJSON = try! JSON(data: serializedJSONData, usingParser: parser())
+        XCTAssert(json == serialJSON, "The JSON values should be equal.")
     }
 
     func testThatJSONSerializationHandlesBoolsCorrectly() {
@@ -82,7 +67,7 @@ class BNRSwiftJSONTests: XCTestCase {
             "bar": .Bool(false),
             "baz": .Int(123),
         ])
-        let data = json.serialize().value!
+        let data = try! json.serialize()
         let deserializedResult = try! JSON(data: data, usingParser: parser()).dictionary()
         let deserialized = JSON.Dictionary(deserializedResult)
         XCTAssertEqual(json, deserialized, "Serialize/Deserialize succeed with Bools")
@@ -122,7 +107,7 @@ class BNRSwiftJSONTests: XCTestCase {
             [ "name": "Drew Mathias", "age": 33, "spouse": true ],
             [ "name": "Sargeant Pepper" ]
         ]
-        let data = jsonArray.serialize().value!
+        let data = try! jsonArray.serialize()
         let deserializedArray = try! JSON(data: data, usingParser: parser()).array()
         let (successes, failures) = deserializedArray.mapAndPartition(Person.init)
         XCTAssertEqual(failures.count, 1, "There should be one error in `failures`.")
