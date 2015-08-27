@@ -257,4 +257,50 @@ extension JSON {
         return try memberAtPath(path, or: fallback) { $0.bool }
     }
 
+    // MARK: Optional member unpacking
+
+    private func optionalAtPath<T>(path: [JSONPathType], ifNotFound: Swift.Bool, ifNull: Swift.Bool, @noescape getter: JSON -> T?) throws -> T? {
+        do {
+            let descendant = try descendantAtPath(path)
+            switch (getter(descendant), descendant) {
+            case (.Some(let child), _):
+                return child
+            case (.None, .Null) where ifNull:
+                return nil
+            case (_, _):
+                throw Error.ValueNotConvertible(type: T.self)
+            }
+        } catch Error.KeyNotFound where ifNotFound {
+            return nil
+        } catch Error.IndexOutOfBounds where ifNotFound {
+            return nil
+        } catch Error.UnexpectedSubscript(let type) where ifNotFound && type == Swift.String.self {
+            return nil
+        }
+    }
+
+    public func array(path: JSONPathType..., ifNotFound: Swift.Bool = false, ifNull: Swift.Bool = false) throws -> [JSON]? {
+        return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: ifNull) { $0.array }
+    }
+
+    public func dictionary(path: JSONPathType..., ifNotFound: Swift.Bool = false, ifNull: Swift.Bool = false) throws -> [Swift.String: JSON]? {
+        return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: ifNull) { $0.dictionary }
+    }
+
+    public func double(path: JSONPathType..., ifNotFound: Swift.Bool = false, ifNull: Swift.Bool = false) throws -> Swift.Double? {
+        return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: ifNull) { $0.double }
+    }
+
+    public func int(path: JSONPathType..., ifNotFound: Swift.Bool = false, ifNull: Swift.Bool = false) throws -> Swift.Int? {
+        return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: ifNull) { $0.int }
+    }
+
+    public func string(path: JSONPathType..., ifNotFound: Swift.Bool = false, ifNull: Swift.Bool = false) throws -> Swift.String? {
+        return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: ifNull) { $0.string }
+    }
+
+    public func bool(path: JSONPathType..., ifNotFound: Swift.Bool = false, ifNull: Swift.Bool = false) throws -> Swift.Bool? {
+        return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: ifNull) { $0.bool }
+    }
+
 }
