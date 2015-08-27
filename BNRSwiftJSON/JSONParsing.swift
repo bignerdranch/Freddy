@@ -80,12 +80,7 @@ extension NSJSONSerialization: JSONParserType {
     :returns: An instance of `JSON` matching the array.
     */
     private static func makeJSONArray(jsonArray: [AnyObject]) -> JSON {
-        var items = [JSON]()
-        for item in jsonArray {
-            let value = makeJSON(item)
-            items.append(value)
-        }
-        return .Array(items)
+        return .Array(jsonArray.map(makeJSON))
     }
 
     // MARK: Make a JSON Dictionary
