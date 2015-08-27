@@ -63,6 +63,14 @@ private struct Literal {
 
 private let ParserMaximumDepth = 512
 
+/**
+A pure Swift JSON parser. This parser is much faster than the
+`NSJSONSerialization`-based parser (due to the overhead of having to
+dynamically cast the Objective-C objects to determine their type); however,
+it is much newer and has restrictions that the `NSJSONSerialization` parser
+does not. Two restrictions in particular are that it requires UTF-8 data as
+input and it does not allow trailing commas in arrays or dictionaries.
+**/
 public struct JSONParser {
 
     private enum Sign: Int {
@@ -574,6 +582,15 @@ public extension JSONParser {
             UnsafeBufferPointer(start: nulTerminatedBuffer.baseAddress, count: nulTerminatedBuffer.count - 1)
         }
         self.init(buffer: buffer, owner: codePoints)
+    }
+
+}
+
+extension JSONParser: JSONParserType {
+
+    public static func createJSONFromData(data: NSData) throws -> JSON {
+        var parser = JSONParser(utf8Data: data)
+        return try parser.parse().dematerialize()
     }
 
 }
