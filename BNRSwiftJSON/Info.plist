@@ -15,14 +15,12 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.0.1</string>
+	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2015 Rob Rix. All rights reserved.</string>
-	<key>NSPrincipalClass</key>
-	<string></string>
+	<string>Copyright © 2015 Big Nerd Ranch. All rights reserved.</string>
 </dict>
 </plist>
