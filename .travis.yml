@@ -1,6 +1,6 @@
 language: objective-c # lies
 osx_image: xcode7
-before_install: brew unlink xctool && brew install --HEAD xctool
+before_install: brew uninstall xctool && brew install --HEAD xctool
 xcode_project: BNRSwiftJSON.xcodeproj
 matrix:
   include:
