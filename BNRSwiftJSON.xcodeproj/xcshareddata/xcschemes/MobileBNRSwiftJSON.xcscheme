@@ -14,63 +14,64 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D454807C1A957361009D7229"
-               BuildableName = "Result.framework"
-               BlueprintName = "Result-iOS"
-               ReferencedContainer = "container:Result.xcodeproj">
+               BlueprintIdentifier = "DBE98DE81B6B0D5600132F0B"
+               BuildableName = "BNRSwiftJSON.framework"
+               BlueprintName = "MobileBNRSwiftJSON"
+               ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
-            buildForRunning = "NO"
+            buildForRunning = "YES"
             buildForProfiling = "NO"
             buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
+            buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D45480861A957362009D7229"
-               BuildableName = "Result-iOSTests.xctest"
-               BlueprintName = "Result-iOSTests"
-               ReferencedContainer = "container:Result.xcodeproj">
+               BlueprintIdentifier = "DBE98E101B6B0D7A00132F0B"
+               BuildableName = "MobileBNRSwiftJSONTests.xctest"
+               BlueprintName = "MobileBNRSwiftJSONTests"
+               ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      buildConfiguration = "Debug">
+      codeCoverageEnabled = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D45480861A957362009D7229"
-               BuildableName = "Result-iOSTests.xctest"
-               BlueprintName = "Result-iOSTests"
-               ReferencedContainer = "container:Result.xcodeproj">
+               BlueprintIdentifier = "DBE98E101B6B0D7A00132F0B"
+               BuildableName = "MobileBNRSwiftJSONTests.xctest"
+               BlueprintName = "MobileBNRSwiftJSONTests"
+               ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D454807C1A957361009D7229"
-            BuildableName = "Result.framework"
-            BlueprintName = "Result-iOS"
-            ReferencedContainer = "container:Result.xcodeproj">
+            BlueprintIdentifier = "DBE98DE81B6B0D5600132F0B"
+            BuildableName = "BNRSwiftJSON.framework"
+            BlueprintName = "MobileBNRSwiftJSON"
+            ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
@@ -78,28 +79,28 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D454807C1A957361009D7229"
-            BuildableName = "Result.framework"
-            BlueprintName = "Result-iOS"
-            ReferencedContainer = "container:Result.xcodeproj">
+            BlueprintIdentifier = "DBE98DE81B6B0D5600132F0B"
+            BuildableName = "BNRSwiftJSON.framework"
+            BlueprintName = "MobileBNRSwiftJSON"
+            ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
+      buildConfiguration = "Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D454807C1A957361009D7229"
-            BuildableName = "Result.framework"
-            BlueprintName = "Result-iOS"
-            ReferencedContainer = "container:Result.xcodeproj">
+            BlueprintIdentifier = "DBE98DE81B6B0D5600132F0B"
+            BuildableName = "BNRSwiftJSON.framework"
+            BlueprintName = "MobileBNRSwiftJSON"
+            ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

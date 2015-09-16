@@ -14,23 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D454807C1A957361009D7229"
+               BlueprintIdentifier = "D03579991B2B788F005D26AE"
                BuildableName = "Result.framework"
-               BlueprintName = "Result-iOS"
-               ReferencedContainer = "container:Result.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D45480861A957362009D7229"
-               BuildableName = "Result-iOSTests.xctest"
-               BlueprintName = "Result-iOSTests"
+               BlueprintName = "Result-watchOS"
                ReferencedContainer = "container:Result.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D45480861A957362009D7229"
-               BuildableName = "Result-iOSTests.xctest"
-               BlueprintName = "Result-iOSTests"
+               BlueprintIdentifier = "D03579A51B2B78A1005D26AE"
+               BuildableName = "Result-watchOSTests.xctest"
+               BlueprintName = "Result-watchOSTests"
                ReferencedContainer = "container:Result.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -56,9 +42,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D454807C1A957361009D7229"
+            BlueprintIdentifier = "D03579991B2B788F005D26AE"
             BuildableName = "Result.framework"
-            BlueprintName = "Result-iOS"
+            BlueprintName = "Result-watchOS"
             ReferencedContainer = "container:Result.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -78,9 +64,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D454807C1A957361009D7229"
+            BlueprintIdentifier = "D03579991B2B788F005D26AE"
             BuildableName = "Result.framework"
-            BlueprintName = "Result-iOS"
+            BlueprintName = "Result-watchOS"
             ReferencedContainer = "container:Result.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -96,9 +82,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D454807C1A957361009D7229"
+            BlueprintIdentifier = "D03579991B2B788F005D26AE"
             BuildableName = "Result.framework"
-            BlueprintName = "Result-iOS"
+            BlueprintName = "Result-watchOS"
             ReferencedContainer = "container:Result.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
