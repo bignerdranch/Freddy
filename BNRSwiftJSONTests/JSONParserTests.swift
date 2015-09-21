@@ -21,29 +21,27 @@ private func ~=(lhs: JSONParser.Error, rhs: JSONParser.Error) -> Bool {
         return true
     case let (.EndOfStreamGarbage(lOffset), .EndOfStreamGarbage(rOffset)):
         return lOffset == rOffset
-    case let (.TooManyNestedObjects(lOffset), .TooManyNestedObjects(rOffset)):
+    case let (.ExceededNestingLimit(lOffset), .ExceededNestingLimit(rOffset)):
         return lOffset == rOffset
-    case let (.ValueInvalid(lOffset), .ValueInvalid(rOffset)):
-        return lOffset == rOffset
-    case let (.EscapeUnfinished(lOffset), .EscapeUnfinished(rOffset)):
+    case let (.ValueInvalid(lOffset, lValue), .ValueInvalid(rOffset, rValue)):
+        return lOffset == rOffset && lValue == rValue
+    case let (.ControlCharacterUnrecognized(lOffset), .ControlCharacterUnrecognized(rOffset)):
         return lOffset == rOffset
     case let (.UnicodeEscapeInvalid(lOffset), .UnicodeEscapeInvalid(rOffset)):
         return lOffset == rOffset
-    case let (.LiteralNilInvalid(lOffset), .LiteralNilInvalid(rOffset)):
+    case let (.LiteralNilMisspelled(lOffset), .LiteralNilMisspelled(rOffset)):
         return lOffset == rOffset
-    case let (.LiteralTrueInvalid(lOffset), .LiteralTrueInvalid(rOffset)):
+    case let (.LiteralTrueMisspelled(lOffset), .LiteralTrueMisspelled(rOffset)):
         return lOffset == rOffset
-    case let (.LiteralFalseInvalid(lOffset), .LiteralFalseInvalid(rOffset)):
+    case let (.LiteralFalseMisspelled(lOffset), .LiteralFalseMisspelled(rOffset)):
         return lOffset == rOffset
-    case let (.LiteralMissingSeparator(lOffset), .LiteralMissingSeparator(rOffset)):
+    case let (.CollectionMissingSeparator(lOffset), .CollectionMissingSeparator(rOffset)):
         return lOffset == rOffset
-    case let (.LiteralMissingKey(lOffset), .LiteralMissingKey(rOffset)):
+    case let (.DictionaryMissingKey(lOffset), .DictionaryMissingKey(rOffset)):
         return lOffset == rOffset
-    case let (.LiteralNumberNoDigits(lOffset), .LiteralNumberNoDigits(rOffset)):
+    case let (.NumberMissingFractionalDigits(lOffset), .NumberMissingFractionalDigits(rOffset)):
         return lOffset == rOffset
-    case let (.LiteralNumberSymbolInvalid(lOffset), .LiteralNumberSymbolInvalid(rOffset)):
-        return lOffset == rOffset
-    case let (.LiteralNumberExponentInvalid(lOffset), .LiteralNumberExponentInvalid(rOffset)):
+    case let (.NumberSymbolMissingDigits(lOffset), .NumberSymbolMissingDigits(rOffset)):
         return lOffset == rOffset
     case (_, _):
         return false
@@ -186,8 +184,8 @@ class JSONParserTests: XCTestCase {
         for (s, expectedError) in [
             ("012",   JSONParser.Error.EndOfStreamGarbage(offset: 1)),
             ("0.1.2", JSONParser.Error.EndOfStreamGarbage(offset: 3)),
-            ("-.123", JSONParser.Error.LiteralNumberSymbolInvalid(offset: 0)),
-            (".123",  JSONParser.Error.ValueInvalid(offset: 0)),
+            ("-.123", JSONParser.Error.NumberSymbolMissingDigits(offset: 0)),
+            (".123",  JSONParser.Error.ValueInvalid(offset: 0, character: ".")),
             ("1.",    JSONParser.Error.EndOfStreamUnexpected),
             ("1.0e",  JSONParser.Error.EndOfStreamUnexpected),
             ("1.0e+", JSONParser.Error.EndOfStreamUnexpected),

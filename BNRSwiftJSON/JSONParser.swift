@@ -105,7 +105,7 @@ public struct JSONParser {
 
     private mutating func parseValue() -> Result<JSON, Error> {
         if depth > ParserMaximumDepth {
-            return .Failure(Error.TooManyNestedObjects(offset: loc))
+            return .Failure(Error.ExceededNestingLimit(offset: loc))
         }
 
         advancing: while loc < input.count {
@@ -149,7 +149,7 @@ public struct JSONParser {
             }
         }
         
-        return .Failure(Error.ValueInvalid(offset: loc))
+        return .Failure(Error.ValueInvalid(offset: loc, character: UnicodeScalar(input[loc])))
     }
 
     private mutating func skipWhitespace() {
@@ -166,13 +166,13 @@ public struct JSONParser {
 
     private mutating func decodeNull() -> Result<JSON, Error> {
         if loc + 4 > input.count {
-            return .Failure(Error.LiteralNilInvalid(offset: loc))
+            return .Failure(Error.LiteralNilMisspelled(offset: loc))
         }
 
         if     input[loc+1] != Literal.u
             || input[loc+2] != Literal.l
             || input[loc+3] != Literal.l {
-                return .Failure(Error.LiteralNilInvalid(offset: loc))
+                return .Failure(Error.LiteralNilMisspelled(offset: loc))
         }
 
         loc += 4
@@ -181,13 +181,13 @@ public struct JSONParser {
 
     private mutating func decodeTrue() -> Result<JSON, Error> {
         if loc + 4 > input.count {
-            return .Failure(Error.LiteralTrueInvalid(offset: loc))
+            return .Failure(Error.LiteralTrueMisspelled(offset: loc))
         }
 
         if     input[loc+1] != Literal.r
             || input[loc+2] != Literal.u
             || input[loc+3] != Literal.e {
-            return .Failure(Error.LiteralTrueInvalid(offset: loc))
+            return .Failure(Error.LiteralTrueMisspelled(offset: loc))
         }
 
         loc += 4
@@ -196,14 +196,14 @@ public struct JSONParser {
 
     private mutating func decodeFalse() -> Result<JSON, Error> {
         if loc + 5 > input.count {
-            return .Failure(Error.LiteralFalseInvalid(offset: loc))
+            return .Failure(Error.LiteralFalseMisspelled(offset: loc))
         }
 
         if     input[loc+1] != Literal.a
             || input[loc+2] != Literal.l
             || input[loc+3] != Literal.s
             || input[loc+4] != Literal.e {
-            return .Failure(Error.LiteralFalseInvalid(offset: loc))
+            return .Failure(Error.LiteralFalseMisspelled(offset: loc))
         }
 
         loc += 5
@@ -232,11 +232,11 @@ public struct JSONParser {
                         stringDecodingBuffer.appendContentsOf(escaped)
                         loc += 4
                     } else {
-                        return .Failure(Error.EscapeUnfinished(offset: loc))
+                        return .Failure(Error.UnicodeEscapeInvalid(offset: loc))
                     }
 
                 default:
-                    return .Failure(Error.EscapeUnfinished(offset: loc))
+                    return .Failure(Error.ControlCharacterUnrecognized(offset: loc))
                 }
                 ++loc
 
@@ -312,7 +312,7 @@ public struct JSONParser {
                 if loc < input.count && input[loc] == Literal.COMMA {
                     ++loc
                 } else {
-                    return .Failure(Error.LiteralMissingSeparator(offset: start))
+                    return .Failure(Error.CollectionMissingSeparator(offset: start))
                 }
             }
 
@@ -377,7 +377,7 @@ public struct JSONParser {
                     ++loc
                     skipWhitespace()
                 } else {
-                    return .Failure(Error.LiteralMissingSeparator(offset: start))
+                    return .Failure(Error.CollectionMissingSeparator(offset: start))
                 }
             }
 
@@ -390,14 +390,14 @@ public struct JSONParser {
                     return error
                 }
             } else {
-                return .Failure(Error.LiteralMissingKey(offset: start))
+                return .Failure(Error.DictionaryMissingKey(offset: start))
             }
 
             skipWhitespace()
             if loc < input.count && input[loc] == Literal.COLON {
                 ++loc
             } else {
-                return .Failure(Error.LiteralMissingSeparator(offset: start))
+                return .Failure(Error.CollectionMissingSeparator(offset: start))
             }
 
             switch parseValue() {
@@ -425,7 +425,7 @@ public struct JSONParser {
             return decodeNumberPreDecimalDigits(start, sign: .Negative)
 
         default:
-            return .Failure(Error.LiteralNumberSymbolInvalid(offset: start))
+            return .Failure(Error.NumberSymbolMissingDigits(offset: start))
         }
     }
 
@@ -480,7 +480,7 @@ public struct JSONParser {
             return decodeNumberPostDecimalDigits(start, sign: sign, value: value)
 
         default:
-            return .Failure(Error.LiteralNumberNoDigits(offset: start))
+            return .Failure(Error.NumberMissingFractionalDigits(offset: start))
         }
     }
 
@@ -522,7 +522,7 @@ public struct JSONParser {
             return decodeNumberExponentSign(start, sign: sign, value: value, expSign: .Negative)
 
         default:
-            return .Failure(Error.LiteralNumberExponentInvalid(offset: start))
+            return .Failure(Error.NumberSymbolMissingDigits(offset: start))
         }
     }
 
@@ -536,7 +536,7 @@ public struct JSONParser {
             return decodeNumberExponentDigits(start, sign: sign, value: value, expSign: expSign)
 
         default:
-            return .Failure(Error.LiteralNumberExponentInvalid(offset: start))
+            return .Failure(Error.NumberSymbolMissingDigits(offset: start))
         }
     }
 
@@ -582,36 +582,60 @@ public extension JSONParser {
 
 extension JSONParser {
 
+    /// Enumeration describing possible errors that occur while parsing a JSON
+    /// document. Most errors include an associated `offset`, representing the
+    /// offset into the UTF-8 characters making up the document where the error
+    /// occurred.
     public enum Error: ErrorType {
-        /// Unexpected end of file during string parse
+        /// The parser ran out of data prematurely. This usually means a value
+        /// was not escaped, such as a string literal not ending with a double
+        /// quote.
         case EndOfStreamUnexpected
-        /// Unexpected data after parsed JSON at given `offset`
+        
+        /// Unexpected non-whitespace data was left around `offset` after
+        /// parsing all valid JSON.
         case EndOfStreamGarbage(offset: Int)
-        /// Too many nested objects or arrays at given `offset`
-        case TooManyNestedObjects(offset: Int)
-        /// Invalid value around given `offset`
-        case ValueInvalid(offset: Int)
-        /// Badly formed string literal escape at given `offset`
-        case EscapeUnfinished(offset: Int)
-        /// Badly formed Unicode escape sequence at given `offset`
+        
+        /// Too many nested objects or arrays occured at the literal started
+        /// around `offset`.
+        case ExceededNestingLimit(offset: Int)
+        
+        /// A `character` was not a valid start of a value around `offset`.
+        case ValueInvalid(offset: Int, character: UnicodeScalar)
+        
+        /// Badly-formed Unicode escape sequence at `offset`. A Unicode escape
+        /// uses the text "\u" followed by 4 hex digits, such as "\uF09F\uA684"
+        /// to represent U+1F984, "UNICORN FACE".
         case UnicodeEscapeInvalid(offset: Int)
-        /// Invalid token at given `offset`, expected `null`
-        case LiteralNilInvalid(offset: Int)
-        /// Invalid token at given `offset`, expected `true`
-        case LiteralTrueInvalid(offset: Int)
-        /// Invalid token at given `offset`, expected `false`
-        case LiteralFalseInvalid(offset: Int)
-        /// Badly formed collection at given `offset`, expected `,` or `:`
-        case LiteralMissingSeparator(offset: Int)
-        /// No key for value in pair for object around given `offset`
-        case LiteralMissingKey(offset: Int)
-        /// Badly formed number with no digits around given `offset`
-        case LiteralNumberNoDigits(offset: Int)
-        /// Badly formed number with symbols but no digits around given `offset`
-        case LiteralNumberSymbolInvalid(offset: Int)
-        /// Badly formed number with exponent but no digits around given `offset`
-        case LiteralNumberExponentInvalid(offset: Int)
-
+        
+        /// Badly-formed control character around `offset`. JSON supports
+        /// backslash-escaped double quotes, slashes, whitespace control codes,
+        /// and Unicode escape sequences.
+        case ControlCharacterUnrecognized(offset: Int)
+        
+        /// Invalid token, expected `null` around `offset`
+        case LiteralNilMisspelled(offset: Int)
+        
+        /// Invalid token, expected `true` around `offset`
+        case LiteralTrueMisspelled(offset: Int)
+        
+        /// Invalid token, expected `false` around `offset`
+        case LiteralFalseMisspelled(offset: Int)
+        
+        /// Badly-formed collection at given `offset`, expected `,` or `:`
+        case CollectionMissingSeparator(offset: Int)
+        
+        /// While parsing an object literal, a value was found without a key
+        /// around `offset`. The start of a string literal was expected.
+        case DictionaryMissingKey(offset: Int)
+        
+        /// Badly-formed number with no digits around `offset`. After a decimal
+        /// point, a number must include some number of digits.
+        case NumberMissingFractionalDigits(offset: Int)
+        
+        /// Badly-formed number with symbols ("-" or "e") but no following
+        /// digits around `offset`.
+        case NumberSymbolMissingDigits(offset: Int)
     }
 
 }
