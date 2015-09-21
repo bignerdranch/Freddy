@@ -22,7 +22,7 @@ private func ~=(lhs: JSON.Error, rhs: JSON.Error) -> Bool {
         return lString == rString
     case let (.UnexpectedSubscript(lType), .UnexpectedSubscript(rType)):
         return lType == rType
-    case let (.TypeNotConvertible(lType), .TypeNotConvertible(rType)):
+    case let (.ValueNotConvertible(lType), .ValueNotConvertible(rType)):
         return lType == rType
     case let (.CouldNotParse(lError), .CouldNotParse(rError)):
         return (lError as NSError) == (rError as NSError)
@@ -243,7 +243,7 @@ class BNRSwiftJSONTests: XCTestCase {
         switch matt {
         case .Success:
             XCTFail("The `name` should not be convertible to `int`.")
-        case .Failure(JSON.Error.TypeNotConvertible(Swift.Int.self)):
+        case .Failure(JSON.Error.ValueNotConvertible(Swift.Int.self)):
             break
         case .Failure(let error):
             XCTFail("The error should be due to `name` not being convertible to `int`, but was: \(error).")

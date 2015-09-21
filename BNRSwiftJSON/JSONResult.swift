@@ -33,7 +33,7 @@ public extension ResultType where Value == JSON {
 public extension ResultType where Value == JSON, Error == JSON.Error {
     private func convertType<T>(@noescape getter: JSON -> T?) -> Result<T, JSON.Error> {
         return analysis(ifSuccess: { json in
-            Result(getter(json), failWith: JSON.Error.TypeNotConvertible(T.self))
+            Result(getter(json), failWith: JSON.Error.ValueNotConvertible(type: T.self))
         }, ifFailure: Result.Failure)
     }
 

@@ -50,7 +50,7 @@ public enum JSON {
             case .Success(let json):
                 return .Success(json)
             case .Failure(let error):
-                return .Failure(.CouldNotParse(error))
+                return .Failure(.CouldNotParse(parseError: error))
             }
 
         case .NSJSONSerialization:
@@ -58,7 +58,7 @@ public enum JSON {
                 let json = try NSJSONSerialization.JSONObjectWithData(data, options: [])
                 return .Success(makeJSON(json))
             } catch {
-                return .Failure(.CouldNotParse(error))
+                return .Failure(.CouldNotParse(parseError: error))
             }
         }
     }
@@ -265,10 +265,10 @@ public extension JSON {
                 if let obj = jsonDict[key] {
                     return .Success(obj)
                 } else {
-                    return .Failure(Error.KeyNotFound(key))
+                    return .Failure(Error.KeyNotFound(key: key))
                 }
             default:
-                return .Failure(Error.UnexpectedSubscript(Swift.String.self))
+                return .Failure(Error.UnexpectedSubscript(type: Swift.String.self))
             }
         }
     }
@@ -280,10 +280,10 @@ public extension JSON {
                 if index <= jsonArray.count - 1 {
                     return .Success(jsonArray[index])
                 } else {
-                    return .Failure(Error.IndexOutOfBounds(index))
+                    return .Failure(Error.IndexOutOfBounds(index: index))
                 }
             default:
-                return .Failure(Error.UnexpectedSubscript(Swift.Int.self))
+                return .Failure(Error.UnexpectedSubscript(type: Swift.Int.self))
             }
 
         }
@@ -295,16 +295,20 @@ public extension JSON {
 extension JSON {
 
     public enum Error: ErrorType {
-        /// The given index is out of bounds for the JSON array.
-        case IndexOutOfBounds(Swift.Int)
-        /// The given key was not found in the JSON object.
-        case KeyNotFound(Swift.String)
-        /// The JSON is not subscriptable with
-        case UnexpectedSubscript(Any.Type)
-        /// Unexpected JSON was found that is not convertible to the given type.
-        case TypeNotConvertible(Any.Type)
-        /// An error occurred while parsing JSON text.
-        case CouldNotParse(ErrorType)
+        /// The `index` is out of bounds for a JSON array
+        case IndexOutOfBounds(index: Swift.Int)
+        
+        /// The `key` was not found in the JSON dictionary
+        case KeyNotFound(key: Swift.String)
+        
+        /// The JSON is not subscriptable with `type`
+        case UnexpectedSubscript(type: Any.Type)
+        
+        /// Unexpected JSON was found that is not convertible to `type`
+        case ValueNotConvertible(type: Any.Type)
+        
+        /// An error occurred while parsing JSON text
+        case CouldNotParse(parseError: ErrorType)
     }
 
 }
