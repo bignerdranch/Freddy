@@ -113,11 +113,11 @@ class JSONParserTests: XCTestCase {
     }
 
     func testThatParserUnderstandsStringsWithoutEscapes() {
-        let s = "a b c d 😀 x y z"
-        let result = JSONFromString("\"\(s)\"")
+        let string = "a b c d 😀 x y z"
+        let result = JSONFromString("\"\(string)\"")
         switch result {
         case .Success(let value):
-            XCTAssertEqual(value, JSON.String(s))
+            XCTAssertEqual(value, JSON.String(string))
         case .Failure(let error):
             XCTFail("Unexpected error \(error)")
         }
@@ -147,12 +147,12 @@ class JSONParserTests: XCTestCase {
     }
 
     func testThatParserUnderstandsNumbers() {
-        for (s, shouldBeInt) in [
+        for (string, shouldBeInt) in [
             ("  0  ", 0),
             ("123", 123),
             ("  -20  ", -20),
         ] {
-            switch JSONFromString(s) {
+            switch JSONFromString(string) {
             case .Success(let value):
                 XCTAssertEqual(value.int!, shouldBeInt)
             case .Failure(let error):
@@ -160,7 +160,7 @@ class JSONParserTests: XCTestCase {
             }
         }
 
-        for (s, shouldBeDouble) in [
+        for (string, shouldBeDouble) in [
             ("  -0  ", -0.0),
             ("  -0.0  ", 0.0),
             ("123.0", 123.0),
@@ -171,7 +171,7 @@ class JSONParserTests: XCTestCase {
             ("123.45e+2", 123.45e+2),
             ("-123.45e-2", -123.45e-2),
         ] {
-            switch JSONFromString(s) {
+            switch JSONFromString(string) {
             case .Success(let value):
                 XCTAssertEqualWithAccuracy(value.double!, shouldBeDouble, accuracy: DBL_EPSILON)
             case .Failure(let error):
@@ -181,7 +181,7 @@ class JSONParserTests: XCTestCase {
     }
 
     func testThatParserRejectsInvalidNumbers() {
-        for (s, expectedError) in [
+        for (string, expectedError) in [
             ("012",   JSONParser.Error.EndOfStreamGarbage(offset: 1)),
             ("0.1.2", JSONParser.Error.EndOfStreamGarbage(offset: 3)),
             ("-.123", JSONParser.Error.NumberSymbolMissingDigits(offset: 0)),
@@ -192,21 +192,21 @@ class JSONParserTests: XCTestCase {
             ("1.0e-", JSONParser.Error.EndOfStreamUnexpected),
             ("0e1",   JSONParser.Error.EndOfStreamGarbage(offset: 1)),
         ] {
-            switch JSONFromString(s) {
+            switch JSONFromString(string) {
             case .Success:
-                XCTFail("Unexpected success for \"\(s)\"")
+                XCTFail("Unexpected success for \"\(string)\"")
             case .Failure(expectedError):
                 break
             case .Failure(let error):
-                XCTFail("Unexpected error \(error) in \(s)")
+                XCTFail("Unexpected error \(error) in \(string)")
             }
         }
     }
 
     func testThatParserUnderstandsEmptyArrays() {
         let expect = JSON.Array([])
-        for s in ["[]", "[  ]", "  [  ]  "] {
-            let result = JSONFromString(s)
+        for string in ["[]", "[  ]", "  [  ]  "] {
+            let result = JSONFromString(string)
             switch result {
             case .Success(let value):
                 XCTAssertEqual(value, expect)
@@ -233,14 +233,14 @@ class JSONParserTests: XCTestCase {
     }
 
     func testThatParserUnderstandsMultipleItemArrays() {
-        for (s, expect) in [
+        for (string, expect) in [
             (" [ null   ,   \"foo\" ] ", [JSON.Null, .String("foo")]),
             ("[true,true,false]", [JSON.Bool(true), .Bool(true), .Bool(false)]),
             ("[ [\"nested\",null], [[\"doubly\",true]]   ]",
                 [JSON.Array([.String("nested"), .Null]),
                  .Array([.Array([.String("doubly"), .Bool(true)])])])
         ] {
-            let result = JSONFromString(s)
+            let result = JSONFromString(string)
             switch result {
             case .Success(let value):
                 XCTAssertEqual(value, JSON.Array(expect))
@@ -251,8 +251,8 @@ class JSONParserTests: XCTestCase {
     }
 
     func testThatParserUnderstandsEmptyObjects() {
-        for s in ["{}", "  {   }  "] {
-            let result = JSONFromString(s)
+        for string in ["{}", "  {   }  "] {
+            let result = JSONFromString(string)
             switch result {
             case .Success(let value):
                 XCTAssertEqual(value, JSON.Dictionary([:]))
@@ -263,12 +263,12 @@ class JSONParserTests: XCTestCase {
     }
 
     func testThatParserUnderstandsSingleItemObjects() {
-        for (s, expect) in [
+        for (string, expect) in [
             ("{\"a\":\"b\"}", ["a":JSON.String("b")]),
             ("{  \"foo\"  :  [null]  }", ["foo": JSON.Array([.Null])]),
             ("{  \"a\" : { \"b\": true }  }", ["a": JSON.Dictionary(["b":.Bool(true)])]),
         ] {
-            let result = JSONFromString(s)
+            let result = JSONFromString(string)
             switch result {
             case .Success(let value):
                 XCTAssertEqual(value, JSON.Dictionary(expect))
@@ -279,7 +279,7 @@ class JSONParserTests: XCTestCase {
     }
 
     func testThatParserUnderstandsMultipleItemObjects() {
-        for (s, expect) in [
+        for (string, expect) in [
             ("{\"a\":\"b\",\"c\":\"d\"}",
                 ["a":JSON.String("b"),"c":.String("d")]),
             ("{  \"foo\"  :  [null]   ,   \"bar\":  true  }",
@@ -288,7 +288,7 @@ class JSONParserTests: XCTestCase {
                 ["a": JSON.Dictionary(["b":.Bool(true)]),
                  "c": .Dictionary(["x": .Bool(true), "y": .Null])]),
         ] {
-            let result = JSONFromString(s)
+            let result = JSONFromString(string)
             switch result {
             case .Success(let value):
                 XCTAssertEqual(value, JSON.Dictionary(expect))
