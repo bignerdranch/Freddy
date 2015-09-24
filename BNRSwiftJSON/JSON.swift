@@ -45,14 +45,20 @@ public enum JSON {
     public static func createJSONFrom(data: NSData, usingParser parser: Parser = .PureSwift) -> JSONResult {
         switch parser {
         case .PureSwift:
-            return JSONResult(JSONFromUTF8Data(data))
+            var parser = JSONParser(utf8Data: data)
+            switch parser.parse() {
+            case .Success(let json):
+                return .Success(json)
+            case .Failure(let error):
+                return .Failure(.CouldNotParse(parseError: error))
+            }
 
         case .NSJSONSerialization:
             do {
                 let json = try NSJSONSerialization.JSONObjectWithData(data, options: [])
-                return JSONResult.success(makeJSON(json))
+                return .Success(makeJSON(json))
             } catch {
-                return JSONResult.failure(error as NSError)
+                return .Failure(.CouldNotParse(parseError: error))
             }
         }
     }
@@ -124,12 +130,7 @@ public enum JSON {
     */
     public func serialize() -> Result<NSData, NSError> {
         let obj: AnyObject = toNSJSONSerializationObject()
-        do {
-            let result = try NSJSONSerialization.dataWithJSONObject(obj, options: [])
-            return .Success(result)
-        } catch {
-            return .Failure(error as NSError)
-        }
+        return Result(try NSJSONSerialization.dataWithJSONObject(obj, options: []))
     }
 
     /**
@@ -262,12 +263,12 @@ public extension JSON {
             switch self {
             case .Dictionary(let jsonDict):
                 if let obj = jsonDict[key] {
-                    return JSONResult.success(obj)
+                    return .Success(obj)
                 } else {
-                    return JSONResult.failure(JSON.makeError(ErrorCode.KeyNotFound, problem: key))
+                    return .Failure(Error.KeyNotFound(key: key))
                 }
             default:
-                return JSONResult.failure(JSON.makeError(ErrorCode.UnexpectedType, problem: key))
+                return .Failure(Error.UnexpectedSubscript(type: Swift.String.self))
             }
         }
     }
@@ -277,49 +278,39 @@ public extension JSON {
             switch self {
             case .Array(let jsonArray):
                 if index <= jsonArray.count - 1 {
-                    return JSONResult.success(jsonArray[index])
+                    return .Success(jsonArray[index])
                 } else {
-                    return JSONResult.failure(JSON.makeError(ErrorCode.IndexOutOfBounds, problem: index))
+                    return .Failure(Error.IndexOutOfBounds(index: index))
                 }
             default:
-                return JSONResult.failure(JSON.makeError(ErrorCode.UnexpectedType, problem: index))
+                return .Failure(Error.UnexpectedSubscript(type: Swift.Int.self))
             }
+
         }
     }
 }
 
 // MARK: - Errors
 
-public extension JSON {
-    static let errorDomain = "com.bignerdranch.BNRSwiftJSON"
-    
-    enum ErrorCode: Swift.Int {
-        case IndexOutOfBounds, KeyNotFound, UnexpectedType, TypeNotConvertible, CouldNotParseJSON
-    }
-}
-
-// MARK: - Make Errors
-
 extension JSON {
-    static func makeError<T>(reason: ErrorCode, problem: T) -> NSError {
-        switch reason {
-        case .IndexOutOfBounds:
-            let errorDict = [NSLocalizedFailureReasonErrorKey: "`\(problem)` is out of bounds."]
-            return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
-        case .KeyNotFound:
-            let errorDict = [NSLocalizedFailureReasonErrorKey: "`\(problem)` is not a key within the JSON."]
-            return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
-        case .UnexpectedType:
-            let errorDict = [NSLocalizedFailureReasonErrorKey: "`\(self)` is not subscriptable with `\(problem)`."]
-            return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
-        case .TypeNotConvertible:
-            let errorDict = [NSLocalizedFailureReasonErrorKey: "Unexpected type. `\(self)` is not convertible to `\(problem)`."]
-            return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
-        case .CouldNotParseJSON:
-            let errorDict = [NSLocalizedFailureReasonErrorKey: "Could not parse `JSON`: \(problem)"]
-            return NSError(domain: errorDomain, code: reason.rawValue, userInfo: errorDict)
-        }
+
+    public enum Error: ErrorType {
+        /// The `index` is out of bounds for a JSON array
+        case IndexOutOfBounds(index: Swift.Int)
+        
+        /// The `key` was not found in the JSON dictionary
+        case KeyNotFound(key: Swift.String)
+        
+        /// The JSON is not subscriptable with `type`
+        case UnexpectedSubscript(type: Any.Type)
+        
+        /// Unexpected JSON was found that is not convertible to `type`
+        case ValueNotConvertible(type: Any.Type)
+        
+        /// An error occurred while parsing JSON text
+        case CouldNotParse(parseError: ErrorType)
     }
+
 }
 
 // MARK: - Test Equality

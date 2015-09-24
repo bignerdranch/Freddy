@@ -27,7 +27,7 @@ public struct Person: CustomStringConvertible {
 }
 
 extension Person: JSONDecodable {
-    public static func createWithJSON(value: JSON) -> Result<Person, NSError> {
+    public static func createWithJSON(value: JSON) -> Result<Person, JSON.Error> {
         let name = value["name"].string
         let age = value["age"].int
         let isMarried = value["spouse"].bool
