@@ -118,10 +118,6 @@ class BNRSwiftJSONTests: XCTestCase {
         XCTAssertEqual(success, true, "There should be `success`.")
     }
     
-    func testThatJSONNullMatchesNullValue() {
-        XCTAssertNotNil(try? json.isNull("key"))
-    }
-    
     func testThatPathSubscriptingPerformsNesting() {
         for z in try! json.array("states", "Georgia") {
             XCTAssertNotNil(z.int, "The `Int` should not be `nil`.")

@@ -160,21 +160,6 @@ extension JSON {
         return try memberAtPath(path) { $0.bool }
     }
 
-    /// Confirms a null value exists at a path into the recieving structure.
-    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - throws:
-    ///   * `JSON.Error.KeyNotFound`: A given `String` key does not exist
-    ///     inside a descendant `JSON` dictionary.
-    ///   * `JSON.Error.IndexOutOfBounds`: A given `Int` index is outside the
-    ///     bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Null`.
-    public func isNull(path: JSONPathType...) throws {
-        return try memberAtPath(path) { $0.isNull ? () : nil }
-    }
-
     // MARK: Member unpacking with fallback
 
     private func memberAtPath<T>(path: [JSONPathType], @noescape or fallback: () -> T, @noescape getter: JSON -> T?) throws -> T {
