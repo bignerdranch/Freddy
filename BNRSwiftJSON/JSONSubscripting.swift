@@ -45,19 +45,11 @@ extension JSON {
     }
 
     public subscript(key: Swift.String) -> JSON? {
-        do {
-            return try descendantAtPath(CollectionOfOne(key))
-        } catch {
-            return nil
-        }
+        return try? descendantAtPath(CollectionOfOne(key))
     }
 
     public subscript(index: Swift.Int) -> JSON? {
-        do {
-            return try descendantAtPath(CollectionOfOne(index))
-        } catch {
-            return nil
-        }
+        return try? descendantAtPath(CollectionOfOne(index))
     }
 
     // MARK: Simple member unpacking
