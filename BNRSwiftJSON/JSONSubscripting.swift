@@ -147,6 +147,20 @@ extension JSON {
         return try arrayAtPath(path)
     }
 
+    /// Attempts to decodes many values from a desendant JSON array at a path
+    /// into JSON.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter type: If the context this method is called from does not
+    ///   make the return type clear, pass a type implementing `JSONDecodable`
+    ///   to disambiguate the type to decode with.
+    /// - returns: An `Array` of decoded elements
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`, or
+    ///   any error that arises from decoding the contained values.
+    /// - seealso: `JSON.decode(_:type:)`
+    public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> [Decoded] {
+        return try arrayAtPath(path).map { try $0.decode() }
+    }
+
     /// Retrieves a `[String: JSON]` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - returns: An `Dictionary` of `String` mapping to `JSON` elements
@@ -336,6 +350,19 @@ extension JSON {
         return try arrayAtPath(path, ifNotFound: ifNotFound, ifNull: false)
     }
 
+    /// Optionally decodes many values from a descendant array at a path into
+    /// JSON.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNotFound: If `true`, missing key or index errors are
+    ///   treated as `nil`.
+    /// - returns: An `Array` of decoded elements if found, otherwise `nil`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`,
+    ///   or any error that arises from decoding the contained values.
+    /// - seealso: `JSON.decode(_:ifNotFound:type:)`
+    public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [Decoded]? {
+        return try arrayAtPath(path, ifNotFound: ifNotFound, ifNull: false)?.map { try $0.decode() }
+    }
+
     /// Optionally retrieves a `[String: JSON]` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNotFound: If `true`, missing key or index errors are
@@ -358,6 +385,19 @@ extension JSON {
     /// - seealso: `JSON.decode(_:ifNull:type:)`
     public func array(path: JSONPathType..., ifNull: Swift.Bool) throws -> [JSON]? {
         return try arrayAtPath(path, ifNotFound: false, ifNull: ifNull)
+    }
+
+    /// Optionally decodes many values from a descendant array at a path into
+    /// JSON.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNotFound: If `true`, missing key or index errors are
+    ///   treated as `nil`.
+    /// - returns: An `Array` of decoded elements if found, otherwise `nil`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNull:type:)`,
+    ///   or any error that arises from decoding the contained values.
+    /// - seealso: `JSON.decode(_:ifNull:type:)`
+    public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., ifNull: Swift.Bool) throws -> [Decoded]? {
+        return try arrayAtPath(path, ifNotFound: false, ifNull: ifNull)?.map { try $0.decode() }
     }
 
     /// Optionally retrieves a `[String: JSON]` from a path into the recieving
@@ -451,6 +491,18 @@ extension JSON {
     /// - seealso: `JSON.decode(_:or:)`
     public func array(path: JSONPathType..., @autoclosure or fallback: () -> [JSON]) throws -> [JSON] {
         return try arrayAtPath(path, or: fallback)
+    }
+
+    /// Attempts to decodes many values from a desendant JSON array at a path
+    /// into the recieving structure, returning a fallback if not found.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter fallback: Array to use when one is missing at the subscript.
+    /// - returns: An `Array` of decoded elements
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`, or
+    ///   any error that arises from decoding the contained values.
+    /// - seealso: `JSON.decode(_:or:)`
+    public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., @autoclosure or fallback: () -> [Decoded]) throws -> [Decoded] {
+        return try catchOptional(path, ifNotFound: true, ifNull: false, getter: arrayAtPath)?.map { try $0.decode() } ?? fallback()
     }
 
     /// Retrieves a `[String: JSON]` from a path into JSON or a fallback if not
