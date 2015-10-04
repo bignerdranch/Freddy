@@ -18,3 +18,55 @@ public protocol JSONDecodable {
     init(json: JSON) throws
     
 }
+
+extension Double: JSONDecodable {
+    
+    public init(json: JSON) throws {
+        switch json {
+        case let .Double(double):
+            self.init(double)
+        case let .Int(int):
+            self.init(int)
+        default:
+            throw JSON.Error.ValueNotConvertible(type: Swift.Double.self)
+        }
+    }
+    
+}
+
+extension Int: JSONDecodable {
+    
+    public init(json: JSON) throws {
+        switch json {
+        case let .Double(double):
+            self.init(double)
+        case let .Int(int):
+            self.init(int)
+        default:
+            throw JSON.Error.ValueNotConvertible(type: Swift.Int.self)
+        }
+    }
+    
+}
+
+extension String: JSONDecodable {
+    
+    public init(json: JSON) throws {
+        guard case let .String(string) = json else {
+            throw JSON.Error.ValueNotConvertible(type: Swift.String.self)
+        }
+        self = string
+    }
+    
+}
+
+extension Bool: JSONDecodable {
+    
+    public init(json: JSON) throws {
+        guard case let .Bool(bool) = json else {
+            throw JSON.Error.ValueNotConvertible(type: Swift.Bool.self)
+        }
+        self = bool
+    }
+    
+}
