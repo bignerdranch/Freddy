@@ -25,7 +25,11 @@ extension JSON {
 
     // MARK: Native subscripting
 
-    private func descendantAtPath<Sequence: SequenceType where Sequence.Generator.Element == JSONPathType>(path: Sequence) throws -> JSON {
+    private enum SubscriptError: ErrorType {
+        case SubscriptIntoNull(type: JSONPathType.Type)
+    }
+
+    private func descendantAtPath<Path: CollectionType where Path.Generator.Element == JSONPathType>(path: Path, detectNull: Swift.Bool = false) throws -> JSON {
         return try path.reduce(self) { json, path in
             switch (json, path) {
             case let (.Dictionary(dict), key as Swift.String):
@@ -38,6 +42,8 @@ extension JSON {
                     throw Error.IndexOutOfBounds(index: index)
                 }
                 return array[index]
+            case (.Null, let badSubscript) where detectNull:
+                throw SubscriptError.SubscriptIntoNull(type: badSubscript.dynamicType)
             case (_, let badSubscript):
                 throw Error.UnexpectedSubscript(type: badSubscript.dynamicType)
             }
@@ -54,451 +60,408 @@ extension JSON {
 
     // MARK: Simple member unpacking
 
-    private func memberAtPath<T>(path: [JSONPathType], @noescape getter: JSON -> T?) throws -> T {
-        let descendant = try descendantAtPath(path)
+    private func decodedAtPath<Decoded: JSONDecodable>(path: [JSONPathType], detectNull: Swift.Bool = false) throws -> Decoded {
+        let json = try descendantAtPath(path, detectNull: detectNull)
+        return try Decoded(json: json)
+    }
 
-        guard let child = getter(descendant) else {
-            throw Error.ValueNotConvertible(type: T.self)
+    private func arrayAtPath(path: [JSONPathType], detectNull: Swift.Bool = false) throws -> [JSON] {
+        let json = try descendantAtPath(path, detectNull: detectNull)
+        guard case let .Array(array) = json else {
+            throw Error.ValueNotConvertible(type: Swift.Array<JSON>.self)
         }
-
-        return child
+        return array
     }
 
-    /// Retrieves a `[JSON]` from a path into the recieving structure.
+    private func dictionaryAtPath(path: [JSONPathType], detectNull: Swift.Bool = false) throws -> [Swift.String: JSON] {
+        let json = try descendantAtPath(path, detectNull: detectNull)
+        guard case let .Dictionary(dictionary) = json else {
+            throw Error.ValueNotConvertible(type: Swift.Dictionary<Swift.String, JSON>.self)
+        }
+        return dictionary
+    }
+
+    /// Attempts to decode into the returning type from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - returns: An `Array` of `JSON` elements
-    /// - throws:
-    ///   * `JSON.Error.KeyNotFound`: A given `String` key does not exist
-    ///     inside a descendant `JSON` dictionary.
-    ///   * `JSON.Error.IndexOutOfBounds`: A given `Int` index is outside the
-    ///     bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Array`.
-    public func array(path: JSONPathType...) throws -> [JSON] {
-        return try memberAtPath(path) { $0.array }
+    /// - parameter type: If the context this method is called from does not
+    ///   make the return type clear, pass a type implementing `JSONDecodable`
+    ///   to disambiguate the type to decode with.
+    /// - returns: An initialized member from the inner JSON.
+    /// - throws: One of the following errors contained in `JSON.Error`:
+    ///   * `KeyNotFound`: A given `String` key does not exist inside a
+    ///     descendant `JSON` dictionary.
+    ///   * `IndexOutOfBounds`: A given `Int` index is outside the bounds of a
+    ///     descendant `JSON` array.
+    ///   * `UnexpectedSubscript`: A given subscript cannot be used with the
+    ///     corresponding `JSON` value.
+    ///   * `TypeNotConvertible`: The target value's type inside of
+    ///     the `JSON` instance does not match `Decoded`.
+    public func decode<Decoded: JSONDecodable>(path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> Decoded {
+        return try decodedAtPath(path)
     }
 
-    /// Retrieves a `[String: JSON]` from a path into the recieving structure.
-    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - returns: An `Dictionary` of `String` mapping to `JSON` elements
-    /// - throws:
-    ///   * `JSON.Error.KeyNotFound`: A given `String` key does not exist
-    ///     inside a descendant `JSON` dictionary.
-    ///   * `JSON.Error.IndexOutOfBounds`: A given `Int` index is outside the
-    ///     bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Dictionary`.
-    public func dictionary(path: JSONPathType...) throws -> [Swift.String: JSON] {
-        return try memberAtPath(path) { $0.dictionary }
-    }
-
-    /// Retrieves a `Double` from a path into the recieving structure.
+    /// Retrieves a `Double` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - returns: A floating-point `Double`
-    /// - throws:
-    ///   * `JSON.Error.KeyNotFound`: A given `String` key does not exist
-    ///     inside a descendant `JSON` dictionary.
-    ///   * `JSON.Error.IndexOutOfBounds`: A given `Int` index is outside the
-    ///     bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Double`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
+    /// - seealso: `JSON.decode(_:type:)`
     public func double(path: JSONPathType...) throws -> Swift.Double {
-        return try memberAtPath(path) { $0.double }
+        return try decodedAtPath(path)
     }
 
-    /// Retrieves an `Int` from a path into the recieving structure.
+    /// Retrieves an `Int` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - returns: A numeric `Int`
-    /// - throws:
-    ///   * `JSON.Error.KeyNotFound`: A given `String` key does not exist
-    ///     inside a descendant `JSON` dictionary.
-    ///   * `JSON.Error.IndexOutOfBounds`: A given `Int` index is outside the
-    ///     bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Int`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
+    /// - seealso: `JSON.decode(_:type:)`
     public func int(path: JSONPathType...) throws -> Swift.Int {
-        return try memberAtPath(path) { $0.int }
+        return try decodedAtPath(path)
     }
 
-    /// Retrieves a `String` from a path into the recieving structure.
+    /// Retrieves a `String` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - returns: A textual `String`
-    /// - throws:
-    ///   * `JSON.Error.KeyNotFound`: A given `String` key does not exist
-    ///     inside a descendant `JSON` dictionary.
-    ///   * `JSON.Error.IndexOutOfBounds`: A given `Int` index is outside the
-    ///     bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `String`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
+    /// - seealso: `JSON.decode(_:type:)`
     public func string(path: JSONPathType...) throws -> Swift.String {
-        return try memberAtPath(path) { $0.string }
+        return try decodedAtPath(path)
     }
 
-    /// Retrieves a `Bool` from a path into the recieving structure.
+    /// Retrieves a `Bool` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - returns: A truthy `Bool`
-    /// - throws:
-    ///   * `JSON.Error.KeyNotFound`: A given `String` key does not exist
-    ///     inside a descendant `JSON` dictionary.
-    ///   * `JSON.Error.IndexOutOfBounds`: A given `Int` index is outside the
-    ///     bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Bool`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
+    /// - seealso: `JSON.decode(_:type:)`
     public func bool(path: JSONPathType...) throws -> Swift.Bool {
-        return try memberAtPath(path) { $0.bool }
+        return try decodedAtPath(path)
     }
 
-    // MARK: Member unpacking with fallback
+    // MARK: Complex member unpacking
 
-    private func memberAtPath<T>(path: [JSONPathType], @noescape or fallback: () -> T, @noescape getter: JSON -> T?) throws -> T {
-        do {
-            return try memberAtPath(path, getter: getter)
-        } catch Error.KeyNotFound {
-            return fallback()
-        } catch Error.IndexOutOfBounds {
-            return fallback()
-        }
-    }
-
-    /// Retrieves a `[JSON]` from a path into the recieving structure or a
-    /// fallback if not found.
+    /// Retrieves a `[JSON]` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter fallback: Array to use when one is missing at the subscript.
     /// - returns: An `Array` of `JSON` elements
-    /// - throws:
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Array`.
-    public func array(path: JSONPathType..., @autoclosure or fallback: () -> [JSON]) throws -> [JSON] {
-        return try memberAtPath(path, or: fallback) { $0.array }
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
+    /// - seealso: `JSON.decode(_:type:)`
+    public func array(path: JSONPathType...) throws -> [JSON] {
+        return try arrayAtPath(path)
     }
 
-    /// Retrieves a `[String: JSON]` from a path into the recieving structure or
-    /// a fallback if not found.
+    /// Retrieves a `[String: JSON]` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter fallback: Dictionary to use when one is missing at the subscript.
     /// - returns: An `Dictionary` of `String` mapping to `JSON` elements
-    /// - throws:
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Dictionary`.
-    public func dictionary(path: JSONPathType..., @autoclosure or fallback: () -> [Swift.String: JSON]) throws -> [Swift.String: JSON] {
-        return try memberAtPath(path, or: fallback) { $0.dictionary }
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
+    /// - seealso: `JSON.decode(_:type:)`
+    public func dictionary(path: JSONPathType...) throws -> [Swift.String: JSON] {
+        return try dictionaryAtPath(path)
     }
 
-    /// Retrieves a `Double` from a path into the recieving structure or a
-    /// fallback if not found.
-    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter fallback: Array to use when one is missing at the subscript.
-    /// - returns: A floating-point `Double`
-    /// - throws:
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Double`.
-    public func double(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Double) throws -> Swift.Double {
-        return try memberAtPath(path, or: fallback) { $0.double }
-    }
+    // MARK: Simple optional unpacking
 
-    /// Retrieves an `Int` from a path into the recieving structure or a
-    /// fallback if not found.
-    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter fallback: Array to use when one is missing at the subscript.
-    /// - returns: A numeric `Int`
-    /// - throws:
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Int`.
-    public func int(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Int) throws -> Swift.Int {
-        return try memberAtPath(path, or: fallback) { $0.int }
-    }
-
-    /// Retrieves a `String` from a path into the recieving structure or a
-    /// fallback if not found.
-    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter fallback: Array to use when one is missing at the subscript.
-    /// - returns: A textual `String`
-    /// - throws:
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `String`.
-    public func string(path: JSONPathType..., @autoclosure or fallback: () -> Swift.String) throws -> Swift.String {
-        return try memberAtPath(path, or: fallback) { $0.string }
-    }
-
-    /// Retrieves a `Bool` from a path into the recieving structure or a
-    /// fallback if not found.
-    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter fallback: Array to use when one is missing at the subscript.
-    /// - returns: A truthy `Bool`
-    /// - throws:
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Bool`.
-    public func bool(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Bool) throws -> Swift.Bool {
-        return try memberAtPath(path, or: fallback) { $0.bool }
-    }
-
-    // MARK: Optional member unpacking
-
-    private func optionalAtPath<T>(path: [JSONPathType], ifNotFound: Swift.Bool, ifNull: Swift.Bool, @noescape getter: JSON -> T?) throws -> T? {
+    private func catchOptional<Value>(path: [JSONPathType], ifNotFound: Swift.Bool, ifNull: Swift.Bool, @noescape getter: ([JSONPathType], detectNull: Swift.Bool) throws -> Value) throws -> Value? {
         do {
-            let descendant = try descendantAtPath(path)
-            switch (getter(descendant), descendant) {
-            case (.Some(let child), _):
-                return child
-            case (.None, .Null) where ifNull:
-                return nil
-            case (_, _):
-                throw Error.ValueNotConvertible(type: T.self)
-            }
+            return try getter(path, detectNull: true)
         } catch Error.KeyNotFound where ifNotFound {
             return nil
         } catch Error.IndexOutOfBounds where ifNotFound {
             return nil
+        } catch SubscriptError.SubscriptIntoNull where ifNull {
+            return nil
+        } catch SubscriptError.SubscriptIntoNull(let type) where ifNotFound && type == Swift.String.self {
+            return nil
+        } catch SubscriptError.SubscriptIntoNull(let type) {
+            throw Error.UnexpectedSubscript(type: type)
         } catch Error.UnexpectedSubscript(let type) where ifNotFound && type == Swift.String.self {
             return nil
         }
     }
 
-    /// Optionally retrieves a `[JSON]` from a path into the recieving structure.
-    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter ifNotFound: If `true`, missing key or index errors are
-    ///             treated as `nil`.
-    /// - returns: An `Array` of `JSON` elements if a value could be found,
-    ///            otherwise `nil`.
-    /// - throws:
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * If `ifNotFound` is `false`, `JSON.Error.KeyNotFound`: A given
-    ///     `String` key does not exist inside a descendant `JSON` dictionary.
-    ///   * If `ifNotFound` is `false`, `JSON.Error.IndexOutOfBounds`: A given
-    ///     `Int` index is outside the bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Array`.
-    public func array(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [JSON]? {
-        return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: false) { $0.array }
+    private func decodedAtPath<Decoded: JSONDecodable>(path: [JSONPathType], ifNotFound: Swift.Bool, ifNull: Swift.Bool) throws -> Decoded? {
+        return try catchOptional(path, ifNotFound: ifNotFound, ifNull: ifNull, getter: decodedAtPath)
     }
 
-    /// Optionally retrieves a `[String: JSON]` from a path into the recieving
-    /// structure.
-    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter ifNotFound: If `true`, missing key or index errors are
-    ///             treated as `nil`.
-    /// - returns: A `Dictionary` of `String` mapping to `JSON` elements if a
-    ///            value could be found, otherwise `nil`.
-    /// - throws:
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * If `ifNotFound` is `false`, `JSON.Error.KeyNotFound`: A given
-    ///     `String` key does not exist inside a descendant `JSON` dictionary.
-    ///   * If `ifNotFound` is `false`, `JSON.Error.IndexOutOfBounds`: A given
-    ///     `Int` index is outside the bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Dictionary`.
-    public func dictionary(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [Swift.String: JSON]? {
-        return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: false) { $0.dictionary }
+    private func arrayAtPath(path: [JSONPathType], ifNotFound: Swift.Bool, ifNull: Swift.Bool) throws -> [JSON]? {
+        return try catchOptional(path, ifNotFound: ifNotFound, ifNull: ifNull, getter: arrayAtPath)
     }
 
-    /// Optionally retrieves a `Double` from a path into the recieving structure.
+    private func dictionaryAtPath(path: [JSONPathType], ifNotFound: Swift.Bool, ifNull: Swift.Bool) throws -> [Swift.String: JSON]? {
+        return try catchOptional(path, ifNotFound: ifNotFound, ifNull: ifNull, getter: dictionaryAtPath)
+    }
+
+    //return try catchOptional(path, ifNotFound: ifNotFound, ifNull: false, getter: arrayAtPath)
+
+    /// Optionally decodes into the returning type from a path into JSON.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNotFound: If `true`, missing key or index errors are
+    ///   treated as `nil`.
+    /// - parameter type: If the context this method is called from does not
+    ///   make the return type clear, pass a type implementing `JSONDecodable`
+    ///   to disambiguate the type to decode with.
+    /// - returns: A decoded value from the inner JSON if found, or `nil`.
+    /// - throws: One of the following errors contained in `JSON.Error`:
+    ///   * `UnexpectedSubscript`: A `path` item cannot be used with the
+    ///     corresponding `JSON` value.
+    ///   * If `ifNotFound` is `false`, `KeyNotFound`: A key `path` does not
+    ///     exist inside a descendant `JSON` dictionary.
+    ///   * If `ifNotFound` is `false`, `IndexOutOfBounds`: An index `path` is
+    ///     outside the bounds of a descendant `JSON` array.
+    ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
+    ///     instance does not match the decoded value.
+    ///   * Any error that arises from decoding the value.
+    public func decode<Decoded: JSONDecodable>(path: JSONPathType..., ifNotFound: Swift.Bool, type: Decoded.Type = Decoded.self) throws -> Decoded? {
+        return try decodedAtPath(path, ifNotFound: true, ifNull: false)
+    }
+
+    /// Optionally retrieves a `Double` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNotFound: If `true`, missing key or index errors are
     ///             treated as `nil`.
     /// - returns: A `Double` if a value could be found, otherwise `nil`.
-    /// - throws:
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * If `ifNotFound` is `false`, `JSON.Error.KeyNotFound`: A given
-    ///     `String` key does not exist inside a descendant `JSON` dictionary.
-    ///   * If `ifNotFound` is `false`, `JSON.Error.IndexOutOfBounds`: A given
-    ///     `Int` index is outside the
-    ///     bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Double`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
+    /// - seealso: `JSON.decode(_:ifNotFound:type:)`
     public func double(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Double? {
-        return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: false) { $0.double }
+        return try decodedAtPath(path, ifNotFound: true, ifNull: false)
     }
 
-    /// Optionally retrieves a `Int` from a path into the recieving structure.
+    /// Optionally retrieves a `Int` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNotFound: If `true`, missing key or index errors are
     ///             treated as `nil`.
     /// - returns: A numeric `Int` if a value could be found, otherwise `nil`.
-    /// - throws:
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * If `ifNotFound` is `false`, `JSON.Error.KeyNotFound`: A given
-    ///     `String` key does not exist inside a descendant `JSON` dictionary.
-    ///   * If `ifNotFound` is `false`, `JSON.Error.IndexOutOfBounds`: A given
-    ///     `Int` index is outside the bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Int`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
+    /// - seealso: `JSON.decode(_:ifNotFound:type:)`
     public func int(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Int? {
-        return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: false) { $0.int }
+        return try decodedAtPath(path, ifNotFound: true, ifNull: false)
     }
 
-    /// Optionally retrieves a `String` from a path into the recieving structure.
+    /// Optionally retrieves a `String` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNotFound: If `true`, missing key or index errors are
     ///             treated as `nil`.
     /// - returns: A text `String` if a value could be found, otherwise `nil`.
-    /// - throws:
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * If `ifNotFound` is `false`, `JSON.Error.KeyNotFound`: A given
-    ///     `String` key does not exist inside a descendant `JSON` dictionary.
-    ///   * If `ifNotFound` is `false`, `JSON.Error.IndexOutOfBounds`: A given
-    ///     `Int` index is outside the bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `String`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
+    /// - seealso: `JSON.decode(_:ifNotFound:type:)`
     public func string(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.String? {
-        return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: false) { $0.string }
+        return try decodedAtPath(path, ifNotFound: true, ifNull: false)
     }
 
-    /// Optionally retrieves a `Bool` from a path into the recieving structure.
+    /// Optionally retrieves a `Bool` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNotFound: If `true`, missing key or index errors are
     ///             treated as `nil`.
     /// - returns: A truthy `Bool` if a value could be found, otherwise `nil`.
-    /// - throws:
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * If `ifNotFound` is `false`, `JSON.Error.KeyNotFound`: A given
-    ///     `String` key does not exist inside a descendant `JSON` dictionary.
-    ///   * If `ifNotFound` is `false`, `JSON.Error.IndexOutOfBounds`: A given
-    ///     `Int` index is outside the bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Bool`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
+    /// - seealso: `JSON.decode(_:ifNotFound:type:)`
     public func bool(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Bool? {
-        return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: false) { $0.bool }
+        return try decodedAtPath(path, ifNotFound: true, ifNull: false)
+    }
+
+    /// Optionally decodes into the returning type from a path into JSON.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNull: If `true`, target values matching `Null` are treated
+    ///   as `nil`.
+    /// - parameter type: If the context this method is called from does not
+    ///   make the return type clear, pass a type implementing `JSONDecodable`
+    ///   to disambiguate the type to decode with.
+    /// - returns: A decoded value from the inner JSON if found, or `nil`.
+    /// - throws: One of the following errors contained in `JSON.Error`:
+    ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
+    ///     `JSON` dictionary.
+    ///   * `IndexOutOfBounds`: An index `path` is outside the bounds of a
+    ///     descendant `JSON` array.
+    ///   * `UnexpectedSubscript`: A `path` item cannot be used with the
+    ///     corresponding `JSON` value.
+    ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
+    ///     instance does not match the decoded value.
+    ///   * Any error that arises from decoding the value.
+    public func decode<Decoded: JSONDecodable>(path: JSONPathType..., ifNull: Swift.Bool, type: Decoded.Type = Decoded.self) throws -> Decoded? {
+        return try decodedAtPath(path, ifNotFound: false, ifNull: ifNull)
+    }
+
+    /// Optionally retrieves a `Double` from a path into JSON.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNull: If `true`, target values matching `Null` are treated
+    ///             as `nil`.
+    /// - returns: A `Double` if a value could be found, otherwise `nil`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNull:type:)`.
+    /// - seealso: `JSON.decode(_:ifNull:type:)`
+    public func double(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Double? {
+        return try decodedAtPath(path, ifNotFound: false, ifNull: ifNull)
+    }
+
+    /// Optionally retrieves a `Int` from a path into JSON.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNull: If `true`, target values matching `Null` are treated
+    ///             as `nil`.
+    /// - returns: A numeric `Int` if a value could be found, otherwise `nil`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNull:type:)`.
+    /// - seealso: `JSON.decode(_:ifNull:type:)`
+    public func int(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Int? {
+        return try decodedAtPath(path, ifNotFound: false, ifNull: ifNull)
+    }
+
+    /// Optionally retrieves a `String` from a path into JSON.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNull: If `true`, target values matching `Null` are treated
+    ///             as `nil`.
+    /// - returns: A text `String` if a value could be found, otherwise `nil`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNull:type:)`.
+    /// - seealso: `JSON.decode(_:ifNull:type:)`
+    public func string(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.String? {
+        return try decodedAtPath(path, ifNotFound: false, ifNull: ifNull)
+    }
+
+    /// Optionally retrieves a `Bool` from a path into JSON.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNull: If `true`, target values matching `Null` are treated
+    ///             as `nil`.
+    /// - returns: A truthy `Bool` if a value could be found, otherwise `nil`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNull:type:)`.
+    /// - seealso: `JSON.decode(_:ifNull:type:)`
+    public func bool(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Bool? {
+        return try decodedAtPath(path, ifNotFound: false, ifNull: ifNull)
+    }
+
+    // MARK: Complex optional unpacking
+
+    /// Optionally retrieves a `[JSON]` from a path into JSON.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNotFound: If `true`, missing key or index errors are
+    ///   treated as `nil`.
+    /// - returns: An `Array` of `JSON` elements if a value could be found,
+    ///   otherwise `nil`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
+    /// - seealso: `JSON.decode(_:ifNotFound:type:)`
+    public func array(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [JSON]? {
+        return try arrayAtPath(path, ifNotFound: ifNotFound, ifNull: false)
+    }
+
+    /// Optionally retrieves a `[String: JSON]` from a path into JSON.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter ifNotFound: If `true`, missing key or index errors are
+    ///   treated as `nil`.
+    /// - returns: A `Dictionary` of `String` mapping to `JSON` elements if a
+    ///   value could be found, otherwise `nil`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
+    /// - seealso: `JSON.decode(_:ifNotFound:type:)`
+    public func dictionary(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [Swift.String: JSON]? {
+        return try dictionaryAtPath(path, ifNotFound: ifNotFound, ifNull: false)
     }
 
     /// Optionally retrieves a `[JSON]` from a path into the recieving structure.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNull: If `true`, target values matching `Null` are treated
-    ///             as `nil`.
+    ///   as `nil`.
     /// - returns: An `Array` of `JSON` elements if a value could be found,
-    ///            otherwise `nil`.
-    /// - throws:
-    ///   * `JSON.Error.KeyNotFound`: A given `String` key does not exist
-    ///     inside a descendant `JSON` dictionary.
-    ///   * `JSON.Error.IndexOutOfBounds`: A given `Int` index is outside the
-    ///     bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Array`.
+    ///   otherwise `nil`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNull:type:)`.
+    /// - seealso: `JSON.decode(_:ifNull:type:)`
     public func array(path: JSONPathType..., ifNull: Swift.Bool) throws -> [JSON]? {
-        return try optionalAtPath(path, ifNotFound: false, ifNull: ifNull) { $0.array }
+        return try arrayAtPath(path, ifNotFound: false, ifNull: ifNull)
     }
 
     /// Optionally retrieves a `[String: JSON]` from a path into the recieving
     /// structure.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNull: If `true`, target values matching `Null` are treated
-    ///             as `nil`.
+    ///   as `nil`.
     /// - returns: A `Dictionary` of `String` mapping to `JSON` elements if a
-    ///            value could be found, otherwise `nil`.
-    /// - throws:
-    ///   * `JSON.Error.KeyNotFound`: A given `String` key does not exist
-    ///     inside a descendant `JSON` dictionary.
-    ///   * `JSON.Error.IndexOutOfBounds`: A given `Int` index is outside the
-    ///     bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Dictionary`.
+    ///   value could be found, otherwise `nil`.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNull:type:)`.
+    /// - seealso: `JSON.decode(_:ifNull:type:)`
     public func dictionary(path: JSONPathType..., ifNull: Swift.Bool) throws -> [Swift.String: JSON]? {
-        return try optionalAtPath(path, ifNotFound: false, ifNull: ifNull) { $0.dictionary }
+        return try dictionaryAtPath(path, ifNotFound: false, ifNull: ifNull)
     }
 
-    /// Optionally retrieves a `Double` from a path into the recieving structure.
-    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter ifNull: If `true`, target values matching `Null` are treated
-    ///             as `nil`.
-    /// - returns: A `Double` if a value could be found, otherwise `nil`.
-    /// - throws:
-    ///   * `JSON.Error.KeyNotFound`: A given `String` key does not exist
-    ///     inside a descendant `JSON` dictionary.
-    ///   * `JSON.Error.IndexOutOfBounds`: A given `Int` index is outside the
-    ///     bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Double`.
-    public func double(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Double? {
-        return try optionalAtPath(path, ifNotFound: false, ifNull: ifNull) { $0.double }
+    // MARK: Member unpacking with fallback
+
+    private func decodedAtPath<Decoded: JSONDecodable>(path: [JSONPathType], @autoclosure or fallback: () -> Decoded) throws -> Decoded {
+        return try decodedAtPath(path, ifNotFound: true, ifNull: false) ?? fallback()
     }
 
-    /// Optionally retrieves a `Int` from a path into the recieving structure.
-    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter ifNull: If `true`, target values matching `Null` are treated
-    ///             as `nil`.
-    /// - returns: A numeric `Int` if a value could be found, otherwise `nil`.
-    /// - throws:
-    ///   * `JSON.Error.KeyNotFound`: A given `String` key does not exist
-    ///     inside a descendant `JSON` dictionary.
-    ///   * `JSON.Error.IndexOutOfBounds`: A given `Int` index is outside the
-    ///     bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Int`.
-    public func int(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Int? {
-        return try optionalAtPath(path, ifNotFound: false, ifNull: ifNull) { $0.int }
+    private func arrayAtPath(path: [JSONPathType], @autoclosure or fallback: () -> [JSON]) throws -> [JSON] {
+        return try arrayAtPath(path, ifNotFound: true, ifNull: false) ?? fallback()
     }
 
-    /// Optionally retrieves a `String` from a path into the recieving structure.
-    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter ifNull: If `true`, target values matching `Null` are treated
-    ///             as `nil`.
-    /// - returns: A text `String` if a value could be found, otherwise `nil`.
-    /// - throws:
-    ///   * `JSON.Error.KeyNotFound`: A given `String` key does not exist
-    ///     inside a descendant `JSON` dictionary.
-    ///   * `JSON.Error.IndexOutOfBounds`: A given `Int` index is outside the
-    ///     bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `String`.
-    public func string(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.String? {
-        return try optionalAtPath(path, ifNotFound: false, ifNull: ifNull) { $0.string }
+    private func dictionaryAtPath(path: [JSONPathType], @autoclosure or fallback: () -> [Swift.String: JSON]) throws -> [Swift.String: JSON] {
+        return try dictionaryAtPath(path, ifNotFound: true, ifNull: false) ?? fallback()
     }
 
-    /// Optionally retrieves a `Bool` from a path into the recieving structure.
+    /// Attempts to decode into the returning type from a path into
+    /// JSON, or returns a fallback if not found.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter ifNull: If `true`, target values matching `Null` are treated
-    ///             as `nil`.
-    /// - returns: A truthy `Bool` if a value could be found, otherwise `nil`.
-    /// - throws:
-    ///   * `JSON.Error.KeyNotFound`: A given `String` key does not exist
-    ///     inside a descendant `JSON` dictionary.
-    ///   * `JSON.Error.IndexOutOfBounds`: A given `Int` index is outside the
-    ///     bounds of a descendant `JSON` array.
-    ///   * `JSON.Error.UnexpectedSubscript`: A given subscript cannot be used
-    ///     with the corresponding `JSON` value.
-    ///   * `JSON.Error.TypeNotConvertible`: The target value's type inside of
-    ///     the `JSON` instance does not match `Bool`.
-    public func bool(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Bool? {
-        return try optionalAtPath(path, ifNotFound: false, ifNull: ifNull) { $0.bool }
+    /// - parameter fallback: Value to use when one is missing at the subscript.
+    /// - returns: An initialized member from the inner JSON.
+    /// - throws: One of the following errors contained in `JSON.Error`:
+    ///   * `UnexpectedSubscript`: A given subscript cannot be used with the
+    ///     corresponding `JSON` value.
+    ///   * `TypeNotConvertible`: The target value's type inside of
+    ///     the `JSON` instance does not match `Decoded`.
+    public func decode<Decoded: JSONDecodable>(path: JSONPathType..., @autoclosure or fallback: () -> Decoded) throws -> Decoded {
+        return try decodedAtPath(path, or: fallback)
+    }
+
+    /// Retrieves a `Double` from a path into JSON or a fallback if not found.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter fallback: Array to use when one is missing at the subscript.
+    /// - returns: A floating-point `Double`
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
+    /// - seealso: `JSON.decode(_:or:)`
+    public func double(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Double) throws -> Swift.Double {
+        return try decodedAtPath(path, or: fallback)
+    }
+
+    /// Retrieves an `Int` from a path into JSON or a fallback if not found.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter fallback: Array to use when one is missing at the subscript.
+    /// - returns: A numeric `Int`
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
+    /// - seealso: `JSON.decode(_:or:)`
+    public func int(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Int) throws -> Swift.Int {
+        return try decodedAtPath(path, or: fallback)
+    }
+
+    /// Retrieves a `String` from a path into JSON or a fallback if not found.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter fallback: Array to use when one is missing at the subscript.
+    /// - returns: A textual `String`
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
+    /// - seealso: `JSON.decode(_:or:)`
+    public func string(path: JSONPathType..., @autoclosure or fallback: () -> Swift.String) throws -> Swift.String {
+        return try decodedAtPath(path, or: fallback)
+    }
+
+    /// Retrieves a `Bool` from a path into JSON or a fallback if not found.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter fallback: Array to use when one is missing at the subscript.
+    /// - returns: A truthy `Bool`
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
+    /// - seealso: `JSON.decode(_:or:)`
+    public func bool(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Bool) throws -> Swift.Bool {
+        return try decodedAtPath(path, or: fallback)
+    }
+
+    // MARK: Complex member unpacking with fallback
+
+    /// Retrieves a `[JSON]` from a path into JSON or a fallback if not found.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter fallback: Array to use when one is missing at the subscript.
+    /// - returns: An `Array` of `JSON` elements
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
+    /// - seealso: `JSON.decode(_:or:)`
+    public func array(path: JSONPathType..., @autoclosure or fallback: () -> [JSON]) throws -> [JSON] {
+        return try arrayAtPath(path, or: fallback)
+    }
+
+    /// Retrieves a `[String: JSON]` from a path into JSON or a fallback if not
+    /// found.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter fallback: Value to use when one is missing at the subscript
+    /// - returns: An `Dictionary` of `String` mapping to `JSON` elements
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
+    /// - seealso: `JSON.decode(_:or:)`
+    public func dictionary(path: JSONPathType..., @autoclosure or fallback: () -> [Swift.String: JSON]) throws -> [Swift.String: JSON] {
+        return try dictionaryAtPath(path, or: fallback)
     }
 
 }
