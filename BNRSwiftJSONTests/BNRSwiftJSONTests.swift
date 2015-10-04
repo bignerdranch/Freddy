@@ -120,7 +120,7 @@ class BNRSwiftJSONTests: XCTestCase {
     
     func testThatPathSubscriptingPerformsNesting() {
         for z in try! json.array("states", "Georgia") {
-            XCTAssertNotNil(z.int, "The `Int` should not be `nil`.")
+            XCTAssertNotNil(try? z.int(), "The `Int` should not be `nil`.")
         }
     }
 
