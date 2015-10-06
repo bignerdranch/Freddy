@@ -114,7 +114,7 @@ public struct JSONParser {
                 return try decodeObject()
 
             case Literal.DOUBLE_QUOTE:
-                return try decodeString()
+                return .String(try decodeString())
 
             case Literal.f:
                 return try decodeFalse()
@@ -204,7 +204,7 @@ public struct JSONParser {
     }
 
     private var stringDecodingBuffer = [UInt8]()
-    private mutating func decodeString() throws -> JSON {
+    private mutating func decodeString() throws -> String {
         let start = loc
         loc = loc.successor()
         stringDecodingBuffer.removeAll(keepCapacity: true)
@@ -244,7 +244,7 @@ public struct JSONParser {
                     throw Error.UnicodeEscapeInvalid(offset: start)
                 }
 
-                return .String(string)
+                return string
 
             case let other:
                 stringDecodingBuffer.append(other)
@@ -373,7 +373,7 @@ public struct JSONParser {
                 throw Error.DictionaryMissingKey(offset: start)
             }
 
-            let key = try decodeString().string()
+            let key = try decodeString()
             skipWhitespace()
 
             guard loc < input.count && input[loc] == Literal.COLON else {
