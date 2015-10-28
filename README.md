@@ -1,9 +1,9 @@
 # BNRSwiftJSON
 BNRSwiftJSON is a reusable framework for parsing JSON in Swift.
 
-Its primary goal is faciliate the safe parsing of JSON, while also preserving the ease of use presented by parsing JSON in Objective-C.
+Its primary goal is facilitate the safe parsing of JSON, while also preserving the ease of use presented by parsing JSON in Objective-C.
 
-## Instalation
+## Installation
 
 - Add the project as a submodule
 - Use CocoaPods
@@ -106,7 +106,7 @@ case .Failure(let error):
 }
 ```
 
-Here, we are instead loading the values from the key `"people"` as an array using the computed property. The biggest change here is passing the retrived `JSON` into the static method `Person.createWithJSON(person)` .
+Here, we are instead loading the values from the key `"people"` as an array using the computed property. The biggest change here is passing the retrieved `JSON` into the static method `Person.createWithJSON(person)` .
 
 Here is our `Person` stuct:
 ```swift
