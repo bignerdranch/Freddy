@@ -6,9 +6,6 @@
 //  Copyright © 2015 Big Nerd Ranch. Licensed under MIT.
 //
 
-import Foundation
-import Result
-
 private struct Literal {
     static let BACKSLASH     = UInt8(ascii: "\\")
     static let BACKSPACE     = UInt8(ascii: "\u{0008}")
@@ -63,6 +60,14 @@ private struct Literal {
 
 private let ParserMaximumDepth = 512
 
+/**
+A pure Swift JSON parser. This parser is much faster than the
+`NSJSONSerialization`-based parser (due to the overhead of having to
+dynamically cast the Objective-C objects to determine their type); however,
+it is much newer and has restrictions that the `NSJSONSerialization` parser
+does not. Two restrictions in particular are that it requires UTF-8 data as
+input and it does not allow trailing commas in arrays or dictionaries.
+**/
 public struct JSONParser {
 
     private enum Sign: Int {
@@ -80,66 +85,52 @@ public struct JSONParser {
         self.owner = owner
     }
 
-    public mutating func parse() -> Result<JSON, Error> {
-        switch parseValue() {
-        case let .Success(value):
-            if loc != input.count {
-                skipWhitespace()
-                if loc != input.count {
-                    return .Failure(Error.EndOfStreamGarbage(offset: loc))
-                }
-            }
-            return .Success(value)
-
-        case let .Failure(error):
-            return .Failure(error)
+    public mutating func parse() throws -> JSON {
+        let value = try parseValue()
+        skipWhitespace()
+        guard loc == input.count else {
+            throw Error.EndOfStreamGarbage(offset: loc)
         }
+        return value
     }
 
-    private mutating func increaseDepth<R>(@noescape fn: () -> R) -> R {
-        ++depth
-        let ret = fn()
-        --depth
-        return ret
-    }
-
-    private mutating func parseValue() -> Result<JSON, Error> {
-        if depth > ParserMaximumDepth {
-            return .Failure(Error.ExceededNestingLimit(offset: loc))
+    private mutating func parseValue() throws -> JSON {
+        guard depth <= ParserMaximumDepth else {
+            throw Error.ExceededNestingLimit(offset: loc)
         }
 
         advancing: while loc < input.count {
             switch input[loc] {
             case Literal.LEFT_BRACKET:
-                return increaseDepth {
-                    decodeArray()
-                }
+                ++depth
+                defer { --depth }
+                return try decodeArray()
 
             case Literal.LEFT_BRACE:
-                return increaseDepth {
-                    decodeObject()
-                }
+                ++depth
+                defer { --depth }
+                return try decodeObject()
 
             case Literal.DOUBLE_QUOTE:
-                return decodeString()
+                return try decodeString()
 
             case Literal.f:
-                return decodeFalse()
+                return try decodeFalse()
 
             case Literal.n:
-                return decodeNull()
+                return try decodeNull()
 
             case Literal.t:
-                return decodeTrue()
+                return try decodeTrue()
 
             case Literal.MINUS:
-                return decodeNumberNegative(loc)
+                return try decodeNumberNegative(loc)
 
             case Literal.zero:
-                return decodeNumberLeadingZero(loc, sign: .Positive)
+                return try decodeNumberLeadingZero(loc)
 
             case Literal.one...Literal.nine:
-                return decodeNumberPreDecimalDigits(loc, sign: .Positive)
+                return try decodeNumberPreDecimalDigits(loc)
 
             case Literal.SPACE, Literal.TAB, Literal.RETURN, Literal.NEWLINE:
                 ++loc
@@ -149,7 +140,7 @@ public struct JSONParser {
             }
         }
         
-        return .Failure(Error.ValueInvalid(offset: loc, character: UnicodeScalar(input[loc])))
+        throw Error.ValueInvalid(offset: loc, character: UnicodeScalar(input[loc]))
     }
 
     private mutating func skipWhitespace() {
@@ -164,54 +155,54 @@ public struct JSONParser {
         }
     }
 
-    private mutating func decodeNull() -> Result<JSON, Error> {
-        if loc + 4 > input.count {
-            return .Failure(Error.LiteralNilMisspelled(offset: loc))
+    private mutating func decodeNull() throws -> JSON {
+        guard loc.advancedBy(3, limit: input.count) != input.count else {
+            throw Error.LiteralNilMisspelled(offset: loc)
         }
 
         if     input[loc+1] != Literal.u
             || input[loc+2] != Literal.l
             || input[loc+3] != Literal.l {
-                return .Failure(Error.LiteralNilMisspelled(offset: loc))
+                throw Error.LiteralNilMisspelled(offset: loc)
         }
 
         loc += 4
-        return .Success(.Null)
+        return .Null
     }
 
-    private mutating func decodeTrue() -> Result<JSON, Error> {
-        if loc + 4 > input.count {
-            return .Failure(Error.LiteralTrueMisspelled(offset: loc))
+    private mutating func decodeTrue() throws -> JSON {
+        guard loc.advancedBy(3, limit: input.count) != input.count else {
+            throw Error.LiteralTrueMisspelled(offset: loc)
         }
 
         if     input[loc+1] != Literal.r
             || input[loc+2] != Literal.u
             || input[loc+3] != Literal.e {
-            return .Failure(Error.LiteralTrueMisspelled(offset: loc))
+            throw Error.LiteralTrueMisspelled(offset: loc)
         }
 
         loc += 4
-        return .Success(.Bool(true))
+        return .Bool(true)
     }
 
-    private mutating func decodeFalse() -> Result<JSON, Error> {
-        if loc + 5 > input.count {
-            return .Failure(Error.LiteralFalseMisspelled(offset: loc))
+    private mutating func decodeFalse() throws -> JSON {
+        guard loc.advancedBy(4, limit: input.count) != input.count else {
+            throw Error.LiteralFalseMisspelled(offset: loc)
         }
 
         if     input[loc+1] != Literal.a
             || input[loc+2] != Literal.l
             || input[loc+3] != Literal.s
             || input[loc+4] != Literal.e {
-            return .Failure(Error.LiteralFalseMisspelled(offset: loc))
+            throw Error.LiteralFalseMisspelled(offset: loc)
         }
 
         loc += 5
-        return .Success(.Bool(false))
+        return .Bool(false)
     }
 
     private var stringDecodingBuffer = [UInt8]()
-    private mutating func decodeString() -> Result<JSON, Error> {
+    private mutating func decodeString() throws -> JSON {
         let start = loc
         ++loc
         stringDecodingBuffer.removeAll(keepCapacity: true)
@@ -228,28 +219,29 @@ public struct JSONParser {
                 case Literal.t:            stringDecodingBuffer.append(Literal.TAB)
                 case Literal.n:            stringDecodingBuffer.append(Literal.NEWLINE)
                 case Literal.u:
-                    if let escaped = readUnicodeEscape(loc + 1) {
-                        stringDecodingBuffer.appendContentsOf(escaped)
-                        loc += 4
-                    } else {
-                        return .Failure(Error.UnicodeEscapeInvalid(offset: loc))
+                    guard let escaped = readUnicodeEscape(loc + 1) else {
+                        throw Error.UnicodeEscapeInvalid(offset: loc)
                     }
 
+                    stringDecodingBuffer.appendContentsOf(escaped)
+                    loc += 4
+
                 default:
-                    return .Failure(Error.ControlCharacterUnrecognized(offset: loc))
+                    throw Error.ControlCharacterUnrecognized(offset: loc)
                 }
                 ++loc
 
             case Literal.DOUBLE_QUOTE:
                 ++loc
                 stringDecodingBuffer.append(0)
-                return stringDecodingBuffer.withUnsafeBufferPointer { buffer -> Result<JSON, Error> in
-                    if let s = String.fromCString(UnsafePointer<CChar>(buffer.baseAddress)) {
-                        return .Success(.String(s))
-                    } else {
-                        return .Failure(Error.UnicodeEscapeInvalid(offset: start))
-                    }
+
+                guard let string = (stringDecodingBuffer.withUnsafeBufferPointer {
+                    String.fromCString(UnsafePointer($0.baseAddress))
+                }) else {
+                    throw Error.UnicodeEscapeInvalid(offset: start)
                 }
+
+                return .String(string)
 
             case let other:
                 stringDecodingBuffer.append(other)
@@ -257,11 +249,11 @@ public struct JSONParser {
             }
         }
 
-        return .Failure(Error.EndOfStreamUnexpected)
+        throw Error.EndOfStreamUnexpected
     }
 
     private func readUnicodeEscape(from: Int) -> [UInt8]? {
-        if from + 4 > input.count {
+        guard from + 4 <= input.count else {
             return nil
         }
         var codepoint: UInt16 = 0
@@ -295,7 +287,7 @@ public struct JSONParser {
         }
     }
 
-    private mutating func decodeArray() -> Result<JSON, Error> {
+    private mutating func decodeArray() throws -> JSON {
         let start = loc
         ++loc
         var items = [JSON]()
@@ -305,27 +297,20 @@ public struct JSONParser {
 
             if loc < input.count && input[loc] == Literal.RIGHT_BRACKET {
                 ++loc
-                return .Success(.Array(items))
+                return .Array(items)
             }
 
             if !items.isEmpty {
-                if loc < input.count && input[loc] == Literal.COMMA {
-                    ++loc
-                } else {
-                    return .Failure(Error.CollectionMissingSeparator(offset: start))
+                guard loc < input.count && input[loc] == Literal.COMMA else {
+                    throw Error.CollectionMissingSeparator(offset: start)
                 }
+                ++loc
             }
 
-            switch parseValue() {
-            case .Success(let json):
-                items.append(json)
-
-            case let error:
-                return error
-            }
+            items.append(try parseValue())
         }
 
-        return .Failure(Error.EndOfStreamUnexpected)
+        throw Error.EndOfStreamUnexpected
     }
 
     // Decoding objects can be recursive, so we have to keep more than one
@@ -354,7 +339,7 @@ public struct JSONParser {
 
     private var decodeObjectBuffers = DecodeObjectBuffers()
 
-    private mutating func decodeObject() -> Result<JSON, Error> {
+    private mutating func decodeObject() throws -> JSON {
         let start = loc
         ++loc
         var pairs = decodeObjectBuffers.getBuffer()
@@ -369,84 +354,73 @@ public struct JSONParser {
                     obj[k] = v
                 }
                 decodeObjectBuffers.putBuffer(pairs)
-                return .Success(.Dictionary(obj))
+                return .Dictionary(obj)
             }
 
             if !pairs.isEmpty {
-                if loc < input.count && input[loc] == Literal.COMMA {
-                    ++loc
-                    skipWhitespace()
-                } else {
-                    return .Failure(Error.CollectionMissingSeparator(offset: start))
+                guard loc < input.count && input[loc] == Literal.COMMA else {
+                    throw Error.CollectionMissingSeparator(offset: start)
                 }
-            }
-
-            let key: String
-            if loc < input.count && input[loc] == Literal.DOUBLE_QUOTE {
-                switch decodeString() {
-                case .Success(let json):
-                    key = json.string!
-                case let error:
-                    return error
-                }
-            } else {
-                return .Failure(Error.DictionaryMissingKey(offset: start))
-            }
-
-            skipWhitespace()
-            if loc < input.count && input[loc] == Literal.COLON {
                 ++loc
-            } else {
-                return .Failure(Error.CollectionMissingSeparator(offset: start))
+
+                skipWhitespace()
             }
 
-            switch parseValue() {
-            case .Success(let json):
-                let tuple = (key, json)
-                pairs.append(tuple)
-            case let error:
-                return error
+            guard loc < input.count && input[loc] == Literal.DOUBLE_QUOTE else {
+                throw Error.DictionaryMissingKey(offset: start)
             }
+
+            let key = try decodeString().string()
+            skipWhitespace()
+
+            guard loc < input.count && input[loc] == Literal.COLON else {
+                throw Error.CollectionMissingSeparator(offset: start)
+            }
+            ++loc
+
+            pairs.append((key, try parseValue()))
         }
 
-        return .Failure(Error.EndOfStreamUnexpected)
+        throw Error.EndOfStreamUnexpected
     }
 
-    private mutating func decodeNumberNegative(start: Int) -> Result<JSON, Error> {
-        guard ++loc < input.count else {
-            return .Failure(Error.EndOfStreamUnexpected)
+    private mutating func decodeNumberNegative(start: Int) throws -> JSON {
+        ++loc
+        guard loc < input.count else {
+            throw Error.EndOfStreamUnexpected
         }
 
         switch input[loc] {
         case Literal.zero:
-            return decodeNumberLeadingZero(start, sign: .Negative)
+            return try decodeNumberLeadingZero(start, sign: .Negative)
 
         case Literal.one...Literal.nine:
-            return decodeNumberPreDecimalDigits(start, sign: .Negative)
+            return try decodeNumberPreDecimalDigits(start, sign: .Negative)
 
         default:
-            return .Failure(Error.NumberSymbolMissingDigits(offset: start))
+            throw Error.NumberSymbolMissingDigits(offset: start)
         }
     }
 
-    private mutating func decodeNumberLeadingZero(start: Int, sign: Sign = .Positive) -> Result<JSON, Error> {
-        guard ++loc < input.count else {
-            return .Success(.Int(0))
+    private mutating func decodeNumberLeadingZero(start: Int, sign: Sign = .Positive) throws -> JSON {
+        ++loc
+        guard loc < input.count else {
+            return .Int(0)
         }
 
         switch (input[loc], sign) {
         case (Literal.PERIOD, _):
-            return decodeNumberDecimal(start, sign: sign, value: 0)
+            return try decodeNumberDecimal(start, sign: sign, value: 0)
 
         case (_, .Negative):
-            return .Success(.Double(-0.0))
+            return .Double(-0.0)
 
         default:
-            return .Success(.Int(0))
+            return .Int(0)
         }
     }
 
-    private mutating func decodeNumberPreDecimalDigits(start: Int, sign: Sign = .Positive) -> Result<JSON, Error> {
+    private mutating func decodeNumberPreDecimalDigits(start: Int, sign: Sign = .Positive) throws -> JSON {
         var value = 0
 
         advancing: while loc < input.count {
@@ -457,34 +431,35 @@ public struct JSONParser {
                 ++loc
 
             case Literal.PERIOD:
-                return decodeNumberDecimal(start, sign: sign, value: Double(value))
+                return try decodeNumberDecimal(start, sign: sign, value: Double(value))
 
             case Literal.e, Literal.E:
-                return decodeNumberExponent(start, sign: sign, value: Double(value))
+                return try decodeNumberExponent(start, sign: sign, value: Double(value))
 
             default:
                 break advancing
             }
         }
 
-        return .Success(.Int(sign.rawValue * value))
+        return .Int(sign.rawValue * value)
     }
 
-    private mutating func decodeNumberDecimal(start: Int, sign: Sign, value: Double) -> Result<JSON, Error> {
-        guard ++loc < input.count else {
-            return .Failure(Error.EndOfStreamUnexpected)
+    private mutating func decodeNumberDecimal(start: Int, sign: Sign, value: Double) throws -> JSON {
+        ++loc
+        guard loc < input.count else {
+            throw Error.EndOfStreamUnexpected
         }
 
         switch input[loc] {
         case Literal.zero...Literal.nine:
-            return decodeNumberPostDecimalDigits(start, sign: sign, value: value)
+            return try decodeNumberPostDecimalDigits(start, sign: sign, value: value)
 
         default:
-            return .Failure(Error.NumberMissingFractionalDigits(offset: start))
+            throw Error.NumberMissingFractionalDigits(offset: start)
         }
     }
 
-    private mutating func decodeNumberPostDecimalDigits(start: Int, sign: Sign, var value: Double) -> Result<JSON, Error> {
+    private mutating func decodeNumberPostDecimalDigits(start: Int, sign: Sign, var value: Double) throws -> JSON {
         var position = 0.1
 
         advancing: while loc < input.count {
@@ -496,51 +471,53 @@ public struct JSONParser {
                 ++loc
 
             case Literal.e, Literal.E:
-                return decodeNumberExponent(start, sign: sign, value: value)
+                return try decodeNumberExponent(start, sign: sign, value: value)
 
             default:
                 break advancing
             }
         }
 
-        return .Success(.Double(Double(sign.rawValue) * value))
+        return .Double(Double(sign.rawValue) * value)
     }
 
-    private mutating func decodeNumberExponent(start: Int, sign: Sign, value: Double) -> Result<JSON, Error> {
-        guard ++loc < input.count else {
-            return .Failure(Error.EndOfStreamUnexpected)
+    private mutating func decodeNumberExponent(start: Int, sign: Sign, value: Double) throws -> JSON {
+        ++loc
+        guard loc < input.count else {
+            throw Error.EndOfStreamUnexpected
         }
 
         switch input[loc] {
         case Literal.zero...Literal.nine:
-            return decodeNumberExponentDigits(start, sign: sign, value: value, expSign: .Positive)
+            return try decodeNumberExponentDigits(start, sign: sign, value: value, expSign: .Positive)
 
         case Literal.PLUS:
-            return decodeNumberExponentSign(start, sign: sign, value: value, expSign: .Positive)
+            return try decodeNumberExponentSign(start, sign: sign, value: value, expSign: .Positive)
 
         case Literal.MINUS:
-            return decodeNumberExponentSign(start, sign: sign, value: value, expSign: .Negative)
+            return try decodeNumberExponentSign(start, sign: sign, value: value, expSign: .Negative)
 
         default:
-            return .Failure(Error.NumberSymbolMissingDigits(offset: start))
+            throw Error.NumberSymbolMissingDigits(offset: start)
         }
     }
 
-    private mutating func decodeNumberExponentSign(start: Int, sign: Sign, value: Double, expSign: Sign) -> Result<JSON, Error> {
-        guard ++loc < input.count else {
-            return .Failure(Error.EndOfStreamUnexpected)
+    private mutating func decodeNumberExponentSign(start: Int, sign: Sign, value: Double, expSign: Sign) throws -> JSON {
+        ++loc
+        guard loc < input.count else {
+            throw Error.EndOfStreamUnexpected
         }
 
         switch input[loc] {
         case Literal.zero...Literal.nine:
-            return decodeNumberExponentDigits(start, sign: sign, value: value, expSign: expSign)
+            return try decodeNumberExponentDigits(start, sign: sign, value: value, expSign: expSign)
 
         default:
-            return .Failure(Error.NumberSymbolMissingDigits(offset: start))
+            throw Error.NumberSymbolMissingDigits(offset: start)
         }
     }
 
-    private mutating func decodeNumberExponentDigits(start: Int, sign: Sign, value: Double, expSign: Sign) -> Result<JSON, Error> {
+    private mutating func decodeNumberExponentDigits(start: Int, sign: Sign, value: Double, expSign: Sign) throws -> JSON {
         var exponent: Double = 0
 
         advancing: while loc < input.count {
@@ -555,7 +532,7 @@ public struct JSONParser {
             }
         }
 
-        return .Success(.Double(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent)))
+        return .Double(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent))
     }
 }
 
@@ -574,6 +551,15 @@ public extension JSONParser {
             UnsafeBufferPointer(start: nulTerminatedBuffer.baseAddress, count: nulTerminatedBuffer.count - 1)
         }
         self.init(buffer: buffer, owner: codePoints)
+    }
+
+}
+
+extension JSONParser: JSONParserType {
+
+    public static func createJSONFromData(data: NSData) throws -> JSON {
+        var parser = JSONParser(utf8Data: data)
+        return try parser.parse()
     }
 
 }

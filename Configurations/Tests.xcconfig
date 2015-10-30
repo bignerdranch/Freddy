@@ -5,3 +5,5 @@ LD_RUNPATH_SEARCH_PATHS[sdk=iphonesimulator*] = $(inherited) @executable_path/Fr
 INFOPLIST_FILE = BNRSwiftJSONTests/Info.plist
 PRODUCT_BUNDLE_IDENTIFIER = com.bignerdranch.BNRSwiftJSON-Tests
 PRODUCT_NAME = $(TARGET_NAME)
+
+CODE_SIGN_IDENTITY[sdk=iphoneos*] = iPhone Developer

@@ -8,7 +8,6 @@
 
 import Foundation
 import BNRSwiftJSON
-import Result
 
 public struct Person: CustomStringConvertible {
     public let name: String
@@ -27,11 +26,9 @@ public struct Person: CustomStringConvertible {
 }
 
 extension Person: JSONDecodable {
-    public static func createWithJSON(value: JSON) -> Result<Person, JSON.Error> {
-        let name = value["name"].string
-        let age = value["age"].int
-        let isMarried = value["spouse"].bool
-        
-        return mapAll(name, age, isMarried, Person.init)
+    public init(json value: JSON) throws {
+        name = try value.string("name")
+        age = try value.int("age")
+        spouse = try value.bool("spouse")
     }
 }
