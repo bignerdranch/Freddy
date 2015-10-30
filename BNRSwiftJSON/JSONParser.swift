@@ -370,7 +370,7 @@ public struct JSONParser {
                 throw Error.DictionaryMissingKey(offset: start)
             }
 
-            let key = try! decodeString().string()
+            let key = try decodeString().string()
             skipWhitespace()
 
             guard loc < input.count && input[loc] == Literal.COLON else {
