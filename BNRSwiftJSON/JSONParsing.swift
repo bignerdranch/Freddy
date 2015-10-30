@@ -86,9 +86,9 @@ extension NSJSONSerialization: JSONParserType {
     // MARK: Make a JSON Dictionary
 
     /**
-    Makes a `JSON` dictionary from the `JSON` object passed in.
+    Makes a `JSON` dictionary from the Cocoa dictionary passed in.
 
-    :param: jsonDict The dictionary to transform into a `JSValue`.
+    :param: jsonDict The dictionary to transform into `JSON`.
 
     :returns: An instance of `JSON` matching the dictionary.
     */
