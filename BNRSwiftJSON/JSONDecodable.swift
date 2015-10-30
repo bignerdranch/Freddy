@@ -55,7 +55,7 @@ extension String: JSONDecodable {
         guard case let .String(string) = json else {
             throw JSON.Error.ValueNotConvertible(type: Swift.String.self)
         }
-        self = string
+        self.init(string)
     }
     
 }
@@ -66,7 +66,7 @@ extension Bool: JSONDecodable {
         guard case let .Bool(bool) = json else {
             throw JSON.Error.ValueNotConvertible(type: Swift.Bool.self)
         }
-        self = bool
+        self.init(bool)
     }
     
 }
