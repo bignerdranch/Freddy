@@ -41,9 +41,12 @@ extension JSON {
     }
     
     private func valueAtPath(first: PathFragment?, _ rest: [PathFragment], detectNull: Swift.Bool) throws -> JSON {
-        let initial = try first.map {
-            try valueForPathFragment($0, detectNull: detectNull)
-        } ?? self
+        let initial: JSON
+        if let first = first {
+            initial = try valueForPathFragment(first, detectNull: detectNull)
+        } else {
+            initial = self
+        }
         
         return try rest.reduce(initial) {
             try $0.valueForPathFragment($1, detectNull: detectNull)
