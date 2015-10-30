@@ -1,9 +1,9 @@
 # BNRSwiftJSON
 BNRSwiftJSON is a reusable framework for parsing JSON in Swift.
 
-Its primary goal is faciliate the safe parsing of JSON, while also preserving the ease of use presented by parsing JSON in Objective-C.
+Its primary goal is facilitate the safe parsing of JSON, while also preserving the ease of use presented by parsing JSON in Objective-C.
 
-## Instalation
+## Installation
 
 - Add the project as a submodule
 - Use CocoaPods
@@ -82,7 +82,7 @@ case .Failure(let error):
 }
 ```
 
-After we load in the data, we create an instance of `JSON`, the workhorse of this framework. This allows us to access the values from the JSON data. Here, we access the `"success"` key, and also use computed properties to access the value as a bool. You can read more about these computer properties on the wiki [here](https://github.com/bignerdranch/bnr-swift-json/wiki/Computed-Properties). This returns a `Result` type that can be checked for `.Success` or `.Failure`.
+After we load in the data, we create an instance of `JSON`, the workhorse of this framework. This allows us to access the values from the JSON data. Here, we access the `"success"` key, and also use computed properties to access the value as a `Bool`. This returns a `Result` type that can be checked for `.Success` or `.Failure`. You can read more about these computed properties on the wiki [here](https://github.com/bignerdranch/bnr-swift-json/wiki/Computed-Properties).
 
 Now, let's look an example that parses the data into a data class:
 
@@ -106,7 +106,7 @@ case .Failure(let error):
 }
 ```
 
-Here, we are instead loading the values from the key `"people"` as an array using the computed property. The biggest change here is passing the retrived `JSON` into the static method `Person.createWithJSON(person)` .
+Here, we are instead loading the values from the key `"people"` as an array using the computed property. The biggest change here is passing the retrieved `JSON` into the static method `Person.createWithJSON(person)` .
 
 Here is our `Person` stuct:
 ```swift
