@@ -93,8 +93,8 @@ extension NSJSONSerialization: JSONParserType {
     :returns: An instance of `JSON` matching the dictionary.
     */
     private static func makeJSONDictionary(jsonDict: [Swift.String: AnyObject]) -> JSON {
-        return JSON(jsonDict.lazy.map {
-            ($0.0, makeJSON($0.1))
+        return JSON(jsonDict.lazy.map { (key, value) in
+            (key, makeJSON(value))
         })
     }
 
