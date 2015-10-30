@@ -253,7 +253,7 @@ public struct JSONParser {
     }
 
     private func readUnicodeEscape(from: Int) -> [UInt8]? {
-        if from + 4 > input.count {
+        guard from + 4 <= input.count else {
             return nil
         }
         var codepoint: UInt16 = 0
