@@ -153,7 +153,7 @@ class BNRSwiftJSONTests: XCTestCase {
         do {
             _ = try json.int("people", 0, "name")
         } catch JSON.Error.ValueNotConvertible(let type) {
-            XCTAssert(type == Swift.Int.self, "The error should be due the value not being an `Int` case, but was \(type).")
+            XCTAssert(type == Swift.Int, "The error should be due the value not being an `Int` case, but was \(type).")
         } catch {
             XCTFail("The error should be due to `name` not being convertible to `int`, but was: \(error).")
         }
@@ -163,7 +163,7 @@ class BNRSwiftJSONTests: XCTestCase {
         do {
             _ = try json.string("people", "name")
         } catch JSON.Error.UnexpectedSubscript(let type) {
-            XCTAssert(type == Swift.String.self, "The error should be due the value not being subscriptable with string `String` case, but was \(type).")
+            XCTAssert(type == Swift.String, "The error should be due the value not being subscriptable with string `String` case, but was \(type).")
         } catch {
             XCTFail("The error should be due to the `people` `Array` not being subscriptable with `String`s, but was: \(error).")
         }

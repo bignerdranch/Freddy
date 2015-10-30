@@ -28,7 +28,7 @@ extension Double: JSONDecodable {
         case let .Int(int):
             self.init(int)
         default:
-            throw JSON.Error.ValueNotConvertible(type: Swift.Double.self)
+            throw JSON.Error.ValueNotConvertible(type: Swift.Double)
         }
     }
     
@@ -43,7 +43,7 @@ extension Int: JSONDecodable {
         case let .Int(int):
             self.init(int)
         default:
-            throw JSON.Error.ValueNotConvertible(type: Swift.Int.self)
+            throw JSON.Error.ValueNotConvertible(type: Swift.Int)
         }
     }
     
@@ -53,7 +53,7 @@ extension String: JSONDecodable {
     
     public init(json: JSON) throws {
         guard case let .String(string) = json else {
-            throw JSON.Error.ValueNotConvertible(type: Swift.String.self)
+            throw JSON.Error.ValueNotConvertible(type: Swift.String)
         }
         self.init(string)
     }
@@ -64,7 +64,7 @@ extension Bool: JSONDecodable {
     
     public init(json: JSON) throws {
         guard case let .Bool(bool) = json else {
-            throw JSON.Error.ValueNotConvertible(type: Swift.Bool.self)
+            throw JSON.Error.ValueNotConvertible(type: Swift.Bool)
         }
         self.init(bool)
     }
@@ -121,7 +121,7 @@ extension JSON {
     /// - seealso: `JSON.decode(type:)`
     public func array() throws -> [JSON] {
         guard case let .Array(array) = self else {
-            throw Error.ValueNotConvertible(type: Swift.Array<JSON>.self)
+            throw Error.ValueNotConvertible(type: Swift.Array<JSON>)
         }
         return array
     }
@@ -132,7 +132,7 @@ extension JSON {
     /// - seealso: `JSON.decode(type:)`
     public func dictionary() throws -> [Swift.String: JSON] {
         guard case let .Dictionary(dictionary) = self else {
-            throw Error.ValueNotConvertible(type: Swift.Dictionary<Swift.String, JSON>.self)
+            throw Error.ValueNotConvertible(type: Swift.Dictionary<Swift.String, JSON>)
         }
         return dictionary
     }

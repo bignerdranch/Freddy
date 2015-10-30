@@ -176,7 +176,7 @@ extension JSON {
             return nil
         } catch SubscriptError.SubscriptIntoNull(let fragment) {
             throw Error.UnexpectedSubscript(type: fragment.valueType)
-        } catch Error.UnexpectedSubscript(let type) where ifNotFound && type == Swift.String.self {
+        } catch Error.UnexpectedSubscript(let type) where ifNotFound && type == Swift.String {
             return nil
         }
     }
@@ -525,8 +525,8 @@ extension JSON.PathFragment: IntegerLiteralConvertible, StringLiteralConvertible
     
     private var valueType: Any.Type {
         switch self {
-        case .Key: return Swift.String.self
-        case .Index: return Swift.Int.self
+        case .Key: return Swift.String
+        case .Index: return Swift.Int
         }
     }
     
