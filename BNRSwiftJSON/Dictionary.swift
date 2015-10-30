@@ -11,11 +11,11 @@ import Foundation
 extension Dictionary {
     
     func map<NewValue>(@noescape transform: (Key, Value) -> NewValue) -> Dictionary<Key, NewValue> {
-        let initial = Dictionary<Key, NewValue>(minimumCapacity: count)
-        return reduce(initial) { (var dictionary, element) in
+        var dictionary = Dictionary<Key, NewValue>(minimumCapacity: count)
+        for element in self {
             dictionary[element.0] = transform(element.0, element.1)
-            return dictionary
         }
+        return dictionary
     }
     
 }
