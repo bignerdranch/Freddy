@@ -8,9 +8,10 @@
 
 extension SequenceType {
 
-    /// Map a failable `transform` over `self`, capturing all transformations.
-    /// - returns: Two arrays of the transformations that succeeded and failed,
-    ///            respectively.
+    /// Map a failable `transform` over `self`, capturing all transformations 
+    /// into either an array of successes or failures.
+    /// - parameter transform: A `throws`ing function that transforms an `Element` into a `T`.
+    /// - returns: A tuple of two arrays, one for successes and one for failures.
     /// - complexity: O(N).
     public func mapAndPartition<T>(@noescape transform: (Self.Generator.Element) throws -> T) -> (successes: [T], failures: [ErrorType]) {
         var successes = [T]()
