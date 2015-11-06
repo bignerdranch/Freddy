@@ -35,19 +35,18 @@ extension NSJSONSerialization: JSONParserType {
     // MARK: Decode NSData
 
     /// Use the built-in, Objective-C based JSON parser to create `JSON`.
+    /// - parameter data: An instance of `NSData`.
+    /// - returns: An instance of `JSON`.
+    /// - throws: An error that may arise if the `NSData` cannot be parsed into an object.
     public static func createJSONFromData(data: NSData) throws -> JSON {
         return makeJSON(try NSJSONSerialization.JSONObjectWithData(data, options: []))
     }
 
     // MARK: Make JSON
 
-    /**
-    Makes a `JSON` object by matching its argument to a case in the `JSON` enum.
-
-    :param: object The instance of `AnyObject` returned from serializing the JSON.
-
-    :returns: An instance of `JSON` matching the JSON given to the function.
-    */
+    /// Makes a `JSON` object by matching its argument to a case in the `JSON` enum.
+    /// - parameter object: The instance of `AnyObject` returned from serializing the JSON.
+    /// - returns: An instance of `JSON` matching the JSON given to the function.
     private static func makeJSON(object: AnyObject) -> JSON {
         switch object {
         case let n as NSNumber:
@@ -72,26 +71,18 @@ extension NSJSONSerialization: JSONParserType {
 
     // MARK: Make a JSON Array
 
-    /**
-    Makes a `JSON` array from the object passed in.
-
-    :param: jsonArray The array to transform into a `JSON`.
-
-    :returns: An instance of `JSON` matching the array.
-    */
+    /// Makes a `JSON` array from the object passed in.
+    /// - parameter jsonArray: The array to transform into a `JSON`.
+    /// - returns: An instance of `JSON` matching the array.
     private static func makeJSONArray(jsonArray: [AnyObject]) -> JSON {
         return .Array(jsonArray.map(makeJSON))
     }
 
     // MARK: Make a JSON Dictionary
 
-    /**
-    Makes a `JSON` dictionary from the Cocoa dictionary passed in.
-
-    :param: jsonDict The dictionary to transform into `JSON`.
-
-    :returns: An instance of `JSON` matching the dictionary.
-    */
+    /// Makes a `JSON` dictionary from the Cocoa dictionary passed in.
+    /// - parameter jsonDict: The dictionary to transform into `JSON`.
+    /// - returns: An instance of `JSON` matching the dictionary.
     private static func makeJSONDictionary(jsonDict: [Swift.String: AnyObject]) -> JSON {
         return JSON(jsonDict.lazy.map { (key, value) in
             (key, makeJSON(value))
@@ -113,11 +104,8 @@ extension JSON {
         return try NSJSONSerialization.dataWithJSONObject(obj, options: [])
     }
 
-    /**
-    A function to help with the serialization of `JSON`.
-
-    :returns: An `AnyObject` suitable for `NSJSONSerialization`'s use.
-    */
+    /// A function to help with the serialization of `JSON`.
+    /// - returns: An `AnyObject` suitable for `NSJSONSerialization`'s use.
     private func toNSJSONSerializationObject() -> AnyObject {
         switch self {
         case .Array(let jsonArray):

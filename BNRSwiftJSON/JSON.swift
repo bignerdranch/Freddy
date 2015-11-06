@@ -6,9 +6,7 @@
 //  Copyright © 2015 Big Nerd Ranch. Licensed under MIT.
 //
 
-/**
-    An enum to describe the structure of JSON.
-*/
+/// An enum to describe the structure of JSON.
 public enum JSON {
     case Array([JSON])
     case Dictionary([Swift.String: JSON])
@@ -23,6 +21,7 @@ public enum JSON {
 
 extension JSON {
 
+    /// An enum to encapsulate errors that may arise in working with `JSON`.
     public enum Error: ErrorType {
         /// The `index` is out of bounds for a JSON array
         case IndexOutOfBounds(index: Swift.Int)
