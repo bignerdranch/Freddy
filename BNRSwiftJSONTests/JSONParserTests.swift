@@ -108,7 +108,7 @@ class JSONParserTests: XCTestCase {
             ("  0  ", 0),
             ("123", 123),
             ("  -20  ", -20),
-        ] {
+        ] as [(String, IntMax)] {
             XCTAssertEqual(try! JSONFromString(string).int(), shouldBeInt)
         }
 

@@ -107,7 +107,7 @@ extension JSON {
     /// - returns: A numeric `Int`
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
     /// - seealso: `JSON.decode(_:type:)`
-    public func int(first: PathFragment, _ rest: PathFragment...) throws -> Swift.Int {
+    public func int(first: PathFragment, _ rest: PathFragment...) throws -> Swift.IntMax {
         return try decodedAtPath(first, rest)
     }
 
@@ -228,7 +228,7 @@ extension JSON {
     /// - returns: A numeric `Int` if a value could be found, otherwise `nil`.
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
     /// - seealso: `JSON.decode(_:ifNotFound:type:)`
-    public func int(first: PathFragment, _ rest: PathFragment..., ifNotFound: Swift.Bool) throws -> Swift.Int? {
+    public func int(first: PathFragment, _ rest: PathFragment..., ifNotFound: Swift.Bool) throws -> Swift.IntMax? {
         return try decodedAtPath(first, rest, ifNotFound: true, ifNull: false)
     }
 
@@ -294,7 +294,7 @@ extension JSON {
     /// - returns: A numeric `Int` if a value could be found, otherwise `nil`.
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNull:type:)`.
     /// - seealso: `JSON.decode(_:ifNull:type:)`
-    public func int(first: PathFragment? = nil, _ rest: PathFragment..., ifNull: Swift.Bool) throws -> Swift.Int? {
+    public func int(first: PathFragment? = nil, _ rest: PathFragment..., ifNull: Swift.Bool) throws -> Swift.IntMax? {
         return try decodedAtPath(first, rest, ifNotFound: false, ifNull: ifNull)
     }
 
@@ -435,7 +435,7 @@ extension JSON {
     /// - returns: A numeric `Int`
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
     /// - seealso: `JSON.decode(_:or:)`
-    public func int(first: PathFragment? = nil, _ rest: PathFragment..., @autoclosure or fallback: () -> Swift.Int) throws -> Swift.Int {
+    public func int(first: PathFragment? = nil, _ rest: PathFragment..., @autoclosure or fallback: () -> Swift.IntMax) throws -> Swift.IntMax {
         return try decodedAtPath(first, rest, or: fallback)
     }
 
