@@ -187,6 +187,32 @@ class JSONDecodableTests: XCTestCase {
             XCTFail("`decodedOneTwoThree` should be equal to `[1,2,3]`.")
         }
     }
+    
+    func testThatNullIsDecodedToNilWhenRequestedAtTopLevel() {
+        let JSONDictionary: JSON = ["key": .Null]
+        
+        do {
+            let value: Int? = try JSONDictionary.int("key", ifNull: true)
+            XCTAssertEqual(value, nil)
+        } catch {
+            XCTFail("Should have retrieved nil for key `key` in `JSONDictionary` when specifying `ifNull` to be `true`.")
+        }
+    }
+    
+    func testThatAttemptingToDecodeNullThrowsWhenRequestedAtTopLevel() {
+        let JSONDictionary: JSON = ["key": .Null]
+        
+        do {
+            let _: Int? = try JSONDictionary.int("key")
+            XCTFail("Should have thrown an error when attempting to retrieve a value for key `key` in `JSONDictionary` when not specifying `ifNull` to be `true`.")
+        } catch JSON.Error.ValueNotConvertible(type: let type)
+          where type == Int.self {
+            return
+        } catch {
+            XCTFail("An unexpected exception was thrown.")
+        }
+        
+    }
 
 }
 
