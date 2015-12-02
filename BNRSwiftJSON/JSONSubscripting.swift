@@ -70,6 +70,17 @@ extension JSON {
         return try getter(json)
     }
     
+    private func fetchNullableValueAtPath<Value>(first: PathFragment?, _ rest: [PathFragment], detectNull: Swift.Bool = false, @noescape getter: JSON throws -> Value) throws -> Value? {
+        let json = try valueAtPath(first, rest, detectNull: detectNull)
+        do {
+            return try getter(json)
+        }
+        catch Error.ValueNotConvertible
+        where json == .Null {
+            return nil
+        }
+    }
+    
     private func decodedAtPath<Decoded: JSONDecodable>(first: PathFragment?, _ rest: [PathFragment]) throws -> Decoded {
         return try fetchValueAtPath(first, rest) { try $0.decode() }
     }
@@ -168,7 +179,11 @@ extension JSON {
     
     private func optionalAtPath<Value>(first: PathFragment?, _ rest: [PathFragment], ifNotFound: Swift.Bool, ifNull: Swift.Bool, @noescape getter: JSON throws -> Value) throws -> Value? {
         do {
-            return try fetchValueAtPath(first, rest, detectNull: true, getter: getter)
+            if ifNull {
+                return try fetchNullableValueAtPath(first, rest, detectNull: true, getter: getter)
+            } else {
+                return try fetchValueAtPath(first, rest, detectNull: true, getter: getter)
+            }
         } catch Error.KeyNotFound where ifNotFound {
             return nil
         } catch Error.IndexOutOfBounds where ifNotFound {
