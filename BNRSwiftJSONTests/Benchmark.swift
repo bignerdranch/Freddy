@@ -9,6 +9,10 @@
 import XCTest
 import BNRSwiftJSON
 
+private enum ErrorFromObjCModel: ErrorType {
+    case FailedToDecode
+}
+
 class JSONBenchmark: XCTestCase {
 
     private var jsonData: NSData!
@@ -24,40 +28,61 @@ class JSONBenchmark: XCTestCase {
 
         jsonData = data
     }
+    
+    private func measureWithoutRR<T>(body: () throws -> T, assertions: (T -> ())?) {
+        measureMetrics(self.dynamicType.defaultPerformanceMetrics(), automaticallyStartMeasuring: false) {
+            var value: T!
+            
+            self.startMeasuring()
+            value = try? body()
+            self.stopMeasuring()
+            
+            XCTAssertNotNil(value)
+            assertions?(value)
+            
+            value = nil
+        }
+    }
 
     func testJSONDeserializeCocoa() {
-        measureBlock {
-            _ = try! NSJSONSerialization.JSONObjectWithData(self.jsonData, options: [])
-        }
+        measureWithoutRR({
+            try NSJSONSerialization.JSONObjectWithData(self.jsonData, options: [])
+        }, assertions: nil)
     }
 
     func testJSONDeserializeCustom() {
-        measureBlock {
-            _ = try! JSON(data: self.jsonData, usingParser: JSONParser.self)
-        }
+        measureWithoutRR({
+            try JSON(data: self.jsonData, usingParser: JSONParser.self)
+        }, assertions: nil)
     }
 
     func testJSONDeserializeCustomViaCocoa() {
-        measureBlock {
-            _ = try! JSON(data: self.jsonData, usingParser: NSJSONSerialization.self)
-        }
+        measureWithoutRR({
+            try JSON(data: self.jsonData, usingParser: NSJSONSerialization.self)
+        }, assertions: nil)
     }
 
     func testJSONDeserializeToCocoaModel() {
-        measureBlock {
-            let cocoaJSON = try! NSJSONSerialization.JSONObjectWithData(self.jsonData, options: []) as! [[String: AnyObject]]
-            let objects = CardSetObjC.cardSetsFromDictionaries(cocoaJSON)
-            XCTAssertEqual(objects?.count, cocoaJSON.count, "Failed to convert all sets")
-        }
+        measureWithoutRR({ () throws -> ([CardSetObjC], Int) in
+            let cocoaJSON = try NSJSONSerialization.JSONObjectWithData(self.jsonData, options: []) as! [[String: AnyObject]]
+            guard let objects = CardSetObjC.cardSetsFromDictionaries(cocoaJSON) else {
+                throw ErrorFromObjCModel.FailedToDecode
+            }
+            return (objects, cocoaJSON.count)
+        }, assertions: {
+            XCTAssertEqual($0.0.count, $0.1, "Failed to convert all sets")
+        })
     }
 
     func testJSONDeserializeToModel() {
-        measureBlock {
-            let json = try! JSON(data: self.jsonData, usingParser: JSONParser.self)
-            let expectedCount = try! json.array().count
-            let objects = try? json.arrayOf(type: CardSet.self)
-            XCTAssertEqual(objects?.count, expectedCount, "Failed to convert all sets")
-        }
+        measureWithoutRR({ () throws -> ([CardSet], Int) in
+            let json = try JSON(data: self.jsonData, usingParser: JSONParser.self)
+            let expectedCount = try json.array().count
+            let objects = try json.arrayOf(type: CardSet.self)
+            return (objects, expectedCount)
+        }, assertions: {
+            XCTAssertEqual($0.0.count, $0.1, "Failed to convert all sets")
+        })
     }
 
 }
