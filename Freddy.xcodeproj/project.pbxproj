@@ -111,6 +111,27 @@
 			remoteGlobalIDString = DB6ADF591C23612900D77BF1;
 			remoteInfo = TVFreddy;
 		};
+		DBF9D6461C3875280038E08E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DB6ADF161C23610B00D77BF1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DBF9D6401C3875100038E08E;
+			remoteInfo = "Download Benchmark JSON";
+		};
+		DBF9D6481C38752B0038E08E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DB6ADF161C23610B00D77BF1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DBF9D6401C3875100038E08E;
+			remoteInfo = "Download Benchmark JSON";
+		};
+		DBF9D64A1C3875390038E08E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DB6ADF161C23610B00D77BF1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DBF9D6401C3875100038E08E;
+			remoteInfo = "Download Benchmark JSON";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -345,6 +366,23 @@
 		};
 /* End PBXHeadersBuildPhase section */
 
+/* Begin PBXLegacyTarget section */
+		DBF9D6401C3875100038E08E /* Download Benchmark JSON */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = DBF9D6431C3875100038E08E /* Build configuration list for PBXLegacyTarget "Download Benchmark JSON" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = /Users/zw/Documents/Work/Freddy/FreddyTests;
+			dependencies = (
+			);
+			name = "Download Benchmark JSON";
+			passBuildSettingsInEnvironment = 1;
+			productName = "Download Benchmark JSON";
+		};
+/* End PBXLegacyTarget section */
+
 /* Begin PBXNativeTarget section */
 		DB6ADF1E1C23610B00D77BF1 /* MobileFreddy */ = {
 			isa = PBXNativeTarget;
@@ -376,6 +414,7 @@
 			);
 			dependencies = (
 				DB6ADF2C1C23610B00D77BF1 /* PBXTargetDependency */,
+				DBF9D6491C38752B0038E08E /* PBXTargetDependency */,
 			);
 			name = MobileFreddyTests;
 			productName = FreddyTests;
@@ -412,6 +451,7 @@
 			);
 			dependencies = (
 				DB6ADF4A1C23612000D77BF1 /* PBXTargetDependency */,
+				DBF9D6471C3875280038E08E /* PBXTargetDependency */,
 			);
 			name = FreddyTests;
 			productName = FreddyTests;
@@ -448,6 +488,7 @@
 			);
 			dependencies = (
 				DB6ADF661C23612A00D77BF1 /* PBXTargetDependency */,
+				DBF9D64B1C3875390038E08E /* PBXTargetDependency */,
 			);
 			name = TVFreddyTests;
 			productName = TVFreddyTests;
@@ -503,6 +544,9 @@
 					DB6ADF751C23613200D77BF1 = {
 						CreatedOnToolsVersion = 7.2;
 					};
+					DBF9D6401C3875100038E08E = {
+						CreatedOnToolsVersion = 7.2;
+					};
 				};
 			};
 			buildConfigurationList = DB6ADF191C23610B00D77BF1 /* Build configuration list for PBXProject "Freddy" */;
@@ -517,6 +561,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				DBF9D6401C3875100038E08E /* Download Benchmark JSON */,
 				DB6ADF3D1C23612000D77BF1 /* Freddy */,
 				DB6ADF461C23612000D77BF1 /* FreddyTests */,
 				DB6ADF1E1C23610B00D77BF1 /* MobileFreddy */,
@@ -721,6 +766,21 @@
 			target = DB6ADF591C23612900D77BF1 /* TVFreddy */;
 			targetProxy = DB6ADF651C23612A00D77BF1 /* PBXContainerItemProxy */;
 		};
+		DBF9D6471C3875280038E08E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DBF9D6401C3875100038E08E /* Download Benchmark JSON */;
+			targetProxy = DBF9D6461C3875280038E08E /* PBXContainerItemProxy */;
+		};
+		DBF9D6491C38752B0038E08E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DBF9D6401C3875100038E08E /* Download Benchmark JSON */;
+			targetProxy = DBF9D6481C38752B0038E08E /* PBXContainerItemProxy */;
+		};
+		DBF9D64B1C3875390038E08E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DBF9D6401C3875100038E08E /* Download Benchmark JSON */;
+			targetProxy = DBF9D64A1C3875390038E08E /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -886,6 +946,87 @@
 			};
 			name = Release;
 		};
+		DBF9D6411C3875100038E08E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		DBF9D6421C3875100038E08E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -960,6 +1101,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		DBF9D6431C3875100038E08E /* Build configuration list for PBXLegacyTarget "Download Benchmark JSON" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DBF9D6411C3875100038E08E /* Debug */,
+				DBF9D6421C3875100038E08E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
