@@ -63,6 +63,30 @@
 		DB6ADFC61C23631500D77BF1 /* sampleNoWhiteSpace.JSON in Resources */ = {isa = PBXBuildFile; fileRef = DB6ADFC21C23631500D77BF1 /* sampleNoWhiteSpace.JSON */; };
 		DB6ADFC71C23631500D77BF1 /* sampleNoWhiteSpace.JSON in Resources */ = {isa = PBXBuildFile; fileRef = DB6ADFC21C23631500D77BF1 /* sampleNoWhiteSpace.JSON */; };
 		DB6ADFC81C23631500D77BF1 /* sampleNoWhiteSpace.JSON in Resources */ = {isa = PBXBuildFile; fileRef = DB6ADFC21C23631500D77BF1 /* sampleNoWhiteSpace.JSON */; };
+		DBF9D6271C3872BB0038E08E /* Benchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6261C3872BB0038E08E /* Benchmark.swift */; };
+		DBF9D6281C3872BB0038E08E /* Benchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6261C3872BB0038E08E /* Benchmark.swift */; };
+		DBF9D6291C3872BB0038E08E /* Benchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6261C3872BB0038E08E /* Benchmark.swift */; };
+		DBF9D62B1C3872C70038E08E /* Benchmark in Resources */ = {isa = PBXBuildFile; fileRef = DBF9D62A1C3872C70038E08E /* Benchmark */; };
+		DBF9D62C1C3872C70038E08E /* Benchmark in Resources */ = {isa = PBXBuildFile; fileRef = DBF9D62A1C3872C70038E08E /* Benchmark */; };
+		DBF9D62D1C3872C70038E08E /* Benchmark in Resources */ = {isa = PBXBuildFile; fileRef = DBF9D62A1C3872C70038E08E /* Benchmark */; };
+		DBF9D62E1C3872E40038E08E /* Card.m in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D61C1C3872A20038E08E /* Card.m */; };
+		DBF9D62F1C3872E40038E08E /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D61D1C3872A20038E08E /* Card.swift */; };
+		DBF9D6301C3872E40038E08E /* CardSet.m in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D61F1C3872A20038E08E /* CardSet.m */; };
+		DBF9D6311C3872E40038E08E /* CardSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6201C3872A20038E08E /* CardSet.swift */; };
+		DBF9D6321C3872E40038E08E /* CardUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6221C3872A20038E08E /* CardUtilities.m */; };
+		DBF9D6331C3872E40038E08E /* ReleaseDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6241C3872A20038E08E /* ReleaseDate.swift */; };
+		DBF9D6341C3872E50038E08E /* Card.m in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D61C1C3872A20038E08E /* Card.m */; };
+		DBF9D6351C3872E50038E08E /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D61D1C3872A20038E08E /* Card.swift */; };
+		DBF9D6361C3872E50038E08E /* CardSet.m in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D61F1C3872A20038E08E /* CardSet.m */; };
+		DBF9D6371C3872E50038E08E /* CardSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6201C3872A20038E08E /* CardSet.swift */; };
+		DBF9D6381C3872E50038E08E /* CardUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6221C3872A20038E08E /* CardUtilities.m */; };
+		DBF9D6391C3872E50038E08E /* ReleaseDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6241C3872A20038E08E /* ReleaseDate.swift */; };
+		DBF9D63A1C3872E50038E08E /* Card.m in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D61C1C3872A20038E08E /* Card.m */; };
+		DBF9D63B1C3872E50038E08E /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D61D1C3872A20038E08E /* Card.swift */; };
+		DBF9D63C1C3872E50038E08E /* CardSet.m in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D61F1C3872A20038E08E /* CardSet.m */; };
+		DBF9D63D1C3872E50038E08E /* CardSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6201C3872A20038E08E /* CardSet.swift */; };
+		DBF9D63E1C3872E50038E08E /* CardUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6221C3872A20038E08E /* CardUtilities.m */; };
+		DBF9D63F1C3872E50038E08E /* ReleaseDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6241C3872A20038E08E /* ReleaseDate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -119,6 +143,18 @@
 		DB6ADFB01C2362FF00D77BF1 /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		DB6ADFC11C23631500D77BF1 /* sample.JSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample.JSON; sourceTree = "<group>"; };
 		DB6ADFC21C23631500D77BF1 /* sampleNoWhiteSpace.JSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sampleNoWhiteSpace.JSON; sourceTree = "<group>"; };
+		DBF9D61B1C3872A20038E08E /* Card.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Card.h; sourceTree = "<group>"; };
+		DBF9D61C1C3872A20038E08E /* Card.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Card.m; sourceTree = "<group>"; };
+		DBF9D61D1C3872A20038E08E /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		DBF9D61E1C3872A20038E08E /* CardSet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CardSet.h; sourceTree = "<group>"; };
+		DBF9D61F1C3872A20038E08E /* CardSet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CardSet.m; sourceTree = "<group>"; };
+		DBF9D6201C3872A20038E08E /* CardSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSet.swift; sourceTree = "<group>"; };
+		DBF9D6211C3872A20038E08E /* CardUtilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CardUtilities.h; sourceTree = "<group>"; };
+		DBF9D6221C3872A20038E08E /* CardUtilities.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CardUtilities.m; sourceTree = "<group>"; };
+		DBF9D6231C3872A20038E08E /* FreddyTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FreddyTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		DBF9D6241C3872A20038E08E /* ReleaseDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseDate.swift; sourceTree = "<group>"; };
+		DBF9D6261C3872BB0038E08E /* Benchmark.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Benchmark.swift; sourceTree = "<group>"; };
+		DBF9D62A1C3872C70038E08E /* Benchmark */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Benchmark; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -224,8 +260,10 @@
 				DB6ADFAD1C2362FF00D77BF1 /* JSONParserTests.swift */,
 				DB6ADFAE1C2362FF00D77BF1 /* JSONSubscriptTests.swift */,
 				DB6ADFAF1C2362FF00D77BF1 /* JSONTypeTests.swift */,
+				DBF9D6261C3872BB0038E08E /* Benchmark.swift */,
+				DBF9D62A1C3872C70038E08E /* Benchmark */,
 				DB6ADFC01C23630500D77BF1 /* Fixtures */,
-				DB6ADF301C23610B00D77BF1 /* Info.plist */,
+				DBF9D6251C3872A40038E08E /* Supporting Files */,
 			);
 			path = FreddyTests;
 			sourceTree = "<group>";
@@ -248,8 +286,26 @@
 				DB6ADFB01C2362FF00D77BF1 /* Person.swift */,
 				DB6ADFC11C23631500D77BF1 /* sample.JSON */,
 				DB6ADFC21C23631500D77BF1 /* sampleNoWhiteSpace.JSON */,
+				DBF9D61B1C3872A20038E08E /* Card.h */,
+				DBF9D61C1C3872A20038E08E /* Card.m */,
+				DBF9D61D1C3872A20038E08E /* Card.swift */,
+				DBF9D61E1C3872A20038E08E /* CardSet.h */,
+				DBF9D61F1C3872A20038E08E /* CardSet.m */,
+				DBF9D6201C3872A20038E08E /* CardSet.swift */,
+				DBF9D6211C3872A20038E08E /* CardUtilities.h */,
+				DBF9D6221C3872A20038E08E /* CardUtilities.m */,
+				DBF9D6241C3872A20038E08E /* ReleaseDate.swift */,
 			);
 			name = Fixtures;
+			sourceTree = "<group>";
+		};
+		DBF9D6251C3872A40038E08E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DBF9D6231C3872A20038E08E /* FreddyTests-Bridging-Header.h */,
+				DB6ADF301C23610B00D77BF1 /* Info.plist */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -485,6 +541,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB6ADFC41C23631500D77BF1 /* sample.JSON in Resources */,
+				DBF9D62C1C3872C70038E08E /* Benchmark in Resources */,
 				DB6ADFC71C23631500D77BF1 /* sampleNoWhiteSpace.JSON in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -501,6 +558,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB6ADFC31C23631500D77BF1 /* sample.JSON in Resources */,
+				DBF9D62B1C3872C70038E08E /* Benchmark in Resources */,
 				DB6ADFC61C23631500D77BF1 /* sampleNoWhiteSpace.JSON in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -517,6 +575,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB6ADFC51C23631500D77BF1 /* sample.JSON in Resources */,
+				DBF9D62D1C3872C70038E08E /* Benchmark in Resources */,
 				DB6ADFC81C23631500D77BF1 /* sampleNoWhiteSpace.JSON in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -550,10 +609,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB6ADFBE1C2362FF00D77BF1 /* Person.swift in Sources */,
+				DBF9D6281C3872BB0038E08E /* Benchmark.swift in Sources */,
 				DB6ADFB51C2362FF00D77BF1 /* JSONParserTests.swift in Sources */,
+				DBF9D6381C3872E50038E08E /* CardUtilities.m in Sources */,
 				DB6ADFBB1C2362FF00D77BF1 /* JSONTypeTests.swift in Sources */,
 				DB6ADFB21C2362FF00D77BF1 /* JSONDecodableTests.swift in Sources */,
+				DBF9D6361C3872E50038E08E /* CardSet.m in Sources */,
+				DBF9D6371C3872E50038E08E /* CardSet.swift in Sources */,
+				DBF9D6341C3872E50038E08E /* Card.m in Sources */,
 				DB6ADFB81C2362FF00D77BF1 /* JSONSubscriptTests.swift in Sources */,
+				DBF9D6351C3872E50038E08E /* Card.swift in Sources */,
+				DBF9D6391C3872E50038E08E /* ReleaseDate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -576,10 +642,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB6ADFBD1C2362FF00D77BF1 /* Person.swift in Sources */,
+				DBF9D6271C3872BB0038E08E /* Benchmark.swift in Sources */,
 				DB6ADFB41C2362FF00D77BF1 /* JSONParserTests.swift in Sources */,
+				DBF9D6321C3872E40038E08E /* CardUtilities.m in Sources */,
 				DB6ADFBA1C2362FF00D77BF1 /* JSONTypeTests.swift in Sources */,
 				DB6ADFB11C2362FF00D77BF1 /* JSONDecodableTests.swift in Sources */,
+				DBF9D6301C3872E40038E08E /* CardSet.m in Sources */,
+				DBF9D6311C3872E40038E08E /* CardSet.swift in Sources */,
+				DBF9D62E1C3872E40038E08E /* Card.m in Sources */,
 				DB6ADFB71C2362FF00D77BF1 /* JSONSubscriptTests.swift in Sources */,
+				DBF9D62F1C3872E40038E08E /* Card.swift in Sources */,
+				DBF9D6331C3872E40038E08E /* ReleaseDate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -602,10 +675,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB6ADFBF1C2362FF00D77BF1 /* Person.swift in Sources */,
+				DBF9D6291C3872BB0038E08E /* Benchmark.swift in Sources */,
 				DB6ADFB61C2362FF00D77BF1 /* JSONParserTests.swift in Sources */,
+				DBF9D63E1C3872E50038E08E /* CardUtilities.m in Sources */,
 				DB6ADFBC1C2362FF00D77BF1 /* JSONTypeTests.swift in Sources */,
 				DB6ADFB31C2362FF00D77BF1 /* JSONDecodableTests.swift in Sources */,
+				DBF9D63C1C3872E50038E08E /* CardSet.m in Sources */,
+				DBF9D63D1C3872E50038E08E /* CardSet.swift in Sources */,
+				DBF9D63A1C3872E50038E08E /* Card.m in Sources */,
 				DB6ADFB91C2362FF00D77BF1 /* JSONSubscriptTests.swift in Sources */,
+				DBF9D63B1C3872E50038E08E /* Card.swift in Sources */,
+				DBF9D63F1C3872E50038E08E /* ReleaseDate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
