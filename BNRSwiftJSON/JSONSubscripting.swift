@@ -74,9 +74,7 @@ extension JSON {
         let json = try valueAtPath(first, rest, detectNull: detectNull)
         do {
             return try getter(json)
-        }
-        catch Error.ValueNotConvertible
-        where json == .Null {
+        } catch Error.ValueNotConvertible where json == .Null {
             return nil
         }
     }
