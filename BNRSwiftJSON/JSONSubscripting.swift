@@ -8,6 +8,7 @@
 
 // MARK: - Subscripting
 
+
 extension JSON {
     
     // MARK: Subscripting core
@@ -68,15 +69,6 @@ extension JSON {
     private func fetchValueAtPath<Value>(first: PathFragment?, _ rest: [PathFragment], detectNull: Swift.Bool = false, @noescape getter: JSON throws -> Value) throws -> Value {
         let json = try valueAtPath(first, rest, detectNull: detectNull)
         return try getter(json)
-    }
-    
-    private func fetchNullableValueAtPath<Value>(first: PathFragment?, _ rest: [PathFragment], detectNull: Swift.Bool = false, @noescape getter: JSON throws -> Value) throws -> Value? {
-        let json = try valueAtPath(first, rest, detectNull: detectNull)
-        do {
-            return try getter(json)
-        } catch Error.ValueNotConvertible where json == .Null {
-            return nil
-        }
     }
     
     private func decodedAtPath<Decoded: JSONDecodable>(first: PathFragment?, _ rest: [PathFragment]) throws -> Decoded {
@@ -176,24 +168,24 @@ extension JSON {
     // MARK: Simple optional unpacking
     
     private func optionalAtPath<Value>(first: PathFragment?, _ rest: [PathFragment], ifNotFound: Swift.Bool, ifNull: Swift.Bool, @noescape getter: JSON throws -> Value) throws -> Value? {
+        var json: JSON?
         do {
-            if ifNull {
-                return try fetchNullableValueAtPath(first, rest, detectNull: true, getter: getter)
-            } else {
-                return try fetchValueAtPath(first, rest, detectNull: true, getter: getter)
-            }
-        } catch Error.KeyNotFound where ifNotFound {
-            return nil
+            json = try valueAtPath(first, rest, detectNull: true)
+            return try getter(unsafeUnwrap(json))
         } catch Error.IndexOutOfBounds where ifNotFound {
             return nil
-        } catch SubscriptError.SubscriptIntoNull where ifNull {
+        } catch Error.KeyNotFound where ifNotFound {
+            return nil
+        } catch Error.UnexpectedSubscript(let type) where ifNotFound && type == Swift.String.self {
+            return nil
+        } catch Error.ValueNotConvertible where ifNull && json == .Null {
+            return nil
+        }  catch SubscriptError.SubscriptIntoNull where ifNull {
             return nil
         } catch SubscriptError.SubscriptIntoNull(.Key) where ifNotFound {
             return nil
         } catch SubscriptError.SubscriptIntoNull(let fragment) {
             throw Error.UnexpectedSubscript(type: fragment.valueType)
-        } catch Error.UnexpectedSubscript(let type) where ifNotFound && type == Swift.String {
-            return nil
         }
     }
     
@@ -481,7 +473,6 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
     /// - seealso: `JSON.decode(_:or:)`
     public func array(first: PathFragment? = nil, _ rest: PathFragment..., @autoclosure or fallback: () -> [JSON]) throws -> [JSON] {
-        //
         let array = try optionalAtPath(first, rest, ifNotFound: true, ifNull: false) { try $0.array() }
         return array ?? fallback()
     }
