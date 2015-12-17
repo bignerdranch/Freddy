@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "DB2D76851C22624400C3E08F"
-               BuildableName = "TVFreddy.framework"
+               BuildableName = "Freddy.framework"
                BlueprintName = "TVFreddy"
                ReferencedContainer = "container:Freddy.xcodeproj">
             </BuildableReference>
@@ -26,7 +26,8 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
@@ -43,7 +44,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DB2D76851C22624400C3E08F"
-            BuildableName = "TVFreddy.framework"
+            BuildableName = "Freddy.framework"
             BlueprintName = "TVFreddy"
             ReferencedContainer = "container:Freddy.xcodeproj">
          </BuildableReference>
@@ -65,7 +66,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DB2D76851C22624400C3E08F"
-            BuildableName = "TVFreddy.framework"
+            BuildableName = "Freddy.framework"
             BlueprintName = "TVFreddy"
             ReferencedContainer = "container:Freddy.xcodeproj">
          </BuildableReference>
@@ -83,7 +84,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DB2D76851C22624400C3E08F"
-            BuildableName = "TVFreddy.framework"
+            BuildableName = "Freddy.framework"
             BlueprintName = "TVFreddy"
             ReferencedContainer = "container:Freddy.xcodeproj">
          </BuildableReference>
