@@ -1,6 +1,6 @@
 //
 //  JSONSubscripting.swift
-//  BNRSwiftJSON
+//  Freddy
 //
 //  Created by Zachary Waldowski on 8/15/15.
 //  Copyright © 2015 Big Nerd Ranch. All rights reserved.

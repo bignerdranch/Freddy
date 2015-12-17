@@ -1,6 +1,6 @@
 //
 //  JSONParser.swift
-//  BNRSwiftJSON
+//  Freddy
 //
 //  Created by John Gallagher on 4/18/15.
 //  Copyright © 2015 Big Nerd Ranch. Licensed under MIT.

@@ -1,13 +1,13 @@
 //
 //  JSONParserTests.swift
-//  BNRSwiftJSONTests
+//  FreddyTests
 //
 //  Created by John Gallagher on 4/18/15.
 //  Copyright © 2015 Big Nerd Ranch. Licensed under MIT.
 //
 
 import XCTest
-import BNRSwiftJSON
+@testable import Freddy
 
 private func ==(lhs: JSONParser.Error, rhs: JSONParser.Error) -> Bool {
     switch (lhs, rhs) {

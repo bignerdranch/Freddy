@@ -1,15 +1,15 @@
 //
-//  BNRSwiftJSONTests.swift
-//  BNRSwiftJSONTests
+//  JSONSubscriptTests.swift
+//  FreddyTests
 //
 //  Created by Matthew D. Mathias on 3/25/15.
 //  Copyright © 2015 Big Nerd Ranch. Licensed under MIT.
 //
 
 import XCTest
-import BNRSwiftJSON
+@testable import Freddy
 
-class BNRSwiftJSONTests: XCTestCase {
+class JSONSubscriptTests: XCTestCase {
 
     private var json: JSON!
     private var noWhiteSpaceData: NSData!
@@ -21,7 +21,7 @@ class BNRSwiftJSONTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        let testBundle = NSBundle(forClass: BNRSwiftJSONTests.self)
+        let testBundle = NSBundle(forClass: JSONSubscriptTests.self)
         guard let data = testBundle.URLForResource("sample", withExtension: "JSON").flatMap(NSData.init) else {
             XCTFail("Could not read sample data from test bundle")
             return
@@ -170,7 +170,7 @@ class BNRSwiftJSONTests: XCTestCase {
     }
 }
 
-class BNRSwiftJSONWithNSJSONTests: BNRSwiftJSONTests {
+class JSONSubscriptWithNSJSONTests: JSONSubscriptTests {
 
     override func parser() -> JSONParserType.Type {
         return NSJSONSerialization.self

@@ -14,10 +14,24 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DBE98DF51B6B0D6200132F0B"
-               BuildableName = "BNRSwiftJSON.framework"
-               BlueprintName = "NanoBNRSwiftJSON"
-               ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
+               BlueprintIdentifier = "DBE98DE81B6B0D5600132F0B"
+               BuildableName = "Freddy.framework"
+               BlueprintName = "MobileFreddy"
+               ReferencedContainer = "container:Freddy.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "DBE98E101B6B0D7A00132F0B"
+               BuildableName = "MobileFreddyTests.xctest"
+               BlueprintName = "MobileFreddyTests"
+               ReferencedContainer = "container:Freddy.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -26,9 +40,29 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "DBE98E101B6B0D7A00132F0B"
+               BuildableName = "MobileFreddyTests.xctest"
+               BlueprintName = "MobileFreddyTests"
+               ReferencedContainer = "container:Freddy.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "DBE98DE81B6B0D5600132F0B"
+            BuildableName = "Freddy.framework"
+            BlueprintName = "MobileFreddy"
+            ReferencedContainer = "container:Freddy.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -45,10 +79,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DBE98DF51B6B0D6200132F0B"
-            BuildableName = "BNRSwiftJSON.framework"
-            BlueprintName = "NanoBNRSwiftJSON"
-            ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
+            BlueprintIdentifier = "DBE98DE81B6B0D5600132F0B"
+            BuildableName = "Freddy.framework"
+            BlueprintName = "MobileFreddy"
+            ReferencedContainer = "container:Freddy.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -63,10 +97,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DBE98DF51B6B0D6200132F0B"
-            BuildableName = "BNRSwiftJSON.framework"
-            BlueprintName = "NanoBNRSwiftJSON"
-            ReferencedContainer = "container:BNRSwiftJSON.xcodeproj">
+            BlueprintIdentifier = "DBE98DE81B6B0D5600132F0B"
+            BuildableName = "Freddy.framework"
+            BlueprintName = "MobileFreddy"
+            ReferencedContainer = "container:Freddy.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

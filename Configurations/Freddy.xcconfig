@@ -19,6 +19,6 @@ LD_RUNPATH_SEARCH_PATHS[sdk=watchsimulator*]  = $(inherited) @executable_path/Fr
 CODE_SIGN_IDENTITY[sdk=iphoneos*] = iPhone Developer
 
 FRAMEWORK_VERSION = A
-INFOPLIST_FILE = BNRSwiftJSON/Info.plist
-PRODUCT_BUNDLE_IDENTIFIER = com.bignerdranch.BNRSwiftJSON
-PRODUCT_NAME = BNRSwiftJSON
+INFOPLIST_FILE = Freddy/Info.plist
+PRODUCT_BUNDLE_IDENTIFIER = com.bignerdranch.Freddy
+PRODUCT_NAME = Freddy

@@ -1,13 +1,13 @@
 //
 //  JSONDecodableTests.swift
-//  BNRSwiftJSON
+//  FreddyTests
 //
 //  Created by Matthew Mathias on 11/6/15.
 //  Copyright © 2015 Big Nerd Ranch. All rights reserved.
 //
 
 import XCTest
-import BNRSwiftJSON
+@testable import Freddy
 
 class JSONDecodableTests: XCTestCase {
 

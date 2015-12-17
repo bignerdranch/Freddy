@@ -1,6 +1,6 @@
 //
 //  JSONLiteralConvertible.swift
-//  BNRSwiftJSON
+//  Freddy
 //
 //  Created by Zachary Waldowski on 5/11/15.
 //  Copyright © 2015 Big Nerd Ranch. Licensed under MIT.

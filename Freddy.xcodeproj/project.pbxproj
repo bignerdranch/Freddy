@@ -18,13 +18,13 @@
 		DB1D60E31B8ECA3A007D0D8C /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */; };
 		DB1D60E41B8ECA3A007D0D8C /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */; };
 		DB1D60E51B8ECA3A007D0D8C /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */; };
-		DBE98DDD1B6B0D4900132F0B /* BNRSwiftJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = DBE98DDC1B6B0D4900132F0B /* BNRSwiftJSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DBE98E051B6B0D7200132F0B /* BNRSwiftJSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E041B6B0D7200132F0B /* BNRSwiftJSONTests.swift */; };
-		DBE98E071B6B0D7200132F0B /* BNRSwiftJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBE98DD91B6B0D4900132F0B /* BNRSwiftJSON.framework */; };
-		DBE98E161B6B0D7A00132F0B /* BNRSwiftJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBE98DE91B6B0D5600132F0B /* BNRSwiftJSON.framework */; };
-		DBE98E221B6B0EDD00132F0B /* BNRSwiftJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = DBE98DDC1B6B0D4900132F0B /* BNRSwiftJSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DBE98E231B6B0EDE00132F0B /* BNRSwiftJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = DBE98DDC1B6B0D4900132F0B /* BNRSwiftJSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DBE98E241B6B0EEB00132F0B /* BNRSwiftJSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E041B6B0D7200132F0B /* BNRSwiftJSONTests.swift */; };
+		DBE98DDD1B6B0D4900132F0B /* Freddy.h in Headers */ = {isa = PBXBuildFile; fileRef = DBE98DDC1B6B0D4900132F0B /* Freddy.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DBE98E051B6B0D7200132F0B /* JSONSubscriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E041B6B0D7200132F0B /* JSONSubscriptTests.swift */; };
+		DBE98E071B6B0D7200132F0B /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBE98DD91B6B0D4900132F0B /* Freddy.framework */; };
+		DBE98E161B6B0D7A00132F0B /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBE98DE91B6B0D5600132F0B /* Freddy.framework */; };
+		DBE98E221B6B0EDD00132F0B /* Freddy.h in Headers */ = {isa = PBXBuildFile; fileRef = DBE98DDC1B6B0D4900132F0B /* Freddy.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DBE98E231B6B0EDE00132F0B /* Freddy.h in Headers */ = {isa = PBXBuildFile; fileRef = DBE98DDC1B6B0D4900132F0B /* Freddy.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DBE98E241B6B0EEB00132F0B /* JSONSubscriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E041B6B0D7200132F0B /* JSONSubscriptTests.swift */; };
 		DBE98E6E1B6B0F7F00132F0B /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E631B6B0F7F00132F0B /* JSON.swift */; };
 		DBE98E6F1B6B0F7F00132F0B /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E631B6B0F7F00132F0B /* JSON.swift */; };
 		DBE98E701B6B0F7F00132F0B /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E631B6B0F7F00132F0B /* JSON.swift */; };
@@ -55,14 +55,14 @@
 			containerPortal = DBE98DD01B6B0D4900132F0B /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = DBE98DD81B6B0D4900132F0B;
-			remoteInfo = BNRSwiftJSON;
+			remoteInfo = Freddy;
 		};
 		DBE98E171B6B0D7A00132F0B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DBE98DD01B6B0D4900132F0B /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = DBE98DE81B6B0D5600132F0B;
-			remoteInfo = MobileBNRSwiftJSON;
+			remoteInfo = MobileFreddy;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -71,17 +71,17 @@
 		DB1D60CC1B8EB948007D0D8C /* JSONSubscripting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSubscripting.swift; sourceTree = "<group>"; };
 		DB1D60D71B8EC8BD007D0D8C /* JSONParsing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParsing.swift; sourceTree = "<group>"; };
 		DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSequences.swift; sourceTree = "<group>"; };
-		DBE98DD91B6B0D4900132F0B /* BNRSwiftJSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BNRSwiftJSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DBE98DDC1B6B0D4900132F0B /* BNRSwiftJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BNRSwiftJSON.h; sourceTree = "<group>"; };
+		DBE98DD91B6B0D4900132F0B /* Freddy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Freddy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DBE98DDC1B6B0D4900132F0B /* Freddy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Freddy.h; sourceTree = "<group>"; };
 		DBE98DDE1B6B0D4900132F0B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DBE98DE91B6B0D5600132F0B /* BNRSwiftJSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BNRSwiftJSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DBE98DF61B6B0D6200132F0B /* BNRSwiftJSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BNRSwiftJSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DBE98E021B6B0D7200132F0B /* BNRSwiftJSONTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BNRSwiftJSONTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		DBE98E041B6B0D7200132F0B /* BNRSwiftJSONTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BNRSwiftJSONTests.swift; sourceTree = "<group>"; };
+		DBE98DE91B6B0D5600132F0B /* Freddy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Freddy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DBE98DF61B6B0D6200132F0B /* Freddy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Freddy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DBE98E021B6B0D7200132F0B /* FreddyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FreddyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DBE98E041B6B0D7200132F0B /* JSONSubscriptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONSubscriptTests.swift; sourceTree = "<group>"; };
 		DBE98E061B6B0D7200132F0B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DBE98E111B6B0D7A00132F0B /* MobileBNRSwiftJSONTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobileBNRSwiftJSONTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DBE98E111B6B0D7A00132F0B /* MobileFreddyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobileFreddyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBE98E1D1B6B0D8C00132F0B /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
-		DBE98E1E1B6B0D8C00132F0B /* BNRSwiftJSON.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BNRSwiftJSON.xcconfig; sourceTree = "<group>"; };
+		DBE98E1E1B6B0D8C00132F0B /* Freddy.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Freddy.xcconfig; sourceTree = "<group>"; };
 		DBE98E1F1B6B0D8C00132F0B /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		DBE98E201B6B0D8C00132F0B /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		DBE98E211B6B0D8C00132F0B /* Tests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Tests.xcconfig; sourceTree = "<group>"; };
@@ -122,7 +122,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBE98E071B6B0D7200132F0B /* BNRSwiftJSON.framework in Frameworks */,
+				DBE98E071B6B0D7200132F0B /* Freddy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,7 +130,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBE98E161B6B0D7A00132F0B /* BNRSwiftJSON.framework in Frameworks */,
+				DBE98E161B6B0D7A00132F0B /* Freddy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,8 +141,8 @@
 			isa = PBXGroup;
 			children = (
 				DBE98E1C1B6B0D8C00132F0B /* Configurations */,
-				DBE98DDB1B6B0D4900132F0B /* BNRSwiftJSON */,
-				DBE98E031B6B0D7200132F0B /* BNRSwiftJSONTests */,
+				DBE98DDB1B6B0D4900132F0B /* Freddy */,
+				DBE98E031B6B0D7200132F0B /* FreddyTests */,
 				DBE98DDA1B6B0D4900132F0B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -150,19 +150,19 @@
 		DBE98DDA1B6B0D4900132F0B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DBE98DD91B6B0D4900132F0B /* BNRSwiftJSON.framework */,
-				DBE98DE91B6B0D5600132F0B /* BNRSwiftJSON.framework */,
-				DBE98DF61B6B0D6200132F0B /* BNRSwiftJSON.framework */,
-				DBE98E021B6B0D7200132F0B /* BNRSwiftJSONTests.xctest */,
-				DBE98E111B6B0D7A00132F0B /* MobileBNRSwiftJSONTests.xctest */,
+				DBE98DD91B6B0D4900132F0B /* Freddy.framework */,
+				DBE98DE91B6B0D5600132F0B /* Freddy.framework */,
+				DBE98DF61B6B0D6200132F0B /* Freddy.framework */,
+				DBE98E021B6B0D7200132F0B /* FreddyTests.xctest */,
+				DBE98E111B6B0D7A00132F0B /* MobileFreddyTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		DBE98DDB1B6B0D4900132F0B /* BNRSwiftJSON */ = {
+		DBE98DDB1B6B0D4900132F0B /* Freddy */ = {
 			isa = PBXGroup;
 			children = (
-				DBE98DDC1B6B0D4900132F0B /* BNRSwiftJSON.h */,
+				DBE98DDC1B6B0D4900132F0B /* Freddy.h */,
 				DBE98E631B6B0F7F00132F0B /* JSON.swift */,
 				DBE98E641B6B0F7F00132F0B /* JSONDecodable.swift */,
 				DBE98E651B6B0F7F00132F0B /* JSONLiteralConvertible.swift */,
@@ -172,27 +172,27 @@
 				DB1D60CC1B8EB948007D0D8C /* JSONSubscripting.swift */,
 				DBE98DDE1B6B0D4900132F0B /* Info.plist */,
 			);
-			path = BNRSwiftJSON;
+			path = Freddy;
 			sourceTree = "<group>";
 		};
-		DBE98E031B6B0D7200132F0B /* BNRSwiftJSONTests */ = {
+		DBE98E031B6B0D7200132F0B /* FreddyTests */ = {
 			isa = PBXGroup;
 			children = (
-				DBE98E041B6B0D7200132F0B /* BNRSwiftJSONTests.swift */,
+				DBE98E041B6B0D7200132F0B /* JSONSubscriptTests.swift */,
 				DBE98E861B6B0F9700132F0B /* JSONParserTests.swift */,
 				DBE98E871B6B0F9700132F0B /* JSONTypeTests.swift */,
 				1C43DED91BED4B8500F0878A /* JSONDecodableTests.swift */,
 				DBE98E881B6B0F9700132F0B /* Person.swift */,
 				DBE98E951B6B0FA000132F0B /* Supporting Files */,
 			);
-			path = BNRSwiftJSONTests;
+			path = FreddyTests;
 			sourceTree = "<group>";
 		};
 		DBE98E1C1B6B0D8C00132F0B /* Configurations */ = {
 			isa = PBXGroup;
 			children = (
 				DBE98E1D1B6B0D8C00132F0B /* Base.xcconfig */,
-				DBE98E1E1B6B0D8C00132F0B /* BNRSwiftJSON.xcconfig */,
+				DBE98E1E1B6B0D8C00132F0B /* Freddy.xcconfig */,
 				DBE98E1F1B6B0D8C00132F0B /* Debug.xcconfig */,
 				DBE98E201B6B0D8C00132F0B /* Release.xcconfig */,
 				DBE98E211B6B0D8C00132F0B /* Tests.xcconfig */,
@@ -217,7 +217,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBE98DDD1B6B0D4900132F0B /* BNRSwiftJSON.h in Headers */,
+				DBE98DDD1B6B0D4900132F0B /* Freddy.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,7 +225,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBE98E221B6B0EDD00132F0B /* BNRSwiftJSON.h in Headers */,
+				DBE98E221B6B0EDD00132F0B /* Freddy.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,16 +233,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBE98E231B6B0EDE00132F0B /* BNRSwiftJSON.h in Headers */,
+				DBE98E231B6B0EDE00132F0B /* Freddy.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		DBE98DD81B6B0D4900132F0B /* BNRSwiftJSON */ = {
+		DBE98DD81B6B0D4900132F0B /* Freddy */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DBE98DE11B6B0D4900132F0B /* Build configuration list for PBXNativeTarget "BNRSwiftJSON" */;
+			buildConfigurationList = DBE98DE11B6B0D4900132F0B /* Build configuration list for PBXNativeTarget "Freddy" */;
 			buildPhases = (
 				DBE98DD41B6B0D4900132F0B /* Sources */,
 				DBE98DD51B6B0D4900132F0B /* Frameworks */,
@@ -253,14 +253,14 @@
 			);
 			dependencies = (
 			);
-			name = BNRSwiftJSON;
-			productName = BNRSwiftJSON;
-			productReference = DBE98DD91B6B0D4900132F0B /* BNRSwiftJSON.framework */;
+			name = Freddy;
+			productName = Freddy;
+			productReference = DBE98DD91B6B0D4900132F0B /* Freddy.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		DBE98DE81B6B0D5600132F0B /* MobileBNRSwiftJSON */ = {
+		DBE98DE81B6B0D5600132F0B /* MobileFreddy */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DBE98DEE1B6B0D5600132F0B /* Build configuration list for PBXNativeTarget "MobileBNRSwiftJSON" */;
+			buildConfigurationList = DBE98DEE1B6B0D5600132F0B /* Build configuration list for PBXNativeTarget "MobileFreddy" */;
 			buildPhases = (
 				DBE98DE41B6B0D5600132F0B /* Sources */,
 				DBE98DE51B6B0D5600132F0B /* Frameworks */,
@@ -271,14 +271,14 @@
 			);
 			dependencies = (
 			);
-			name = MobileBNRSwiftJSON;
-			productName = MobileBNRSwiftJSON;
-			productReference = DBE98DE91B6B0D5600132F0B /* BNRSwiftJSON.framework */;
+			name = MobileFreddy;
+			productName = MobileFreddy;
+			productReference = DBE98DE91B6B0D5600132F0B /* Freddy.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		DBE98DF51B6B0D6200132F0B /* NanoBNRSwiftJSON */ = {
+		DBE98DF51B6B0D6200132F0B /* NanoFreddy */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DBE98DFB1B6B0D6200132F0B /* Build configuration list for PBXNativeTarget "NanoBNRSwiftJSON" */;
+			buildConfigurationList = DBE98DFB1B6B0D6200132F0B /* Build configuration list for PBXNativeTarget "NanoFreddy" */;
 			buildPhases = (
 				DBE98DF11B6B0D6200132F0B /* Sources */,
 				DBE98DF21B6B0D6200132F0B /* Frameworks */,
@@ -289,14 +289,14 @@
 			);
 			dependencies = (
 			);
-			name = NanoBNRSwiftJSON;
-			productName = NanoBNRSwiftJSON;
-			productReference = DBE98DF61B6B0D6200132F0B /* BNRSwiftJSON.framework */;
+			name = NanoFreddy;
+			productName = NanoFreddy;
+			productReference = DBE98DF61B6B0D6200132F0B /* Freddy.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		DBE98E011B6B0D7200132F0B /* BNRSwiftJSONTests */ = {
+		DBE98E011B6B0D7200132F0B /* FreddyTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DBE98E0A1B6B0D7200132F0B /* Build configuration list for PBXNativeTarget "BNRSwiftJSONTests" */;
+			buildConfigurationList = DBE98E0A1B6B0D7200132F0B /* Build configuration list for PBXNativeTarget "FreddyTests" */;
 			buildPhases = (
 				DBE98DFE1B6B0D7200132F0B /* Sources */,
 				DBE98DFF1B6B0D7200132F0B /* Frameworks */,
@@ -307,14 +307,14 @@
 			dependencies = (
 				DBE98E091B6B0D7200132F0B /* PBXTargetDependency */,
 			);
-			name = BNRSwiftJSONTests;
-			productName = BNRSwiftJSONTests;
-			productReference = DBE98E021B6B0D7200132F0B /* BNRSwiftJSONTests.xctest */;
+			name = FreddyTests;
+			productName = FreddyTests;
+			productReference = DBE98E021B6B0D7200132F0B /* FreddyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		DBE98E101B6B0D7A00132F0B /* MobileBNRSwiftJSONTests */ = {
+		DBE98E101B6B0D7A00132F0B /* MobileFreddyTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DBE98E191B6B0D7A00132F0B /* Build configuration list for PBXNativeTarget "MobileBNRSwiftJSONTests" */;
+			buildConfigurationList = DBE98E191B6B0D7A00132F0B /* Build configuration list for PBXNativeTarget "MobileFreddyTests" */;
 			buildPhases = (
 				DBE98E0D1B6B0D7A00132F0B /* Sources */,
 				DBE98E0E1B6B0D7A00132F0B /* Frameworks */,
@@ -325,9 +325,9 @@
 			dependencies = (
 				DBE98E181B6B0D7A00132F0B /* PBXTargetDependency */,
 			);
-			name = MobileBNRSwiftJSONTests;
-			productName = MobileBNRSwiftJSONTests;
-			productReference = DBE98E111B6B0D7A00132F0B /* MobileBNRSwiftJSONTests.xctest */;
+			name = MobileFreddyTests;
+			productName = MobileFreddyTests;
+			productReference = DBE98E111B6B0D7A00132F0B /* MobileFreddyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -336,7 +336,7 @@
 		DBE98DD01B6B0D4900132F0B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Big Nerd Ranch";
 				TargetAttributes = {
@@ -357,7 +357,7 @@
 					};
 				};
 			};
-			buildConfigurationList = DBE98DD31B6B0D4900132F0B /* Build configuration list for PBXProject "BNRSwiftJSON" */;
+			buildConfigurationList = DBE98DD31B6B0D4900132F0B /* Build configuration list for PBXProject "Freddy" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -369,11 +369,11 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DBE98DD81B6B0D4900132F0B /* BNRSwiftJSON */,
-				DBE98E011B6B0D7200132F0B /* BNRSwiftJSONTests */,
-				DBE98DE81B6B0D5600132F0B /* MobileBNRSwiftJSON */,
-				DBE98E101B6B0D7A00132F0B /* MobileBNRSwiftJSONTests */,
-				DBE98DF51B6B0D6200132F0B /* NanoBNRSwiftJSON */,
+				DBE98DD81B6B0D4900132F0B /* Freddy */,
+				DBE98E011B6B0D7200132F0B /* FreddyTests */,
+				DBE98DE81B6B0D5600132F0B /* MobileFreddy */,
+				DBE98E101B6B0D7A00132F0B /* MobileFreddyTests */,
+				DBE98DF51B6B0D6200132F0B /* NanoFreddy */,
 			);
 		};
 /* End PBXProject section */
@@ -471,7 +471,7 @@
 				DBE98E8B1B6B0F9700132F0B /* JSONTypeTests.swift in Sources */,
 				1C43DEDA1BED4B8500F0878A /* JSONDecodableTests.swift in Sources */,
 				DBE98E8D1B6B0F9700132F0B /* Person.swift in Sources */,
-				DBE98E051B6B0D7200132F0B /* BNRSwiftJSONTests.swift in Sources */,
+				DBE98E051B6B0D7200132F0B /* JSONSubscriptTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,7 +483,7 @@
 				DBE98E8C1B6B0F9700132F0B /* JSONTypeTests.swift in Sources */,
 				43E02A811C0F37FA00329508 /* JSONDecodableTests.swift in Sources */,
 				DBE98E8E1B6B0F9700132F0B /* Person.swift in Sources */,
-				DBE98E241B6B0EEB00132F0B /* BNRSwiftJSONTests.swift in Sources */,
+				DBE98E241B6B0EEB00132F0B /* JSONSubscriptTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -492,12 +492,12 @@
 /* Begin PBXTargetDependency section */
 		DBE98E091B6B0D7200132F0B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = DBE98DD81B6B0D4900132F0B /* BNRSwiftJSON */;
+			target = DBE98DD81B6B0D4900132F0B /* Freddy */;
 			targetProxy = DBE98E081B6B0D7200132F0B /* PBXContainerItemProxy */;
 		};
 		DBE98E181B6B0D7A00132F0B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = DBE98DE81B6B0D5600132F0B /* MobileBNRSwiftJSON */;
+			target = DBE98DE81B6B0D5600132F0B /* MobileFreddy */;
 			targetProxy = DBE98E171B6B0D7A00132F0B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -523,34 +523,37 @@
 		};
 		DBE98DE21B6B0D4900132F0B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DBE98E1E1B6B0D8C00132F0B /* BNRSwiftJSON.xcconfig */;
+			baseConfigurationReference = DBE98E1E1B6B0D8C00132F0B /* Freddy.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = Freddy;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		DBE98DE31B6B0D4900132F0B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DBE98E1E1B6B0D8C00132F0B /* BNRSwiftJSON.xcconfig */;
+			baseConfigurationReference = DBE98E1E1B6B0D8C00132F0B /* Freddy.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = Freddy;
 			};
 			name = Release;
 		};
 		DBE98DEF1B6B0D5600132F0B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DBE98E1E1B6B0D8C00132F0B /* BNRSwiftJSON.xcconfig */;
+			baseConfigurationReference = DBE98E1E1B6B0D8C00132F0B /* Freddy.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = Freddy;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -559,11 +562,12 @@
 		};
 		DBE98DF01B6B0D5600132F0B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DBE98E1E1B6B0D8C00132F0B /* BNRSwiftJSON.xcconfig */;
+			baseConfigurationReference = DBE98E1E1B6B0D8C00132F0B /* Freddy.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = Freddy;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -571,11 +575,12 @@
 		};
 		DBE98DFC1B6B0D6200132F0B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DBE98E1E1B6B0D8C00132F0B /* BNRSwiftJSON.xcconfig */;
+			baseConfigurationReference = DBE98E1E1B6B0D8C00132F0B /* Freddy.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = Freddy;
 				SDKROOT = watchos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 4;
@@ -584,11 +589,12 @@
 		};
 		DBE98DFD1B6B0D6200132F0B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DBE98E1E1B6B0D8C00132F0B /* BNRSwiftJSON.xcconfig */;
+			baseConfigurationReference = DBE98E1E1B6B0D8C00132F0B /* Freddy.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = Freddy;
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
@@ -631,7 +637,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		DBE98DD31B6B0D4900132F0B /* Build configuration list for PBXProject "BNRSwiftJSON" */ = {
+		DBE98DD31B6B0D4900132F0B /* Build configuration list for PBXProject "Freddy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DBE98DDF1B6B0D4900132F0B /* Debug */,
@@ -640,7 +646,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DBE98DE11B6B0D4900132F0B /* Build configuration list for PBXNativeTarget "BNRSwiftJSON" */ = {
+		DBE98DE11B6B0D4900132F0B /* Build configuration list for PBXNativeTarget "Freddy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DBE98DE21B6B0D4900132F0B /* Debug */,
@@ -649,7 +655,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DBE98DEE1B6B0D5600132F0B /* Build configuration list for PBXNativeTarget "MobileBNRSwiftJSON" */ = {
+		DBE98DEE1B6B0D5600132F0B /* Build configuration list for PBXNativeTarget "MobileFreddy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DBE98DEF1B6B0D5600132F0B /* Debug */,
@@ -658,7 +664,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DBE98DFB1B6B0D6200132F0B /* Build configuration list for PBXNativeTarget "NanoBNRSwiftJSON" */ = {
+		DBE98DFB1B6B0D6200132F0B /* Build configuration list for PBXNativeTarget "NanoFreddy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DBE98DFC1B6B0D6200132F0B /* Debug */,
@@ -667,7 +673,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DBE98E0A1B6B0D7200132F0B /* Build configuration list for PBXNativeTarget "BNRSwiftJSONTests" */ = {
+		DBE98E0A1B6B0D7200132F0B /* Build configuration list for PBXNativeTarget "FreddyTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DBE98E0B1B6B0D7200132F0B /* Debug */,
@@ -676,7 +682,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DBE98E191B6B0D7A00132F0B /* Build configuration list for PBXNativeTarget "MobileBNRSwiftJSONTests" */ = {
+		DBE98E191B6B0D7A00132F0B /* Build configuration list for PBXNativeTarget "MobileFreddyTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DBE98E1A1B6B0D7A00132F0B /* Debug */,
