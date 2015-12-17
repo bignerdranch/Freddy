@@ -18,6 +18,22 @@
 		DB1D60E31B8ECA3A007D0D8C /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */; };
 		DB1D60E41B8ECA3A007D0D8C /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */; };
 		DB1D60E51B8ECA3A007D0D8C /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */; };
+		DB679F041BC075DD0032A061 /* Card.m in Sources */ = {isa = PBXBuildFile; fileRef = DB2D626B1BC0490C0051C39C /* Card.m */; };
+		DB679F051BC075DE0032A061 /* Card.m in Sources */ = {isa = PBXBuildFile; fileRef = DB2D626B1BC0490C0051C39C /* Card.m */; };
+		DB679F061BC075E10032A061 /* CardSet.m in Sources */ = {isa = PBXBuildFile; fileRef = DB2D626D1BC0490C0051C39C /* CardSet.m */; };
+		DB679F071BC075E10032A061 /* CardSet.m in Sources */ = {isa = PBXBuildFile; fileRef = DB2D626D1BC0490C0051C39C /* CardSet.m */; };
+		DB679F081BC075E50032A061 /* CardUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = DB2D626F1BC0490C0051C39C /* CardUtilities.m */; };
+		DB679F091BC075E60032A061 /* CardUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = DB2D626F1BC0490C0051C39C /* CardUtilities.m */; };
+		DB679F2B1BC07A180032A061 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB679F281BC07A180032A061 /* Card.swift */; };
+		DB679F2C1BC07A180032A061 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB679F281BC07A180032A061 /* Card.swift */; };
+		DB679F2D1BC07A180032A061 /* CardSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB679F291BC07A180032A061 /* CardSet.swift */; };
+		DB679F2E1BC07A180032A061 /* CardSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB679F291BC07A180032A061 /* CardSet.swift */; };
+		DB679F331BC07A430032A061 /* ReleaseDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB679F321BC07A430032A061 /* ReleaseDate.swift */; };
+		DB679F341BC07A430032A061 /* ReleaseDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB679F321BC07A430032A061 /* ReleaseDate.swift */; };
+		DB7A1EC91BC0AD8F00979727 /* AllSetsArray.json in Resources */ = {isa = PBXBuildFile; fileRef = DB7A1EC81BC0AD8F00979727 /* AllSetsArray.json */; };
+		DB7A1ECA1BC0AD8F00979727 /* AllSetsArray.json in Resources */ = {isa = PBXBuildFile; fileRef = DB7A1EC81BC0AD8F00979727 /* AllSetsArray.json */; };
+		DB7A1ECC1BC0ADB100979727 /* Benchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7A1ECB1BC0ADB100979727 /* Benchmark.swift */; };
+		DB7A1ECD1BC0ADB100979727 /* Benchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7A1ECB1BC0ADB100979727 /* Benchmark.swift */; };
 		DBE98DDD1B6B0D4900132F0B /* BNRSwiftJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = DBE98DDC1B6B0D4900132F0B /* BNRSwiftJSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DBE98E051B6B0D7200132F0B /* BNRSwiftJSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E041B6B0D7200132F0B /* BNRSwiftJSONTests.swift */; };
 		DBE98E071B6B0D7200132F0B /* BNRSwiftJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBE98DD91B6B0D4900132F0B /* BNRSwiftJSON.framework */; };
@@ -50,6 +66,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		DB7A1EC31BC0AD6B00979727 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DBE98DD01B6B0D4900132F0B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DB7A1EBF1BC0AD4000979727;
+			remoteInfo = "Download Test Payload";
+		};
+		DB7A1EC51BC0AD7000979727 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DBE98DD01B6B0D4900132F0B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DB7A1EBF1BC0AD4000979727;
+			remoteInfo = "Download Test Payload";
+		};
 		DBE98E081B6B0D7200132F0B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DBE98DD01B6B0D4900132F0B /* Project object */;
@@ -66,11 +96,37 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		DB7A1EB91BC0ABB000979727 /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		1C43DED91BED4B8500F0878A /* JSONDecodableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONDecodableTests.swift; sourceTree = "<group>"; };
 		DB1D60CC1B8EB948007D0D8C /* JSONSubscripting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSubscripting.swift; sourceTree = "<group>"; };
 		DB1D60D71B8EC8BD007D0D8C /* JSONParsing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParsing.swift; sourceTree = "<group>"; };
 		DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSequences.swift; sourceTree = "<group>"; };
+		DB2D62681BC0490B0051C39C /* BNRSwiftJSONTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BNRSwiftJSONTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		DB2D626A1BC0490C0051C39C /* Card.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Card.h; sourceTree = "<group>"; };
+		DB2D626B1BC0490C0051C39C /* Card.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Card.m; sourceTree = "<group>"; };
+		DB2D626C1BC0490C0051C39C /* CardSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardSet.h; sourceTree = "<group>"; };
+		DB2D626D1BC0490C0051C39C /* CardSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CardSet.m; sourceTree = "<group>"; };
+		DB2D626E1BC0490C0051C39C /* CardUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardUtilities.h; sourceTree = "<group>"; };
+		DB2D626F1BC0490C0051C39C /* CardUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CardUtilities.m; sourceTree = "<group>"; };
+		DB2D62781BC04B640051C39C /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		DB679F281BC07A180032A061 /* Card.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		DB679F291BC07A180032A061 /* CardSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardSet.swift; sourceTree = "<group>"; };
+		DB679F321BC07A430032A061 /* ReleaseDate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReleaseDate.swift; sourceTree = "<group>"; };
+		DB7A1EC81BC0AD8F00979727 /* AllSetsArray.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = AllSetsArray.json; path = Benchmark/AllSetsArray.json; sourceTree = "<group>"; };
+		DB7A1ECB1BC0ADB100979727 /* Benchmark.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Benchmark.swift; sourceTree = "<group>"; };
 		DBE98DD91B6B0D4900132F0B /* BNRSwiftJSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BNRSwiftJSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBE98DDC1B6B0D4900132F0B /* BNRSwiftJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BNRSwiftJSON.h; sourceTree = "<group>"; };
 		DBE98DDE1B6B0D4900132F0B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -137,6 +193,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DB2D62761BC049FF0051C39C /* Objective-C */ = {
+			isa = PBXGroup;
+			children = (
+				DB2D626A1BC0490C0051C39C /* Card.h */,
+				DB2D626B1BC0490C0051C39C /* Card.m */,
+				DB2D626C1BC0490C0051C39C /* CardSet.h */,
+				DB2D626D1BC0490C0051C39C /* CardSet.m */,
+				DB2D626E1BC0490C0051C39C /* CardUtilities.h */,
+				DB2D626F1BC0490C0051C39C /* CardUtilities.m */,
+			);
+			name = "Objective-C";
+			sourceTree = "<group>";
+		};
+		DB2D62771BC04A070051C39C /* Benchmark */ = {
+			isa = PBXGroup;
+			children = (
+				DB7A1ECB1BC0ADB100979727 /* Benchmark.swift */,
+				DB679F311BC07A1C0032A061 /* Swift */,
+				DB2D62761BC049FF0051C39C /* Objective-C */,
+			);
+			name = Benchmark;
+			sourceTree = "<group>";
+		};
+		DB679F311BC07A1C0032A061 /* Swift */ = {
+			isa = PBXGroup;
+			children = (
+				DB679F281BC07A180032A061 /* Card.swift */,
+				DB679F291BC07A180032A061 /* CardSet.swift */,
+				DB679F321BC07A430032A061 /* ReleaseDate.swift */,
+			);
+			name = Swift;
+			sourceTree = "<group>";
+		};
 		DBE98DCF1B6B0D4900132F0B = {
 			isa = PBXGroup;
 			children = (
@@ -183,6 +272,7 @@
 				DBE98E871B6B0F9700132F0B /* JSONTypeTests.swift */,
 				1C43DED91BED4B8500F0878A /* JSONDecodableTests.swift */,
 				DBE98E881B6B0F9700132F0B /* Person.swift */,
+				DB2D62771BC04A070051C39C /* Benchmark */,
 				DBE98E951B6B0FA000132F0B /* Supporting Files */,
 			);
 			path = BNRSwiftJSONTests;
@@ -203,6 +293,9 @@
 		DBE98E951B6B0FA000132F0B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				DB2D62681BC0490B0051C39C /* BNRSwiftJSONTests-Bridging-Header.h */,
+				DB7A1EC81BC0AD8F00979727 /* AllSetsArray.json */,
+				DB2D62781BC04B640051C39C /* Makefile */,
 				DBE98E8F1B6B0F9E00132F0B /* sample.JSON */,
 				DBE98E901B6B0F9E00132F0B /* sampleNoWhiteSpace.JSON */,
 				DBE98E061B6B0D7200132F0B /* Info.plist */,
@@ -238,6 +331,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
+
+/* Begin PBXLegacyTarget section */
+		DB7A1EBF1BC0AD4000979727 /* Download Test Payload */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = DB7A1EC01BC0AD4000979727 /* Build configuration list for PBXLegacyTarget "Download Test Payload" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = "$(SRCROOT)/BNRSwiftJSONTests";
+			dependencies = (
+			);
+			name = "Download Test Payload";
+			passBuildSettingsInEnvironment = 1;
+			productName = "Download Test Payload";
+		};
+/* End PBXLegacyTarget section */
 
 /* Begin PBXNativeTarget section */
 		DBE98DD81B6B0D4900132F0B /* BNRSwiftJSON */ = {
@@ -301,11 +411,13 @@
 				DBE98DFE1B6B0D7200132F0B /* Sources */,
 				DBE98DFF1B6B0D7200132F0B /* Frameworks */,
 				DBE98E001B6B0D7200132F0B /* Resources */,
+				DB7A1EB91BC0ABB000979727 /* Copy Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				DBE98E091B6B0D7200132F0B /* PBXTargetDependency */,
+				DB7A1EC41BC0AD6B00979727 /* PBXTargetDependency */,
 			);
 			name = BNRSwiftJSONTests;
 			productName = BNRSwiftJSONTests;
@@ -324,6 +436,7 @@
 			);
 			dependencies = (
 				DBE98E181B6B0D7A00132F0B /* PBXTargetDependency */,
+				DB7A1EC61BC0AD7000979727 /* PBXTargetDependency */,
 			);
 			name = MobileBNRSwiftJSONTests;
 			productName = MobileBNRSwiftJSONTests;
@@ -340,6 +453,9 @@
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Big Nerd Ranch";
 				TargetAttributes = {
+					DB7A1EBF1BC0AD4000979727 = {
+						CreatedOnToolsVersion = 7.0.1;
+					};
 					DBE98DD81B6B0D4900132F0B = {
 						CreatedOnToolsVersion = 7.0;
 					};
@@ -374,6 +490,7 @@
 				DBE98DE81B6B0D5600132F0B /* MobileBNRSwiftJSON */,
 				DBE98E101B6B0D7A00132F0B /* MobileBNRSwiftJSONTests */,
 				DBE98DF51B6B0D6200132F0B /* NanoBNRSwiftJSON */,
+				DB7A1EBF1BC0AD4000979727 /* Download Test Payload */,
 			);
 		};
 /* End PBXProject section */
@@ -404,6 +521,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB7A1EC91BC0AD8F00979727 /* AllSetsArray.json in Resources */,
 				DBE98E911B6B0F9E00132F0B /* sample.JSON in Resources */,
 				DBE98E931B6B0F9E00132F0B /* sampleNoWhiteSpace.JSON in Resources */,
 			);
@@ -413,6 +531,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB7A1ECA1BC0AD8F00979727 /* AllSetsArray.json in Resources */,
 				DBE98E921B6B0F9E00132F0B /* sample.JSON in Resources */,
 				DBE98E941B6B0F9E00132F0B /* sampleNoWhiteSpace.JSON in Resources */,
 			);
@@ -467,11 +586,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB679F081BC075E50032A061 /* CardUtilities.m in Sources */,
+				DB679F041BC075DD0032A061 /* Card.m in Sources */,
+				DB679F331BC07A430032A061 /* ReleaseDate.swift in Sources */,
 				DBE98E891B6B0F9700132F0B /* JSONParserTests.swift in Sources */,
+				DB679F061BC075E10032A061 /* CardSet.m in Sources */,
+				DB7A1ECC1BC0ADB100979727 /* Benchmark.swift in Sources */,
 				DBE98E8B1B6B0F9700132F0B /* JSONTypeTests.swift in Sources */,
 				1C43DEDA1BED4B8500F0878A /* JSONDecodableTests.swift in Sources */,
 				DBE98E8D1B6B0F9700132F0B /* Person.swift in Sources */,
 				DBE98E051B6B0D7200132F0B /* BNRSwiftJSONTests.swift in Sources */,
+				DB679F2D1BC07A180032A061 /* CardSet.swift in Sources */,
+				DB679F2B1BC07A180032A061 /* Card.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -479,17 +605,34 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB679F091BC075E60032A061 /* CardUtilities.m in Sources */,
+				DB679F051BC075DE0032A061 /* Card.m in Sources */,
+				DB679F341BC07A430032A061 /* ReleaseDate.swift in Sources */,
 				DBE98E8A1B6B0F9700132F0B /* JSONParserTests.swift in Sources */,
+				DB679F071BC075E10032A061 /* CardSet.m in Sources */,
+				DB7A1ECD1BC0ADB100979727 /* Benchmark.swift in Sources */,
 				DBE98E8C1B6B0F9700132F0B /* JSONTypeTests.swift in Sources */,
 				43E02A811C0F37FA00329508 /* JSONDecodableTests.swift in Sources */,
 				DBE98E8E1B6B0F9700132F0B /* Person.swift in Sources */,
 				DBE98E241B6B0EEB00132F0B /* BNRSwiftJSONTests.swift in Sources */,
+				DB679F2E1BC07A180032A061 /* CardSet.swift in Sources */,
+				DB679F2C1BC07A180032A061 /* Card.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		DB7A1EC41BC0AD6B00979727 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DB7A1EBF1BC0AD4000979727 /* Download Test Payload */;
+			targetProxy = DB7A1EC31BC0AD6B00979727 /* PBXContainerItemProxy */;
+		};
+		DB7A1EC61BC0AD7000979727 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DB7A1EBF1BC0AD4000979727 /* Download Test Payload */;
+			targetProxy = DB7A1EC51BC0AD7000979727 /* PBXContainerItemProxy */;
+		};
 		DBE98E091B6B0D7200132F0B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DBE98DD81B6B0D4900132F0B /* BNRSwiftJSON */;
@@ -503,6 +646,18 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		DB7A1EC11BC0AD4000979727 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		DB7A1EC21BC0AD4000979727 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
 		DBE98DDF1B6B0D4900132F0B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DBE98E1F1B6B0D8C00132F0B /* Debug.xcconfig */;
@@ -631,6 +786,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		DB7A1EC01BC0AD4000979727 /* Build configuration list for PBXLegacyTarget "Download Test Payload" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB7A1EC11BC0AD4000979727 /* Debug */,
+				DB7A1EC21BC0AD4000979727 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		DBE98DD31B6B0D4900132F0B /* Build configuration list for PBXProject "BNRSwiftJSON" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -6,6 +6,8 @@
 //  Copyright © 2015 Big Nerd Ranch. Licensed under MIT.
 //
 
+import Foundation
+
 private struct Literal {
     static let BACKSLASH     = UInt8(ascii: "\\")
     static let BACKSPACE     = UInt8(ascii: "\u{0008}")
