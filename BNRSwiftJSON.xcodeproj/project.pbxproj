@@ -337,7 +337,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Big Nerd Ranch";
 				TargetAttributes = {
 					DBE98DD81B6B0D4900132F0B = {
@@ -507,6 +507,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DBE98E1F1B6B0D8C00132F0B /* Debug.xcconfig */;
 			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
 			name = Debug;
