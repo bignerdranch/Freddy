@@ -1,0 +1,11 @@
+COMBINE_HIDPI_IMAGES = YES
+
+LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]           = $(inherited) @executable_path/../Frameworks @loader_path/../Frameworks
+LD_RUNPATH_SEARCH_PATHS[sdk=iphoneos*]         = $(inherited) @executable_path/Frameworks @loader_path/Frameworks
+LD_RUNPATH_SEARCH_PATHS[sdk=iphonesimulator*]  = $(inherited) @executable_path/Frameworks @loader_path/Frameworks
+LD_RUNPATH_SEARCH_PATHS[sdk=appletvos*]        = $(inherited) @executable_path/Frameworks @loader_path/Frameworks
+LD_RUNPATH_SEARCH_PATHS[sdk=appletvsimulator*] = $(inherited) @executable_path/Frameworks @loader_path/Frameworks
+
+INFOPLIST_FILE = FreddyTests/Info.plist
+PRODUCT_BUNDLE_IDENTIFIER = com.bignerdranch.$(TARGET_NAME)
+PRODUCT_NAME = $(TARGET_NAME)
