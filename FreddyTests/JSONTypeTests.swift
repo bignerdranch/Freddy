@@ -1,14 +1,13 @@
 //
 //  JSONTypeTests.swift
-//  BNRSwiftJSONTests
+//  FreddyTests
 //
 //  Created by Zachary Waldowski on 5/12/15.
 //  Copyright © 2015 Big Nerd Ranch. Licensed under MIT.
 //
 
 import XCTest
-import BNRSwiftJSON
-import Foundation
+@testable import Freddy
 
 class JSONTypeTests: XCTestCase {
     

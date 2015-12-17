@@ -1,13 +1,12 @@
 //
 //  Person.swift
-//  BNRSwiftJSONTests
+//  FreddyTests
 //
 //  Created by Matthew D. Mathias on 3/21/15.
 //  Copyright © 2015 Big Nerd Ranch. Licensed under MIT.
 //
 
-import Foundation
-import BNRSwiftJSON
+import Freddy
 
 public struct Person: CustomStringConvertible {
     public let name: String

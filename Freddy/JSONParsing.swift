@@ -1,6 +1,6 @@
 //
 //  JSONParsing.swift
-//  BNRSwiftJSON
+//  Freddy
 //
 //  Created by Matthew D. Mathias on 3/17/15.
 //  Copyright © 2015 Big Nerd Ranch. All rights reserved.

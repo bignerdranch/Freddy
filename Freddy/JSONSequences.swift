@@ -1,6 +1,6 @@
 //
 //  JSONSequences.swift
-//  BNRSwiftJSON
+//  Freddy
 //
 //  Created by John Gallagher on 6/3/15.
 //  Copyright © 2015 Big Nerd Ranch. Licensed under MIT.
