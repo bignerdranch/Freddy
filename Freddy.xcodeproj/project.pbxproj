@@ -18,6 +18,22 @@
 		DB1D60E31B8ECA3A007D0D8C /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */; };
 		DB1D60E41B8ECA3A007D0D8C /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */; };
 		DB1D60E51B8ECA3A007D0D8C /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */; };
+		DB2D76901C22624400C3E08F /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB2D76861C22624400C3E08F /* Freddy.framework */; };
+		DB2D769D1C22624900C3E08F /* Freddy.h in Headers */ = {isa = PBXBuildFile; fileRef = DBE98DDC1B6B0D4900132F0B /* Freddy.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DB2D769E1C22624E00C3E08F /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E631B6B0F7F00132F0B /* JSON.swift */; };
+		DB2D769F1C22624E00C3E08F /* JSONDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E641B6B0F7F00132F0B /* JSONDecodable.swift */; };
+		DB2D76A01C22624E00C3E08F /* JSONLiteralConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E651B6B0F7F00132F0B /* JSONLiteralConvertible.swift */; };
+		DB2D76A11C22624E00C3E08F /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E661B6B0F7F00132F0B /* JSONParser.swift */; };
+		DB2D76A21C22624E00C3E08F /* JSONParsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60D71B8EC8BD007D0D8C /* JSONParsing.swift */; };
+		DB2D76A31C22624E00C3E08F /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */; };
+		DB2D76A41C22624E00C3E08F /* JSONSubscripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60CC1B8EB948007D0D8C /* JSONSubscripting.swift */; };
+		DB2D76A51C22625200C3E08F /* JSONSubscriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E041B6B0D7200132F0B /* JSONSubscriptTests.swift */; };
+		DB2D76A61C22625200C3E08F /* JSONParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E861B6B0F9700132F0B /* JSONParserTests.swift */; };
+		DB2D76A71C22625200C3E08F /* JSONTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E871B6B0F9700132F0B /* JSONTypeTests.swift */; };
+		DB2D76A81C22625200C3E08F /* JSONDecodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C43DED91BED4B8500F0878A /* JSONDecodableTests.swift */; };
+		DB2D76A91C22625200C3E08F /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E881B6B0F9700132F0B /* Person.swift */; };
+		DB2D76AA1C22625500C3E08F /* sample.JSON in Resources */ = {isa = PBXBuildFile; fileRef = DBE98E8F1B6B0F9E00132F0B /* sample.JSON */; };
+		DB2D76AB1C22625500C3E08F /* sampleNoWhiteSpace.JSON in Resources */ = {isa = PBXBuildFile; fileRef = DBE98E901B6B0F9E00132F0B /* sampleNoWhiteSpace.JSON */; };
 		DBE98DDD1B6B0D4900132F0B /* Freddy.h in Headers */ = {isa = PBXBuildFile; fileRef = DBE98DDC1B6B0D4900132F0B /* Freddy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DBE98E051B6B0D7200132F0B /* JSONSubscriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE98E041B6B0D7200132F0B /* JSONSubscriptTests.swift */; };
 		DBE98E071B6B0D7200132F0B /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBE98DD91B6B0D4900132F0B /* Freddy.framework */; };
@@ -50,6 +66,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		DB2D76911C22624400C3E08F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DBE98DD01B6B0D4900132F0B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DB2D76851C22624400C3E08F;
+			remoteInfo = TVFreddy;
+		};
 		DBE98E081B6B0D7200132F0B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DBE98DD01B6B0D4900132F0B /* Project object */;
@@ -71,6 +94,8 @@
 		DB1D60CC1B8EB948007D0D8C /* JSONSubscripting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSubscripting.swift; sourceTree = "<group>"; };
 		DB1D60D71B8EC8BD007D0D8C /* JSONParsing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParsing.swift; sourceTree = "<group>"; };
 		DB1D60E21B8ECA3A007D0D8C /* JSONSequences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSequences.swift; sourceTree = "<group>"; };
+		DB2D76861C22624400C3E08F /* Freddy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Freddy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB2D768F1C22624400C3E08F /* TVFreddyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TVFreddyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBE98DD91B6B0D4900132F0B /* Freddy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Freddy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBE98DDC1B6B0D4900132F0B /* Freddy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Freddy.h; sourceTree = "<group>"; };
 		DBE98DDE1B6B0D4900132F0B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -97,6 +122,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		DB2D76821C22624400C3E08F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB2D768C1C22624400C3E08F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB2D76901C22624400C3E08F /* Freddy.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DBE98DD51B6B0D4900132F0B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -155,6 +195,8 @@
 				DBE98DF61B6B0D6200132F0B /* Freddy.framework */,
 				DBE98E021B6B0D7200132F0B /* FreddyTests.xctest */,
 				DBE98E111B6B0D7A00132F0B /* MobileFreddyTests.xctest */,
+				DB2D76861C22624400C3E08F /* Freddy.framework */,
+				DB2D768F1C22624400C3E08F /* TVFreddyTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -213,6 +255,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		DB2D76831C22624400C3E08F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB2D769D1C22624900C3E08F /* Freddy.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DBE98DD61B6B0D4900132F0B /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -240,6 +290,42 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		DB2D76851C22624400C3E08F /* TVFreddy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DB2D769B1C22624500C3E08F /* Build configuration list for PBXNativeTarget "TVFreddy" */;
+			buildPhases = (
+				DB2D76811C22624400C3E08F /* Sources */,
+				DB2D76821C22624400C3E08F /* Frameworks */,
+				DB2D76831C22624400C3E08F /* Headers */,
+				DB2D76841C22624400C3E08F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TVFreddy;
+			productName = TVFreddy;
+			productReference = DB2D76861C22624400C3E08F /* Freddy.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		DB2D768E1C22624400C3E08F /* TVFreddyTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DB2D769C1C22624500C3E08F /* Build configuration list for PBXNativeTarget "TVFreddyTests" */;
+			buildPhases = (
+				DB2D768B1C22624400C3E08F /* Sources */,
+				DB2D768C1C22624400C3E08F /* Frameworks */,
+				DB2D768D1C22624400C3E08F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DB2D76921C22624400C3E08F /* PBXTargetDependency */,
+			);
+			name = TVFreddyTests;
+			productName = TVFreddyTests;
+			productReference = DB2D768F1C22624400C3E08F /* TVFreddyTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		DBE98DD81B6B0D4900132F0B /* Freddy */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = DBE98DE11B6B0D4900132F0B /* Build configuration list for PBXNativeTarget "Freddy" */;
@@ -340,6 +426,12 @@
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Big Nerd Ranch";
 				TargetAttributes = {
+					DB2D76851C22624400C3E08F = {
+						CreatedOnToolsVersion = 7.2;
+					};
+					DB2D768E1C22624400C3E08F = {
+						CreatedOnToolsVersion = 7.2;
+					};
 					DBE98DD81B6B0D4900132F0B = {
 						CreatedOnToolsVersion = 7.0;
 					};
@@ -373,12 +465,30 @@
 				DBE98E011B6B0D7200132F0B /* FreddyTests */,
 				DBE98DE81B6B0D5600132F0B /* MobileFreddy */,
 				DBE98E101B6B0D7A00132F0B /* MobileFreddyTests */,
+				DB2D76851C22624400C3E08F /* TVFreddy */,
+				DB2D768E1C22624400C3E08F /* TVFreddyTests */,
 				DBE98DF51B6B0D6200132F0B /* NanoFreddy */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		DB2D76841C22624400C3E08F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB2D768D1C22624400C3E08F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB2D76AA1C22625500C3E08F /* sample.JSON in Resources */,
+				DB2D76AB1C22625500C3E08F /* sampleNoWhiteSpace.JSON in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DBE98DD71B6B0D4900132F0B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -421,6 +531,32 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		DB2D76811C22624400C3E08F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB2D76A31C22624E00C3E08F /* JSONSequences.swift in Sources */,
+				DB2D769E1C22624E00C3E08F /* JSON.swift in Sources */,
+				DB2D76A41C22624E00C3E08F /* JSONSubscripting.swift in Sources */,
+				DB2D76A21C22624E00C3E08F /* JSONParsing.swift in Sources */,
+				DB2D76A01C22624E00C3E08F /* JSONLiteralConvertible.swift in Sources */,
+				DB2D76A11C22624E00C3E08F /* JSONParser.swift in Sources */,
+				DB2D769F1C22624E00C3E08F /* JSONDecodable.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB2D768B1C22624400C3E08F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB2D76A91C22625200C3E08F /* Person.swift in Sources */,
+				DB2D76A61C22625200C3E08F /* JSONParserTests.swift in Sources */,
+				DB2D76A71C22625200C3E08F /* JSONTypeTests.swift in Sources */,
+				DB2D76A81C22625200C3E08F /* JSONDecodableTests.swift in Sources */,
+				DB2D76A51C22625200C3E08F /* JSONSubscriptTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DBE98DD41B6B0D4900132F0B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -490,6 +626,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		DB2D76921C22624400C3E08F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DB2D76851C22624400C3E08F /* TVFreddy */;
+			targetProxy = DB2D76911C22624400C3E08F /* PBXContainerItemProxy */;
+		};
 		DBE98E091B6B0D7200132F0B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DBE98DD81B6B0D4900132F0B /* Freddy */;
@@ -503,6 +644,40 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		DB2D76971C22624500C3E08F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DBE98E1E1B6B0D8C00132F0B /* Freddy.xcconfig */;
+			buildSettings = {
+				SDKROOT = appletvos;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Debug;
+		};
+		DB2D76981C22624500C3E08F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DBE98E1E1B6B0D8C00132F0B /* Freddy.xcconfig */;
+			buildSettings = {
+				SDKROOT = appletvos;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Release;
+		};
+		DB2D76991C22624500C3E08F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DBE98E211B6B0D8C00132F0B /* Tests.xcconfig */;
+			buildSettings = {
+				SDKROOT = appletvos;
+			};
+			name = Debug;
+		};
+		DB2D769A1C22624500C3E08F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DBE98E211B6B0D8C00132F0B /* Tests.xcconfig */;
+			buildSettings = {
+				SDKROOT = appletvos;
+			};
+			name = Release;
+		};
 		DBE98DDF1B6B0D4900132F0B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DBE98E1F1B6B0D8C00132F0B /* Debug.xcconfig */;
@@ -637,6 +812,22 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		DB2D769B1C22624500C3E08F /* Build configuration list for PBXNativeTarget "TVFreddy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB2D76971C22624500C3E08F /* Debug */,
+				DB2D76981C22624500C3E08F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		DB2D769C1C22624500C3E08F /* Build configuration list for PBXNativeTarget "TVFreddyTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB2D76991C22624500C3E08F /* Debug */,
+				DB2D769A1C22624500C3E08F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		DBE98DD31B6B0D4900132F0B /* Build configuration list for PBXProject "Freddy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
