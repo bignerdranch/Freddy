@@ -20,6 +20,20 @@
                ReferencedContainer = "container:Freddy.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "DB2D768E1C22624400C3E08F"
+               BuildableName = "TVFreddyTests.xctest"
+               BlueprintName = "TVFreddyTests"
+               ReferencedContainer = "container:Freddy.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
