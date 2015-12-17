@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "0720"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DBE98DF51B6B0D6200132F0B"
+               BlueprintIdentifier = "DB6ADF751C23613200D77BF1"
                BuildableName = "Freddy.framework"
                BlueprintName = "NanoFreddy"
                ReferencedContainer = "container:Freddy.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DBE98DF51B6B0D6200132F0B"
+            BlueprintIdentifier = "DB6ADF751C23613200D77BF1"
             BuildableName = "Freddy.framework"
             BlueprintName = "NanoFreddy"
             ReferencedContainer = "container:Freddy.xcodeproj">
@@ -63,7 +63,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DBE98DF51B6B0D6200132F0B"
+            BlueprintIdentifier = "DB6ADF751C23613200D77BF1"
             BuildableName = "Freddy.framework"
             BlueprintName = "NanoFreddy"
             ReferencedContainer = "container:Freddy.xcodeproj">

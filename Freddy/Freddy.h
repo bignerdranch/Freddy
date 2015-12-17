@@ -6,10 +6,8 @@
 //  Copyright © 2015 Big Nerd Ranch. Licensed under MIT.
 //
 
-#import <Foundation/Foundation.h>
-
 //! Project version number for Freddy.
-FOUNDATION_EXPORT double FreddyersionNumber;
+extern double FreddyVersionNumber;
 
 //! Project version string for Freddy.
-FOUNDATION_EXPORT const unsigned char FreddyVersionString[];
+extern const unsigned char FreddyVersionString[];

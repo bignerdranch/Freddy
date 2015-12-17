@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "0720"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DBE98DE81B6B0D5600132F0B"
+               BlueprintIdentifier = "DB6ADF1E1C23610B00D77BF1"
                BuildableName = "Freddy.framework"
                BlueprintName = "MobileFreddy"
                ReferencedContainer = "container:Freddy.xcodeproj">
@@ -28,7 +28,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DBE98E101B6B0D7A00132F0B"
+               BlueprintIdentifier = "DB6ADF281C23610B00D77BF1"
                BuildableName = "MobileFreddyTests.xctest"
                BlueprintName = "MobileFreddyTests"
                ReferencedContainer = "container:Freddy.xcodeproj">
@@ -47,7 +47,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DBE98E101B6B0D7A00132F0B"
+               BlueprintIdentifier = "DB6ADF281C23610B00D77BF1"
                BuildableName = "MobileFreddyTests.xctest"
                BlueprintName = "MobileFreddyTests"
                ReferencedContainer = "container:Freddy.xcodeproj">
@@ -57,7 +57,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DBE98DE81B6B0D5600132F0B"
+            BlueprintIdentifier = "DB6ADF1E1C23610B00D77BF1"
             BuildableName = "Freddy.framework"
             BlueprintName = "MobileFreddy"
             ReferencedContainer = "container:Freddy.xcodeproj">
@@ -79,7 +79,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DBE98DE81B6B0D5600132F0B"
+            BlueprintIdentifier = "DB6ADF1E1C23610B00D77BF1"
             BuildableName = "Freddy.framework"
             BlueprintName = "MobileFreddy"
             ReferencedContainer = "container:Freddy.xcodeproj">
@@ -97,7 +97,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DBE98DE81B6B0D5600132F0B"
+            BlueprintIdentifier = "DB6ADF1E1C23610B00D77BF1"
             BuildableName = "Freddy.framework"
             BlueprintName = "MobileFreddy"
             ReferencedContainer = "container:Freddy.xcodeproj">
