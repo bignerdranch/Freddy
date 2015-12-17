@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1C43DEDA1BED4B8500F0878A /* JSONDecodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C43DED91BED4B8500F0878A /* JSONDecodableTests.swift */; };
+		43E02A811C0F37FA00329508 /* JSONDecodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C43DED91BED4B8500F0878A /* JSONDecodableTests.swift */; };
 		DB1D60CD1B8EB948007D0D8C /* JSONSubscripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60CC1B8EB948007D0D8C /* JSONSubscripting.swift */; };
 		DB1D60CE1B8EB948007D0D8C /* JSONSubscripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60CC1B8EB948007D0D8C /* JSONSubscripting.swift */; };
 		DB1D60CF1B8EB948007D0D8C /* JSONSubscripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1D60CC1B8EB948007D0D8C /* JSONSubscripting.swift */; };
@@ -611,6 +612,7 @@
 				DB679F071BC075E10032A061 /* CardSet.m in Sources */,
 				DB7A1ECD1BC0ADB100979727 /* Benchmark.swift in Sources */,
 				DBE98E8C1B6B0F9700132F0B /* JSONTypeTests.swift in Sources */,
+				43E02A811C0F37FA00329508 /* JSONDecodableTests.swift in Sources */,
 				DBE98E8E1B6B0F9700132F0B /* Person.swift in Sources */,
 				DBE98E241B6B0EEB00132F0B /* BNRSwiftJSONTests.swift in Sources */,
 				DB679F2E1BC07A180032A061 /* CardSet.swift in Sources */,
