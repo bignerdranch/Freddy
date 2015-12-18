@@ -24,11 +24,6 @@ Here is some example JSON data:
             "spouse": true,
         },
         {
-            "name": "Drew Mathias",
-            "age": 33,
-            "spouse": true,
-        },
-        {
             "name": "Sargeant Pepper",
             "age": 25,
             "spouse": false,
@@ -36,7 +31,6 @@ Here is some example JSON data:
     ],
     "jobs": [
         "teacher",
-        "programmer",
         "judge"
     ],
     "states": {
@@ -47,8 +41,7 @@ Here is some example JSON data:
         ],
         "Wisconsin": [
             53000,
-            53001,
-            53002
+            53001
         ]
     }
 }
