@@ -52,10 +52,10 @@ We wrote a quick method to load this JSON data locally for testing. This is wher
 ```swift
 func createData() -> NSData? {
     let testBundle = NSBundle(forClass: FreddyTests.self)
-    let path = testBundle.pathForResource("sample", ofType: "JSON")
+    let samplePath = testBundle.pathForResource("sample", ofType: "JSON")
 
-    if let p = path, u = NSURL(fileURLWithPath: p) {
-        return NSData(contentsOfURL: u)
+    if let path = samplePath, url = NSURL(fileURLWithPath: path) {
+        return NSData(contentsOfURL: url)
     }
 
     return nil
@@ -66,17 +66,18 @@ Now, here is a quick example on how to parse this data using Freddy:
 
 ```swift
 let data = createData()
-let json = JSON.createJSONFrom(data!)
-let success = json["success"].bool
-switch success {
-case .Success(let s):
-    println("Success!") // Do somethings with the value stored in 's'
-case .Failure(let error):
-    println(error) // Do something better with the error
+if let json = JSON.createJSONFrom(data) {
+    let success = json["success"].bool
+    switch success {
+    case .Success(let s):
+        println("Success!") // Do somethings with the value stored in 's'
+    case .Failure(let error):
+        println(error) // Do something better with the error
+    }
 }
 ```
 
-After we load in the data, we create an instance of `JSON`, the workhorse of this framework. This allows us to access the values from the JSON data. Here, we access the `"success"` key, and also use computed properties to access the value as a `Bool`. This returns a `Result` type that can be checked for `.Success` or `.Failure`. You can read more about these computed properties on the wiki [here](https://github.com/bignerdranch/Freddy/wiki/Computed-Properties).
+After we load in the data, we create an instance of `JSON`, the workhorse of this framework. This allows us to access the values from the JSON data. Next, we access the `"success"` key, and also use a computed property to access the value as a `Bool`. This returns a `Result` type that can be checked for `.Success` or `.Failure`. You can read more about these computed properties on the wiki [here](https://github.com/bignerdranch/Freddy/wiki/Computed-Properties).
 
 Now, let's look an example that parses the data into a data class:
 
