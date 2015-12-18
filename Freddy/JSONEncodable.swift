@@ -284,3 +284,62 @@ extension StrideTo: CustomJSONEncodable                       {}
 extension UnsafeBufferPointer: CustomJSONEncodable            {}
 extension UnsafeMutableBufferPointer: CustomJSONEncodable     {}
 extension Zip2Sequence: CustomJSONEncodable                   {}
+
+// MARK: Foundation compatibility
+
+import Foundation
+
+extension NSDictionary: CustomJSONEncodable {
+
+    public var JSONValue: JSON {
+        var dictionary = Swift.Dictionary<Swift.String, JSON>(minimumCapacity: count)
+        enumerateKeysAndObjectsUsingBlock { (key, object, _) in
+            dictionary[String(key)] = JSON(object)
+        }
+        return .Dictionary(dictionary)
+    }
+
+}
+
+extension NSNull: CustomJSONEncodable {
+
+    public var JSONValue: JSON {
+        return .Null
+    }
+
+}
+
+extension NSNumber: CustomJSONEncodable {
+
+    public var JSONValue: JSON {
+        if CFGetTypeID(self) == CFBooleanGetTypeID() || CFNumberGetType(self) == .CharType {
+            return .Bool(boolValue)
+        } else if !CFNumberIsFloatType(self) {
+            return .Int(integerValue)
+        } else {
+            return .Double(doubleValue)
+        }
+    }
+    
+}
+
+extension NSString: CustomJSONEncodable {
+
+    public var JSONValue: JSON {
+        return .String(self as String)
+    }
+
+}
+
+extension NSURL: CustomJSONEncodable {
+
+    public var JSONValue: JSON {
+        return .String(absoluteString)
+    }
+
+}
+
+extension NSArray: CustomJSONEncodable      {}
+extension NSEnumerator: CustomJSONEncodable {}
+extension NSOrderedSet: CustomJSONEncodable {}
+extension NSSet: CustomJSONEncodable        {}
