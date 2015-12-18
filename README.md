@@ -101,7 +101,7 @@ case .Failure(let error):
 }
 ```
 
-Here, we are instead loading the values from the key `"people"` as an array using the computed property. The biggest change here is passing the retrieved `JSON` into the static method `Person.createWithJSON(person)` .
+Here, we are instead loading the values from the key `"people"` as an array using the computed property `array`. The biggest change here is passing the retrieved `JSON` into the static method `Person.createWithJSON(person)` .
 
 Here is our `Person` stuct:
 ```swift
@@ -136,7 +136,7 @@ public struct Person: JSONDecodable, Printable {
 }
 ```
 
-This struct makes use of the protocol `JSONDecodable` which implements the method `public static func createWithJSON(json: JSON) -> Result<Person>` . This creates a `Person` object from the given `JSON` by parsing the child values into variables. This also makes use of the computed type properties as well as the `map` and `flatMap` methods. You can read more about those methods in the [wiki](https://github.com/bignerdranch/Freddy/wiki/Methods-in-Result).
+This struct makes use of the protocol `JSONDecodable` which implements the method `public static func createWithJSON(json: JSON) -> Result<Person>` . This creates a `Person` object from the given `JSON` by parsing the child values into variables. This also makes use of computed type properties as well as the `map` and `flatMap` methods. You can read more about those methods in the [wiki](https://github.com/bignerdranch/Freddy/wiki/Methods-in-Result).
 
 ## Documentation
 
