@@ -146,8 +146,8 @@ You can read more about the library in the wiki. You will find explanations for 
 
 ## Conclusion
 
-The primary goal of Freddy is to provide an elegant and safe solution to parsing JSON in Swift. A related, if not secondary, goal is to provide an idiomatic solution to JSON parsing. The solution we have provided involves a fair amount concepts borrowed from Functional Programming, a fact that isn't all that important to know.
+Freddy provides an elegant and safe solution to parsing JSON in Swift. Secondarily, Freddy provides an idiomatic solution to JSON parsing.
 
-Most important is to remember how to use the `JSONResult` and `Result` types provided by the framework. The role of these is to provide a safe way to encapsulate both `.Success` and `.Failure` in parsing JSON. The primary benefit is to ensure that parsing JSON reliably either provides the data that we are looking for, or an informative error should something not work as expected.
+To use Freddy successfully, first get familiar with the `JSONResult` and `Result` types provided by the framework. These provide a safe way to encapsulate both `.Success` and `.Failure` in parsing JSON, ensuring that parsing JSON reliably provides either the data that we are looking for, or an informative error should something not work as expected.
 
-Last, it is important to note that while `flatMap` and `map` are not strictly required to use. If you prefer to use for loops and switch statements together, then feel free! You will still benefit from Freddy's safety and error handling. Nonetheless, `flatMap` and `map` can help your usage of Freddy to be more concise. They also follow the spirit of the framework, and make it easier to use once you master their complexity.
+Last, it is important to note that usage of `flatMap` and `map` are not required. If you prefer to use for loops and switch statements together, then feel free! You will still benefit from Freddy's safety and error handling. Nonetheless, `flatMap` and `map` can help you have more concise parsing code. They also follow the spirit of the framework, and make it easier to use once you master the additional abstraction.
