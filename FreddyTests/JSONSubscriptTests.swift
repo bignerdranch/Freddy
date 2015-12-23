@@ -168,6 +168,7 @@ class JSONSubscriptTests: XCTestCase {
             XCTFail("The error should be due to the `people` `Array` not being subscriptable with `String`s, but was: \(error).")
         }
     }
+    
 }
 
 class JSONSubscriptWithNSJSONTests: JSONSubscriptTests {
