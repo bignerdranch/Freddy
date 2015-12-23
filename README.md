@@ -2,11 +2,11 @@
 
 Freddy is a reusable framework for parsing JSON in Swift. It has three principal benefits.
 
-First, Freddy provides a type safe solution to parsing JSON in Swift. This means that the compiler help you work with sending and receiving JSON in a way that helps to prevent runtime crashes.
+First, Freddy provides a type safe solution to parsing JSON in Swift. This means that the compiler helps you work with sending and receiving JSON in a way that helps to prevent runtime crashes.
 
 Second, Freddy provides an idiomatic solution to JSON parsing that takes advantage of Swift's generics, enumerations, and functional features. 
 
-Third, Freddy provides a mechanism for handling errors that commonly occur while parsing JSON.  If you subscript the JSON object with a key that is not present, you get an informative error.  If your desired index is out of bounds, you get an informative error.  If you try to convert a JSON value to the wrong type, you get a good error here too.
+Third, Freddy provides great error information for mistakes that commonly occur while parsing JSON.  If you subscript the JSON object with a key that is not present, you get an informative error.  If your desired index is out of bounds, you get an informative error.  If you try to convert a JSON value to the wrong type, you get a good error here too.
 
 Parsing JSON elegantly and safely can be hard, but Freddy is here to help.  So, Freddy vs. JSON, who wins?  We think it is Freddy.
 
