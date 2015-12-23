@@ -104,7 +104,7 @@ class JSONSubscriptTests: XCTestCase {
         let jsonArray: JSON = [
             [ "name": "Matt Mathias", "age": 32, "spouse": true ],
             [ "name": "Drew Mathias", "age": 33, "spouse": true ],
-            [ "name": "Sargeant Pepper" ]
+            [ "name": "Sergeant Pepper" ]
         ]
         let data = try! jsonArray.serialize()
         let deserializedArray = try! JSON(data: data, usingParser: parser()).array()
