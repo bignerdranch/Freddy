@@ -132,6 +132,8 @@ public struct Person: JSONDecodable, CustomStringConvertible {
 
 This struct conforms to the protocol `JSONDecodable`, which requires conforming types to implement the public `static` method `createWithJSON(_:) -> Result<T>` . This creates a `Person` instance from the given `JSON`. The example also makes use of computed type properties as well as the `map` and `flatMap` methods. You can read more about those methods in the [wiki](https://github.com/bignerdranch/Freddy/wiki/Methods-in-Result).
 
+Take a look at the framework's tests for further examples of usage.
+
 ## Documentation
 
 - [Wiki](https://github.com/bignerdranch/Freddys/wiki)
