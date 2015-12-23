@@ -1,18 +1,28 @@
-# Freddy
+## Why Freddy?
 
-Freddy is a reusable framework for parsing JSON in Swift.
+Freddy is a reusable framework for parsing JSON in Swift. It has three principal benefits.
 
-Its primary goal is facilitate the safe parsing of JSON, while also preserving the ease of use presented by parsing JSON in Objective-C.
+First, Freddy provides a type safe solution to parsing JSON in Swift. This means that the compiler help you work with sending and receiving JSON in a way that helps to prevent runtime crashes.
+
+Second, Freddy provides an idiomatic solution to JSON parsing that takes advantage of Swift's generics, enumerations, and functional features. 
+
+Third, Freddy provides a mechanism for handling errors that commonly occur while parsing JSON.  If you subscript the JSON object with a key that is not present, you get an informative error.  If your desired index is out of bounds, you get an informative error.  If you try to convert a JSON value to the wrong type, you get a good error here too.
+
+Parsing JSON elegantly and safely can be hard, but Freddy is here to help.  So, Freddy vs. JSON, who wins?  We think it is Freddy.
 
 ## Installation
 
-- Add the project as a submodule
-- Use CocoaPods
-- Use Carthage
+You have three different options to install Freddy.
+
+1. Add the project as a submodule
+2. Use CocoaPods
+3. Use Carthage
 
 ## Usage
 
-Here is some example JSON data:
+This section describes some of the basics in using Freddy.  Check out the wiki for more information, as well as some discussion on how Freddy works.
+
+Consider some example JSON data:
 
 ```json
 {
@@ -24,7 +34,7 @@ Here is some example JSON data:
             "spouse": true,
         },
         {
-            "name": "Sargeant Pepper",
+            "name": "Sergeant Pepper",
             "age": 25,
             "spouse": false,
         }
@@ -46,44 +56,28 @@ Here is some example JSON data:
     }
 }
 ```
-
-We wrote a quick method to load this JSON data locally for testing. This is where you would put your code to load your own JSON data.
-
-```swift
-func createData() -> NSData? {
-    let testBundle = NSBundle(forClass: FreddyTests.self)
-    let samplePath = testBundle.pathForResource("sample", ofType: "JSON")
-
-    if let path = samplePath, url = NSURL(fileURLWithPath: path) {
-        return NSData(contentsOfURL: url)
-    }
-
-    return nil
-}
-```
-
-Now, here is a quick example on how to parse this data using Freddy:
+Here is a quick example on how to parse these data using Freddy:
 
 ```swift
-let data = createData()
+let data = getSomeData()
 if let json = JSON.createJSONFrom(data) {
     let success = json["success"].bool
     switch success {
     case .Success(let s):
-        println("Success!") // Do somethings with the value stored in 's'
+        print("Success!") // Do something with the value stored in 's'
     case .Failure(let error):
-        println(error) // Do something better with the error
+        print(error) // Do something better with the error
     }
 }
 ```
 
 After we load in the data, we create an instance of `JSON`, the workhorse of this framework. This allows us to access the values from the JSON data. Next, we access the `"success"` key, and also use a computed property to access the value as a `Bool`. This returns a `Result` type that can be checked for `.Success` or `.Failure`. You can read more about these computed properties on the wiki [here](https://github.com/bignerdranch/Freddy/wiki/Computed-Properties).
 
-Now, let's look an example that parses the data into a data class:
+Now, let's look an example that parses the data into a model class:
 
 ```swift
-let data = createData()
-let json = JSON.createJSONFrom(data!)
+let data = getSomeData()
+let json = JSON.createJSONFrom(data)
 let peopleArray = json["people"].array
 switch peopleArray {
 case .Success(let people):
@@ -91,13 +85,13 @@ case .Success(let people):
         let per = Person.createWithJSON(person)
         switch per {
         case .Success(let p):
-            println("Person Added!") // Do something with the created Person 'p'
+            print("Person Added!") // Do something with the created Person 'p'
         case .Failure(let error):
-            println(error) // Do something better with the error
+            print(error) // Do something better with the error
         }
     }
 case .Failure(let error):
-    println(error) // Do something better with the error
+    print(error) // Do something better with the error
 }
 ```
 
@@ -105,7 +99,7 @@ Here, we are instead loading the values from the key `"people"` as an array usin
 
 Here is our `Person` stuct:
 ```swift
-public struct Person: JSONDecodable, Printable {
+public struct Person: JSONDecodable, CustomStringConvertible {
     public let name: String
     public let age: Int
     public let spouse: Bool
@@ -136,7 +130,7 @@ public struct Person: JSONDecodable, Printable {
 }
 ```
 
-This struct makes use of the protocol `JSONDecodable` which implements the method `public static func createWithJSON(json: JSON) -> Result<Person>` . This creates a `Person` object from the given `JSON` by parsing the child values into variables. This also makes use of computed type properties as well as the `map` and `flatMap` methods. You can read more about those methods in the [wiki](https://github.com/bignerdranch/Freddy/wiki/Methods-in-Result).
+This struct conforms to the protocol `JSONDecodable`, which requires conforming types to implement the public `static` method `createWithJSON(_:) -> Result<T>` . This creates a `Person` instance from the given `JSON`. The example also makes use of computed type properties as well as the `map` and `flatMap` methods. You can read more about those methods in the [wiki](https://github.com/bignerdranch/Freddy/wiki/Methods-in-Result).
 
 ## Documentation
 
@@ -144,10 +138,3 @@ This struct makes use of the protocol `JSONDecodable` which implements the metho
 
 You can read more about the library in the wiki. You will find explanations for `JSON`, `JSONDecodable`, `map`, `flatMap`, the type computed properties, and more examples on how to best use Freddy.
 
-## Conclusion
-
-Freddy provides an elegant and safe solution to parsing JSON in Swift. Secondarily, Freddy provides an idiomatic solution to JSON parsing.
-
-To use Freddy successfully, first get familiar with the `JSONResult` and `Result` types provided by the framework. These provide a safe way to encapsulate both `.Success` and `.Failure` in parsing JSON, ensuring that parsing JSON reliably provides either the data that we are looking for, or an informative error should something not work as expected.
-
-Last, it is important to note that usage of `flatMap` and `map` are not required. If you prefer to use for loops and switch statements together, then feel free! You will still benefit from Freddy's safety and error handling. Nonetheless, `flatMap` and `map` can help you have more concise parsing code. They also follow the spirit of the framework, and make it easier to use once you master the additional abstraction.
