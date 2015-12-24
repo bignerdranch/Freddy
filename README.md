@@ -4,7 +4,7 @@ Parsing JSON elegantly and safely can be hard, but Freddy is here to help. Fredd
 
 First, Freddy provides a type safe solution to parsing JSON in Swift. This means that the compiler helps you work with sending and receiving JSON in a way that helps to prevent runtime crashes.
 
-Second, Freddy provides an idiomatic solution to JSON parsing that takes advantage of Swift's generics, enumerations, and functional features. This is all provided without the pain of having to memorize our documentation to understand our magical custom operators.
+Second, Freddy provides an idiomatic solution to JSON parsing that takes advantage of Swift's generics, enumerations, and functional features. This is all provided without the pain of having to memorize our documentation to understand our magical custom operators. Freddy does not have any of those. If you feel comfortable writing Swift (using extensions, protocols, initializers, etc.), then you will not only understand how Freddy is organized, but you will also feel comfortable using Freddy.
 
 Third, Freddy provides great error information for mistakes that commonly occur while parsing JSON.  If you subscript the JSON object with a key that is not present, you get an informative error.  If your desired index is out of bounds, you get an informative error.  If you try to convert a JSON value to the wrong type, you get a good error here too.
 
