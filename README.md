@@ -86,7 +86,7 @@ do {
 
 Here, we are instead loading the values from the key `"people"` as an array using the method `array(_:_:)`. This method works a lot like the `bool(_:_:)` method you saw above. It uses the path provided to the method to find an array. If the path is good, the method will return an `Array` of `JSON`. If the path is bad, then an appropriate error is thrown.
 
-We can then call `map` on that `JSON` array. Since the `Person` type conforms to `JSONDecodable`, we can pass in the `Person` type's initializer. 
+We can then call `map` on that `JSON` array. Since the `Person` type conforms to `JSONDecodable`, we can pass in the `Person` type's initializer. This call applies an initializer that takes an instance of `JSON` to each element in the array, producing an array of `Person` instances.
 
 Here is what `JSONDecodable` looks like:
 
