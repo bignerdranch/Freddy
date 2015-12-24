@@ -69,7 +69,7 @@ do {
 }
 ```
 
-After we load in the data, we create an instance of `JSON`, the workhorse of this framework. This allows us to access the values from the JSON data. We `try` because the `data` may be malformed and the parsing could generate an error.  Next, we access the `"success"` key by calling the `bool(_:_:)` method on `JSON`. We also `try`. Accessing the `json` for the key `"success"` could also fail - e.g., if we had passed an unknown key. This method takes two parameters, both of which are used to define a path into the `JSON` instance to find a value of interest. If a `Bool` is found at the path described by `"success"`, then a `Bool` is returned. If the path does not lead to a `Bool`, then an appropriate error is thrown.
+After we load in the data, we create an instance of `JSON`, the workhorse of this framework. This allows us to access the values from the JSON data. We `try` because the `data` may be malformed and the parsing could generate an error. Next, we access the `"success"` key by calling the `bool(_:_:)` method on `JSON`. We `try` here as well because accessing the `json` for the key `"success"` could fail - e.g., if we had passed an unknown key. This method takes two parameters, both of which are used to define a path into the `JSON` instance to find a Boolean value of interest. If a `Bool` is found at the path described by `"success"`, then `bool(_:_:)` returns a `Bool`. If the path does not lead to a `Bool`, then an appropriate error is thrown.
 
 Now, let's look an example that parses the data into a model class:
 
