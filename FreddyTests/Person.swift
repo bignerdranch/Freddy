@@ -13,12 +13,6 @@ public struct Person: CustomStringConvertible {
     public var age: Int
     public let spouse: Bool
     
-    public init(name: String, age: Int, spouse: Bool) {
-        self.name = name
-        self.age = age
-        self.spouse = spouse
-    }
-    
     public var description: String {
         return "Name: \(name), age: \(age), married: \(spouse)"
     }
