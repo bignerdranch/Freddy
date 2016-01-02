@@ -10,12 +10,8 @@
 
 extension JSON: ArrayLiteralConvertible {
     
-    public init<Collection: CollectionType where Collection.Generator.Element == JSON>(_ collection: Collection) {
-        self = .Array(Swift.Array(collection))
-    }
-
     public init(arrayLiteral elements: JSON...) {
-        self.init(elements)
+        self = .Array(elements)
     }
     
 }
@@ -42,12 +38,8 @@ extension JSON: DictionaryLiteralConvertible {
 
 extension JSON: FloatLiteralConvertible {
     
-    public init(_ value: Swift.Double) {
-        self = .Double(value)
-    }
-    
     public init(floatLiteral value: Swift.Double) {
-        self.init(value)
+        self = .Double(value)
     }
 
 }
@@ -55,10 +47,6 @@ extension JSON: FloatLiteralConvertible {
 // MARK: - IntegerLiteralConvertible
 
 extension JSON: IntegerLiteralConvertible {
-    
-    public init(_ value: Swift.Int) {
-        self = .Int(value)
-    }
     
     public init(integerLiteral value: Swift.Int) {
         self.init(value)
@@ -69,10 +57,6 @@ extension JSON: IntegerLiteralConvertible {
 // MARK: - StringLiteralConvertible
 
 extension JSON: StringLiteralConvertible {
-    
-    public init(_ text: Swift.String) {
-        self = .String(text)
-    }
 
     public init(stringLiteral value: StringLiteralType) {
         self.init(value)
@@ -91,10 +75,6 @@ extension JSON: StringLiteralConvertible {
 // MARK: - BooleanLiteralConvertible
 
 extension JSON: BooleanLiteralConvertible {
-
-    public init(_ value: Swift.Bool) {
-        self = .Bool(value)
-    }
 
     public init(booleanLiteral value: Swift.Bool) {
         self.init(value)
