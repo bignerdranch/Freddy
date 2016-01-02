@@ -38,35 +38,19 @@ private struct Literal {
     static let SPACE         = UInt8(ascii: " ")
     static let TAB           = UInt8(ascii: "\t")
 
-    static let a = UInt8(ascii: "a")
     static let b = UInt8(ascii: "b")
-    static let c = UInt8(ascii: "c")
-    static let d = UInt8(ascii: "d")
     static let e = UInt8(ascii: "e")
     static let f = UInt8(ascii: "f")
-
-    static let A = UInt8(ascii: "A")
-    static let B = UInt8(ascii: "B")
-    static let C = UInt8(ascii: "C")
-    static let D = UInt8(ascii: "D")
-    static let E = UInt8(ascii: "E")
-    static let F = UInt8(ascii: "F")
-    
     static let n = UInt8(ascii: "n")
     static let r = UInt8(ascii: "r")
     static let t = UInt8(ascii: "t")
     static let u = UInt8(ascii: "u")
-
-    static let zero  = UInt8(ascii: "0")
-    static let one   = UInt8(ascii: "1")
-    static let two   = UInt8(ascii: "2")
-    static let three = UInt8(ascii: "3")
-    static let four  = UInt8(ascii: "4")
-    static let five  = UInt8(ascii: "5")
-    static let six   = UInt8(ascii: "6")
-    static let seven = UInt8(ascii: "7")
-    static let eight = UInt8(ascii: "8")
-    static let nine  = UInt8(ascii: "9")
+    static let E = UInt8(ascii: "E")
+    
+    static let HexLower = UInt8(ascii: "a")...UInt8(ascii: "b")
+    static let HexUpper = UInt8(ascii: "A")...UInt8(ascii: "F")
+    static let Zero     = UInt8(ascii: "0")
+    static let Digits   = UInt8(ascii: "0")...UInt8(ascii: "9")
 }
 
 private let ParserMaximumDepth = 512
@@ -137,10 +121,10 @@ public struct JSONParser {
             case Literal.MINUS:
                 return try decodeNumberNegative(loc)
 
-            case Literal.zero:
+            case Literal.Zero:
                 return try decodeNumberLeadingZero(loc)
 
-            case Literal.one...Literal.nine:
+            case Literal.Digits:
                 return try decodeNumberPreDecimalDigits(loc)
 
             case Literal.SPACE, Literal.TAB, Literal.RETURN, Literal.NEWLINE:
@@ -242,14 +226,14 @@ public struct JSONParser {
         let codepoint: UInt16 = try input[start ... end].reduce(0) { (codepoint, byte) -> UInt16 in
             let nibble: UInt16
             switch byte {
-            case Literal.zero...Literal.nine:
-                nibble = UInt16(byte - Literal.zero)
+            case Literal.Digits:
+                nibble = UInt16(byte - Literal.Digits.startIndex)
 
-            case Literal.a...Literal.f:
-                nibble = 10 + UInt16(byte - Literal.a)
+            case Literal.HexLower:
+                nibble = 10 + UInt16(byte - Literal.HexLower.startIndex)
 
-            case Literal.A...Literal.F:
-                nibble = 10 + UInt16(byte - Literal.A)
+            case Literal.HexUpper:
+                nibble = 10 + UInt16(byte - Literal.HexUpper.startIndex)
 
             default:
                 throw Error.UnicodeEscapeInvalid(offset: start)
@@ -376,10 +360,10 @@ public struct JSONParser {
         }
 
         switch input[loc] {
-        case Literal.zero:
+        case Literal.Zero:
             return try decodeNumberLeadingZero(start, sign: .Negative)
 
-        case Literal.one...Literal.nine:
+        case Literal.Digits:
             return try decodeNumberPreDecimalDigits(start, sign: .Negative)
 
         default:
@@ -411,8 +395,8 @@ public struct JSONParser {
         advancing: while loc < input.count {
             let c = input[loc]
             switch c {
-            case Literal.zero...Literal.nine:
-                value = 10 * value + Int(c - Literal.zero)
+            case Literal.Digits:
+                value = 10 * value + Int(c - Literal.Digits.startIndex)
                 loc = loc.successor()
 
             case Literal.PERIOD:
@@ -436,7 +420,7 @@ public struct JSONParser {
         }
 
         switch input[loc] {
-        case Literal.zero...Literal.nine:
+        case Literal.Digits:
             return try decodeNumberPostDecimalDigits(start, sign: sign, value: value)
 
         default:
@@ -451,8 +435,8 @@ public struct JSONParser {
         advancing: while loc < input.count {
             let c = input[loc]
             switch c {
-            case Literal.zero...Literal.nine:
-                value += position * Double(c - Literal.zero)
+            case Literal.Digits:
+                value += position * Double(c - Literal.Digits.startIndex)
                 position /= 10
                 loc = loc.successor()
 
@@ -474,7 +458,7 @@ public struct JSONParser {
         }
 
         switch input[loc] {
-        case Literal.zero...Literal.nine:
+        case Literal.Digits:
             return try decodeNumberExponentDigits(start, sign: sign, value: value, expSign: .Positive)
 
         case Literal.PLUS:
@@ -495,7 +479,7 @@ public struct JSONParser {
         }
 
         switch input[loc] {
-        case Literal.zero...Literal.nine:
+        case Literal.Digits:
             return try decodeNumberExponentDigits(start, sign: sign, value: value, expSign: expSign)
 
         default:
@@ -509,8 +493,8 @@ public struct JSONParser {
         advancing: while loc < input.count {
             let c = input[loc]
             switch c {
-            case Literal.zero...Literal.nine:
-                exponent = exponent * 10 + Double(c - Literal.zero)
+            case Literal.Digits:
+                exponent = exponent * 10 + Double(c - Literal.Digits.startIndex)
                 loc = loc.successor()
 
             default:
