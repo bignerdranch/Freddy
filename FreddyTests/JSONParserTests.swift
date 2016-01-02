@@ -23,12 +23,8 @@ private func ==(lhs: JSONParser.Error, rhs: JSONParser.Error) -> Bool {
         return lOffset == rOffset
     case let (.UnicodeEscapeInvalid(lOffset), .UnicodeEscapeInvalid(rOffset)):
         return lOffset == rOffset
-    case let (.LiteralNilMisspelled(lOffset), .LiteralNilMisspelled(rOffset)):
-        return lOffset == rOffset
-    case let (.LiteralTrueMisspelled(lOffset), .LiteralTrueMisspelled(rOffset)):
-        return lOffset == rOffset
-    case let (.LiteralFalseMisspelled(lOffset), .LiteralFalseMisspelled(rOffset)):
-        return lOffset == rOffset
+    case let (.KeywordMisspelled(lOffset, lText), .KeywordMisspelled(rOffset, rText)):
+        return lOffset == rOffset && lText == rText
     case let (.CollectionMissingSeparator(lOffset), .CollectionMissingSeparator(rOffset)):
         return lOffset == rOffset
     case let (.DictionaryMissingKey(lOffset), .DictionaryMissingKey(rOffset)):
