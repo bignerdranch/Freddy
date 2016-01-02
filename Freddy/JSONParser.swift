@@ -106,24 +106,25 @@ public struct JSONParser {
             case Literal.LEFT_BRACKET:
                 depth += 1
                 defer { depth -= 1 }
-                return try decodeArray()
+                return .Array(try decodeArray())
 
             case Literal.LEFT_BRACE:
                 depth += 1
                 defer { depth -= 1 }
-                return try decodeObject()
+                return .Dictionary(try decodeObject())
 
             case Literal.DOUBLE_QUOTE:
                 return .String(try decodeString())
 
             case Literal.f:
-                return try decodeFalse()
+                return .Bool(try decodeFalse())
 
             case Literal.n:
-                return try decodeNull()
+                try decodeNull()
+                return .Null
 
             case Literal.t:
-                return try decodeTrue()
+                return .Bool(try decodeTrue())
 
             case Literal.MINUS:
                 return try decodeNumberNegative(loc)
@@ -157,7 +158,7 @@ public struct JSONParser {
         }
     }
 
-    private mutating func decodeNull() throws -> JSON {
+    private mutating func decodeNull() throws {
         guard loc.advancedBy(3, limit: input.count) != input.count else {
             throw Error.LiteralNilMisspelled(offset: loc)
         }
@@ -169,10 +170,9 @@ public struct JSONParser {
         }
 
         loc += 4
-        return .Null
     }
 
-    private mutating func decodeTrue() throws -> JSON {
+    private mutating func decodeTrue() throws -> Bool {
         guard loc.advancedBy(3, limit: input.count) != input.count else {
             throw Error.LiteralTrueMisspelled(offset: loc)
         }
@@ -184,10 +184,10 @@ public struct JSONParser {
         }
 
         loc += 4
-        return .Bool(true)
+        return true
     }
 
-    private mutating func decodeFalse() throws -> JSON {
+    private mutating func decodeFalse() throws -> Bool {
         guard loc.advancedBy(4, limit: input.count) != input.count else {
             throw Error.LiteralFalseMisspelled(offset: loc)
         }
@@ -200,7 +200,7 @@ public struct JSONParser {
         }
 
         loc += 5
-        return .Bool(false)
+        return false
     }
 
     private var stringDecodingBuffer = [UInt8]()
@@ -290,7 +290,7 @@ public struct JSONParser {
         }
     }
 
-    private mutating func decodeArray() throws -> JSON {
+    private mutating func decodeArray() throws -> [JSON] {
         let start = loc
         loc = loc.successor()
         var items = [JSON]()
@@ -300,7 +300,7 @@ public struct JSONParser {
 
             if loc < input.count && input[loc] == Literal.RIGHT_BRACKET {
                 loc = loc.successor()
-                return .Array(items)
+                return items
             }
 
             if !items.isEmpty {
@@ -342,7 +342,7 @@ public struct JSONParser {
 
     private var decodeObjectBuffers = DecodeObjectBuffers()
 
-    private mutating func decodeObject() throws -> JSON {
+    private mutating func decodeObject() throws -> [Swift.String: JSON] {
         let start = loc
         loc = loc.successor()
         var pairs = decodeObjectBuffers.getBuffer()
@@ -357,7 +357,7 @@ public struct JSONParser {
                     obj[k] = v
                 }
                 decodeObjectBuffers.putBuffer(pairs)
-                return .Dictionary(obj)
+                return obj
             }
 
             if !pairs.isEmpty {
@@ -413,7 +413,7 @@ public struct JSONParser {
 
         switch (input[loc], sign) {
         case (Literal.PERIOD, _):
-            return try decodeNumberDecimal(start, sign: sign, value: 0)
+            return .Double(try decodeNumberDecimal(start, sign: sign, value: 0))
 
         case (_, .Negative):
             return .Double(-0.0)
@@ -434,10 +434,10 @@ public struct JSONParser {
                 loc = loc.successor()
 
             case Literal.PERIOD:
-                return try decodeNumberDecimal(start, sign: sign, value: Double(value))
+                return .Double(try decodeNumberDecimal(start, sign: sign, value: Double(value)))
 
             case Literal.e, Literal.E:
-                return try decodeNumberExponent(start, sign: sign, value: Double(value))
+                return .Double(try decodeNumberExponent(start, sign: sign, value: Double(value)))
 
             default:
                 break advancing
@@ -447,7 +447,7 @@ public struct JSONParser {
         return .Int(sign.rawValue * value)
     }
 
-    private mutating func decodeNumberDecimal(start: Int, sign: Sign, value: Double) throws -> JSON {
+    private mutating func decodeNumberDecimal(start: Int, sign: Sign, value: Double) throws -> Double {
         loc = loc.successor()
         guard loc < input.count else {
             throw Error.EndOfStreamUnexpected
@@ -462,7 +462,7 @@ public struct JSONParser {
         }
     }
 
-    private mutating func decodeNumberPostDecimalDigits(start: Int, sign: Sign, value inValue: Double) throws -> JSON {
+    private mutating func decodeNumberPostDecimalDigits(start: Int, sign: Sign, value inValue: Double) throws -> Double {
         var value = inValue
         var position = 0.1
 
@@ -482,10 +482,10 @@ public struct JSONParser {
             }
         }
 
-        return .Double(Double(sign.rawValue) * value)
+        return Double(sign.rawValue) * value
     }
 
-    private mutating func decodeNumberExponent(start: Int, sign: Sign, value: Double) throws -> JSON {
+    private mutating func decodeNumberExponent(start: Int, sign: Sign, value: Double) throws -> Double {
         loc = loc.successor()
         guard loc < input.count else {
             throw Error.EndOfStreamUnexpected
@@ -506,7 +506,7 @@ public struct JSONParser {
         }
     }
 
-    private mutating func decodeNumberExponentSign(start: Int, sign: Sign, value: Double, expSign: Sign) throws -> JSON {
+    private mutating func decodeNumberExponentSign(start: Int, sign: Sign, value: Double, expSign: Sign) throws -> Double {
         loc = loc.successor()
         guard loc < input.count else {
             throw Error.EndOfStreamUnexpected
@@ -521,7 +521,7 @@ public struct JSONParser {
         }
     }
 
-    private mutating func decodeNumberExponentDigits(start: Int, sign: Sign, value: Double, expSign: Sign) throws -> JSON {
+    private mutating func decodeNumberExponentDigits(start: Int, sign: Sign, value: Double, expSign: Sign) throws -> Double {
         var exponent: Double = 0
 
         advancing: while loc < input.count {
@@ -536,7 +536,7 @@ public struct JSONParser {
             }
         }
 
-        return .Double(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent))
+        return Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent)
     }
 }
 
