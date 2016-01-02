@@ -282,51 +282,56 @@ public struct JSONParser {
         throw Error.EndOfStreamUnexpected
     }
 
-    // Decoding objects can be recursive, so we have to keep more than one
-    // buffer around for building up key/value pairs (to reduce allocations
-    // when parsing large JSON documents).
+    // Decoding objects can be recursive, so it is advantageous to keep more
+    // than one around for accumulating key/value pairs to reduce allocations
+    // when parsing large JSON documents.
     //
-    // Rough estimate of the difference between this and using a fresh
-    // [(String,JSON)] for the `pairs` variable in decodeObject() below is
-    // about 12% on an iPhone 5.
-    private struct DecodeObjectBuffers {
-        var buffers = [[(String,JSON)]]()
+    // A rough estimate of the difference between this and using a fresh
+    // [String: JSON] in decodeObject(_:) is about 12% on an iPhone 5.
+    private struct DecodeObjectsCache {
+        static let BufferInitial = 2
+        static let BuffersListInitial = 4
+        static let BuffersListMax = 32
 
-        mutating func getBuffer() -> [(String,JSON)] {
-            if !buffers.isEmpty {
-                var buffer = buffers.removeLast()
-                buffer.removeAll(keepCapacity: true)
-                return buffer
-            }
-            return [(String,JSON)]()
+        typealias Buffer = [String: JSON]
+        var buffers = [Buffer]()
+
+        init() {
+            buffers.reserveCapacity(DecodeObjectsCache.BuffersListInitial)
         }
 
-        mutating func putBuffer(buffer: [(String,JSON)]) {
-            buffers.append(buffer)
+        mutating func pop() -> Buffer {
+            var buffer = buffers.popLast()
+            buffer?.removeAll(keepCapacity: true)
+            return buffer ?? Buffer(minimumCapacity: DecodeObjectsCache.BufferInitial)
+        }
+
+        mutating func push(buffer: Buffer) {
+            if buffers.count >= DecodeObjectsCache.BuffersListMax, let replaceIndex = buffers.enumerate().maxElement({ $0.1.count < $1.1.count })?.index {
+                buffers[replaceIndex] = buffer
+            } else {
+                buffers.append(buffer)
+            }
         }
     }
 
-    private var decodeObjectBuffers = DecodeObjectBuffers()
+    private lazy var decodeObjectsCache = DecodeObjectsCache()
 
     private mutating func decodeObject() throws -> [Swift.String: JSON] {
         let start = loc
         loc = loc.successor()
-        var pairs = decodeObjectBuffers.getBuffer()
+        var dictionary = decodeObjectsCache.pop()
 
         while loc < input.count {
             skipWhitespace()
 
             if loc < input.count && input[loc] == Literal.RIGHT_BRACE {
                 loc = loc.successor()
-                var obj = [String:JSON](minimumCapacity: pairs.count)
-                for (k, v) in pairs {
-                    obj[k] = v
-                }
-                decodeObjectBuffers.putBuffer(pairs)
-                return obj
+                decodeObjectsCache.push(dictionary)
+                return dictionary
             }
 
-            if !pairs.isEmpty {
+            if !dictionary.isEmpty {
                 guard loc < input.count && input[loc] == Literal.COMMA else {
                     throw Error.CollectionMissingSeparator(offset: start)
                 }
@@ -347,7 +352,7 @@ public struct JSONParser {
             }
             loc = loc.successor()
 
-            pairs.append((key, try parseValue()))
+            dictionary[key] = try parseValue()
         }
 
         throw Error.EndOfStreamUnexpected
