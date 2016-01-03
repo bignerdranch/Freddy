@@ -343,3 +343,20 @@ extension NSArray: CustomJSONEncodable      {}
 extension NSEnumerator: CustomJSONEncodable {}
 extension NSOrderedSet: CustomJSONEncodable {}
 extension NSSet: CustomJSONEncodable        {}
+
+// https://github.com/apple/swift/blob/master/stdlib/public/core/Prespecialized.swift
+struct PrespecializedFoundation {
+
+    static func specializeTypes() {
+        func createUser<Element: CustomJSONEncodable>(sampleValue: Element) {
+            let _: JSON = JSON(sampleValue)
+        }
+
+        createUser(NSDictionary())
+        createUser(NSNull())
+        createUser(NSNumber())
+        createUser(NSString())
+        createUser(NSArray())
+    }
+
+}
