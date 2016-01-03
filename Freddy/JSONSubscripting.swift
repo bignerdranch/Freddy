@@ -6,29 +6,64 @@
 //  Copyright © 2015 Big Nerd Ranch. All rights reserved.
 //
 
+// Subscript implementation notes:
+//
+// Interior varargs lists in Swift 2 may be called with 1 or many values.
+// Trailing varargs lists may be called with 0, 1, or many values.
+//
+// This works as intended for the extended fallback subscripts:
+//  json.int(param: "qux")                      // error
+//  json.int("foo", "bar", "baz", param: "qux") // works
+//
+// For the trailing varargs, there's an inherent ambiguity for the
+// JSON.PathFragment literals that Swift refuses to solve. So we must
+// imitate the interior varargs style, and provide overloads for empty args:
+//  func foo(first: PathFragment, _ rest: PathFragment...)
+//  func foo()
+
+// MARK: PathFragment
+
 extension JSON {
-
-    // Subscript implementation notes:
-    //
-    // Interior varargs lists in Swift 2 may be called with 1 or many values.
-    // Trailing varargs lists may be called with 0, 1, or many values.
-    //
-    // This works as intended for the extended fallback subscripts:
-    //  json.int(param: "qux")                      // error
-    //  json.int("foo", "bar", "baz", param: "qux") // works
-    //
-    // For the trailing varargs, there's an inherent ambiguity for the
-    // JSON.PathFragment literals that Swift refuses to solve. So we must
-    // imitate the interior varargs style, and provide overloads for empty args:
-    //  func foo(first: PathFragment, _ rest: PathFragment...)
-    //  func foo()
-
-    // MARK: Subscripting core
 
     public enum PathFragment {
         case Key(Swift.String)
         case Index(Swift.Int)
     }
+
+}
+
+extension JSON.PathFragment: IntegerLiteralConvertible, StringLiteralConvertible {
+
+    public init(integerLiteral value: Int) {
+        self = .Index(value)
+    }
+
+    public init(unicodeScalarLiteral value: String) {
+        self = .Key(value)
+    }
+
+    public init(extendedGraphemeClusterLiteral value: String) {
+        self = .Key(value)
+    }
+
+    public init(stringLiteral value: String) {
+        self = .Key(value)
+    }
+
+    private var valueType: Any.Type {
+        switch self {
+        case .Key: return Swift.String
+        case .Index: return Swift.Int
+        }
+    }
+    
+}
+
+// MARK: - Subscripting core
+
+extension JSON {
+
+    // MARK: Subscripting core
 
     private enum SubscriptError: ErrorType {
         case SubscriptIntoNull(PathFragment)
@@ -514,35 +549,6 @@ extension JSON {
     /// - seealso: `JSON.decode(_:ifNull:type:)`
     public func dictionary(path: PathFragment..., ifNull: Swift.Bool) throws -> [Swift.String: JSON]? {
         return try mapOptionalAtPath(path, ifNull: ifNull) { try $0.dictionary() }
-    }
-
-}
-
-// MARK: -
-
-extension JSON.PathFragment: IntegerLiteralConvertible, StringLiteralConvertible {
-
-    public init(integerLiteral value: Int) {
-        self = .Index(value)
-    }
-
-    public init(unicodeScalarLiteral value: String) {
-        self = .Key(value)
-    }
-
-    public init(extendedGraphemeClusterLiteral value: String) {
-        self = .Key(value)
-    }
-
-    public init(stringLiteral value: String) {
-        self = .Key(value)
-    }
-
-    private var valueType: Any.Type {
-        switch self {
-        case .Key: return Swift.String
-        case .Index: return Swift.Int
-        }
     }
 
 }
