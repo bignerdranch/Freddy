@@ -170,7 +170,11 @@ extension JSON {
         return try fetchValueAtPath(first, rest) { try $0.dictionary() }
     }
 
-    // MARK: Simple optional unpacking
+}
+
+// MARK: - Missing-to-Optional unpacking
+
+extension JSON {
 
     private func mapOptionalAtPath<Value>(path: [PathFragment], ifNotFound: Swift.Bool, @noescape transform: JSON throws -> Value) throws -> Value? {
         do {
@@ -188,28 +192,6 @@ extension JSON {
         } catch SubscriptError.SubscriptIntoNull(.Index) {
             throw Error.UnexpectedSubscript(type: Swift.Int.self)
         }
-    }
-
-    private func optionalAtPath<Value>(path: [PathFragment], ifNotFound: Swift.Bool, @noescape getter: JSON throws -> Value) throws -> Value? {
-        var json: JSON?
-        do {
-            json = try valueAtPath(path, detectNull: true)
-            return try getter(unsafeUnwrap(json))
-        } catch Error.IndexOutOfBounds where ifNotFound {
-            return nil
-        } catch Error.KeyNotFound where ifNotFound {
-            return nil
-        } catch Error.UnexpectedSubscript(let type) where ifNotFound && type == Swift.String.self {
-            return nil
-        } catch SubscriptError.SubscriptIntoNull(.Key) where ifNotFound {
-            return nil
-        } catch SubscriptError.SubscriptIntoNull(let fragment) {
-            throw Error.UnexpectedSubscript(type: fragment.valueType)
-        }
-    }
-
-    private func decodedAtPath<Decoded: JSONDecodable>(path: [PathFragment], ifNotFound: Swift.Bool) throws -> Decoded? {
-        return try optionalAtPath(path, ifNotFound: ifNotFound, getter: Decoded.init)
     }
 
     /// Optionally decodes into the returning type from a path into JSON.
@@ -231,7 +213,7 @@ extension JSON {
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
     public func decode<Decoded: JSONDecodable>(path: PathFragment..., ifNotFound: Swift.Bool, type: Decoded.Type = Decoded.self) throws -> Decoded? {
-        return try decodedAtPath(path, ifNotFound: ifNotFound)
+        return try mapOptionalAtPath(path, ifNotFound: ifNotFound) { try $0.decode() }
     }
 
     /// Optionally retrieves a `Double` from a path into JSON.
@@ -242,7 +224,7 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
     /// - seealso: `JSON.decode(_:ifNotFound:type:)`
     public func double(path: PathFragment..., ifNotFound: Swift.Bool) throws -> Swift.Double? {
-        return try decodedAtPath(path, ifNotFound: true)
+        return try mapOptionalAtPath(path, ifNotFound: ifNotFound) { try $0.double() }
     }
 
     /// Optionally retrieves a `Int` from a path into JSON.
@@ -253,7 +235,7 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
     /// - seealso: `JSON.decode(_:ifNotFound:type:)`
     public func int(path: PathFragment..., ifNotFound: Swift.Bool) throws -> Swift.Int? {
-        return try decodedAtPath(path, ifNotFound: true)
+        return try mapOptionalAtPath(path, ifNotFound: ifNotFound) { try $0.int() }
     }
 
     /// Optionally retrieves a `String` from a path into JSON.
@@ -264,7 +246,7 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
     /// - seealso: `JSON.decode(_:ifNotFound:type:)`
     public func string(path: PathFragment..., ifNotFound: Swift.Bool) throws -> Swift.String? {
-        return try decodedAtPath(path, ifNotFound: true)
+        return try mapOptionalAtPath(path, ifNotFound: ifNotFound) { try $0.string() }
     }
 
     /// Optionally retrieves a `Bool` from a path into JSON.
@@ -275,10 +257,8 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
     /// - seealso: `JSON.decode(_:ifNotFound:type:)`
     public func bool(path: PathFragment..., ifNotFound: Swift.Bool) throws -> Swift.Bool? {
-        return try decodedAtPath(path, ifNotFound: true)
+        return try mapOptionalAtPath(path, ifNotFound: ifNotFound) { try $0.bool() }
     }
-
-    // MARK: Complex optional unpacking
 
     /// Optionally retrieves a `[JSON]` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
@@ -289,7 +269,7 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
     /// - seealso: `JSON.decode(_:ifNotFound:type:)`
     public func array(path: PathFragment..., ifNotFound: Swift.Bool) throws -> [JSON]? {
-        return try optionalAtPath(path, ifNotFound: ifNotFound) { try $0.array() }
+        return try mapOptionalAtPath(path, ifNotFound: ifNotFound) { try $0.array() }
     }
 
     /// Optionally decodes many values from a descendant array at a path into
@@ -302,8 +282,7 @@ extension JSON {
     ///   or any error that arises from decoding the contained values.
     /// - seealso: `JSON.decode(_:ifNotFound:type:)`
     public func arrayOf<Decoded: JSONDecodable>(path: PathFragment..., ifNotFound: Swift.Bool) throws -> [Decoded]? {
-        let array = try optionalAtPath(path, ifNotFound: ifNotFound) { try $0.array() }
-        return try array?.map(Decoded.init)
+        return try mapOptionalAtPath(path, ifNotFound: ifNotFound) { try $0.arrayOf() }
     }
 
     /// Optionally retrieves a `[String: JSON]` from a path into JSON.
@@ -315,7 +294,7 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
     /// - seealso: `JSON.decode(_:ifNotFound:type:)`
     public func dictionary(path: PathFragment..., ifNotFound: Swift.Bool) throws -> [Swift.String: JSON]? {
-        return try optionalAtPath(path, ifNotFound: ifNotFound) { try $0.dictionary() }
+        return try mapOptionalAtPath(path, ifNotFound: ifNotFound) { try $0.dictionary() }
     }
 
 }
