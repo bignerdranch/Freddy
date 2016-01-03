@@ -90,7 +90,11 @@ extension JSON {
         }
     }
 
-    // MARK: Native subscripting convenience
+}
+
+// MARK: - Subscripting operator
+
+extension JSON {
 
     public subscript(key: Swift.String) -> JSON? {
         let path = CollectionOfOne(PathFragment.Key(key))
@@ -102,17 +106,16 @@ extension JSON {
         return try? valueAtPath(path, detectNull: false)
     }
 
-    // MARK: Simple member unpacking
+}
 
-    private func fetchValueAtPath<Value>(first: PathFragment, _ rest: [PathFragment], @noescape getter: JSON throws -> Value) throws -> Value {
+// MARK: - Simple member unpacking
+
+extension JSON {
+
+    private func mapAtPath<Value>(first: PathFragment, _ rest: [PathFragment], @noescape transform: JSON throws -> Value) throws -> Value {
         var path = rest
         path.insert(first, atIndex: path.startIndex)
-        let json = try valueAtPath(path, detectNull: false)
-        return try getter(json)
-    }
-
-    private func decodedAtPath<Decoded: JSONDecodable>(first: PathFragment, _ rest: [PathFragment]) throws -> Decoded {
-        return try fetchValueAtPath(first, rest, getter: Decoded.init)
+        return try transform(valueAtPath(path, detectNull: false))
     }
 
     /// Attempts to decode into the returning type from a path into JSON.
@@ -131,7 +134,7 @@ extension JSON {
     ///   * `TypeNotConvertible`: The target value's type inside of
     ///     the `JSON` instance does not match `Decoded`.
     public func decode<Decoded: JSONDecodable>(first: PathFragment, _ rest: PathFragment..., type: Decoded.Type = Decoded.self) throws -> Decoded {
-        return try decodedAtPath(first, rest)
+        return try mapAtPath(first, rest) { try $0.decode() }
     }
 
     /// Retrieves a `Double` from a path into JSON.
@@ -140,7 +143,7 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
     /// - seealso: `JSON.decode(_:type:)`
     public func double(first: PathFragment, _ rest: PathFragment...) throws -> Swift.Double {
-        return try decodedAtPath(first, rest)
+        return try mapAtPath(first, rest) { try $0.double() }
     }
 
     /// Retrieves an `Int` from a path into JSON.
@@ -149,7 +152,7 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
     /// - seealso: `JSON.decode(_:type:)`
     public func int(first: PathFragment, _ rest: PathFragment...) throws -> Swift.Int {
-        return try decodedAtPath(first, rest)
+        return try mapAtPath(first, rest) { try $0.int() }
     }
 
     /// Retrieves a `String` from a path into JSON.
@@ -158,7 +161,7 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
     /// - seealso: `JSON.decode(_:type:)`
     public func string(first: PathFragment, _ rest: PathFragment...) throws -> Swift.String {
-        return try decodedAtPath(first, rest)
+        return try mapAtPath(first, rest) { try $0.string() }
     }
 
     /// Retrieves a `Bool` from a path into JSON.
@@ -167,10 +170,8 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
     /// - seealso: `JSON.decode(_:type:)`
     public func bool(first: PathFragment, _ rest: PathFragment...) throws -> Swift.Bool {
-        return try decodedAtPath(first, rest)
+        return try mapAtPath(first, rest) { try $0.bool() }
     }
-
-    // MARK: Complex member unpacking
 
     /// Retrieves a `[JSON]` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
@@ -178,7 +179,7 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
     /// - seealso: `JSON.decode(_:type:)`
     public func array(first: PathFragment, _ rest: PathFragment...) throws -> [JSON] {
-        return try fetchValueAtPath(first, rest) { try $0.array() }
+        return try mapAtPath(first, rest) { try $0.array() }
     }
 
     /// Attempts to decodes many values from a desendant JSON array at a path
@@ -192,8 +193,7 @@ extension JSON {
     ///   any error that arises from decoding the contained values.
     /// - seealso: `JSON.decode(_:type:)`
     public func arrayOf<Decoded: JSONDecodable>(first: PathFragment, _ rest: PathFragment..., type: Decoded.Type = Decoded.self) throws -> [Decoded] {
-        let array = try fetchValueAtPath(first, rest) { try $0.array() }
-        return try array.map(Decoded.init)
+        return try mapAtPath(first, rest) { try $0.arrayOf() }
     }
 
     /// Retrieves a `[String: JSON]` from a path into JSON.
@@ -202,7 +202,7 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
     /// - seealso: `JSON.decode(_:type:)`
     public func dictionary(first: PathFragment, _ rest: PathFragment...) throws -> [Swift.String: JSON] {
-        return try fetchValueAtPath(first, rest) { try $0.dictionary() }
+        return try mapAtPath(first, rest) { try $0.dictionary() }
     }
 
 }
