@@ -172,6 +172,24 @@ extension JSON {
 
     // MARK: Simple optional unpacking
 
+    private func mapOptionalAtPath<Value>(path: [PathFragment], ifNotFound: Swift.Bool, @noescape transform: JSON throws -> Value) throws -> Value? {
+        do {
+            return try transform(valueAtPath(path, detectNull: true))
+        } catch Error.IndexOutOfBounds where ifNotFound {
+            return nil
+        } catch Error.KeyNotFound where ifNotFound {
+            return nil
+        } catch Error.UnexpectedSubscript(let type) where ifNotFound && type == Swift.String.self {
+            return nil
+        } catch SubscriptError.SubscriptIntoNull(.Key) where ifNotFound {
+            return nil
+        } catch SubscriptError.SubscriptIntoNull(.Key) {
+            throw Error.UnexpectedSubscript(type: Swift.String.self)
+        } catch SubscriptError.SubscriptIntoNull(.Index) {
+            throw Error.UnexpectedSubscript(type: Swift.Int.self)
+        }
+    }
+
     private func optionalAtPath<Value>(path: [PathFragment], ifNotFound: Swift.Bool, @noescape getter: JSON throws -> Value) throws -> Value? {
         var json: JSON?
         do {
@@ -300,10 +318,14 @@ extension JSON {
         return try optionalAtPath(path, ifNotFound: ifNotFound) { try $0.dictionary() }
     }
 
-    // MARK: Member unpacking with fallback
+}
 
-    private func decodedAtPath<Decoded: JSONDecodable>(path: [PathFragment], @noescape or fallback: () -> Decoded) throws -> Decoded {
-        return try decodedAtPath(path, ifNotFound: true) ?? fallback()
+// MARK: - Missing-with-fallback unpacking
+
+extension JSON {
+
+    private func mapOptionalAtPath<Value>(path: [PathFragment], @noescape fallback: () -> Value, @noescape transform: JSON throws -> Value) throws -> Value {
+        return try mapOptionalAtPath(path, ifNotFound: true, transform: transform) ?? fallback()
     }
 
     /// Attempts to decode into the returning type from a path into
@@ -317,7 +339,7 @@ extension JSON {
     ///   * `TypeNotConvertible`: The target value's type inside of
     ///     the `JSON` instance does not match `Decoded`.
     public func decode<Decoded: JSONDecodable>(path: PathFragment..., @autoclosure or fallback: () -> Decoded) throws -> Decoded {
-        return try decodedAtPath(path, or: fallback)
+        return try mapOptionalAtPath(path, fallback: fallback) { try $0.decode() }
     }
 
     /// Retrieves a `Double` from a path into JSON or a fallback if not found.
@@ -327,7 +349,7 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
     /// - seealso: `JSON.decode(_:or:)`
     public func double(path: PathFragment..., @autoclosure or fallback: () -> Swift.Double) throws -> Swift.Double {
-        return try decodedAtPath(path, or: fallback)
+        return try mapOptionalAtPath(path, fallback: fallback) { try $0.double() }
     }
 
     /// Retrieves an `Int` from a path into JSON or a fallback if not found.
@@ -337,7 +359,7 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
     /// - seealso: `JSON.decode(_:or:)`
     public func int(path: PathFragment..., @autoclosure or fallback: () -> Swift.Int) throws -> Swift.Int {
-        return try decodedAtPath(path, or: fallback)
+        return try mapOptionalAtPath(path, fallback: fallback) { try $0.int() }
     }
 
     /// Retrieves a `String` from a path into JSON or a fallback if not found.
@@ -347,7 +369,7 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
     /// - seealso: `JSON.decode(_:or:)`
     public func string(path: PathFragment..., @autoclosure or fallback: () -> Swift.String) throws -> Swift.String {
-        return try decodedAtPath(path, or: fallback)
+        return try mapOptionalAtPath(path, fallback: fallback) { try $0.string() }
     }
 
     /// Retrieves a `Bool` from a path into JSON or a fallback if not found.
@@ -357,10 +379,8 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
     /// - seealso: `JSON.decode(_:or:)`
     public func bool(path: PathFragment..., @autoclosure or fallback: () -> Swift.Bool) throws -> Swift.Bool {
-        return try decodedAtPath(path, or: fallback)
+        return try mapOptionalAtPath(path, fallback: fallback) { try $0.bool() }
     }
-
-    // MARK: Complex member unpacking with fallback
 
     /// Retrieves a `[JSON]` from a path into JSON or a fallback if not found.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
@@ -369,8 +389,7 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
     /// - seealso: `JSON.decode(_:or:)`
     public func array(path: PathFragment..., @autoclosure or fallback: () -> [JSON]) throws -> [JSON] {
-        let array = try optionalAtPath(path, ifNotFound: true) { try $0.array() }
-        return array ?? fallback()
+        return try mapOptionalAtPath(path, fallback: fallback) { try $0.array() }
     }
 
     /// Attempts to decodes many values from a desendant JSON array at a path
@@ -382,8 +401,7 @@ extension JSON {
     ///   any error that arises from decoding the contained values.
     /// - seealso: `JSON.decode(_:or:)`
     public func arrayOf<Decoded: JSONDecodable>(path: PathFragment..., @autoclosure or fallback: () -> [Decoded]) throws -> [Decoded] {
-        let array = try optionalAtPath(path, ifNotFound: true) { try $0.array() }
-        return try array?.map(Decoded.init) ?? fallback()
+        return try mapOptionalAtPath(path, fallback: fallback) { try $0.arrayOf() }
     }
 
     /// Retrieves a `[String: JSON]` from a path into JSON or a fallback if not
@@ -394,8 +412,7 @@ extension JSON {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
     /// - seealso: `JSON.decode(_:or:)`
     public func dictionary(path: PathFragment..., @autoclosure or fallback: () -> [Swift.String: JSON]) throws -> [Swift.String: JSON] {
-        let dictionary = try optionalAtPath(path, ifNotFound: true) { try $0.dictionary() }
-        return dictionary ?? fallback()
+        return try mapOptionalAtPath(path, fallback: fallback) { try $0.dictionary() }
     }
 
 }
