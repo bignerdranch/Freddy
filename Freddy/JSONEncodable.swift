@@ -20,26 +20,88 @@ extension JSON: CustomJSONEncodable {
     
 }
 
-private func adHocJSONValue<T>(value: T) -> JSON {
-    let mirror = Mirror(reflecting: value)
-    switch mirror.displayStyle {
-    case .Struct?, .Class?, .Dictionary?:
-        var dictionary = Swift.Dictionary<Swift.String, JSON>(minimumCapacity: mirror.children.underestimateCount())
-        var mirror: Mirror? = mirror
+// MARK: -
 
-        while let src = mirror {
-            for case let (key?, value) in src.children {
-                guard dictionary.indexForKey(key) == nil else { continue }
-                dictionary[key] = JSON(value)
-            }
-            mirror = src.superclassMirror()
+private extension SequenceType {
+
+    func adHocJSONArray() -> JSON {
+        return .Array(map(JSON.init))
+    }
+
+    func adHocJSONDictionary(fallbackToArray fallbackToArray: Bool = false) -> JSON {
+        // A dictionary mirror looks like:
+        //  - ("[0]", (someKey, someValue) as Any)
+        //  - ("[1]", (otherKey, otherValue) as Any)
+        //  - ...
+        // Anything that doesn't follow that exact structure is assumed to be an
+        // Array-like thing instead.
+        var dictionary = Swift.Dictionary<Swift.String, JSON>(minimumCapacity: underestimateCount())
+        var successfullyParsed2Tuple = false
+        func fallback() -> JSON {
+            return fallbackToArray ? adHocJSONArray() : .Dictionary([:])
+        }
+
+        for maybePair in self {
+            let pairMirror = Mirror(reflecting: maybePair)
+            guard successfullyParsed2Tuple || pairMirror.displayStyle == .Tuple else { return fallback() }
+            let children = pairMirror.children.generate()
+
+            // children[0] => key
+            guard let anyKey = children.next()?.value else { return fallback() }
+
+            // children[1] => value
+            guard let anyValue = children.next()?.value else { return fallback() }
+
+            // children[2] should not exist
+            guard successfullyParsed2Tuple || children.next() == nil else { return fallback() }
+            successfullyParsed2Tuple = true
+
+            let key = String(anyKey)
+            let value = JSON(anyValue)
+            dictionary[key] = value
         }
 
         return .Dictionary(dictionary)
-    case .Tuple?, .Collection?, .Set?:
-        return .Array(mirror.children.lazy.map { JSON($0.1) })
+    }
+
+}
+
+private extension Mirror {
+
+    func adHocJSONArray() -> JSON {
+        return children.lazy.map { $0.value }.adHocJSONArray()
+    }
+
+    func adHocJSONDictionary(fallbackToArray fallback: Bool = false) -> JSON {
+        return children.lazy.map { $0.value }.adHocJSONDictionary(fallbackToArray: fallback)
+    }
+
+}
+
+private func adHocJSONValue<T>(value: T) -> JSON {
+    let mirror = Mirror(reflecting: value)
+    switch mirror.displayStyle {
+    case .Struct?, .Class?:
+        var dictionary = Swift.Dictionary<Swift.String, JSON>(minimumCapacity: mirror.children.underestimateCount())
+        
+        var nextMirror: Mirror? = mirror
+        while let mirror = nextMirror {
+            for case let (key?, value) in mirror.children {
+                guard dictionary.indexForKey(key) == nil else { continue }
+                dictionary[key] = JSON(value)
+            }
+            nextMirror = mirror.superclassMirror()
+        }
+
+        return .Dictionary(dictionary)
+    case .Tuple?, .Set?:
+        return mirror.adHocJSONArray()
     case .Optional?:
         return mirror.children.first.map { JSON($0.value) } ?? .Null
+    case .Collection?:
+        return mirror.adHocJSONDictionary(fallbackToArray: true)
+    case .Dictionary?:
+        return mirror.adHocJSONDictionary()
     case .Enum?, nil:
         return .String(String(value))
     }
@@ -174,7 +236,7 @@ extension RawRepresentable {
 extension SequenceType {
 
     public var JSONValue: JSON {
-        return .Array(map(JSON.init))
+        return adHocJSONDictionary(fallbackToArray: true)
     }
 
 }
