@@ -25,3 +25,9 @@ extension Person: JSONDecodable {
         spouse = try value.bool("spouse")
     }
 }
+
+extension Person: JSONEncodable {
+    public func encodeToJSON() -> JSON {
+        return .Dictionary(["name": .String(name), "age": .Int(age), "spouse": .Bool(spouse)])
+    }
+}
