@@ -69,14 +69,14 @@ extension JSON {
 
     // MARK: Simple member unpacking
 
-    @transparent private func fetchValueAtPath<Value>(first: PathFragment, _ rest: [PathFragment], @noescape getter: JSON throws -> Value) throws -> Value {
+    private func fetchValueAtPath<Value>(first: PathFragment, _ rest: [PathFragment], @noescape getter: JSON throws -> Value) throws -> Value {
         var path = rest
         path.insert(first, atIndex: path.startIndex)
         let json = try valueAtPath(path, detectNull: false)
         return try getter(json)
     }
 
-    @transparent private func decodedAtPath<Decoded: JSONDecodable>(first: PathFragment, _ rest: [PathFragment]) throws -> Decoded {
+    private func decodedAtPath<Decoded: JSONDecodable>(first: PathFragment, _ rest: [PathFragment]) throws -> Decoded {
         return try fetchValueAtPath(first, rest, getter: Decoded.init)
     }
 
@@ -194,7 +194,7 @@ extension JSON {
         }
     }
 
-    @transparent private func decodedAtPath<Decoded: JSONDecodable>(path: [PathFragment], ifNotFound: Swift.Bool, ifNull: Swift.Bool) throws -> Decoded? {
+    private func decodedAtPath<Decoded: JSONDecodable>(path: [PathFragment], ifNotFound: Swift.Bool, ifNull: Swift.Bool) throws -> Decoded? {
         return try optionalAtPath(path, ifNotFound: ifNotFound, ifNull: ifNull, getter: Decoded.init)
     }
 
@@ -411,7 +411,7 @@ extension JSON {
 
     // MARK: Member unpacking with fallback
 
-    @transparent private func decodedAtPath<Decoded: JSONDecodable>(path: [PathFragment], @noescape or fallback: () -> Decoded) throws -> Decoded {
+    private func decodedAtPath<Decoded: JSONDecodable>(path: [PathFragment], @noescape or fallback: () -> Decoded) throws -> Decoded {
         return try decodedAtPath(path, ifNotFound: true, ifNull: false) ?? fallback()
     }
 
