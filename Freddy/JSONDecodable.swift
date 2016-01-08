@@ -91,56 +91,15 @@ extension Bool: JSONDecodable {
     
 }
 
-extension JSON {
-    
-    /// Attempts to decode into the returning type.
-    /// - parameter type: If the context this method is called from does not
-    ///   make the return type clear, pass a type implementing `JSONDecodable`
-    ///   to disambiguate the type to decode with.
-    /// - returns: An initialized member from the JSON.
-    /// - throws: Any error that arises while initializing the `JSONDecodable`.
-    public func decode<Decoded: JSONDecodable>(type: Decoded.Type = Decoded.self) throws -> Decoded {
-        return try Decoded(json: self)
-    }
-    
-    /// Retrieves a `Double` from the JSON.
-    /// - returns: A floating-point `Double`
-    /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`.
-    /// - seealso: `JSON.decode(type:)`
-    public func double() throws -> Swift.Double {
-        return try decode()
-    }
-    
-    /// Retrieves an `Int` from the JSON.
-    /// - returns: A numeric `Int`
-    /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`.
-    /// - seealso: `JSON.decode(type:)`
-    public func int() throws -> Swift.Int {
-        return try decode()
-    }
-    
-    /// Retrieves a `String` from the JSON.
-    /// - returns: A textual `String`
-    /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`.
-    /// - seealso: `JSON.decode(type:)`
-    public func string() throws -> Swift.String {
-        return try decode()
-    }
-    
-    /// Retrieves a `Bool` from the JSON.
-    /// - returns: A truthy `Bool`
-    /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`.
-    /// - seealso: `JSON.decode(type:)`
-    public func bool() throws -> Swift.Bool {
-        return try decode()
-    }
-    
+internal extension JSON {
+
     /// Retrieves a `[JSON]` from the JSON.
     /// - returns: An `Array` of `JSON` elements
     /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`.
     /// - seealso: `JSON.decode(type:)`
-    public func array() throws -> [JSON] {
-        guard case let .Array(array) = self else {
+    static func getArray(json: JSON) throws -> [JSON] {
+        // Ideally should be expressed as a conditional protocol implementation on Swift.Array.
+        guard case let .Array(array) = json else {
             throw Error.ValueNotConvertible(type: Swift.Array<JSON>)
         }
         return array
@@ -150,8 +109,9 @@ extension JSON {
     /// - returns: An `Dictionary` of `String` mapping to `JSON` elements
     /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`.
     /// - seealso: `JSON.decode(type:)`
-    public func dictionary() throws -> [Swift.String: JSON] {
-        guard case let .Dictionary(dictionary) = self else {
+    static func getDictionary(json: JSON) throws -> [Swift.String: JSON] {
+        // Ideally should be expressed as a conditional protocol implementation on Swift.Dictionary.
+        guard case let .Dictionary(dictionary) = json else {
             throw Error.ValueNotConvertible(type: Swift.Dictionary<Swift.String, JSON>)
         }
         return dictionary
@@ -166,8 +126,10 @@ extension JSON {
     /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`, as
     ///   well as any error that arises from decoding the contained values.
     /// - seealso: `JSON.decode(type:)`
-    public func arrayOf<Decoded: JSONDecodable>(type type: Decoded.Type = Decoded.self) throws -> [Decoded] {
-        return try array().map { try $0.decode() }
+    static func getArrayOf<Decoded: JSONDecodable>(json: JSON) throws -> [Decoded] {
+        // Ideally should be expressed as a conditional protocol implementation on Swift.Dictionary.
+        // This implementation also doesn't do the `type = Type.self` trick.
+        return try getArray(json).map(Decoded.init)
     }
     
 }
