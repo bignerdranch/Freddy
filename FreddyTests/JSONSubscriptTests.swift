@@ -168,6 +168,12 @@ class JSONSubscriptTests: XCTestCase {
             XCTFail("The error should be due to the `people` `Array` not being subscriptable with `String`s, but was: \(error).")
         }
     }
+
+    func testThatOptionalSubscriptiongIntoNullSucceeds() {
+        let earlyNull = [ "foo": nil ] as JSON
+        let string = try! earlyNull.string("foo", "bar", "baz", ifNotFound: true)
+        XCTAssertNil(string)
+    }
     
 }
 
