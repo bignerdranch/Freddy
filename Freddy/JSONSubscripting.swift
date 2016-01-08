@@ -49,13 +49,6 @@ extension JSON.PathFragment: IntegerLiteralConvertible, StringLiteralConvertible
     public init(stringLiteral value: String) {
         self = .Key(value)
     }
-
-    private var valueType: Any.Type {
-        switch self {
-        case .Key: return Swift.String
-        case .Index: return Swift.Int
-        }
-    }
     
 }
 
@@ -63,31 +56,37 @@ extension JSON.PathFragment: IntegerLiteralConvertible, StringLiteralConvertible
 
 extension JSON {
 
-    // MARK: Subscripting core
-
     private enum SubscriptError: ErrorType {
         case SubscriptIntoNull(PathFragment)
     }
 
-    private func valueAtPath<Sequence: SequenceType where Sequence.Generator.Element == PathFragment>(path: Sequence, detectNull: Swift.Bool) throws -> JSON {
-        return try path.reduce(self) {
-            switch ($0, $1) {
-            case let (.Dictionary(dict), .Key(key)):
-                guard let next = dict[key] else {
-                    throw Error.KeyNotFound(key: key)
-                }
-                return next
-            case let (.Array(array), .Index(index)):
-                guard array.startIndex.advancedBy(index, limit: array.endIndex) != array.endIndex else {
-                    throw Error.IndexOutOfBounds(index: index)
-                }
-                return array[index]
-            case (.Null, let badFragment) where detectNull:
-                throw SubscriptError.SubscriptIntoNull(badFragment)
-            case (_, let badFragment):
-                throw Error.UnexpectedSubscript(type: badFragment.valueType)
+    private func valueForPathFragment(fragment: PathFragment, detectNull: Swift.Bool) throws -> JSON {
+        switch (self, fragment) {
+        case let (.Dictionary(dict), .Key(key)):
+            guard let next = dict[key] else {
+                throw Error.KeyNotFound(key: key)
             }
+            return next
+        case let (.Array(array), .Index(index)):
+            guard array.startIndex.advancedBy(index, limit: array.endIndex) != array.endIndex else {
+                throw Error.IndexOutOfBounds(index: index)
+            }
+            return array[index]
+        case let (.Null, badFragment) where detectNull:
+            throw SubscriptError.SubscriptIntoNull(badFragment)
+        case (_, .Key):
+            throw Error.UnexpectedSubscript(type: Swift.String.self)
+        case (_, .Index):
+            throw Error.UnexpectedSubscript(type: Swift.Int.self)
         }
+    }
+
+    private func valueAtPath(path: [PathFragment], detectNull: Swift.Bool) throws -> JSON {
+        var result = self
+        for fragment in path {
+            result = try result.valueForPathFragment(fragment, detectNull: detectNull)
+        }
+        return result
     }
 
 }
@@ -97,13 +96,11 @@ extension JSON {
 extension JSON {
 
     public subscript(key: Swift.String) -> JSON? {
-        let path = CollectionOfOne(PathFragment.Key(key))
-        return try? valueAtPath(path, detectNull: false)
+        return try? valueForPathFragment(.Key(key), detectNull: false)
     }
 
     public subscript(index: Swift.Int) -> JSON? {
-        let path = CollectionOfOne(PathFragment.Index(index))
-        return try? valueAtPath(path, detectNull: false)
+        return try? valueForPathFragment(.Index(index), detectNull: false)
     }
 
 }
@@ -113,9 +110,11 @@ extension JSON {
 extension JSON {
 
     private func mapAtPath<Value>(first: PathFragment, _ rest: [PathFragment], @noescape transform: JSON throws -> Value) throws -> Value {
-        var path = rest
-        path.insert(first, atIndex: path.startIndex)
-        return try transform(valueAtPath(path, detectNull: false))
+        var result = try valueForPathFragment(first, detectNull: false)
+        for fragment in rest {
+            result = try result.valueForPathFragment(fragment, detectNull: false)
+        }
+        return try transform(result)
     }
 
     /// Attempts to decode into the returning type from a path into JSON.
