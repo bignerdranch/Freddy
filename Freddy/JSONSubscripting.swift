@@ -6,11 +6,48 @@
 //  Copyright © 2015 Big Nerd Ranch. All rights reserved.
 //
 
-// MARK: Subscripting core
+// MARK: JSONPathType
 
-public protocol JSONPathType {}
-extension String: JSONPathType {}
-extension Int: JSONPathType {}
+public protocol JSONPathType {
+    func valueInDictionary(dictionary: [Swift.String : JSON]) throws -> JSON
+    func valueInArray(array: [JSON]) throws -> JSON
+}
+
+extension JSONPathType {
+
+    public func valueInDictionary(dictionary: [Swift.String : JSON]) throws -> JSON {
+        throw JSON.Error.UnexpectedSubscript(type: self.dynamicType)
+    }
+
+    public func valueInArray(array: [JSON]) throws -> JSON {
+        throw JSON.Error.UnexpectedSubscript(type: self.dynamicType)
+    }
+
+}
+
+extension String: JSONPathType {
+
+    public func valueInDictionary(dictionary: [Swift.String : JSON]) throws -> JSON {
+        guard let next = dictionary[self] else {
+            throw JSON.Error.KeyNotFound(key: self)
+        }
+        return next
+    }
+
+}
+
+extension Int: JSONPathType {
+
+    public func valueInArray(array: [JSON]) throws -> JSON {
+        guard array.startIndex.advancedBy(self, limit: array.endIndex) != array.endIndex else {
+            throw JSON.Error.IndexOutOfBounds(index: self)
+        }
+        return array[self]
+    }
+
+}
+
+// MARK: - Subscripting core
 
 private extension JSON {
 
@@ -19,19 +56,13 @@ private extension JSON {
     }
 
     func valueForPathFragment(fragment: JSONPathType, detectNull: Swift.Bool) throws -> JSON {
-        switch (self, fragment) {
-        case let (.Dictionary(dict), key as Swift.String):
-            guard let next = dict[key] else {
-                throw Error.KeyNotFound(key: key)
-            }
-            return next
-        case let (.Array(array), index as Swift.Int):
-            guard array.startIndex.advancedBy(index, limit: array.endIndex) != array.endIndex else {
-                throw Error.IndexOutOfBounds(index: index)
-            }
-            return array[index]
-        case let (.Null, badFragment) where detectNull:
-            throw SubscriptError.SubscriptIntoNull(badFragment)
+        switch self {
+        case .Null where detectNull:
+            throw SubscriptError.SubscriptIntoNull(fragment)
+        case let .Dictionary(dict):
+            return try fragment.valueInDictionary(dict)
+        case let .Array(array):
+            return try fragment.valueInArray(array)
         default:
             throw Error.UnexpectedSubscript(type: fragment.dynamicType)
         }
@@ -164,8 +195,6 @@ extension JSON {
         } catch Error.IndexOutOfBounds where ifNotFound {
             return nil
         } catch Error.KeyNotFound where ifNotFound {
-            return nil
-        } catch Error.UnexpectedSubscript(let type) where ifNotFound && type == Swift.String.self {
             return nil
         } catch SubscriptError.SubscriptIntoNull(_ as Swift.String) where ifNotFound {
             return nil
