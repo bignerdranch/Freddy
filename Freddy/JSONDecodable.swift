@@ -29,9 +29,9 @@ extension Double: JSONDecodable {
     public init(json: JSON) throws {
         switch json {
         case let .Double(double):
-            self.init(double)
+            self = double
         case let .Int(int):
-            self.init(int)
+            self = Swift.Double(int)
         default:
             throw JSON.Error.ValueNotConvertible(type: Swift.Double)
         }
@@ -49,9 +49,9 @@ extension Int: JSONDecodable {
     public init(json: JSON) throws {
         switch json {
         case let .Double(double):
-            self.init(double)
+            self = Swift.Int(double)
         case let .Int(int):
-            self.init(int)
+            self = int
         default:
             throw JSON.Error.ValueNotConvertible(type: Swift.Int)
         }
@@ -70,7 +70,7 @@ extension String: JSONDecodable {
         guard case let .String(string) = json else {
             throw JSON.Error.ValueNotConvertible(type: Swift.String)
         }
-        self.init(string)
+        self = string
     }
     
 }
@@ -86,7 +86,7 @@ extension Bool: JSONDecodable {
         guard case let .Bool(bool) = json else {
             throw JSON.Error.ValueNotConvertible(type: Swift.Bool)
         }
-        self.init(bool)
+        self = bool
     }
     
 }
