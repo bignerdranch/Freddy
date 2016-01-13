@@ -14,14 +14,14 @@ public protocol JSONEncodable {
     /// - returns: An instance of `JSON`.
     /// - Note: If conforming to `JSONEncodable` with a custom type of your own, you should return an instance of 
     /// `JSON.Dictionary`.
-    func encodeToJSON() -> JSON
+    func toJSON() -> JSON
 }
 
 extension Array where Element: JSONEncodable {
     /// Converts an instance of `Array` whose elements conform to `JSONEncodable` to `JSON`.
     /// - returns: An instance of `JSON` where the enum case is `.Array`.
     public func encodeToJSON() -> JSON {
-        let arrayOfJSON = self.map { $0.encodeToJSON() }
+        let arrayOfJSON = self.map { $0.toJSON() }
         return .Array(arrayOfJSON)
     }
 }
@@ -35,7 +35,7 @@ extension Dictionary where Value: JSONEncodable {
         
         for (k, v) in self {
             let key = String(k)
-            jsonDictionary[key] = v.encodeToJSON()
+            jsonDictionary[key] = v.toJSON()
         }
         
         return .Dictionary(jsonDictionary)
@@ -45,7 +45,7 @@ extension Dictionary where Value: JSONEncodable {
 extension Int: JSONEncodable {
     /// Converts an instance of a conforming type to `JSON`.
     /// - returns: An instance of `JSON` where the enum case is `.Int`.
-    public func encodeToJSON() -> JSON {
+    public func toJSON() -> JSON {
         return .Int(self)
     }
 }
@@ -53,7 +53,7 @@ extension Int: JSONEncodable {
 extension Double: JSONEncodable {
     /// Converts an instance of a conforming type to `JSON`.
     /// - returns: An instance of `JSON` where the enum case is `.Double`.
-    public func encodeToJSON() -> JSON {
+    public func toJSON() -> JSON {
         return .Double(self)
     }
 }
@@ -61,7 +61,7 @@ extension Double: JSONEncodable {
 extension String: JSONEncodable {
     /// Converts an instance of a conforming type to `JSON`.
     /// - returns: An instance of `JSON` where the enum case is `.String`.
-    public func encodeToJSON() -> JSON {
+    public func toJSON() -> JSON {
         return .String(self)
     }
 }
@@ -69,7 +69,7 @@ extension String: JSONEncodable {
 extension Bool: JSONEncodable {
     /// Converts an instance of a conforming type to `JSON`.
     /// - returns: An instance of `JSON` where the enum case is `.Bool`.
-    public func encodeToJSON() -> JSON {
+    public func toJSON() -> JSON {
         return .Bool(self)
     }
 }

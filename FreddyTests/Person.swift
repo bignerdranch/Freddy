@@ -27,7 +27,7 @@ extension Person: JSONDecodable {
 }
 
 extension Person: JSONEncodable {
-    public func encodeToJSON() -> JSON {
+    public func toJSON() -> JSON {
         return .Dictionary(["name": .String(name), "age": .Int(age), "spouse": .Bool(spouse)])
     }
 }

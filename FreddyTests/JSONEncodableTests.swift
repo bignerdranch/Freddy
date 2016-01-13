@@ -11,48 +11,38 @@ import XCTest
 
 class JSONEncodableTests: XCTestCase {
 
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-
     func testThatJSONEncodableEncodesString() {
         let matt = "Matt"
         let comparisonMatt = JSON.String(matt)
-        let testMatt = matt.encodeToJSON()
+        let testMatt = matt.toJSON()
         XCTAssertTrue(comparisonMatt == testMatt, "These should be the same!")
     }
     
     func testThatJSONEncodableEncodesBool() {
         let leFalse = false
         let comparisonFalse: JSON = false
-        let testFalse = leFalse.encodeToJSON()
+        let testFalse = leFalse.toJSON()
         XCTAssertTrue(comparisonFalse == testFalse, "These should be the same!")
     }
     
     func testThatJSONEncodableEncodesInt() {
         let thirtyTwo = 32
         let comparisonThirtyTwo = JSON.Int(thirtyTwo)
-        let testThirtyTwo = thirtyTwo.encodeToJSON()
+        let testThirtyTwo = thirtyTwo.toJSON()
         XCTAssertTrue(comparisonThirtyTwo == testThirtyTwo, "These should be the same!")
     }
     
     func testThatJSONEncodableEncodesDouble() {
         let threePointOneFour = 3.14
         let comparisonThreePointOneFour = JSON.Double(threePointOneFour)
-        let testThreePointOneFour = threePointOneFour.encodeToJSON()
+        let testThreePointOneFour = threePointOneFour.toJSON()
         XCTAssertTrue(comparisonThreePointOneFour == testThreePointOneFour, "These should be the same!")
     }
     
     func testThatJSONEncodableEncodesModelType() {
         let matt = Person(name: "Matt", age: 32, spouse: true)
         let comparisonMatt: JSON = ["name": "Matt", "age": 32, "spouse": true]
-        let testMatt = matt.encodeToJSON()
+        let testMatt = matt.toJSON()
         XCTAssertTrue(comparisonMatt == testMatt, "These should be the same!")
     }
     
