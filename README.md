@@ -56,7 +56,7 @@ Consider some example JSON data:
     }
 }
 ```
-Here is a quick example on how to parse these data using Freddy:
+Here is a quick example on how to parse this data using Freddy:
 
 ```swift
 let data = getSomeData()
