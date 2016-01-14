@@ -26,6 +26,16 @@ extension JSON {
         self = try parser.createJSONFromData(data)
     }
 
+    /// Create `JSON` from UTF-8 `string`.
+    public init(jsonString: NSString, usingParser parser: JSONParserType.Type = JSONParser.self) throws {
+        if let data = jsonString.dataUsingEncoding(NSUTF8StringEncoding) {
+            self = try parser.createJSONFromData(data)
+        }
+        else {
+            // This would probaly never happen, but if it does then just treat as if you passed in an empty string
+            self = try parser.createJSONFromData(NSData())
+        }
+    }
 }
 
 // MARK: - NSJSONSerialization
