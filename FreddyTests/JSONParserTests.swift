@@ -53,6 +53,7 @@ class JSONParserTests: XCTestCase {
         
         do {
             _ = try JSONFromString("")
+            XCTFail("Unexpectedly did not throw an error") 
         } catch let error as JSONParser.Error {
             XCTAssert(error == JSONParser.Error.EndOfStreamUnexpected)
         } catch {
