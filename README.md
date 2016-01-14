@@ -84,7 +84,9 @@ do {
 }
 ```
 
-There can be any number of subscripts and each subscript can be either a String indicating a named element in the json, or an Int that represents an element in an array. If there is something invalid in the path such as an index that doesn't exist in the json, an error will be thrown.
+There can be any number of subscripts and each subscript can be either a `String` indicating a named element in the JSON, or an `Int` that represents an element in an array. If there is something invalid in the path such as an index that doesn't exist in the JSON, an error will be thrown.
+
+[More on Subscripting](https://github.com/bignerdranch/Freddy/wiki/Subscripting) 
 
 Now, let's look an example that parses the data into a model class:
 
