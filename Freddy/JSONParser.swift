@@ -102,7 +102,7 @@ public struct JSONParser {
         }
         
         guard input.count > 0 else {
-            return .Null
+            throw Error.EndOfStreamUnexpected
         }
 
         advancing: while loc < input.count {

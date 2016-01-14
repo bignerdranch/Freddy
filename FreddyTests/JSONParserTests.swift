@@ -49,9 +49,15 @@ class JSONParserTests: XCTestCase {
         return try parser.parse()
     }
 
-    func testThatParserTurnsEmptyNSDataIntoJSONNull() {
-        let value = try! JSONFromString("")
-        XCTAssertEqual(value, JSON.Null)
+    func testThatParserThrowsAnErrorForAnEmptyNSData() {
+        
+        do {
+            _ = try JSONFromString("")
+        } catch let error as JSONParser.Error {
+            XCTAssert(error == JSONParser.Error.EndOfStreamUnexpected)
+        } catch {
+            XCTFail("Unexpected error \(error)")
+        }
     }
     
     func testThatParserUnderstandsNull() {
