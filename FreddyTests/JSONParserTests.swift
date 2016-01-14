@@ -49,6 +49,11 @@ class JSONParserTests: XCTestCase {
         return try parser.parse()
     }
 
+    func testThatParserCanDealWithNoData() {
+        let value = try! JSONFromString("")
+        XCTAssertEqual(value, JSON.Null)
+    }
+    
     func testThatParserUnderstandsNull() {
         let value = try! JSONFromString("null")
         XCTAssertEqual(value, JSON.Null)
