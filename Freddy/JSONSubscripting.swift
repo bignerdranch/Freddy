@@ -16,11 +16,11 @@ public protocol JSONPathType {
 extension JSONPathType {
 
     public func valueInDictionary(dictionary: [Swift.String : JSON]) throws -> JSON {
-        throw JSON.Error.UnexpectedSubscript(type: self.dynamicType)
+        throw JSON.Error.UnexpectedSubscript(type: Self.self)
     }
 
     public func valueInArray(array: [JSON]) throws -> JSON {
-        throw JSON.Error.UnexpectedSubscript(type: self.dynamicType)
+        throw JSON.Error.UnexpectedSubscript(type: Self.self)
     }
 
 }
