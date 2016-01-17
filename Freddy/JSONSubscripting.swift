@@ -39,7 +39,7 @@ extension String: JSONPathType {
 extension Int: JSONPathType {
 
     public func valueInArray(array: [JSON]) throws -> JSON {
-        guard self >= 0 && self < array.count else {
+        guard case array.indices = self else {
             throw JSON.Error.IndexOutOfBounds(index: self)
         }
         return array[self]
