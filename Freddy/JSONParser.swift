@@ -100,6 +100,10 @@ public struct JSONParser {
         guard depth <= ParserMaximumDepth else {
             throw Error.ExceededNestingLimit(offset: loc)
         }
+        
+        guard input.count > 0 else {
+            throw Error.EndOfStreamUnexpected
+        }
 
         advancing: while loc < input.count {
             switch input[loc] {
