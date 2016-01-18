@@ -168,6 +168,12 @@ class JSONSubscriptTests: XCTestCase {
             XCTFail("The error should be due to the `people` `Array` not being subscriptable with `String`s, but was: \(error).")
         }
     }
+
+    func testThatOptionalSubscriptiongIntoNullSucceeds() {
+        let earlyNull = [ "foo": nil ] as JSON
+        let string = try! earlyNull.string("foo", "bar", "baz", ifNotFound: true)
+        XCTAssertNil(string)
+    }
     
 }
 
@@ -177,4 +183,31 @@ class JSONSubscriptWithNSJSONTests: JSONSubscriptTests {
         return NSJSONSerialization.self
     }
 
+}
+
+// Just for syntax validation, not for execution or being counted for coverage.
+private func testUsage() {
+    let j = JSON.Null
+
+    _ = try? j.int()
+    _ = try? j.int(ifNotFound: true)
+    _ = try? j.int(ifNull: true)
+    _ = try? j.int(or: 42)
+
+    _ = try? j.int("key")
+    _ = try? j.int("key", ifNotFound: true)
+    _ = try? j.int("key", ifNull: true)
+    _ = try? j.int("key", or: 42)
+
+    _ = try? j.int(1)
+    _ = try? j.int(2, ifNotFound: true)
+    _ = try? j.int(3, ifNull: true)
+    _ = try? j.int(4, or: 42)
+
+    let stringConst = "key"
+
+    _ = try? j.int(stringConst, 1)
+    _ = try? j.int(stringConst, 2, ifNotFound: true)
+    _ = try? j.int(stringConst, 3, ifNull: true)
+    _ = try? j.int(stringConst, 4, or: 42)
 }

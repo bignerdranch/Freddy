@@ -30,7 +30,7 @@ extension JSON {
         case KeyNotFound(key: Swift.String)
         
         /// The JSON is not subscriptable with `type`
-        case UnexpectedSubscript(type: Any.Type)
+        case UnexpectedSubscript(type: JSONPathType.Type)
         
         /// Unexpected JSON was found that is not convertible to `type`
         case ValueNotConvertible(type: Any.Type)
