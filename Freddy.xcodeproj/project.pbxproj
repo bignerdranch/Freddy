@@ -68,6 +68,7 @@
 		DB6ADFC61C23631500D77BF1 /* sampleNoWhiteSpace.JSON in Resources */ = {isa = PBXBuildFile; fileRef = DB6ADFC21C23631500D77BF1 /* sampleNoWhiteSpace.JSON */; };
 		DB6ADFC71C23631500D77BF1 /* sampleNoWhiteSpace.JSON in Resources */ = {isa = PBXBuildFile; fileRef = DB6ADFC21C23631500D77BF1 /* sampleNoWhiteSpace.JSON */; };
 		DB6ADFC81C23631500D77BF1 /* sampleNoWhiteSpace.JSON in Resources */ = {isa = PBXBuildFile; fileRef = DB6ADFC21C23631500D77BF1 /* sampleNoWhiteSpace.JSON */; };
+		DC194EB91C47D87B001D4569 /* JSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC194EB81C47D87B001D4569 /* JSONTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +127,7 @@
 		DB6ADFB01C2362FF00D77BF1 /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		DB6ADFC11C23631500D77BF1 /* sample.JSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample.JSON; sourceTree = "<group>"; };
 		DB6ADFC21C23631500D77BF1 /* sampleNoWhiteSpace.JSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sampleNoWhiteSpace.JSON; sourceTree = "<group>"; };
+		DC194EB81C47D87B001D4569 /* JSONTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -228,6 +230,7 @@
 		DB6ADF2D1C23610B00D77BF1 /* FreddyTests */ = {
 			isa = PBXGroup;
 			children = (
+				DC194EB81C47D87B001D4569 /* JSONTests.swift */,
 				DB6ADFAC1C2362FF00D77BF1 /* JSONDecodableTests.swift */,
 				1C67C72A1C3B32A6003D5A05 /* JSONEncodableTests.swift */,
 				DB6ADFAD1C2362FF00D77BF1 /* JSONParserTests.swift */,
@@ -592,6 +595,7 @@
 				DB6ADFBA1C2362FF00D77BF1 /* JSONTypeTests.swift in Sources */,
 				DB6ADFB11C2362FF00D77BF1 /* JSONDecodableTests.swift in Sources */,
 				DB6ADFB71C2362FF00D77BF1 /* JSONSubscriptTests.swift in Sources */,
+				DC194EB91C47D87B001D4569 /* JSONTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
