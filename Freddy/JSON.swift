@@ -8,12 +8,19 @@
 
 /// An enum to describe the structure of JSON.
 public enum JSON {
+    /// A case for denoting an array with an associated value of `[JSON]`
     case Array([JSON])
+    /// A case for denoting a dictionary with an associated value of `[Swift.String: JSON]`
     case Dictionary([Swift.String: JSON])
+    /// A case for denoting a double with an associated value of `Swift.Double`.
     case Double(Swift.Double)
+    /// A case for denoting an integer with an associated value of `Swift.Int`.
     case Int(Swift.Int)
+    /// A case for denoting a string with an associated value of `Swift.String`.
     case String(Swift.String)
+    /// A case for denoting a boolean with an associated value of `Swift.Bool`.
     case Bool(Swift.Bool)
+    /// A case for denoting null.
     case Null
 }
 
