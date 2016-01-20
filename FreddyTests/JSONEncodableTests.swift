@@ -49,14 +49,14 @@ class JSONEncodableTests: XCTestCase {
     func testThatJSONEncodableEncodesArray() {
         let veggies = ["lettuce", "onion"]
         let comparisonVeggies = JSON.Array(["lettuce", "onion"])
-        let testVeggies = veggies.encodeToJSON()
+        let testVeggies = veggies.toJSON()
         XCTAssertTrue(comparisonVeggies == testVeggies, "These should be the same!")
     }
     
     func testThatJSONEncodableEncodesDictionary() {
         let people = ["matt": 32, "drew": 33]
         let comparisonPeople: JSON = ["matt": 32, "drew": 33]
-        let testPeople = people.encodeToJSON()
+        let testPeople = people.toJSON()
         XCTAssertTrue(comparisonPeople == testPeople, "These should be the same!")
     }
     
@@ -64,7 +64,7 @@ class JSONEncodableTests: XCTestCase {
         let people = [ Person(name: "Matt", age: 32, spouse: true), Person(name: "Drew", age: 33, spouse: true) ]
         let comparisonPeople: JSON = [ ["name": "Matt", "age": 32, "spouse": true],
                                        ["name": "Drew", "age": 33, "spouse": true] ]
-        let testPeople = people.encodeToJSON()
+        let testPeople = people.toJSON()
         XCTAssertTrue(comparisonPeople == testPeople, "These should be the same!")
     }
 }
