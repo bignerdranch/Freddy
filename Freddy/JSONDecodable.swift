@@ -24,8 +24,8 @@ extension Double: JSONDecodable {
     /// An initializer to create an instance of `Double` from a `JSON` value.
     /// - parameter json: An instance of `JSON`.
     /// - throws: The initializer will throw an instance of `JSON.Error` if 
-    /// an instance of `Double` cannot be created from the `JSON` value that was 
-    /// passed to this initializer.
+    ///           an instance of `Double` cannot be created from the `JSON` value that was
+    ///           passed to this initializer.
     public init(json: JSON) throws {
         switch json {
         case let .Double(double):
@@ -44,8 +44,8 @@ extension Int: JSONDecodable {
     /// An initializer to create an instance of `Int` from a `JSON` value.
     /// - parameter json: An instance of `JSON`.
     /// - throws: The initializer will throw an instance of `JSON.Error` if
-    /// an instance of `Int` cannot be created from the `JSON` value that was
-    /// passed to this initializer.
+    ///           an instance of `Int` cannot be created from the `JSON` value that was
+    ///           passed to this initializer.
     public init(json: JSON) throws {
         switch json {
         case let .Double(double):
@@ -64,8 +64,8 @@ extension String: JSONDecodable {
     /// An initializer to create an instance of `String` from a `JSON` value.
     /// - parameter json: An instance of `JSON`.
     /// - throws: The initializer will throw an instance of `JSON.Error` if
-    /// an instance of `String` cannot be created from the `JSON` value that was
-    /// passed to this initializer.
+    ///           an instance of `String` cannot be created from the `JSON` value that was
+    ///           passed to this initializer.
     public init(json: JSON) throws {
         guard case let .String(string) = json else {
             throw JSON.Error.ValueNotConvertible(type: Swift.String)
@@ -80,8 +80,8 @@ extension Bool: JSONDecodable {
     /// An initializer to create an instance of `Bool` from a `JSON` value.
     /// - parameter json: An instance of `JSON`.
     /// - throws: The initializer will throw an instance of `JSON.Error` if
-    /// an instance of `Bool` cannot be created from the `JSON` value that was
-    /// passed to this initializer.
+    ///           an instance of `Bool` cannot be created from the `JSON` value that was
+    ///           passed to this initializer.
     public init(json: JSON) throws {
         guard case let .Bool(bool) = json else {
             throw JSON.Error.ValueNotConvertible(type: Swift.Bool)
@@ -96,7 +96,7 @@ internal extension JSON {
     /// Retrieves a `[JSON]` from the JSON.
     /// - returns: An `Array` of `JSON` elements
     /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`.
-    /// - seealso: `JSON.decode(type:)`
+    /// - seealso: `JSON.decode(_:type:)`
     static func getArray(json: JSON) throws -> [JSON] {
         // Ideally should be expressed as a conditional protocol implementation on Swift.Array.
         guard case let .Array(array) = json else {
@@ -108,7 +108,7 @@ internal extension JSON {
     /// Retrieves a `[String: JSON]` from the JSON.
     /// - returns: An `Dictionary` of `String` mapping to `JSON` elements
     /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`.
-    /// - seealso: `JSON.decode(type:)`
+    /// - seealso: `JSON.decode(_:type:)`
     static func getDictionary(json: JSON) throws -> [Swift.String: JSON] {
         // Ideally should be expressed as a conditional protocol implementation on Swift.Dictionary.
         guard case let .Dictionary(dictionary) = json else {
@@ -125,7 +125,7 @@ internal extension JSON {
     /// - returns: An `Array` of decoded elements
     /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`, as
     ///   well as any error that arises from decoding the contained values.
-    /// - seealso: `JSON.decode(type:)`
+    /// - seealso: `JSON.decode(_:type:)`
     static func getArrayOf<Decoded: JSONDecodable>(json: JSON) throws -> [Decoded] {
         // Ideally should be expressed as a conditional protocol implementation on Swift.Dictionary.
         // This implementation also doesn't do the `type = Type.self` trick.

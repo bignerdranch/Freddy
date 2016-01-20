@@ -14,6 +14,9 @@ import Foundation
 public protocol JSONParserType {
 
     /// Creates an instance of `JSON` from `NSData`.
+    /// - parameter data: An instance of `NSData` to use to create `JSON`.
+    /// - throws: An error that may arise from calling `JSONObjectWithData(_:options:)` on `NSJSONSerialization` with the given data.
+    /// - returns: An instance of `JSON`.
     static func createJSONFromData(data: NSData) throws -> JSON
 
 }
