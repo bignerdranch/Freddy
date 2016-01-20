@@ -39,10 +39,6 @@
 		DB6ADFA11C2362E000D77BF1 /* JSONParsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADF8D1C2362E000D77BF1 /* JSONParsing.swift */; };
 		DB6ADFA21C2362E000D77BF1 /* JSONParsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADF8D1C2362E000D77BF1 /* JSONParsing.swift */; };
 		DB6ADFA31C2362E000D77BF1 /* JSONParsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADF8D1C2362E000D77BF1 /* JSONParsing.swift */; };
-		DB6ADFA41C2362E000D77BF1 /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADF8E1C2362E000D77BF1 /* JSONSequences.swift */; };
-		DB6ADFA51C2362E000D77BF1 /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADF8E1C2362E000D77BF1 /* JSONSequences.swift */; };
-		DB6ADFA61C2362E000D77BF1 /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADF8E1C2362E000D77BF1 /* JSONSequences.swift */; };
-		DB6ADFA71C2362E000D77BF1 /* JSONSequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADF8E1C2362E000D77BF1 /* JSONSequences.swift */; };
 		DB6ADFA81C2362E000D77BF1 /* JSONSubscripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADF8F1C2362E000D77BF1 /* JSONSubscripting.swift */; };
 		DB6ADFA91C2362E000D77BF1 /* JSONSubscripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADF8F1C2362E000D77BF1 /* JSONSubscripting.swift */; };
 		DB6ADFAA1C2362E000D77BF1 /* JSONSubscripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADF8F1C2362E000D77BF1 /* JSONSubscripting.swift */; };
@@ -118,7 +114,6 @@
 		DB6ADF8B1C2362E000D77BF1 /* JSONLiteralConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONLiteralConvertible.swift; sourceTree = "<group>"; };
 		DB6ADF8C1C2362E000D77BF1 /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
 		DB6ADF8D1C2362E000D77BF1 /* JSONParsing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParsing.swift; sourceTree = "<group>"; };
-		DB6ADF8E1C2362E000D77BF1 /* JSONSequences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSequences.swift; sourceTree = "<group>"; };
 		DB6ADF8F1C2362E000D77BF1 /* JSONSubscripting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSubscripting.swift; sourceTree = "<group>"; };
 		DB6ADFAC1C2362FF00D77BF1 /* JSONDecodableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONDecodableTests.swift; sourceTree = "<group>"; };
 		DB6ADFAD1C2362FF00D77BF1 /* JSONParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParserTests.swift; sourceTree = "<group>"; };
@@ -220,7 +215,6 @@
 				DB6ADF8B1C2362E000D77BF1 /* JSONLiteralConvertible.swift */,
 				DB6ADF8C1C2362E000D77BF1 /* JSONParser.swift */,
 				DB6ADF8D1C2362E000D77BF1 /* JSONParsing.swift */,
-				DB6ADF8E1C2362E000D77BF1 /* JSONSequences.swift */,
 				DB6ADF8F1C2362E000D77BF1 /* JSONSubscripting.swift */,
 				DB6ADF241C23610B00D77BF1 /* Info.plist */,
 			);
@@ -547,7 +541,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB6ADFA51C2362E000D77BF1 /* JSONSequences.swift in Sources */,
 				DB6ADF911C2362E000D77BF1 /* JSON.swift in Sources */,
 				DB6ADFA91C2362E000D77BF1 /* JSONSubscripting.swift in Sources */,
 				DB6ADFA11C2362E000D77BF1 /* JSONParsing.swift in Sources */,
@@ -574,7 +567,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB6ADFA41C2362E000D77BF1 /* JSONSequences.swift in Sources */,
 				DB6ADF901C2362E000D77BF1 /* JSON.swift in Sources */,
 				DB6ADFA81C2362E000D77BF1 /* JSONSubscripting.swift in Sources */,
 				DB6ADFA01C2362E000D77BF1 /* JSONParsing.swift in Sources */,
@@ -603,7 +595,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB6ADFA61C2362E000D77BF1 /* JSONSequences.swift in Sources */,
 				DB6ADF921C2362E000D77BF1 /* JSON.swift in Sources */,
 				DB6ADFAA1C2362E000D77BF1 /* JSONSubscripting.swift in Sources */,
 				DB6ADFA21C2362E000D77BF1 /* JSONParsing.swift in Sources */,
@@ -630,7 +621,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB6ADFA71C2362E000D77BF1 /* JSONSequences.swift in Sources */,
 				DB6ADF931C2362E000D77BF1 /* JSON.swift in Sources */,
 				DB6ADFAB1C2362E000D77BF1 /* JSONSubscripting.swift in Sources */,
 				DB6ADFA31C2362E000D77BF1 /* JSONParsing.swift in Sources */,
