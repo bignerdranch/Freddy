@@ -69,7 +69,7 @@ do {
 }
 ```
 
-After we load in the data, we create an instance of `JSON`, the workhorse of this framework. This allows us to access the values from the JSON data. We `try` because the `data` may be malformed and the parsing could generate an error. Next, we access the `"success"` key by calling the `bool(_:_:)` method on `JSON`. We `try` here as well because accessing the `json` for the key `"success"` could fail - e.g., if we had passed an unknown key. This method takes two parameters, both of which are used to define a path into the `JSON` instance to find a Boolean value of interest. If a `Bool` is found at the path described by `"success"`, then `bool(_:_:)` returns a `Bool`. If the path does not lead to a `Bool`, then an appropriate error is thrown.
+After we load in the data, we create an instance of `JSON`, the workhorse of this framework. This allows us to access the values from the JSON data. We `try` because the `data` may be malformed and the parsing could generate an error. Next, we access the `"success"` key by calling the `bool(_:)` method on `JSON`. We `try` here as well because accessing the `json` for the key `"success"` could fail - e.g., if we had passed an unknown key. This method takes two parameters, both of which are used to define a path into the `JSON` instance to find a Boolean value of interest. If a `Bool` is found at the path described by `"success"`, then `bool(_:)` returns a `Bool`. If the path does not lead to a `Bool`, then an appropriate error is thrown.
 
 With Freddy, it is possible to use a path to access elements deeper in the json structure. For example:
 
@@ -101,7 +101,7 @@ do {
 }
 ```
 
-Here, we are instead loading the values from the key `"people"` as an array using the method `array(_:_:)`. This method works a lot like the `bool(_:_:)` method you saw above. It uses the path provided to the method to find an array. If the path is good, the method will return an `Array` of `JSON`. If the path is bad, then an appropriate error is thrown.
+Here, we are instead loading the values from the key `"people"` as an array using the method `array(_:)`. This method works a lot like the `bool(_:)` method you saw above. It uses the path provided to the method to find an array. If the path is good, the method will return an `Array` of `JSON`. If the path is bad, then an appropriate error is thrown.
 
 We can then call `map` on that `JSON` array. Since the `Person` type conforms to `JSONDecodable`, we can pass in the `Person` type's initializer. This call applies an initializer that takes an instance of `JSON` to each element in the array, producing an array of `Person` instances.
 
@@ -133,7 +133,7 @@ extension Person: JSONDecodable {
 }
 ```
 
-`Person` just has a few properties. It conforms to `JSONDecodable` via an extension. In the extension, we implement a `throws`ing initializer that takes an instance of `JSON` as its sole parameter. In the implementation, we `try` three functions: 1) `string(_:_:)`, 2) `int(_:_:)`, and 3) `bool(_:_:)`. Each of these works as you have seen before. The methods take in a path, which is used to find a value of a specific type within the `JSON` instance passed to the initializer. Since these paths could be bad, or the requested type may not match what is actually inside of the `JSON`, these methods may potentially throw an error. 
+`Person` just has a few properties. It conforms to `JSONDecodable` via an extension. In the extension, we implement a `throws`ing initializer that takes an instance of `JSON` as its sole parameter. In the implementation, we `try` three functions: 1) `string(_:)`, 2) `int(_:)`, and 3) `bool(_:)`. Each of these works as you have seen before. The methods take in a path, which is used to find a value of a specific type within the `JSON` instance passed to the initializer. Since these paths could be bad, or the requested type may not match what is actually inside of the `JSON`, these methods may potentially throw an error. 
 
 And that is pretty much it! Take a look at the framework's tests for further examples of usage.
 
