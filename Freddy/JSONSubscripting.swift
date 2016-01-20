@@ -8,6 +8,7 @@
 
 // MARK: JSONPathType
 
+/// A protocol used to define a path within an instance of `JSON` that leads to some desired value.
 public protocol JSONPathType {
     func valueInDictionary(dictionary: [Swift.String : JSON]) throws -> JSON
     func valueInArray(array: [JSON]) throws -> JSON
@@ -27,6 +28,10 @@ extension JSONPathType {
 
 extension String: JSONPathType {
 
+    /// A method used to retrieve a value from a given dictionary for a specific key.
+    /// - throws: `.KeyNotFound` with an associated value of `self`, where `self` is a `String`, 
+    ///           should the key not be present within the `JSON`.
+    /// - returns: The `JSON` value associated with the given key.
     public func valueInDictionary(dictionary: [Swift.String : JSON]) throws -> JSON {
         guard let next = dictionary[self] else {
             throw JSON.Error.KeyNotFound(key: self)
@@ -38,6 +43,10 @@ extension String: JSONPathType {
 
 extension Int: JSONPathType {
 
+    /// A method used to retrieve a value from a given array for a specific index.
+    /// - throws: `.IndexOutOfBounds` with an associated value of `self`, where `self` is an `Int`, 
+    ///           should the index not be within the valid range for the array of `JSON`.
+    /// - returns: The `JSON` value found at the given index.
     public func valueInArray(array: [JSON]) throws -> JSON {
         guard case array.indices = self else {
             throw JSON.Error.IndexOutOfBounds(index: self)
@@ -97,10 +106,10 @@ extension JSON {
 extension JSON {
 
     /// Attempts to decode into the returning type from a path into JSON.
-    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`.
     /// - parameter type: If the context this method is called from does not
-    ///   make the return type clear, pass a type implementing `JSONDecodable`
-    ///   to disambiguate the type to decode with.
+    ///                   make the return type clear, pass a type implementing `JSONDecodable`
+    ///                   to disambiguate the type to decode with.
     /// - returns: An initialized member from the inner JSON.
     /// - throws: One of the following errors contained in `JSON.Error`:
     ///   * `KeyNotFound`: A given `String` key does not exist inside a
@@ -164,11 +173,11 @@ extension JSON {
     /// into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter type: If the context this method is called from does not
-    ///   make the return type clear, pass a type implementing `JSONDecodable`
-    ///   to disambiguate the type to decode with.
+    ///                   make the return type clear, pass a type implementing `JSONDecodable`
+    ///                   to disambiguate the type to decode with.
     /// - returns: An `Array` of decoded elements
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`, or
-    ///   any error that arises from decoding the contained values.
+    ///           any error that arises from decoding the contained values.
     /// - seealso: `JSON.decode(_:type:)`
     public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> [Decoded] {
         return try JSON.getArrayOf(valueAtPath(path))
@@ -206,10 +215,10 @@ extension JSON {
     /// Optionally decodes into the returning type from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNotFound: If `true`, missing key or index errors are
-    ///   treated as `nil`.
+    ///                         treated as `nil`.
     /// - parameter type: If the context this method is called from does not
-    ///   make the return type clear, pass a type implementing `JSONDecodable`
-    ///   to disambiguate the type to decode with.
+    ///                   make the return type clear, pass a type implementing `JSONDecodable`
+    ///                   to disambiguate the type to decode with.
     /// - returns: A decoded value from the inner JSON if found, or `nil`.
     /// - throws: One of the following errors contained in `JSON.Error`:
     ///   * `UnexpectedSubscript`: A `path` item cannot be used with the
@@ -228,10 +237,9 @@ extension JSON {
     /// Optionally retrieves a `Double` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNotFound: If `true`, missing key or index errors are
-    ///             treated as `nil`.
+    ///                         treated as `nil`.
     /// - returns: A `Double` if a value could be found, otherwise `nil`.
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
-    /// - seealso: `JSON.decode(_:ifNotFound:type:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `optionalAtPath(_:ifNotFound)`.
     public func double(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Double? {
         return try optionalAtPath(path, ifNotFound: ifNotFound).map(Swift.Double.init)
     }
@@ -239,10 +247,9 @@ extension JSON {
     /// Optionally retrieves a `Int` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNotFound: If `true`, missing key or index errors are
-    ///             treated as `nil`.
+    ///                         treated as `nil`.
     /// - returns: A numeric `Int` if a value could be found, otherwise `nil`.
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
-    /// - seealso: `JSON.decode(_:ifNotFound:type:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `optionalAtPath(_:ifNotFound)`.
     public func int(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Int? {
         return try optionalAtPath(path, ifNotFound: ifNotFound).map(Swift.Int.init)
     }
@@ -250,10 +257,9 @@ extension JSON {
     /// Optionally retrieves a `String` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNotFound: If `true`, missing key or index errors are
-    ///             treated as `nil`.
+    ///                         treated as `nil`.
     /// - returns: A text `String` if a value could be found, otherwise `nil`.
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
-    /// - seealso: `JSON.decode(_:ifNotFound:type:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `optionalAtPath(_:ifNotFound)`.
     public func string(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.String? {
         return try optionalAtPath(path, ifNotFound: ifNotFound).map(Swift.String.init)
     }
@@ -263,8 +269,7 @@ extension JSON {
     /// - parameter ifNotFound: If `true`, missing key or index errors are
     ///             treated as `nil`.
     /// - returns: A truthy `Bool` if a value could be found, otherwise `nil`.
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
-    /// - seealso: `JSON.decode(_:ifNotFound:type:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `optionalAtPath(_:ifNotFound)`.
     public func bool(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Bool? {
         return try optionalAtPath(path, ifNotFound: ifNotFound).map(Swift.Bool.init)
     }
@@ -272,11 +277,10 @@ extension JSON {
     /// Optionally retrieves a `[JSON]` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNotFound: If `true`, missing key or index errors are
-    ///   treated as `nil`.
+    ///                         treated as `nil`.
     /// - returns: An `Array` of `JSON` elements if a value could be found,
-    ///   otherwise `nil`.
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
-    /// - seealso: `JSON.decode(_:ifNotFound:type:)`
+    ///            otherwise `nil`.
+    /// - throws: One of the `JSON.Error` cases thrown by calling `optionalAtPath(_:ifNotFound)`.
     public func array(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [JSON]? {
         return try optionalAtPath(path, ifNotFound: ifNotFound).map(JSON.getArray)
     }
@@ -287,9 +291,8 @@ extension JSON {
     /// - parameter ifNotFound: If `true`, missing key or index errors are
     ///   treated as `nil`.
     /// - returns: An `Array` of decoded elements if found, otherwise `nil`.
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`,
-    ///   or any error that arises from decoding the contained values.
-    /// - seealso: `JSON.decode(_:ifNotFound:type:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `optionalAtPath(_:ifNotFound)`,
+    ///           or any error that arises from decoding the contained values.
     public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [Decoded]? {
         return try optionalAtPath(path, ifNotFound: ifNotFound).map(JSON.getArrayOf)
     }
@@ -297,11 +300,10 @@ extension JSON {
     /// Optionally retrieves a `[String: JSON]` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNotFound: If `true`, missing key or index errors are
-    ///   treated as `nil`.
+    ///                         treated as `nil`.
     /// - returns: A `Dictionary` of `String` mapping to `JSON` elements if a
-    ///   value could be found, otherwise `nil`.
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNotFound:type:)`.
-    /// - seealso: `JSON.decode(_:ifNotFound:type:)`
+    ///            value could be found, otherwise `nil`.
+    /// - throws: One of the `JSON.Error` cases thrown by calling `optionalAtPath(_:ifNotFound)`.
     public func dictionary(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [Swift.String: JSON]? {
         return try optionalAtPath(path, ifNotFound: ifNotFound).map(JSON.getDictionary)
     }
@@ -334,8 +336,8 @@ extension JSON {
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter fallback: Array to use when one is missing at the subscript.
     /// - returns: A floating-point `Double`
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
-    /// - seealso: `JSON.decode(_:or:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:fallback:transform:)`.
+    /// - seealso: `optionalAtPath(_:ifNotFound)`.
     public func double(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Double) throws -> Swift.Double {
         return try mapOptionalAtPath(path, fallback: fallback, transform: Swift.Double.init)
     }
@@ -344,8 +346,8 @@ extension JSON {
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter fallback: Array to use when one is missing at the subscript.
     /// - returns: A numeric `Int`
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
-    /// - seealso: `JSON.decode(_:or:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:fallback:transform:)`.
+    /// - seealso: `optionalAtPath(_:ifNotFound)`.
     public func int(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Int) throws -> Swift.Int {
         return try mapOptionalAtPath(path, fallback: fallback, transform: Swift.Int.init)
     }
@@ -354,8 +356,8 @@ extension JSON {
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter fallback: Array to use when one is missing at the subscript.
     /// - returns: A textual `String`
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
-    /// - seealso: `JSON.decode(_:or:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:fallback:transform:)`.
+    /// - seealso: `optionalAtPath(_:ifNotFound)`.
     public func string(path: JSONPathType..., @autoclosure or fallback: () -> Swift.String) throws -> Swift.String {
         return try mapOptionalAtPath(path, fallback: fallback, transform: Swift.String.init)
     }
@@ -364,8 +366,8 @@ extension JSON {
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter fallback: Array to use when one is missing at the subscript.
     /// - returns: A truthy `Bool`
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
-    /// - seealso: `JSON.decode(_:or:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:fallback:transform:)`.
+    /// - seealso: `optionalAtPath(_:ifNotFound)`.
     public func bool(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Bool) throws -> Swift.Bool {
         return try mapOptionalAtPath(path, fallback: fallback, transform: Swift.Bool.init)
     }
@@ -374,8 +376,8 @@ extension JSON {
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter fallback: Array to use when one is missing at the subscript.
     /// - returns: An `Array` of `JSON` elements
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
-    /// - seealso: `JSON.decode(_:or:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:fallback:transform:)`.
+    /// - seealso: `optionalAtPath(_:ifNotFound)`.
     public func array(path: JSONPathType..., @autoclosure or fallback: () -> [JSON]) throws -> [JSON] {
         return try mapOptionalAtPath(path, fallback: fallback, transform: JSON.getArray)
     }
@@ -385,9 +387,9 @@ extension JSON {
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter fallback: Array to use when one is missing at the subscript.
     /// - returns: An `Array` of decoded elements
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`, or
-    ///   any error that arises from decoding the contained values.
-    /// - seealso: `JSON.decode(_:or:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:fallback:transform:)`, or 
+    ///           any error that arises from decoding the contained values.
+    /// - seealso: `optionalAtPath(_:ifNotFound)`.
     public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., @autoclosure or fallback: () -> [Decoded]) throws -> [Decoded] {
         return try mapOptionalAtPath(path, fallback: fallback, transform: JSON.getArrayOf)
     }
@@ -397,8 +399,8 @@ extension JSON {
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter fallback: Value to use when one is missing at the subscript
     /// - returns: An `Dictionary` of `String` mapping to `JSON` elements
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:or:)`.
-    /// - seealso: `JSON.decode(_:or:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:fallback:transform:)`.
+    /// - seealso: `optionalAtPath(_:ifNotFound)`.
     public func dictionary(path: JSONPathType..., @autoclosure or fallback: () -> [Swift.String: JSON]) throws -> [Swift.String: JSON] {
         return try mapOptionalAtPath(path, fallback: fallback, transform: JSON.getDictionary)
     }
@@ -424,10 +426,10 @@ extension JSON {
     /// Optionally decodes into the returning type from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNull: If `true`, target values matching `Null` are treated
-    ///   as `nil`.
+    ///                     as `nil`.
     /// - parameter type: If the context this method is called from does not
-    ///   make the return type clear, pass a type implementing `JSONDecodable`
-    ///   to disambiguate the type to decode with.
+    ///                   make the return type clear, pass a type implementing `JSONDecodable`
+    ///                   to disambiguate the type to decode with.
     /// - returns: A decoded value from the inner JSON if found, or `nil`.
     /// - throws: One of the following errors contained in `JSON.Error`:
     ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
@@ -444,12 +446,12 @@ extension JSON {
     }
 
     /// Optionally retrieves a `Double` from a path into JSON.
-    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`.
     /// - parameter ifNull: If `true`, target values matching `Null` are treated
-    ///             as `nil`.
+    ///                     as `nil`.
     /// - returns: A `Double` if a value could be found, otherwise `nil`.
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNull:type:)`.
-    /// - seealso: `JSON.decode(_:ifNull:type:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:ifNull:transform:)`.
+    /// - seealso: `valueAtPath(_:detectNull)`
     public func double(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Double? {
         return try mapOptionalAtPath(path, ifNull: ifNull, transform: Swift.Double.init)
     }
@@ -459,8 +461,8 @@ extension JSON {
     /// - parameter ifNull: If `true`, target values matching `Null` are treated
     ///             as `nil`.
     /// - returns: A numeric `Int` if a value could be found, otherwise `nil`.
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNull:type:)`.
-    /// - seealso: `JSON.decode(_:ifNull:type:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:ifNull:transform:)`.
+    /// - seealso: `valueAtPath(_:detectNull)`
     public func int(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Int? {
         return try mapOptionalAtPath(path, ifNull: ifNull, transform: Swift.Int.init)
     }
@@ -470,8 +472,8 @@ extension JSON {
     /// - parameter ifNull: If `true`, target values matching `Null` are treated
     ///             as `nil`.
     /// - returns: A text `String` if a value could be found, otherwise `nil`.
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNull:type:)`.
-    /// - seealso: `JSON.decode(_:ifNull:type:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:ifNull:transform:)`.
+    /// - seealso: `valueAtPath(_:detectNull)`
     public func string(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.String? {
         return try mapOptionalAtPath(path, ifNull: ifNull, transform: Swift.String.init)
     }
@@ -479,10 +481,10 @@ extension JSON {
     /// Optionally retrieves a `Bool` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNull: If `true`, target values matching `Null` are treated
-    ///             as `nil`.
+    ///                     as `nil`.
     /// - returns: A truthy `Bool` if a value could be found, otherwise `nil`.
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNull:type:)`.
-    /// - seealso: `JSON.decode(_:ifNull:type:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:ifNull:transform:)`.
+    /// - seealso: `valueAtPath(_:detectNull)`
     public func bool(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Bool? {
         return try mapOptionalAtPath(path, ifNull: ifNull, transform: Swift.Bool.init)
     }
@@ -490,11 +492,11 @@ extension JSON {
     /// Optionally retrieves a `[JSON]` from a path into the recieving structure.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNull: If `true`, target values matching `Null` are treated
-    ///   as `nil`.
+    ///                     as `nil`.
     /// - returns: An `Array` of `JSON` elements if a value could be found,
-    ///   otherwise `nil`.
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNull:type:)`.
-    /// - seealso: `JSON.decode(_:ifNull:type:)`
+    ///            otherwise `nil`.
+    /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:ifNull:transform:)`.
+    /// - seealso: `valueAtPath(_:detectNull)`
     public func array(path: JSONPathType..., ifNull: Swift.Bool) throws -> [JSON]? {
         return try mapOptionalAtPath(path, ifNull: ifNull, transform: JSON.getArray)
     }
@@ -503,11 +505,10 @@ extension JSON {
     /// JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNotFound: If `true`, missing key or index errors are
-    ///   treated as `nil`.
+    ///                         treated as `nil`.
     /// - returns: An `Array` of decoded elements if found, otherwise `nil`.
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNull:type:)`,
-    ///   or any error that arises from decoding the contained values.
-    /// - seealso: `JSON.decode(_:ifNull:type:)`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:ifNull:transform:)`.
+    /// - seealso: `valueAtPath(_:detectNull)`
     public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., ifNull: Swift.Bool) throws -> [Decoded]? {
         return try mapOptionalAtPath(path, ifNull: ifNull, transform: JSON.getArrayOf)
     }
@@ -516,11 +517,11 @@ extension JSON {
     /// structure.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter ifNull: If `true`, target values matching `Null` are treated
-    ///   as `nil`.
+    ///                     as `nil`.
     /// - returns: A `Dictionary` of `String` mapping to `JSON` elements if a
-    ///   value could be found, otherwise `nil`.
-    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:ifNull:type:)`.
-    /// - seealso: `JSON.decode(_:ifNull:type:)`
+    ///            value could be found, otherwise `nil`.
+    /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:ifNull:transform:)`.
+    /// - seealso: `valueAtPath(_:detectNull)`
     public func dictionary(path: JSONPathType..., ifNull: Swift.Bool) throws -> [Swift.String: JSON]? {
         return try mapOptionalAtPath(path, ifNull: ifNull, transform: JSON.getDictionary)
     }
