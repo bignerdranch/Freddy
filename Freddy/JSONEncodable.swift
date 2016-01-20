@@ -20,7 +20,7 @@ public protocol JSONEncodable {
 extension Array where Element: JSONEncodable {
     /// Converts an instance of `Array` whose elements conform to `JSONEncodable` to `JSON`.
     /// - returns: An instance of `JSON` where the enum case is `.Array`.
-    public func encodeToJSON() -> JSON {
+    public func toJSON() -> JSON {
         let arrayOfJSON = self.map { $0.toJSON() }
         return .Array(arrayOfJSON)
     }
@@ -30,7 +30,7 @@ extension Dictionary where Value: JSONEncodable {
     /// Converts an instance of `Dictionary` whose values conform to `JSONEncodable` to `JSON`.  The keys in the resulting
     /// `JSON.Dictionary` will be of type `String`.
     /// - returns: An instance of `JSON` where the enum case is `.Dictionary`.
-    public func encodeToJSON() -> JSON {
+    public func toJSON() -> JSON {
         var jsonDictionary = [String: JSON]()
         
         for (k, v) in self {
