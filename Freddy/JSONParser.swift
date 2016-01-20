@@ -62,14 +62,13 @@ private struct Literal {
 
 private let ParserMaximumDepth = 512
 
-/**
-A pure Swift JSON parser. This parser is much faster than the
-`NSJSONSerialization`-based parser (due to the overhead of having to
-dynamically cast the Objective-C objects to determine their type); however,
-it is much newer and has restrictions that the `NSJSONSerialization` parser
-does not. Two restrictions in particular are that it requires UTF-8 data as
-input and it does not allow trailing commas in arrays or dictionaries.
-**/
+
+/// A pure Swift JSON parser. This parser is much faster than the
+/// `NSJSONSerialization`-based parser (due to the overhead of having to
+/// dynamically cast the Objective-C objects to determine their type); however,
+/// it is much newer and has restrictions that the `NSJSONSerialization` parser
+/// does not. Two restrictions in particular are that it requires UTF-8 data as
+/// input and it does not allow trailing commas in arrays or dictionaries.
 public struct JSONParser {
 
     private enum Sign: Int {
