@@ -20,7 +20,7 @@ You have three different options to install Freddy.
 
 ## Usage
 
-This section describes Freddy's basic usage. You can find more examples on parsing data, dealing with errors, serializing `JSON` instances into `NSData`, and more in the [Wiki](https://github.com/bignerdranch/Freddy/wiki). 
+This section describes Freddy's basic usage. You can find more examples on parsing data, dealing with errors, serializing `JSON` instances into `NSData`, and more in the [Wiki](https://github.com/bignerdranch/Freddy/wiki).
 
 Consider some example JSON data:
 
@@ -61,7 +61,7 @@ Here is a quick example on how to parse this data using Freddy:
 ```swift
 let data = getSomeData()
 do {
-    let json = try JSON(data: data) 
+    let json = try JSON(data: data)
     let success = try json.bool("success")
     // do something with `success`
 } catch {
@@ -84,13 +84,13 @@ do {
 }
 ```
 
-In the code `json.array("states","Georgia")`, the keys `"states"` and `"Georgia"` describe a path to the Georgia zip codes within `json`. 
+In the code `json.array("states","Georgia")`, the keys `"states"` and `"Georgia"` describe a path to the Georgia zip codes within `json`.
 `Freddy`'s parlance calls this process "subscripting" the JSON.
 What is typed between the parentheses of, for example, `array(_:)` is a comma-separated list of keys and indices that describe the path to a value of interest.
 
 There can be any number of subscripts, and each subscript can be either a `String` indicating a named element in the JSON, or an `Int` that represents an element in an array. If there is something invalid in the path such as an index that doesn't exist in the JSON, an error will be thrown.
 
-[More on Subscripting](https://github.com/bignerdranch/Freddy/wiki/Subscripting) 
+[More on Subscripting](https://github.com/bignerdranch/Freddy/wiki/Subscripting)
 
 Now, let's look an example that parses the data into a model class:
 
@@ -98,8 +98,8 @@ Now, let's look an example that parses the data into a model class:
 let data = getSomeData()
 do {
     let json = try JSON(data: data)
-    let people = try json.array("people").map(Person.init) 
-    // do something with `people`    
+    let people = try json.array("people").map(Person.init)
+    // do something with `people`
 } catch {
     // do something with the error
 }
@@ -133,11 +133,11 @@ extension Person: JSONDecodable {
         name = try value.string("name")
         age = try value.int("age")
         spouse = try value.bool("spouse")
-    } 
+    }
 }
 ```
 
-`Person` just has a few properties. It conforms to `JSONDecodable` via an extension. In the extension, we implement a `throws`ing initializer that takes an instance of `JSON` as its sole parameter. In the implementation, we `try` three functions: 1) `string(_:)`, 2) `int(_:)`, and 3) `bool(_:)`. Each of these works as you have seen before. The methods take in a path, which is used to find a value of a specific type within the `JSON` instance passed to the initializer. Since these paths could be bad, or the requested type may not match what is actually inside of the `JSON`, these methods may potentially throw an error. 
+`Person` just has a few properties. It conforms to `JSONDecodable` via an extension. In the extension, we implement a `throws`ing initializer that takes an instance of `JSON` as its sole parameter. In the implementation, we `try` three functions: 1) `string(_:)`, 2) `int(_:)`, and 3) `bool(_:)`. Each of these works as you have seen before. The methods take in a path, which is used to find a value of a specific type within the `JSON` instance passed to the initializer. Since these paths could be bad, or the requested type may not match what is actually inside of the `JSON`, these methods may potentially throw an error.
 
 ## Setting Breakpoint Errors
 
@@ -147,15 +147,15 @@ In particular, you will likely want to set a breakpoint for `Freddy`'s `JSON.Err
 
 Here is how you can set this sort of breakpoint:
 
-1) Go to the Breakpoint navigator 
+1) Go to the Breakpoint navigator
 
 2) Click the "+" button in the bottom left corner
 
-![Breakpoint navigator](./README_Images/projectNav_addBreakpoint.png)
+![Breakpoint navigator](https://github.com/bignerdranch/Freddy/raw/master/README_Images/projectNav_addBreakpoint.png)
 
 3) Select "Add Swift Error Breakpoint"
 
-![Add Error Breakpoint](./README_Images/addErrorBreakpoint.png)
+![Add Error Breakpoint](https://github.com/bignerdranch/Freddy/raw/master/README_Images/addErrorBreakpoint.png)
 
 Now you have a breakpoint that will only trigger when a Swift error is generated.
 But you program will break whenever *any* Swift error is thrown.
@@ -167,15 +167,14 @@ You can edit the breakpoint to add a filter:
 
 2) Select Edit Breakpoint...
 
-![Edit Breakpoint](./README_Images/editBreakpoint.png)
+![Edit Breakpoint](https://github.com/bignerdranch/Freddy/raw/master/README_Images/editBreakpoint.png)
 
 3) A window will appear with a text box for "Type"
 
-4) Enter `JSON.Error` 
+4) Enter `JSON.Error`
 
-![Error Type](./README_Images/addType.png)
+![Error Type](https://github.com/bignerdranch/Freddy/raw/master/README_Images/addType.png)
 
-And that is pretty much it! You now have an error breakpoint that will only trigger when errors of type `JSON.Error` are thrown. 
+And that is pretty much it! You now have an error breakpoint that will only trigger when errors of type `JSON.Error` are thrown.
 Take a look at the framework's tests for further examples of usage.
 The Wiki also have a lot of very useful information.
-
