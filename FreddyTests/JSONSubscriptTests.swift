@@ -93,26 +93,6 @@ class JSONSubscriptTests: XCTestCase {
         }
     }
     
-    func testThatMapAndPartitionCanGatherPeopleInSuccesses() {
-        let peopleJSON = try! json.array("people")
-        let (people, errors) = peopleJSON.mapAndPartition(Person.init)
-        XCTAssertEqual(errors.count, 0, "There should be no errors in `failures`.")
-        XCTAssertGreaterThan(people.count, 0, "There should be people in `successes`.")
-    }
-    
-    func testThatMapAndPartitionCanGatherErrorsInFailures() {
-        let jsonArray: JSON = [
-            [ "name": "Matt Mathias", "age": 32, "spouse": true ],
-            [ "name": "Drew Mathias", "age": 33, "spouse": true ],
-            [ "name": "Sergeant Pepper" ]
-        ]
-        let data = try! jsonArray.serialize()
-        let deserializedArray = try! JSON(data: data, usingParser: parser()).array()
-        let (successes, failures) = deserializedArray.mapAndPartition(Person.init)
-        XCTAssertEqual(failures.count, 1, "There should be one error in `failures`.")
-        XCTAssertEqual(successes.count, 2, "There should be two people in `successes`.")
-    }
-    
     func testThatSubscriptingJSONWorksForTopLevelObject() {
         let success = try? json.bool("success")
         XCTAssertEqual(success, true, "There should be `success`.")
