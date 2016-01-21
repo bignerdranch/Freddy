@@ -135,5 +135,30 @@ extension Person: JSONDecodable {
 
 `Person` just has a few properties. It conforms to `JSONDecodable` via an extension. In the extension, we implement a `throws`ing initializer that takes an instance of `JSON` as its sole parameter. In the implementation, we `try` three functions: 1) `string(_:)`, 2) `int(_:)`, and 3) `bool(_:)`. Each of these works as you have seen before. The methods take in a path, which is used to find a value of a specific type within the `JSON` instance passed to the initializer. Since these paths could be bad, or the requested type may not match what is actually inside of the `JSON`, these methods may potentially throw an error. 
 
-And that is pretty much it! Take a look at the framework's tests for further examples of usage.
+## Setting Breakpoint Errors
+
+It can be helpful to set breakpoints for errors when you start working with a new set of JSON.
+This allows you to explore the structure of the JSON when you break.
+In particular, you will likely want to set a breakpoint for `Freddy`'s `JSON.Error` so that you can inspect what went wrong.
+
+Here is how you can set this sort of breakpoint:
+
+1. Go to the Breakpoint navigator 
+2. Click the "+" button in the bottom left corner
+3. Select "Add Swift Error Breakpoint"
+
+Now you have a breakpoint that will only trigger when a Swift error is generated.
+But you program will break whenever *any* Swift error is thrown.
+What if you only want to break for `Freddy`'s `JSON.Error` error?
+
+You can edit the breakpoint to add a filter:
+
+1. Right-click your new error breakpoint
+2. Select Edit Breakpoint...
+3. A window will appear with a text box for "Type"
+4. Enter `JSON.Error` 
+
+And that is pretty much it! You now have an error breakpoint that will only trigger when errors of type `JSON.Error` are thrown. 
+Take a look at the framework's tests for further examples of usage.
+The Wiki also have a lot of very useful information.
 
