@@ -145,7 +145,9 @@ Here is how you can set this sort of breakpoint:
 
 1. Go to the Breakpoint navigator 
 2. Click the "+" button in the bottom left corner
+![Breakpoint navigator](./README_Images/projectNav_addBreakpoint.png)
 3. Select "Add Swift Error Breakpoint"
+![Add Error Breakpoint](./README_Images/addErrorBreakpoint.png)
 
 Now you have a breakpoint that will only trigger when a Swift error is generated.
 But you program will break whenever *any* Swift error is thrown.
@@ -155,8 +157,10 @@ You can edit the breakpoint to add a filter:
 
 1. Right-click your new error breakpoint
 2. Select Edit Breakpoint...
+![Edit Breakpoint](./README_Images/editBreakpoint.png)
 3. A window will appear with a text box for "Type"
 4. Enter `JSON.Error` 
+![Error Type](./README_Images/addType.png)
 
 And that is pretty much it! You now have an error breakpoint that will only trigger when errors of type `JSON.Error` are thrown. 
 Take a look at the framework's tests for further examples of usage.
