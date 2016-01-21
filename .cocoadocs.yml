@@ -1,0 +1,10 @@
+highlight-font: '"Cabrito", "Lucida Bright", "Georgia", serif'
+body: '"Cabrito Sans", "Lucida Grande", "Helvetica", sans-serif'
+
+highlight-color: "#F4B028"
+highlight-dark-color: "#E15829"
+darker-color: "#6A8136"
+darker-dark-color: "#444440"
+background-color: "#F5F4F1"
+alt-link-color: "#E15829"
+warning-color: "#E15829"
