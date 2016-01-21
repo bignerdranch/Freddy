@@ -84,7 +84,11 @@ do {
 }
 ```
 
-There can be any number of subscripts and each subscript can be either a `String` indicating a named element in the JSON, or an `Int` that represents an element in an array. If there is something invalid in the path such as an index that doesn't exist in the JSON, an error will be thrown.
+In the code `json.array("states","Georgia")`, the keys `"states"` and `"Georgia"` describe a path to the Georgia zip codes within `json`. 
+`Freddy`'s parlance calls this process "subscripting" the JSON.
+What is typed between the parentheses of, for example, `array(_:)` is a comma-separated list of keys and indices that describe the path to a value of interest.
+
+There can be any number of subscripts, and each subscript can be either a `String` indicating a named element in the JSON, or an `Int` that represents an element in an array. If there is something invalid in the path such as an index that doesn't exist in the JSON, an error will be thrown.
 
 [More on Subscripting](https://github.com/bignerdranch/Freddy/wiki/Subscripting) 
 
