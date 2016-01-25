@@ -1109,6 +1109,7 @@
 				DBF9D6421C3875100038E08E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
