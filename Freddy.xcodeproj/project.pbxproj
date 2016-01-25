@@ -374,7 +374,7 @@
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/zw/Documents/Work/Freddy/FreddyTests;
+			buildWorkingDirectory = "$(PROJECT_DIR)/FreddyTests";
 			dependencies = (
 			);
 			name = "Download Benchmark JSON";
