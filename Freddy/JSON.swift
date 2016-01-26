@@ -39,8 +39,8 @@ extension JSON {
         /// The JSON is not subscriptable with `type`
         case UnexpectedSubscript(type: JSONPathType.Type)
         
-        /// Unexpected JSON was found that is not convertible to `type`
-        case ValueNotConvertible(type: Any.Type)
+        /// Unexpected JSON `value` was found that is not convertible `to` type 
+        case ValueNotConvertible(to: Any.Type, value: JSON)
     }
 
 }
