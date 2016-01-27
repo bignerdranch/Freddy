@@ -87,6 +87,7 @@ public struct JSONParser {
     }
 
     public mutating func parse() throws -> JSON {
+        try evaluateEncoding()
         let value = try parseValue()
         skipWhitespace()
         guard loc == input.count else {
@@ -157,6 +158,26 @@ public struct JSONParser {
             default:
                 return
             }
+        }
+    }
+
+    private func evaluateEncoding() throws {
+        var headerBytes = [UInt8]()
+        if input.count >= 4 {
+            for loc in 0..<4 {
+                headerBytes.append(input[loc])
+            }
+        } else if input.count >= 2 {
+            for loc in 0..<2 {
+                headerBytes.append(input[loc])
+            }
+        } else {
+            throw Error.EndOfStreamUnexpected
+        }
+
+        let encoding = JSONEncodingDetector.detectEncoding(headerBytes)
+        guard encoding == NSUTF8StringEncoding else {
+            throw Error.IncorrectJSONDataEncodingDetected(detectedEncoding: encoding)
         }
     }
 
@@ -629,6 +650,9 @@ extension JSONParser {
         /// Badly-formed number with symbols ("-" or "e") but no following
         /// digits around `offset`.
         case NumberSymbolMissingDigits(offset: Int)
+
+        /// Supplied data is encoded in an unsupported format.
+        case IncorrectJSONDataEncodingDetected(detectedEncoding: NSStringEncoding)
     }
 
 }
