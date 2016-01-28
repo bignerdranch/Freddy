@@ -259,7 +259,7 @@ class JSONParserTests: XCTestCase {
                 try JSONParser.createJSONFromData(data)
                 try JSONParser.createJSONFromData(dataWithBOM)
                 XCTFail("Unexpectedly did not throw an error")
-            } catch JSONParser.Error.IncorrectJSONDataEncodingDetected(_) {
+            } catch JSONParser.Error.InvalidUnicodeStreamEncoding(_) {
                 break
             } catch {
                 XCTFail("Incorrect error received.: \(error)")
