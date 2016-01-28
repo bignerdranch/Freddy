@@ -168,9 +168,7 @@ public struct JSONParser {
             return
         }
 
-        for _ in 0..<bomLength {
-            loc = loc.successor()
-        }
+        loc = loc.advancedBy(bomLength)
     }
 
     private func guardAgainstUnsupportedEncodings() throws {
