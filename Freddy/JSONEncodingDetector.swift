@@ -60,7 +60,7 @@ public struct JSONEncodingDetector {
             return .UTF8
         }
 
-        if let encoding = JSONEncodingDetector.encodingFromBOM(prefix).encoding {
+        if let encoding = JSONEncodingDetector.encodingFromBOM(prefix)?.encoding {
             return encoding
         } else {
             switch prefix {
@@ -84,7 +84,7 @@ public struct JSONEncodingDetector {
 
     static func byteOrderMarkLength(header: Slice<UnsafeBufferPointer<UInt8>>) -> Int {
         guard let prefix = prefixFromHeader(header),
-            bomLength = encodingFromBOM(prefix).length else {
+            bomLength = encodingFromBOM(prefix)?.length else {
             return 0
         }
         return bomLength
@@ -100,7 +100,7 @@ public struct JSONEncodingDetector {
         return nil
     }
 
-    private static func encodingFromBOM(prefix: EncodingBytePrefix) -> (encoding: Encoding?, length: Int?) {
+    private static func encodingFromBOM(prefix: EncodingBytePrefix) -> (encoding: Encoding, length: Int)? {
         switch prefix {
         case(0xFE, 0xFF, _, _):
             return (.UTF16BE, 2)
@@ -113,7 +113,7 @@ public struct JSONEncodingDetector {
         case(0xFF, 0xFE, _, _):
             return (.UTF16LE, 2)
         default:
-            return (nil, nil)
+            return nil
         }
     }
 }
