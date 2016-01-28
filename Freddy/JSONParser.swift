@@ -162,20 +162,8 @@ public struct JSONParser {
     }
 
     private func evaluateEncoding() throws {
-        var headerBytes = [UInt8]()
-        if input.count >= 4 {
-            for loc in 0..<4 {
-                headerBytes.append(input[loc])
-            }
-        } else if input.count >= 2 {
-            for loc in 0..<2 {
-                headerBytes.append(input[loc])
-            }
-        } else {
-            throw Error.EndOfStreamUnexpected
-        }
-
-        let encoding = JSONEncodingDetector.detectEncoding(headerBytes)
+        let header = input.prefix(4)
+        let encoding = JSONEncodingDetector.detectEncoding(header)
         guard encoding == NSUTF8StringEncoding else {
             throw Error.InvalidUnicodeStreamEncoding(detectedEncoding: encoding)
         }

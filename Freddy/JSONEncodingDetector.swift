@@ -39,7 +39,7 @@ struct JSONEncodingDetector {
     ////
     //// - parameter header: The array of data being read and evaluated.
     //// - returns: The NSStringEncoding that was detected.
-    static func detectEncoding(header: [UInt8]) -> NSStringEncoding {
+    static func detectEncoding(header: Slice<UnsafeBufferPointer<UInt8>>) -> NSStringEncoding {
         if let encoding = JSONEncodingDetector.encodingFromBOM(header) {
             return encoding
         } else {
@@ -70,7 +70,7 @@ struct JSONEncodingDetector {
         }
     }
 
-    private static func encodingFromBOM(header: [UInt8]) -> NSStringEncoding? {
+    private static func encodingFromBOM(header: Slice<UnsafeBufferPointer<UInt8>>) -> NSStringEncoding? {
         let length = header.count
         if length >= 2 {
             switch (header[0], header[1]) {
