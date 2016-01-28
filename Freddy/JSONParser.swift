@@ -87,7 +87,7 @@ public struct JSONParser {
     }
 
     public mutating func parse() throws -> JSON {
-        try evaluateEncoding()
+        try guardAgainstUnsupportedEncodings()
         let value = try parseValue()
         skipWhitespace()
         guard loc == input.count else {
@@ -161,7 +161,7 @@ public struct JSONParser {
         }
     }
 
-    private func evaluateEncoding() throws {
+    private func guardAgainstUnsupportedEncodings() throws {
         let header = input.prefix(4)
         let encoding = JSONEncodingDetector.detectEncoding(header)
         guard encoding == NSUTF8StringEncoding else {
