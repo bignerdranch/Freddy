@@ -16,56 +16,56 @@ class JSONEncodingDetectorTests: XCTestCase {
     // MARK: - UTF16
 
     func testUTF16LittleEndianDetection() {
-        let encoding = JSONEncodingDetector.detectEncoding(fixtures.prefixSlice(.UTF16LE, includeBOM: false))
+        let encoding = fixtures.withPrefixSlice(.UTF16LE, includeBOM: false, body: JSONEncodingDetector.detectEncoding)
         XCTAssertEqual(encoding, NSUTF16LittleEndianStringEncoding)
     }
 
     func testUTF16LittleEndianWithBOMDetection() {
-        let encoding = JSONEncodingDetector.detectEncoding(fixtures.prefixSlice(.UTF16LE, includeBOM: true))
+        let encoding = fixtures.withPrefixSlice(.UTF16LE, includeBOM: true, body: JSONEncodingDetector.detectEncoding)
         XCTAssertEqual(encoding, NSUTF16LittleEndianStringEncoding)
     }
 
     func testUTF16BigEndianDetection() {
-        let encoding = JSONEncodingDetector.detectEncoding(fixtures.prefixSlice(.UTF16BE, includeBOM: false))
+        let encoding = fixtures.withPrefixSlice(.UTF16BE, includeBOM: false, body: JSONEncodingDetector.detectEncoding)
         XCTAssertEqual(encoding, NSUTF16BigEndianStringEncoding)
     }
 
     func testUTF16BigEndianWithBOMDetection() {
-        let encoding = JSONEncodingDetector.detectEncoding(fixtures.prefixSlice(.UTF16BE, includeBOM: true))
+        let encoding = fixtures.withPrefixSlice(.UTF16BE, includeBOM: true, body: JSONEncodingDetector.detectEncoding)
         XCTAssertEqual(encoding, NSUTF16BigEndianStringEncoding)
     }
 
     // MARK: - UTF32
 
     func testUTF32LittleEndianDetection() {
-        let encoding = JSONEncodingDetector.detectEncoding(fixtures.prefixSlice(.UTF32LE, includeBOM: false))
+        let encoding = fixtures.withPrefixSlice(.UTF32LE, includeBOM: false, body: JSONEncodingDetector.detectEncoding)
         XCTAssertEqual(encoding, NSUTF32LittleEndianStringEncoding)
     }
 
     func testUTF32LittleEndianWithBOMDetection() {
-        let encoding = JSONEncodingDetector.detectEncoding(fixtures.prefixSlice(.UTF32LE, includeBOM: true))
+        let encoding = fixtures.withPrefixSlice(.UTF32LE, includeBOM: true, body: JSONEncodingDetector.detectEncoding)
         XCTAssertEqual(encoding, NSUTF32LittleEndianStringEncoding)
     }
 
     func testUTF32BigEndianDetection() {
-        let encoding = JSONEncodingDetector.detectEncoding(fixtures.prefixSlice(.UTF32BE, includeBOM: false))
+        let encoding = fixtures.withPrefixSlice(.UTF32BE, includeBOM: false, body: JSONEncodingDetector.detectEncoding)
         XCTAssertEqual(encoding, NSUTF32BigEndianStringEncoding)
     }
 
     func testUTF32BigEndianWithBOMDetection() {
-        let encoding = JSONEncodingDetector.detectEncoding(fixtures.prefixSlice(.UTF32BE, includeBOM: true))
+        let encoding = fixtures.withPrefixSlice(.UTF32BE, includeBOM: true, body: JSONEncodingDetector.detectEncoding)
         XCTAssertEqual(encoding, NSUTF32BigEndianStringEncoding)
     }
 
     // MARK: - UTF8
 
     func testUTF8Detection() {
-        let encoding = JSONEncodingDetector.detectEncoding(fixtures.prefixSlice(.UTF8, includeBOM: false))
+        let encoding = fixtures.withPrefixSlice(.UTF8, includeBOM: false, body: JSONEncodingDetector.detectEncoding)
         XCTAssertEqual(encoding, NSUTF8StringEncoding)
     }
 
     func testUTF8WithBOMDetection() {
-        let encoding = JSONEncodingDetector.detectEncoding(fixtures.prefixSlice(.UTF8, includeBOM: true))
+        let encoding = fixtures.withPrefixSlice(.UTF8, includeBOM: true, body: JSONEncodingDetector.detectEncoding)
         XCTAssertEqual(encoding, NSUTF8StringEncoding)
     }
 }
@@ -95,11 +95,11 @@ struct JSONEncodingUTFTestFixtures {
         }
     }
 
-    func prefixSlice(encoding: Encoding, includeBOM: Bool) -> Slice<UnsafeBufferPointer<UInt8>> {
+    func withPrefixSlice<R>(encoding: Encoding, includeBOM: Bool, @noescape body: Slice<UnsafeBufferPointer<UInt8>> -> R) -> R {
         let array = hexArray(encoding, includeBOM: includeBOM)
-        let buffer = UnsafeBufferPointer<UInt8>(start: array, count: array.count)
-        let prefix = buffer.prefix(4)
-        return prefix
+        return array.withUnsafeBufferPointer() {
+            body($0.prefix(4))
+        }
     }
 
     // MARK: - UTF16
