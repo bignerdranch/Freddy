@@ -6,10 +6,25 @@
 //  Copyright © 2016 Big Nerd Ranch. All rights reserved.
 //
 
-import Foundation
-
 /// Struct for attempting to detect the Unicode encoding used with the data supplied to the JSONParser
-struct JSONEncodingDetector {
+public struct JSONEncodingDetector {
+
+    //// The Unicode encodings looked for during detection
+    public enum Encoding {
+        //// UTF-8
+        case UTF8
+        //// UTF-16 Little Endian
+        case UTF16LE
+        //// UTF-16 Big Endian
+        case UTF16BE
+        //// UTF-32 Little Endian
+        case UTF32LE
+        //// UTF-32 Big Endian
+        case UTF32BE
+    }
+
+    //// The Unicode encodings supported by JSONParser.swift
+    public static let supportedEncodings: [Encoding] = [.UTF8]
 
     //// Attempts to detect the Unicode encoding used for a given set of data.
     ////
@@ -39,56 +54,56 @@ struct JSONEncodingDetector {
     ////
     //// - parameter header: The array of data being read and evaluated.
     //// - returns: The NSStringEncoding that was detected.
-    static func detectEncoding(header: Slice<UnsafeBufferPointer<UInt8>>) -> NSStringEncoding {
+    static func detectEncoding(header: Slice<UnsafeBufferPointer<UInt8>>) -> Encoding {
         if let encoding = JSONEncodingDetector.encodingFromBOM(header) {
             return encoding
         } else {
             if header.count >= 4 {
                 switch (header[0], header[1], header[2], header[3]) {
                 case (0, 0, 0, _):
-                    return NSUTF32BigEndianStringEncoding
+                    return .UTF32BE
                 case (_, 0, 0, 0):
-                    return NSUTF32LittleEndianStringEncoding
+                    return .UTF32LE
                 case (0, _, 0, _):
-                    return NSUTF16BigEndianStringEncoding
+                    return .UTF16BE
                 case (_, 0, _, 0):
-                    return NSUTF16LittleEndianStringEncoding
+                    return .UTF16LE
                 default:
                     break
                 }
             } else if header.count >= 2 {
                 switch (header[0], header[1]) {
                 case (0, _):
-                    return NSUTF16BigEndianStringEncoding
+                    return .UTF16BE
                 case (_, 0):
-                    return NSUTF16LittleEndianStringEncoding
+                    return .UTF16LE
                 default:
                     break
                 }
             }
-            return NSUTF8StringEncoding
+            return .UTF8
         }
     }
 
-    private static func encodingFromBOM(header: Slice<UnsafeBufferPointer<UInt8>>) -> NSStringEncoding? {
+    private static func encodingFromBOM(header: Slice<UnsafeBufferPointer<UInt8>>) -> Encoding? {
         let length = header.count
         if length >= 2 {
             switch (header[0], header[1]) {
             case (0xEF, 0xBB):
                 if length >= 3 && header[2] == 0xBF {
-                    return NSUTF8StringEncoding
+                    return .UTF8
                 }
             case (0x00, 0x00):
                 if length >= 4 && header[2] == 0xFE && header[3] == 0xFF {
-                    return NSUTF32BigEndianStringEncoding
+                    return .UTF32BE
                 }
             case (0xFF, 0xFE):
                 if length >= 4 && header[2] == 0 && header[3] == 0 {
-                    return NSUTF32LittleEndianStringEncoding
+                    return .UTF32LE
                 }
-                return NSUTF16LittleEndianStringEncoding
+                return .UTF16LE
             case (0xFE, 0xFF):
-                return NSUTF16BigEndianStringEncoding
+                return .UTF16BE
             default:
                 break
             }

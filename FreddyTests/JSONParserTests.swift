@@ -242,7 +242,7 @@ class JSONParserTests: XCTestCase {
 
     func testThatParserFailsForUnsupportedEncodings() {
 
-        let unsupportedEncodings: [JSONEncodingUTFTestFixtures.Encoding] = [
+        let unsupportedEncodings: [JSONEncodingDetector.Encoding] = [
             .UTF16LE,
             .UTF16BE,
             .UTF32LE,

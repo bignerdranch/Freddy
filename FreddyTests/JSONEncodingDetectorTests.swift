@@ -16,86 +16,88 @@ class JSONEncodingDetectorTests: XCTestCase {
     // MARK: - UTF16
 
     func testUTF16LittleEndianDetection() {
-        let encoding = fixtures.withPrefixSlice(.UTF16LE, includeBOM: false, body: JSONEncodingDetector.detectEncoding)
-        XCTAssertEqual(encoding, NSUTF16LittleEndianStringEncoding)
+        let expectedEncoding: JSONEncodingDetector.Encoding = .UTF16LE
+        let encoding = fixtures.withPrefixSlice(expectedEncoding, includeBOM: false, body: JSONEncodingDetector.detectEncoding)
+        XCTAssertEqual(encoding, expectedEncoding)
     }
 
     func testUTF16LittleEndianWithBOMDetection() {
+        let expectedEncoding: JSONEncodingDetector.Encoding = .UTF16LE
         let encoding = fixtures.withPrefixSlice(.UTF16LE, includeBOM: true, body: JSONEncodingDetector.detectEncoding)
-        XCTAssertEqual(encoding, NSUTF16LittleEndianStringEncoding)
+        XCTAssertEqual(encoding, expectedEncoding)
     }
 
     func testUTF16BigEndianDetection() {
+        let expectedEncoding: JSONEncodingDetector.Encoding = .UTF16BE
         let encoding = fixtures.withPrefixSlice(.UTF16BE, includeBOM: false, body: JSONEncodingDetector.detectEncoding)
-        XCTAssertEqual(encoding, NSUTF16BigEndianStringEncoding)
+        XCTAssertEqual(encoding, expectedEncoding)
     }
 
     func testUTF16BigEndianWithBOMDetection() {
+        let expectedEncoding: JSONEncodingDetector.Encoding = .UTF16BE
         let encoding = fixtures.withPrefixSlice(.UTF16BE, includeBOM: true, body: JSONEncodingDetector.detectEncoding)
-        XCTAssertEqual(encoding, NSUTF16BigEndianStringEncoding)
+        XCTAssertEqual(encoding, expectedEncoding)
     }
 
     // MARK: - UTF32
 
     func testUTF32LittleEndianDetection() {
-        let encoding = fixtures.withPrefixSlice(.UTF32LE, includeBOM: false, body: JSONEncodingDetector.detectEncoding)
-        XCTAssertEqual(encoding, NSUTF32LittleEndianStringEncoding)
+        let expectedEncoding: JSONEncodingDetector.Encoding = .UTF32LE
+        let encoding = fixtures.withPrefixSlice(expectedEncoding, includeBOM: false, body: JSONEncodingDetector.detectEncoding)
+        XCTAssertEqual(encoding, expectedEncoding)
     }
 
     func testUTF32LittleEndianWithBOMDetection() {
+        let expectedEncoding: JSONEncodingDetector.Encoding = .UTF32LE
         let encoding = fixtures.withPrefixSlice(.UTF32LE, includeBOM: true, body: JSONEncodingDetector.detectEncoding)
-        XCTAssertEqual(encoding, NSUTF32LittleEndianStringEncoding)
+        XCTAssertEqual(encoding, expectedEncoding)
     }
 
     func testUTF32BigEndianDetection() {
+        let expectedEncoding: JSONEncodingDetector.Encoding = .UTF32BE
         let encoding = fixtures.withPrefixSlice(.UTF32BE, includeBOM: false, body: JSONEncodingDetector.detectEncoding)
-        XCTAssertEqual(encoding, NSUTF32BigEndianStringEncoding)
+        XCTAssertEqual(encoding, expectedEncoding)
     }
 
     func testUTF32BigEndianWithBOMDetection() {
+        let expectedEncoding: JSONEncodingDetector.Encoding = .UTF32BE
         let encoding = fixtures.withPrefixSlice(.UTF32BE, includeBOM: true, body: JSONEncodingDetector.detectEncoding)
-        XCTAssertEqual(encoding, NSUTF32BigEndianStringEncoding)
+        XCTAssertEqual(encoding, expectedEncoding)
     }
 
     // MARK: - UTF8
 
     func testUTF8Detection() {
+        let expectedEncoding: JSONEncodingDetector.Encoding = .UTF8
         let encoding = fixtures.withPrefixSlice(.UTF8, includeBOM: false, body: JSONEncodingDetector.detectEncoding)
-        XCTAssertEqual(encoding, NSUTF8StringEncoding)
+        XCTAssertEqual(encoding, expectedEncoding)
     }
 
     func testUTF8WithBOMDetection() {
+        let expectedEncoding: JSONEncodingDetector.Encoding = .UTF8
         let encoding = fixtures.withPrefixSlice(.UTF8, includeBOM: true, body: JSONEncodingDetector.detectEncoding)
-        XCTAssertEqual(encoding, NSUTF8StringEncoding)
+        XCTAssertEqual(encoding, expectedEncoding)
     }
 }
 
 struct JSONEncodingUTFTestFixtures {
 
-    enum Encoding {
-        case UTF8
-        case UTF16LE
-        case UTF16BE
-        case UTF32LE
-        case UTF32BE
-    }
-
-    func hexArray(encoding: Encoding, includeBOM: Bool) -> [UInt8] {
+    func hexArray(encoding: JSONEncodingDetector.Encoding, includeBOM: Bool) -> [UInt8] {
         switch encoding {
-        case Encoding.UTF8:
+        case .UTF8:
             return includeBOM ? utf8BOM + utf8Hex : utf8Hex
-        case Encoding.UTF16LE:
+        case .UTF16LE:
             return includeBOM ? utf16LEBOM + utf16LEHex : utf16LEHex
-        case Encoding.UTF16BE:
+        case .UTF16BE:
             return includeBOM ? utf16BEBOM + utf16BEHex : utf16BEHex
-        case Encoding.UTF32LE:
+        case .UTF32LE:
             return includeBOM ? utf32LEBOM + utf32LEHex : utf32LEHex
-        case Encoding.UTF32BE:
+        case .UTF32BE:
             return includeBOM ? utf32BEBOM + utf32BEHex : utf32BEHex
         }
     }
 
-    func withPrefixSlice<R>(encoding: Encoding, includeBOM: Bool, @noescape body: Slice<UnsafeBufferPointer<UInt8>> -> R) -> R {
+    func withPrefixSlice<R>(encoding: JSONEncodingDetector.Encoding, includeBOM: Bool, @noescape body: Slice<UnsafeBufferPointer<UInt8>> -> R) -> R {
         let array = hexArray(encoding, includeBOM: includeBOM)
         return array.withUnsafeBufferPointer() {
             body($0.prefix(4))

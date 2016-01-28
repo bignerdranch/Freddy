@@ -164,7 +164,7 @@ public struct JSONParser {
     private func guardAgainstUnsupportedEncodings() throws {
         let header = input.prefix(4)
         let encoding = JSONEncodingDetector.detectEncoding(header)
-        guard encoding == NSUTF8StringEncoding else {
+        guard JSONEncodingDetector.supportedEncodings.contains(encoding) else {
             throw Error.InvalidUnicodeStreamEncoding(detectedEncoding: encoding)
         }
     }
@@ -640,7 +640,7 @@ extension JSONParser {
         case NumberSymbolMissingDigits(offset: Int)
 
         /// Supplied data is encoded in an unsupported format.
-        case InvalidUnicodeStreamEncoding(detectedEncoding: NSStringEncoding)
+        case InvalidUnicodeStreamEncoding(detectedEncoding: JSONEncodingDetector.Encoding)
     }
 
 }
