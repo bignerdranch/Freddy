@@ -55,59 +55,57 @@ public struct JSONEncodingDetector {
     //// - parameter header: The array of data being read and evaluated.
     //// - returns: The NSStringEncoding that was detected.
     static func detectEncoding(header: Slice<UnsafeBufferPointer<UInt8>>) -> Encoding {
-        if let encoding = JSONEncodingDetector.encodingFromBOM(header) {
+
+        guard let prefix = prefixFromHeader(header) else {
+            return .UTF8
+        }
+
+        if let encoding = JSONEncodingDetector.encodingFromBOM(prefix) {
             return encoding
         } else {
-            if header.count >= 4 {
-                switch (header[0], header[1], header[2], header[3]) {
-                case (0, 0, 0, _):
-                    return .UTF32BE
-                case (_, 0, 0, 0):
-                    return .UTF32LE
-                case (0, _, 0, _):
-                    return .UTF16BE
-                case (_, 0, _, 0):
-                    return .UTF16LE
-                default:
-                    break
-                }
-            } else if header.count >= 2 {
-                switch (header[0], header[1]) {
-                case (0, _):
-                    return .UTF16BE
-                case (_, 0):
-                    return .UTF16LE
-                default:
-                    break
-                }
+            switch prefix {
+            case(0, 0, .Some(0), _):
+                return .UTF32BE
+            case(_, 0, .Some(0), .Some(0)):
+                return .UTF32LE
+            case (0, _, .Some(0), _):
+                return .UTF16BE
+            case (_, 0, _, .Some(0)):
+                return .UTF16LE
+            case (0, _, _, _):
+                return .UTF16BE
+            case (_, 0, _, _):
+                return .UTF16LE
+            default:
+                return .UTF8
             }
-            return .UTF8
         }
     }
 
-    private static func encodingFromBOM(header: Slice<UnsafeBufferPointer<UInt8>>) -> Encoding? {
-        let length = header.count
-        if length >= 2 {
-            switch (header[0], header[1]) {
-            case (0xEF, 0xBB):
-                if length >= 3 && header[2] == 0xBF {
-                    return .UTF8
-                }
-            case (0x00, 0x00):
-                if length >= 4 && header[2] == 0xFE && header[3] == 0xFF {
-                    return .UTF32BE
-                }
-            case (0xFF, 0xFE):
-                if length >= 4 && header[2] == 0 && header[3] == 0 {
-                    return .UTF32LE
-                }
-                return .UTF16LE
-            case (0xFE, 0xFF):
-                return .UTF16BE
-            default:
-                break
-            }
+    typealias EncodingBytePrefix = (UInt8, UInt8, UInt8?, UInt8?)
+    private static func prefixFromHeader(header: Slice<UnsafeBufferPointer<UInt8>>) -> EncodingBytePrefix? {
+        if header.count >= 4 {
+            return(header[0], header[1], header[2], header[3])
+        } else if header.count >= 2 {
+            return (header[0], header[1], nil, nil)
         }
         return nil
+    }
+
+    private static func encodingFromBOM(prefix: EncodingBytePrefix) -> Encoding? {
+        switch prefix {
+        case(0xFE, 0xFF, _, _):
+            return .UTF16BE
+        case(0x00, 0x00, .Some(0xFE), .Some(0xFF)):
+            return .UTF32BE
+        case(0xEF, 0xBB, .Some(0xBF), _):
+            return .UTF8
+        case(0xFF, 0xFE, .Some(0), .Some(0)):
+            return .UTF32LE
+        case(0xFF, 0xFE, _, _):
+            return .UTF16LE
+        default:
+            return nil
+        }
     }
 }
