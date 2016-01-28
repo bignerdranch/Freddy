@@ -64,13 +64,13 @@ public struct JSONEncodingDetector {
             return encoding
         } else {
             switch prefix {
-            case(0, 0, .Some(0), _):
+            case(0, 0, 0?, _):
                 return .UTF32BE
-            case(_, 0, .Some(0), .Some(0)):
+            case(_, 0, 0?, 0?):
                 return .UTF32LE
-            case (0, _, .Some(0), _):
+            case (0, _, 0?, _):
                 return .UTF16BE
-            case (_, 0, _, .Some(0)):
+            case (_, 0, _, 0?):
                 return .UTF16LE
             case (0, _, _, _):
                 return .UTF16BE
@@ -103,11 +103,11 @@ public struct JSONEncodingDetector {
         switch prefix {
         case(0xFE, 0xFF, _, _):
             return (.UTF16BE, 2)
-        case(0x00, 0x00, .Some(0xFE), .Some(0xFF)):
+        case(0x00, 0x00, 0xFE?, 0xFF?):
             return (.UTF32BE, 4)
-        case(0xEF, 0xBB, .Some(0xBF), _):
+        case(0xEF, 0xBB, 0xBF?, _):
             return (.UTF8, 3)
-        case(0xFF, 0xFE, .Some(0), .Some(0)):
+        case(0xFF, 0xFE, 0?, 0?):
             return (.UTF32LE, 4)
         case(0xFF, 0xFE, _, _):
             return (.UTF16LE, 2)
