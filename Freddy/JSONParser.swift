@@ -164,10 +164,7 @@ public struct JSONParser {
 
     private mutating func skipByteOrderMark() {
         let header = input.prefix(4)
-        guard let bomLength = JSONEncodingDetector.byteOrderMarkLength(header) else {
-            return
-        }
-
+        let bomLength = JSONEncodingDetector.byteOrderMarkLength(header)
         loc = loc.advancedBy(bomLength)
     }
 

@@ -82,11 +82,12 @@ public struct JSONEncodingDetector {
         }
     }
 
-    static func byteOrderMarkLength(header: Slice<UnsafeBufferPointer<UInt8>>) -> Int? {
-        guard let prefix = prefixFromHeader(header) else {
-            return nil
+    static func byteOrderMarkLength(header: Slice<UnsafeBufferPointer<UInt8>>) -> Int {
+        guard let prefix = prefixFromHeader(header),
+            bomLength = encodingFromBOM(prefix).length else {
+            return 0
         }
-        return encodingFromBOM(prefix).length
+        return bomLength
     }
 
     typealias EncodingBytePrefix = (UInt8, UInt8, UInt8?, UInt8?)
