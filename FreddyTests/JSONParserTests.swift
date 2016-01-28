@@ -75,6 +75,30 @@ class JSONParserTests: XCTestCase {
         }
     }
     
+    func testThatParserCompletesWithSingleZero() {
+        guard let data = "0".dataUsingEncoding(NSUTF8StringEncoding) else {
+            XCTFail("Cannot create data from string")
+            return
+        }
+
+        do {
+            try JSONParser.createJSONFromData(data)
+        } catch {
+            XCTFail("Unexpected error \(error)")
+        }
+    }
+
+    func testThatParserCompletesWithBOMAndSingleZero() {
+        let hex: [UInt8] = [0xEF, 0xBB, 0xBF, 0x30]
+        let data = NSData(bytes: hex, length: hex.count)
+
+        do {
+            try JSONParser.createJSONFromData(data)
+        } catch {
+            XCTFail("Unexpected error \(error)")
+        }
+    }
+
     func testThatParserUnderstandsNull() {
         let value = try! JSONFromString("null")
         XCTAssertEqual(value, JSON.Null)

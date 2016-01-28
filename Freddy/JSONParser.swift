@@ -88,6 +88,7 @@ public struct JSONParser {
 
     public mutating func parse() throws -> JSON {
         try guardAgainstUnsupportedEncodings()
+        skipByteOrderMark()
         let value = try parseValue()
         skipWhitespace()
         guard loc == input.count else {
@@ -158,6 +159,17 @@ public struct JSONParser {
             default:
                 return
             }
+        }
+    }
+
+    private mutating func skipByteOrderMark() {
+        let header = input.prefix(4)
+        guard let bomLength = JSONEncodingDetector.byteOrderMarkLength(header) else {
+            return
+        }
+
+        for _ in 0..<bomLength {
+            loc = loc.successor()
         }
     }
 
