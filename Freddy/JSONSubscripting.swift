@@ -9,17 +9,37 @@
 // MARK: JSONPathType
 
 /// A protocol used to define a path within an instance of `JSON` that leads to some desired value.
+///
+/// A custom type, such as a `RawRepresentable` enum, may be made to conform to `JSONPathType`
+/// and used with the subscript APIs.
 public protocol JSONPathType {
+    /// Use `self` to key into a `dictionary`.
+    ///
+    /// Unlike Swift dictionaries, failing to find a value for a key should throw
+    /// an error rather than convert to `nil`.
+    ///
+    /// Upon failure, implementers should throw an error from `JSON.Error`.
     func valueInDictionary(dictionary: [Swift.String : JSON]) throws -> JSON
+
+    /// Use `self` to index into an `array`.
+    ///
+    /// Unlike Swift array, attempting to index outside the collection's bounds
+    /// should throw an error rather than crash.
+    ///
+    /// Upon failure, implementers should throw an error from `JSON.Error`.
     func valueInArray(array: [JSON]) throws -> JSON
 }
 
 extension JSONPathType {
 
+    /// The default behavior for keying into a dictionary is to throw
+    /// `JSON.Error.UnexpectedSubscript`.
     public func valueInDictionary(dictionary: [Swift.String : JSON]) throws -> JSON {
         throw JSON.Error.UnexpectedSubscript(type: Self.self)
     }
 
+    /// The default behavior for indexing into an array is to throw
+    /// `JSON.Error.UnexpectedSubscript`.
     public func valueInArray(array: [JSON]) throws -> JSON {
         throw JSON.Error.UnexpectedSubscript(type: Self.self)
     }
