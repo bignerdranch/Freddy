@@ -47,6 +47,7 @@ extension JSON {
 
 // MARK: - Test Equality
 
+/// Return `true` if `lhs` is equal to `rhs`.
 public func ==(lhs: JSON, rhs: JSON) -> Bool {
     switch (lhs, rhs) {
     case (.Array(let arrL), .Array(let arrR)):
@@ -78,6 +79,7 @@ extension JSON: Equatable {}
 
 extension JSON: CustomStringConvertible {
 
+    /// A textual representation of `self`.
     public var description: Swift.String {
         switch self {
         case .Array(let arr):       return Swift.String(arr)
