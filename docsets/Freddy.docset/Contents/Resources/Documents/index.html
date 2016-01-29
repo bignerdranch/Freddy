@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Freddy  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a title="Freddy  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">Freddy Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/bignerdranch/Freddy"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right"><a href="dash-feed://http%3A%2F%2Fbignerdranch%2Egithub%2Eio%2FFreddy%2Fdocsets%2FFreddy%2Exml"><img src="img/dash.png"/>Install in Dash</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">Freddy Reference</a>
+        <img id="carat" src="img/carat.png" />
+        Freddy  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Enums/JSON.html">JSON</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Extensions/Array.html">Array</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/Bool.html">Bool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/Dictionary.html">Dictionary</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/Double.html">Double</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/Int.html">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/NSJSONSerialization.html">NSJSONSerialization</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/String.html">String</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:ZF6Freddyoi2eeFTOS_4JSONS0__Sb">==(_:_:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/JSONDecodable.html">JSONDecodable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/JSONEncodable.html">JSONEncodable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/JSONParserType.html">JSONParserType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/JSONPathType.html">JSONPathType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Structs/JSONEncodingDetector.html">JSONEncodingDetector</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/JSONParser.html">JSONParser</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            
+            <a href='#why_freddy' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='why_freddy'>Why Freddy?</h2>
+
+<p>Parsing JSON elegantly and safely can be hard, but Freddy is here to help. Freddy is a reusable framework for parsing JSON in Swift. It has three principal benefits.</p>
+
+<p>First, Freddy provides a type safe solution to parsing JSON in Swift. This means that the compiler helps you work with sending and receiving JSON in a way that helps to prevent runtime crashes.</p>
+
+<p>Second, Freddy provides an idiomatic solution to JSON parsing that takes advantage of Swift&rsquo;s generics, enumerations, and functional features. This is all provided without the pain of having to memorize our documentation to understand our magical custom operators. Freddy does not have any of those. If you feel comfortable writing Swift (using extensions, protocols, initializers, etc.), then you will not only understand how Freddy is organized, but you will also feel comfortable using Freddy.</p>
+
+<p>Third, Freddy provides great error information for mistakes that commonly occur while parsing JSON.  If you subscript the JSON object with a key that is not present, you get an informative error.  If your desired index is out of bounds, you get an informative error.  If you try to convert a JSON value to the wrong type, you get a good error here too.</p>
+
+<p>So, Freddy vs. JSON, who wins?  We think it is Freddy.</p>
+<a href='#installation' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='installation'>Installation</h2>
+
+<p>You have three different options to install Freddy.</p>
+
+<ol>
+<li>Add the project as a submodule</li>
+<li>Use CocoaPods</li>
+<li>Use Carthage</li>
+</ol>
+<a href='#usage' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='usage'>Usage</h2>
+
+<p>This section describes Freddy&rsquo;s basic usage. You can find more examples on parsing data, dealing with errors, serializing <code>JSON</code> instances into <code>NSData</code>, and more in the <a href="https://github.com/bignerdranch/Freddy/wiki">Wiki</a>.</p>
+
+<p>Consider some example JSON data:</p>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"success"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"people"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Matt Mathias"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"age"</span><span class="p">:</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"spouse"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+        </span><span class="err">}</span><span class="p">,</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sergeant Pepper"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"age"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"spouse"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+        </span><span class="err">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nt">"jobs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"teacher"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"judge"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nt">"states"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"Georgia"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="mi">30301</span><span class="p">,</span><span class="w">
+            </span><span class="mi">30302</span><span class="p">,</span><span class="w">
+            </span><span class="mi">30303</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nt">"Wisconsin"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="mi">53000</span><span class="p">,</span><span class="w">
+            </span><span class="mi">53001</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>Here is a quick example on how to parse this data using Freddy:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="nf">getSomeData</span><span class="p">()</span>
+<span class="k">do</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">json</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">JSON</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">let</span> <span class="nv">success</span> <span class="o">=</span> <span class="k">try</span> <span class="n">json</span><span class="o">.</span><span class="nf">bool</span><span class="p">(</span><span class="s">"success"</span><span class="p">)</span>
+    <span class="c1">// do something with `success`</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+    <span class="c1">// do something with the error</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>After we load in the data, we create an instance of <code>JSON</code>, the workhorse of this framework. This allows us to access the values from the JSON data. We <code>try</code> because the <code>data</code> may be malformed and the parsing could generate an error. Next, we access the <code>&quot;success&quot;</code> key by calling the <code>bool(_:)</code> method on <code>JSON</code>. We <code>try</code> here as well because accessing the <code>json</code> for the key <code>&quot;success&quot;</code> could fail - e.g., if we had passed an unknown key. This method takes two parameters, both of which are used to define a path into the <code>JSON</code> instance to find a Boolean value of interest. If a <code>Bool</code> is found at the path described by <code>&quot;success&quot;</code>, then <code>bool(_:)</code> returns a <code>Bool</code>. If the path does not lead to a <code>Bool</code>, then an appropriate error is thrown.</p>
+
+<p>With Freddy, it is possible to use a path to access elements deeper in the json structure. For example:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="nf">getSomeData</span><span class="p">()</span>
+<span class="k">do</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">json</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">JSON</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">let</span> <span class="nv">georgiaZipCodes</span> <span class="o">=</span> <span class="k">try</span> <span class="n">json</span><span class="o">.</span><span class="nf">array</span><span class="p">(</span><span class="s">"states"</span><span class="p">,</span><span class="s">"Georgia"</span><span class="p">)</span>
+    <span class="k">let</span> <span class="nv">firstPersonName</span> <span class="o">=</span> <span class="k">try</span> <span class="n">json</span><span class="o">.</span><span class="nf">string</span><span class="p">(</span><span class="s">"people"</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">"name"</span><span class="p">)</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+    <span class="c1">// do something with the error</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>In the code <code>json.array(&quot;states&quot;,&quot;Georgia&quot;)</code>, the keys <code>&quot;states&quot;</code> and <code>&quot;Georgia&quot;</code> describe a path to the Georgia zip codes within <code>json</code>.
+<code>Freddy</code>&rsquo;s parlance calls this process <q>subscripting</q> the JSON.
+What is typed between the parentheses of, for example, <code>array(_:)</code> is a comma-separated list of keys and indices that describe the path to a value of interest.</p>
+
+<p>There can be any number of subscripts, and each subscript can be either a <code>String</code> indicating a named element in the JSON, or an <code>Int</code> that represents an element in an array. If there is something invalid in the path such as an index that doesn&rsquo;t exist in the JSON, an error will be thrown.</p>
+
+<p><a href="https://github.com/bignerdranch/Freddy/wiki/Subscripting">More on Subscripting</a></p>
+
+<p>Now, let&rsquo;s look an example that parses the data into a model class:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="nf">getSomeData</span><span class="p">()</span>
+<span class="k">do</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">json</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">JSON</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">let</span> <span class="nv">people</span> <span class="o">=</span> <span class="k">try</span> <span class="n">json</span><span class="o">.</span><span class="nf">array</span><span class="p">(</span><span class="s">"people"</span><span class="p">)</span><span class="o">.</span><span class="nf">map</span><span class="p">(</span><span class="kt">Person</span><span class="o">.</span><span class="kd">init</span><span class="p">)</span>
+    <span class="c1">// do something with `people`</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+    <span class="c1">// do something with the error</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>Here, we are instead loading the values from the key <code>&quot;people&quot;</code> as an array using the method <code>array(_:)</code>. This method works a lot like the <code>bool(_:)</code> method you saw above. It uses the path provided to the method to find an array. If the path is good, the method will return an <code>Array</code> of <code>JSON</code>. If the path is bad, then an appropriate error is thrown.</p>
+
+<p>We can then call <code>map</code> on that <code>JSON</code> array. Since the <code>Person</code> type conforms to <code>JSONDecodable</code>, we can pass in the <code>Person</code> type&rsquo;s initializer. This call applies an initializer that takes an instance of <code>JSON</code> to each element in the array, producing an array of <code>Person</code> instances.</p>
+
+<p>Here is what <code>JSONDecodable</code> looks like:</p>
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">JSONDecodable</span> <span class="p">{</span>
+    <span class="nf">init</span><span class="p">(</span><span class="nv">json</span><span class="p">:</span> <span class="kt">JSON</span><span class="p">)</span> <span class="k">throws</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>It is fairly simple protocol.  All it requires is that conforming types implement an initializer that takes an instance of <code>JSON</code> as its sole parameter.</p>
+
+<p>To tie it all together, here is what the <code>Person</code> type looks like:</p>
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Person</span> <span class="p">{</span>
+    <span class="kd">public</span> <span class="k">let</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="kd">public</span> <span class="k">let</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span>
+    <span class="kd">public</span> <span class="k">let</span> <span class="nv">spouse</span><span class="p">:</span> <span class="kt">Bool</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">Person</span><span class="p">:</span> <span class="kt">JSONDecodable</span> <span class="p">{</span>
+    <span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">json</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">JSON</span><span class="p">)</span> <span class="k">throws</span> <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="k">try</span> <span class="n">value</span><span class="o">.</span><span class="nf">string</span><span class="p">(</span><span class="s">"name"</span><span class="p">)</span>
+        <span class="n">age</span> <span class="o">=</span> <span class="k">try</span> <span class="n">value</span><span class="o">.</span><span class="nf">int</span><span class="p">(</span><span class="s">"age"</span><span class="p">)</span>
+        <span class="n">spouse</span> <span class="o">=</span> <span class="k">try</span> <span class="n">value</span><span class="o">.</span><span class="nf">bool</span><span class="p">(</span><span class="s">"spouse"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+
+<p><code>Person</code> just has a few properties. It conforms to <code>JSONDecodable</code> via an extension. In the extension, we implement a <code>throws</code>ing initializer that takes an instance of <code>JSON</code> as its sole parameter. In the implementation, we <code>try</code> three functions: 1) <code>string(_:)</code>, 2) <code>int(_:)</code>, and 3) <code>bool(_:)</code>. Each of these works as you have seen before. The methods take in a path, which is used to find a value of a specific type within the <code>JSON</code> instance passed to the initializer. Since these paths could be bad, or the requested type may not match what is actually inside of the <code>JSON</code>, these methods may potentially throw an error.</p>
+<a href='#setting_breakpoint_errors' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='setting_breakpoint_errors'>Setting Breakpoint Errors</h2>
+
+<p>It can be helpful to set breakpoints for errors when you start working with a new set of JSON.
+This allows you to explore the structure of the JSON when you break.
+In particular, you will likely want to set a breakpoint for <code>Freddy</code>&rsquo;s <code>JSON.Error</code> so that you can inspect what went wrong.</p>
+
+<p>Here is how you can set this sort of breakpoint:</p>
+
+<p>1) Go to the Breakpoint navigator</p>
+
+<p>2) Click the <q>+</q> button in the bottom left corner</p>
+
+<p><img src="https://github.com/bignerdranch/Freddy/raw/master/README_Images/projectNav_addBreakpoint.png" alt="Breakpoint navigator"></p>
+
+<p>3) Select <q>Add Swift Error Breakpoint</q></p>
+
+<p><img src="https://github.com/bignerdranch/Freddy/raw/master/README_Images/addErrorBreakpoint.png" alt="Add Error Breakpoint"></p>
+
+<p>Now you have a breakpoint that will only trigger when a Swift error is generated.
+But you program will break whenever <em>any</em> Swift error is thrown.
+What if you only want to break for <code>Freddy</code>&rsquo;s <code>JSON.Error</code> error?</p>
+
+<p>You can edit the breakpoint to add a filter:</p>
+
+<p>1) Right-click your new error breakpoint</p>
+
+<p>2) Select Edit Breakpoint&hellip;</p>
+
+<p><img src="https://github.com/bignerdranch/Freddy/raw/master/README_Images/editBreakpoint.png" alt="Edit Breakpoint"></p>
+
+<p>3) A window will appear with a text box for <q>Type</q></p>
+
+<p>4) Enter <code>JSON.Error</code></p>
+
+<p><img src="https://github.com/bignerdranch/Freddy/raw/master/README_Images/addType.png" alt="Error Type"></p>
+
+<p>And that is pretty much it! You now have an error breakpoint that will only trigger when errors of type <code>JSON.Error</code> are thrown.
+Take a look at the framework&rsquo;s tests for further examples of usage.
+The Wiki also have a lot of very useful information.</p>
+
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2016 <a class="link" href="https://github.com/bignerdranch" target="_blank" rel="external">Big Nerd Ranch</a>. All rights reserved. (Last updated: 2016-01-29)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.5.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Error Enum Reference</title>
+    <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../../js/jquery.min.js" defer></script>
+    <script src="../../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Enum/Error" class="dashAnchor"></a>
+    <a title="Error Enum Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../../index.html">Freddy Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/bignerdranch/Freddy"><img src="../../img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right"><a href="dash-feed://http%3A%2F%2Fbignerdranch%2Egithub%2Eio%2FFreddy%2Fdocsets%2FFreddy%2Exml"><img src="../../img/dash.png"/>Install in Dash</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../../index.html">Freddy Reference</a>
+        <img id="carat" src="../../img/carat.png" />
+        Error Enum Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../../Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Enums/JSON.html">JSON</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Extensions/Array.html">Array</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Bool.html">Bool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Dictionary.html">Dictionary</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Double.html">Double</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Int.html">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/NSJSONSerialization.html">NSJSONSerialization</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/String.html">String</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:ZF6Freddyoi2eeFTOS_4JSONS0__Sb">==(_:_:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Protocols/JSONDecodable.html">JSONDecodable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/JSONEncodable.html">JSONEncodable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/JSONParserType.html">JSONParserType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/JSONPathType.html">JSONPathType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Structs/JSONEncodingDetector.html">JSONEncodingDetector</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/JSONParser.html">JSONParser</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Error</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Error</span><span class="p">:</span> <span class="kt">ErrorType</span></code></pre>
+
+                </div>
+              </div>
+            <p>Enumeration describing possible errors that occur while parsing a JSON
+document. Most errors include an associated <code>offset</code>, representing the
+offset into the UTF-8 characters making up the document where the error
+occurred.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FOV6Freddy10JSONParser5Error21EndOfStreamUnexpectedFMS1_S1_"></a>
+                    <a name="//apple_ref/swift/Element/EndOfStreamUnexpected" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error21EndOfStreamUnexpectedFMS1_S1_">EndOfStreamUnexpected</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The parser ran out of data prematurely. This usually means a value
+was not escaped, such as a string literal not ending with a double
+quote.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">EndOfStreamUnexpected</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FOV6Freddy10JSONParser5Error18EndOfStreamGarbageFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/EndOfStreamGarbage" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error18EndOfStreamGarbageFMS1_FT6offsetSi_S1_">EndOfStreamGarbage</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Unexpected non-whitespace data was left around <code>offset</code> after
+parsing all valid JSON.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">EndOfStreamGarbage</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FOV6Freddy10JSONParser5Error20ExceededNestingLimitFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/ExceededNestingLimit" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error20ExceededNestingLimitFMS1_FT6offsetSi_S1_">ExceededNestingLimit</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Too many nested objects or arrays occured at the literal started
+around <code>offset</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">ExceededNestingLimit</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FOV6Freddy10JSONParser5Error12ValueInvalidFMS1_FT6offsetSi9characterSc_S1_"></a>
+                    <a name="//apple_ref/swift/Element/ValueInvalid" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error12ValueInvalidFMS1_FT6offsetSi9characterSc_S1_">ValueInvalid</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A <code>character</code> was not a valid start of a value around <code>offset</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">ValueInvalid</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">character</span><span class="p">:</span> <span class="kt">UnicodeScalar</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FOV6Freddy10JSONParser5Error20UnicodeEscapeInvalidFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/UnicodeEscapeInvalid" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error20UnicodeEscapeInvalidFMS1_FT6offsetSi_S1_">UnicodeEscapeInvalid</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Badly-formed Unicode escape sequence at <code>offset</code>. A Unicode escape
+uses the text <q>\u</q> followed by 4 hex digits, such as <q>\uF09F\uA684</q>
+to represent U+1F984, <q>UNICORN FACE</q>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">UnicodeEscapeInvalid</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FOV6Freddy10JSONParser5Error28ControlCharacterUnrecognizedFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/ControlCharacterUnrecognized" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error28ControlCharacterUnrecognizedFMS1_FT6offsetSi_S1_">ControlCharacterUnrecognized</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Badly-formed control character around <code>offset</code>. JSON supports
+backslash-escaped double quotes, slashes, whitespace control codes,
+and Unicode escape sequences.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">ControlCharacterUnrecognized</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FOV6Freddy10JSONParser5Error20LiteralNilMisspelledFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/LiteralNilMisspelled" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error20LiteralNilMisspelledFMS1_FT6offsetSi_S1_">LiteralNilMisspelled</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Invalid token, expected <code>null</code> around <code>offset</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">LiteralNilMisspelled</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FOV6Freddy10JSONParser5Error21LiteralTrueMisspelledFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/LiteralTrueMisspelled" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error21LiteralTrueMisspelledFMS1_FT6offsetSi_S1_">LiteralTrueMisspelled</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Invalid token, expected <code>true</code> around <code>offset</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">LiteralTrueMisspelled</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FOV6Freddy10JSONParser5Error22LiteralFalseMisspelledFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/LiteralFalseMisspelled" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error22LiteralFalseMisspelledFMS1_FT6offsetSi_S1_">LiteralFalseMisspelled</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Invalid token, expected <code>false</code> around <code>offset</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">LiteralFalseMisspelled</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FOV6Freddy10JSONParser5Error26CollectionMissingSeparatorFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/CollectionMissingSeparator" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error26CollectionMissingSeparatorFMS1_FT6offsetSi_S1_">CollectionMissingSeparator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Badly-formed collection at given <code>offset</code>, expected <code>,</code> or <code>:</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">CollectionMissingSeparator</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FOV6Freddy10JSONParser5Error20DictionaryMissingKeyFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/DictionaryMissingKey" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error20DictionaryMissingKeyFMS1_FT6offsetSi_S1_">DictionaryMissingKey</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>While parsing an object literal, a value was found without a key
+around <code>offset</code>. The start of a string literal was expected.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">DictionaryMissingKey</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FOV6Freddy10JSONParser5Error29NumberMissingFractionalDigitsFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/NumberMissingFractionalDigits" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error29NumberMissingFractionalDigitsFMS1_FT6offsetSi_S1_">NumberMissingFractionalDigits</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Badly-formed number with no digits around <code>offset</code>. After a decimal
+point, a number must include some number of digits.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">NumberMissingFractionalDigits</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FOV6Freddy10JSONParser5Error25NumberSymbolMissingDigitsFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/NumberSymbolMissingDigits" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error25NumberSymbolMissingDigitsFMS1_FT6offsetSi_S1_">NumberSymbolMissingDigits</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Badly-formed number with symbols (<q>-</q> or <q>e</q>) but no following
+digits around <code>offset</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">NumberSymbolMissingDigits</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FOV6Freddy10JSONParser5Error28InvalidUnicodeStreamEncodingFMS1_FT16detectedEncodingOVS_20JSONEncodingDetector8Encoding_S1_"></a>
+                    <a name="//apple_ref/swift/Element/InvalidUnicodeStreamEncoding" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error28InvalidUnicodeStreamEncodingFMS1_FT16detectedEncodingOVS_20JSONEncodingDetector8Encoding_S1_">InvalidUnicodeStreamEncoding</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Supplied data is encoded in an unsupported format.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">InvalidUnicodeStreamEncoding</span><span class="p">(</span><span class="nv">detectedEncoding</span><span class="p">:</span> <span class="kt">JSONEncodingDetector</span><span class="o">.</span><span class="kt">Encoding</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2016 <a class="link" href="https://github.com/bignerdranch" target="_blank" rel="external">Big Nerd Ranch</a>. All rights reserved. (Last updated: 2016-01-29)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.5.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
