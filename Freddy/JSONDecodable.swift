@@ -33,7 +33,7 @@ extension Double: JSONDecodable {
         case let .Int(int):
             self = Swift.Double(int)
         default:
-            throw JSON.Error.ValueNotConvertible(type: Swift.Double)
+            throw JSON.Error.ValueNotConvertible(value: json, to: Swift.Double)
         }
     }
     
@@ -53,7 +53,7 @@ extension Int: JSONDecodable {
         case let .Int(int):
             self = int
         default:
-            throw JSON.Error.ValueNotConvertible(type: Swift.Int)
+            throw JSON.Error.ValueNotConvertible(value: json, to: Swift.Int)
         }
     }
     
@@ -68,7 +68,7 @@ extension String: JSONDecodable {
     ///           passed to this initializer.
     public init(json: JSON) throws {
         guard case let .String(string) = json else {
-            throw JSON.Error.ValueNotConvertible(type: Swift.String)
+            throw JSON.Error.ValueNotConvertible(value: json, to: Swift.String)
         }
         self = string
     }
@@ -84,7 +84,7 @@ extension Bool: JSONDecodable {
     ///           passed to this initializer.
     public init(json: JSON) throws {
         guard case let .Bool(bool) = json else {
-            throw JSON.Error.ValueNotConvertible(type: Swift.Bool)
+            throw JSON.Error.ValueNotConvertible(value: json, to: Swift.Bool)
         }
         self = bool
     }
@@ -100,7 +100,7 @@ internal extension JSON {
     static func getArray(json: JSON) throws -> [JSON] {
         // Ideally should be expressed as a conditional protocol implementation on Swift.Array.
         guard case let .Array(array) = json else {
-            throw Error.ValueNotConvertible(type: Swift.Array<JSON>)
+            throw Error.ValueNotConvertible(value: json, to: Swift.Array<JSON>)
         }
         return array
     }
@@ -112,7 +112,7 @@ internal extension JSON {
     static func getDictionary(json: JSON) throws -> [Swift.String: JSON] {
         // Ideally should be expressed as a conditional protocol implementation on Swift.Dictionary.
         guard case let .Dictionary(dictionary) = json else {
-            throw Error.ValueNotConvertible(type: Swift.Dictionary<Swift.String, JSON>)
+            throw Error.ValueNotConvertible(value: json, to: Swift.Dictionary<Swift.String, JSON>)
         }
         return dictionary
     }
