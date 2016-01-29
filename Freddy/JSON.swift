@@ -40,7 +40,7 @@ extension JSON {
         case UnexpectedSubscript(type: JSONPathType.Type)
         
         /// Unexpected JSON `value` was found that is not convertible `to` type 
-        case ValueNotConvertible(to: Any.Type, value: JSON)
+        case ValueNotConvertible(value: JSON, to: Any.Type)
     }
 
 }

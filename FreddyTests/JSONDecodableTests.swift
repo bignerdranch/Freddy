@@ -205,7 +205,7 @@ class JSONDecodableTests: XCTestCase {
         do {
             let _: Int? = try JSONDictionary.int("key")
             XCTFail("Should have thrown an error when attempting to retrieve a value for key `key` in `JSONDictionary` when not specifying `ifNull` to be `true`.")
-        } catch JSON.Error.ValueNotConvertible(let to, _) where to == Int.self {
+        } catch let JSON.Error.ValueNotConvertible(_, to) where to == Int.self {
             return
         } catch {
             XCTFail("An unexpected exception was thrown.")

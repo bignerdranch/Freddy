@@ -132,7 +132,7 @@ class JSONSubscriptTests: XCTestCase {
     func testJSONErrorTypeNotConvertible() {
         do {
             _ = try json.int("people", 0, "name")
-        } catch let JSON.Error.ValueNotConvertible(to, value) {
+        } catch let JSON.Error.ValueNotConvertible(value, to) {
             XCTAssert(to == Swift.Int, "The error should be due the value not being an `Int` case, but was \(to).")
             XCTAssert(value == "Matt Mathias", "The error should be due the value being the String 'Matt Mathias', but was \(value).")
         } catch {
