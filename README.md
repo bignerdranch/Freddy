@@ -10,14 +10,6 @@ Third, Freddy provides great error information for mistakes that commonly occur 
 
 So, Freddy vs. JSON, who wins?  We think it is Freddy.
 
-## Installation
-
-You have three different options to install Freddy.
-
-1. Add the project as a submodule
-2. Use CocoaPods
-3. Use Carthage
-
 ## Usage
 
 This section describes Freddy's basic usage. You can find more examples on parsing data, dealing with errors, serializing `JSON` instances into `NSData`, and more in the [Wiki](https://github.com/bignerdranch/Freddy/wiki).
@@ -138,6 +130,50 @@ extension Person: JSONDecodable {
 ```
 
 `Person` just has a few properties. It conforms to `JSONDecodable` via an extension. In the extension, we implement a `throws`ing initializer that takes an instance of `JSON` as its sole parameter. In the implementation, we `try` three functions: 1) `string(_:)`, 2) `int(_:)`, and 3) `bool(_:)`. Each of these works as you have seen before. The methods take in a path, which is used to find a value of a specific type within the `JSON` instance passed to the initializer. Since these paths could be bad, or the requested type may not match what is actually inside of the `JSON`, these methods may potentially throw an error.
+
+## Getting Started
+
+Freddy requires iOS 7.0, Mac OS X 10.9, watchOS 2.0, or tvOS 9.0. Linux is not yet supported.
+
+Dynamic frameworks on iOS require a minimum deployment target of iOS 8.0. For a project targeting iOS 7, see ["Submodules"](https://github.com/bignerdranch/Freddy#submodules).
+
+You have a few different options to install Freddy.
+
+### [Carthage](https://github.com/Carthage/Carthage)
+
+Add us to your `Cartfile`:
+
+```
+github "bignerdranch/Freddy" ~> 2.0
+```
+
+After running `carthage bootstrap`, add `Freddy.framework` to the "Linked Frameworks and Libraries" panel of your application target. [Read more](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application).
+
+### [CocoaPods](https://cocoapods.org)
+
+Add us to your `Podfile`:
+
+```ruby
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '8.0'
+use_frameworks!
+
+pod 'Freddy'
+```
+
+Then run `pod install`.
+
+### Submodules
+
+1. `git submodule add https://github.com/bignerdranch/Freddy.git Vendor/Freddy`
+2. Drag `Freddy.xcodeproj` into your Xcode project.
+3. Add `Freddy.framework` to the "Linked Frameworks and Libraries" panel of your application target.
+
+[Carthage](https://github.com/bignerdranch/Freddy#carthage) can be used to check out dependencies and maintain Git submodule state as well.
+
+### Swift Package Manager
+
+We've [not yet](https://github.com/bignerdranch/Freddy/issues/110) reorganized the project as a Swift module. [Pull requests](https://github.com/bignerdranch/Freddy/pulls) are welcome!
 
 ## Setting Breakpoint Errors
 
