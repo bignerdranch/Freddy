@@ -8,6 +8,16 @@
 
 import Foundation
 
+private enum Keyword: String {
+    case False = "false"
+    case Null  = "null"
+    case True  = "true"
+    
+    var utf8: String.UTF8View {
+        return rawValue.utf8
+    }
+}
+
 private struct Literal {
     static let BACKSLASH     = UInt8(ascii: "\\")
     static let BACKSPACE     = UInt8(ascii: "\u{0008}")
@@ -34,12 +44,6 @@ private struct Literal {
     static let d = UInt8(ascii: "d")
     static let e = UInt8(ascii: "e")
     static let f = UInt8(ascii: "f")
-    static let l = UInt8(ascii: "l")
-    static let n = UInt8(ascii: "n")
-    static let r = UInt8(ascii: "r")
-    static let s = UInt8(ascii: "s")
-    static let t = UInt8(ascii: "t")
-    static let u = UInt8(ascii: "u")
 
     static let A = UInt8(ascii: "A")
     static let B = UInt8(ascii: "B")
@@ -47,6 +51,11 @@ private struct Literal {
     static let D = UInt8(ascii: "D")
     static let E = UInt8(ascii: "E")
     static let F = UInt8(ascii: "F")
+    
+    static let n = UInt8(ascii: "n")
+    static let r = UInt8(ascii: "r")
+    static let t = UInt8(ascii: "t")
+    static let u = UInt8(ascii: "u")
 
     static let zero  = UInt8(ascii: "0")
     static let one   = UInt8(ascii: "1")
@@ -117,13 +126,13 @@ public struct JSONParser {
                 return try decodeString()
 
             case Literal.f:
-                return try decodeFalse()
+                return try decodeKeyword(.False, with: .Bool(false))
 
             case Literal.n:
-                return try decodeNull()
+                return try decodeKeyword(.Null, with: .Null)
 
             case Literal.t:
-                return try decodeTrue()
+                return try decodeKeyword(.True, with: .Bool(true))
 
             case Literal.MINUS:
                 return try decodeNumberNegative(loc)
@@ -157,50 +166,20 @@ public struct JSONParser {
         }
     }
 
-    private mutating func decodeNull() throws -> JSON {
-        guard loc.advancedBy(3, limit: input.count) != input.count else {
-            throw Error.LiteralNilMisspelled(offset: loc)
+    private mutating func decodeKeyword(keyword: Keyword, @autoclosure with json: () -> JSON) throws -> JSON {
+        let start = loc
+        let end = start.advancedBy(keyword.utf8.count - 1, limit: input.endIndex)
+
+        guard end != input.endIndex else {
+            throw Error.EndOfStreamUnexpected
+        }
+        
+        guard input[start ... end].elementsEqual(keyword.utf8) else {
+            throw Error.KeywordMisspelled(offset: start, text: keyword.rawValue)
         }
 
-        if     input[loc+1] != Literal.u
-            || input[loc+2] != Literal.l
-            || input[loc+3] != Literal.l {
-                throw Error.LiteralNilMisspelled(offset: loc)
-        }
-
-        loc += 4
-        return .Null
-    }
-
-    private mutating func decodeTrue() throws -> JSON {
-        guard loc.advancedBy(3, limit: input.count) != input.count else {
-            throw Error.LiteralTrueMisspelled(offset: loc)
-        }
-
-        if     input[loc+1] != Literal.r
-            || input[loc+2] != Literal.u
-            || input[loc+3] != Literal.e {
-            throw Error.LiteralTrueMisspelled(offset: loc)
-        }
-
-        loc += 4
-        return .Bool(true)
-    }
-
-    private mutating func decodeFalse() throws -> JSON {
-        guard loc.advancedBy(4, limit: input.count) != input.count else {
-            throw Error.LiteralFalseMisspelled(offset: loc)
-        }
-
-        if     input[loc+1] != Literal.a
-            || input[loc+2] != Literal.l
-            || input[loc+3] != Literal.s
-            || input[loc+4] != Literal.e {
-            throw Error.LiteralFalseMisspelled(offset: loc)
-        }
-
-        loc += 5
-        return .Bool(false)
+        loc = end.successor()
+        return json()
     }
 
     private var stringDecodingBuffer = [UInt8]()
@@ -603,14 +582,8 @@ extension JSONParser {
         /// and Unicode escape sequences.
         case ControlCharacterUnrecognized(offset: Int)
         
-        /// Invalid token, expected `null` around `offset`
-        case LiteralNilMisspelled(offset: Int)
-        
-        /// Invalid token, expected `true` around `offset`
-        case LiteralTrueMisspelled(offset: Int)
-        
-        /// Invalid token, expected `false` around `offset`
-        case LiteralFalseMisspelled(offset: Int)
+        /// Invalid token, expected `text` around `offset`
+        case KeywordMisspelled(offset: Int, text: String)
         
         /// Badly-formed collection at given `offset`, expected `,` or `:`
         case CollectionMissingSeparator(offset: Int)
