@@ -35,18 +35,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 print("Could not parse JSON data")
                 return
             }
-
-            let objects: [CardSet]
-            do {
-                objects = try json.arrayOf(type: CardSet.self)
-            } catch {
-                print("Could not deserialize JSON")
-                return
-            }
             print("Parsed!")
 
+//            let objects: [CardSet]
+//            do {
+//                objects = try json.arrayOf(type: CardSet.self)
+//            } catch {
+//                print("Could not deserialize JSON")
+//                return
+//            }
+
             afterDelay(1.5) {
-                print("Artificially extending the lifetime of \(objects.count) instances of \(CardSet.self)")
+                print("Artificially extending the lifetime of some JSON... \(json.dynamicType)")
             }
         }
     }

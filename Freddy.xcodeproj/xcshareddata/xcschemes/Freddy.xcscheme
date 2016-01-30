@@ -52,20 +52,6 @@
                BlueprintName = "FreddyTests"
                ReferencedContainer = "container:Freddy.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "JSONBenchmark/testJSONDeserializeCocoa()">
-               </Test>
-               <Test
-                  Identifier = "JSONBenchmark/testJSONDeserializeCustomViaCocoa()">
-               </Test>
-               <Test
-                  Identifier = "JSONBenchmark/testJSONDeserializeToCocoaModel()">
-               </Test>
-               <Test
-                  Identifier = "JSONBenchmark/testJSONDeserializeToModel()">
-               </Test>
-            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

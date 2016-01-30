@@ -6,16 +6,14 @@
 //  Copyright © 2015 Big Nerd Ranch. Licensed under MIT.
 //
 
+#if os(OSX) || os(iOS) || os(watchOS) || os(tvOS)
 import Foundation
+#endif
 
 private enum Keyword: String {
     case False = "false"
     case Null  = "null"
     case True  = "true"
-    
-    var utf8: String.UTF8View {
-        return rawValue.utf8
-    }
 }
 
 private struct Literal {
@@ -50,6 +48,10 @@ private struct Literal {
     static var HexLower: Range<UInt8> { return UInt8(ascii: "a")...UInt8(ascii: "f") }
     static var HexUpper: Range<UInt8> { return UInt8(ascii: "A")...UInt8(ascii: "F") }
     static var Digits: Range<UInt8>   { return UInt8(ascii: "0")...UInt8(ascii: "9") }
+}
+
+private struct UnicodeLiteral {
+
 }
 
 private let ParserMaximumDepth = 512
@@ -151,13 +153,13 @@ public struct JSONParser {
 
     private mutating func decodeKeyword(keyword: Keyword, @autoclosure with json: () -> JSON) throws -> JSON {
         let start = loc
-        let end = start.advancedBy(keyword.utf8.count - 1, limit: input.endIndex)
+        let end = start.advancedBy(keyword.rawValue.utf8.count - 1, limit: input.endIndex)
 
         guard end != input.endIndex else {
             throw Error.EndOfStreamUnexpected
         }
         
-        guard input[start ... end].elementsEqual(keyword.utf8) else {
+        guard input[start ... end].elementsEqual(keyword.rawValue.utf8) else {
             throw Error.KeywordMisspelled(offset: start, text: keyword.rawValue)
         }
 
@@ -165,10 +167,63 @@ public struct JSONParser {
         return json()
     }
 
-    private var stringDecodingBuffer = [UInt8]()
+    private mutating func scanUntilEndOfString() throws -> (UnsafeBufferPointer<UInt8>, hasEscapes: Bool) {
+        // skip past the opening "
+        loc = loc.successor()
+
+        var range = loc..<loc
+        var hasEscapes = false
+        var inEscape = false
+
+        loop: while true {
+            guard loc != input.endIndex else {
+                throw Error.EndOfStreamUnexpected
+            }
+            defer { loc = loc.successor() }
+
+            switch input[loc] {
+            case Literal.DOUBLE_QUOTE where !inEscape:
+                range.endIndex = loc
+                break loop
+            case Literal.u where inEscape:
+                inEscape = false
+                hasEscapes = true
+                loc = loc.advancedBy(4, limit: input.endIndex)
+            case _ where inEscape:
+                inEscape = false
+                hasEscapes = true
+            case Literal.BACKSLASH:
+                inEscape = true
+            default: break
+            }
+        }
+
+        // input[loc] should at the closing " now
+        let buffer = UnsafeBufferPointer(start: input.baseAddress.advancedBy(range.startIndex), count: range.count)
+        return (buffer, hasEscapes)
+    }
+
     private mutating func decodeString() throws -> JSON {
+        // scan until we find the closing "
+        let start = loc
+        let (buffer, hasEscapes) = try scanUntilEndOfString()
+
+        guard var string = String(bytesNoCopy: .init(buffer.baseAddress), length: buffer.count, encoding: NSUTF8StringEncoding, freeWhenDone: false) else {
+            throw Error.UnicodeEscapeInvalid(offset: start)
+        }
+
+        if hasEscapes {
+            try parseEscapes(&string, start: start)
+        }
+
+        return .String(string)
+    }
+
+    private var stringDecodingBuffer = [UInt8]()
+    private mutating func decodeStringOld() throws -> JSON {
         let start = loc
         loc = loc.successor()
+
         stringDecodingBuffer.removeAll(keepCapacity: true)
         while loc < input.count {
             switch input[loc] {
@@ -506,6 +561,137 @@ public struct JSONParser {
         return .Double(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent))
     }
 }
+
+// MARK: - Unicode
+
+private struct Escapes {
+
+    typealias CodeUnit = UTF16.CodeUnit
+
+    static var Backslash: CodeUnit { return u16("\\") }
+    static var UnicodeEscapeStart: CodeUnit { return u16("u") }
+
+    static func u16(scalar: UnicodeScalar) -> CodeUnit {
+        return .init(truncatingBitPattern: scalar.value)
+    }
+
+    static func hexFrom(codeUnit: CodeUnit) -> CodeUnit? {
+        let digits = u16("a") ... u16("f")
+        let upper  = u16("A") ... u16("F")
+        let lower  = u16("0") ... u16("9")
+
+        switch codeUnit {
+        case digits: return codeUnit &- digits.startIndex
+        case upper:  return codeUnit &- upper.startIndex &+ CodeUnit(10)
+        case lower:  return codeUnit &- lower.startIndex &+ CodeUnit(10)
+        default:     return nil
+        }
+    }
+
+    static func controlFrom(codeUnit: CodeUnit) -> UnicodeScalar? {
+        switch codeUnit {
+        case u16("\\"), u16("/"), u16("\""):
+            return UnicodeScalar(codeUnit)
+        case u16("b"): // backspace
+            return "\u{8}"
+        case u16("t"): // tab
+            return "\u{9}"
+        case u16("n"): // new line
+            return "\u{a}"
+        case u16("f"): // form feed
+            return "\u{c}"
+        case u16("r"): // carriage return
+            return "\u{d}"
+        default:
+            return nil
+        }
+    }
+
+    static func combineCodepoints(leading: CodeUnit, _ trailing: CodeUnit) -> UnicodeScalar {
+        var codec = UTF16()
+        var generator = [ leading, trailing ].generate()
+        switch codec.decode(&generator) {
+        case .Result(let scalar): return .init(scalar)
+        case .EmptyInput:         return .init()
+        case .Error:              return "\u{fffd}"
+        }
+    }
+
+}
+
+extension JSONParser {
+
+    private enum EscapeParserState {
+        case None
+        // consumed a "\", now looking for a control character
+        case BeginControl(String.UTF16Index)
+        // parsing a Unicode escape
+        case UnicodeEscape(String.UTF16Index, UInt16, remaining: Int)
+        // got a Unicode character, but UTF-16 says we need another
+        case NeedSurrogatePair(String.UTF16Index)
+    }
+
+    private func parseEscapes(inout string: String, start: Int) throws {
+        var priorCodepoint: UInt16?
+        var state = EscapeParserState.None
+        var offset = string.utf16.startIndex
+
+        func finishEscape(range: Range<String.UTF16Index>, with control: UnicodeScalar) {
+            priorCodepoint = nil
+            state = .None
+            guard let start = range.startIndex.samePositionIn(string.unicodeScalars), end = range.endIndex.samePositionIn(string.unicodeScalars) else {
+                return
+            }
+            string.unicodeScalars.replaceRange(start ..< end, with: CollectionOfOne(control))
+            offset = range.startIndex
+        }
+
+        while offset != string.utf16.endIndex {
+            defer { offset = offset.successor() }
+
+            switch (state, string.utf16[offset]) {
+            case (.None, Escapes.Backslash), (.NeedSurrogatePair, Escapes.Backslash):
+                state = .BeginControl(offset)
+            case (.None, _):
+                break
+
+            case let (.BeginControl(escapeStart), Escapes.UnicodeEscapeStart):
+                state = .UnicodeEscape(escapeStart, 0, remaining: 4)
+            case (.BeginControl, _) where priorCodepoint != nil:
+                throw Error.UnicodeEscapeInvalid(offset: start)
+            case let (.BeginControl(escapeStart), next):
+                guard let control = Escapes.controlFrom(next) else {
+                    throw Error.ControlCharacterUnrecognized(offset: start)
+                }
+
+                finishEscape(escapeStart ... offset, with: control)
+
+            case let (.UnicodeEscape(escapeStart, current, remaining), next):
+                guard let codepoint = Escapes.hexFrom(next).map({ (current << 4) | $0 }) else {
+                    throw Error.UnicodeEscapeInvalid(offset: start)
+                }
+
+                switch (remaining - 1, priorCodepoint) {
+                case let (0, prior?):
+                    finishEscape(escapeStart ... offset, with: Escapes.combineCodepoints(prior, codepoint))
+                case (0, nil) where !UTF16.isLeadSurrogate(codepoint):
+                    finishEscape(escapeStart ... offset, with: .init(codepoint))
+                case (0, nil):
+                    priorCodepoint = codepoint
+                    state = .NeedSurrogatePair(escapeStart)
+                case let (nextRemaining, _):
+                    state = .UnicodeEscape(escapeStart, codepoint, remaining: nextRemaining)
+                }
+
+            case (.NeedSurrogatePair, _):
+                throw Error.UnicodeEscapeInvalid(offset: start)
+            }
+        }
+    }
+
+}
+
+// MARK: - Initializers
 
 public extension JSONParser {
 

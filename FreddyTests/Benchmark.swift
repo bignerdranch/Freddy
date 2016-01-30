@@ -51,8 +51,9 @@ class JSONBenchmark: XCTestCase {
     }
 
     func testJSONDeserializeCustom() {
-        measureWithoutRR({
-            try JSON(data: self.jsonData, usingParser: JSONParser.self)
+        measureWithoutRR({ _ -> JSON in
+            var parser = JSONParser(utf8Data: self.jsonData)
+            return try parser.parse()
         }, assertions: nil)
     }
 
