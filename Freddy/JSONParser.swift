@@ -201,12 +201,10 @@ public struct JSONParser {
                 case Literal.t:            stringDecodingBuffer.append(Literal.TAB)
                 case Literal.n:            stringDecodingBuffer.append(Literal.NEWLINE)
                 case Literal.u:
-                    guard let escaped = readUnicodeEscape(loc + 1) else {
-                        throw Error.UnicodeEscapeInvalid(offset: loc)
-                    }
-
+                    loc = loc.successor()
+                    let escaped = try decodeUnicodeEscape()
                     stringDecodingBuffer.appendContentsOf(escaped)
-                    loc += 4
+                    continue
 
                 default:
                     throw Error.ControlCharacterUnrecognized(offset: loc)
@@ -234,28 +232,35 @@ public struct JSONParser {
         throw Error.EndOfStreamUnexpected
     }
 
-    private func readUnicodeEscape(from: Int) -> [UInt8]? {
-        guard from + 4 <= input.count else {
-            return nil
+    private mutating func decodeUnicodeEscape() throws -> [UInt8] {
+        let start = loc
+        let end = start.advancedBy(3, limit: input.endIndex)
+
+        guard end != input.endIndex else {
+            throw Error.EndOfStreamUnexpected
         }
+
         var codepoint: UInt16 = 0
-        for i in from ..< from + 4 {
+        for byte in input[start ... end] {
             let nibble: UInt16
-            switch input[i] {
+            switch byte {
             case Literal.zero...Literal.nine:
-                nibble = UInt16(input[i] - Literal.zero)
+                nibble = UInt16(byte - Literal.zero)
 
             case Literal.a...Literal.f:
-                nibble = 10 + UInt16(input[i] - Literal.a)
+                nibble = 10 + UInt16(byte - Literal.a)
 
             case Literal.A...Literal.F:
-                nibble = 10 + UInt16(input[i] - Literal.A)
+                nibble = 10 + UInt16(byte - Literal.A)
 
             default:
-                return nil
+                throw Error.UnicodeEscapeInvalid(offset: start)
             }
             codepoint = (codepoint << 4) | nibble
         }
+        
+        loc = end.successor()
+        
         // UTF16-to-UTF8, via wikipedia
         if codepoint <= 0x007f {
             return [UInt8(codepoint)]
