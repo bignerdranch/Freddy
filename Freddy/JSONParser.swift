@@ -516,11 +516,9 @@ public extension JSONParser {
     }
 
     init(string: String) {
+        // don't want to include the nul termination in the buffer - trim it off
         let codePoints = string.nulTerminatedUTF8
-        let buffer = codePoints.withUnsafeBufferPointer { nulTerminatedBuffer in
-            // don't want to include the nul termination in the buffer - trim it off
-            UnsafeBufferPointer(start: nulTerminatedBuffer.baseAddress, count: nulTerminatedBuffer.count - 1)
-        }
+        let buffer = codePoints.dropLast().withUnsafeBufferPointer { $0 }
         self.init(buffer: buffer, owner: codePoints)
     }
 
