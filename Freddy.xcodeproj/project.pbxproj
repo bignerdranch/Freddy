@@ -63,6 +63,16 @@
 		DB6ADFC61C23631500D77BF1 /* sampleNoWhiteSpace.JSON in Resources */ = {isa = PBXBuildFile; fileRef = DB6ADFC21C23631500D77BF1 /* sampleNoWhiteSpace.JSON */; };
 		DB6ADFC71C23631500D77BF1 /* sampleNoWhiteSpace.JSON in Resources */ = {isa = PBXBuildFile; fileRef = DB6ADFC21C23631500D77BF1 /* sampleNoWhiteSpace.JSON */; };
 		DB6ADFC81C23631500D77BF1 /* sampleNoWhiteSpace.JSON in Resources */ = {isa = PBXBuildFile; fileRef = DB6ADFC21C23631500D77BF1 /* sampleNoWhiteSpace.JSON */; };
+		DBE4CD0A1C39653C007E71D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE4CD091C39653C007E71D9 /* AppDelegate.swift */; };
+		DBE4CD0C1C39653C007E71D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DBE4CD0B1C39653C007E71D9 /* Assets.xcassets */; };
+		DBE4CD0F1C39653C007E71D9 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = DBE4CD0D1C39653C007E71D9 /* MainMenu.xib */; };
+		DBE4CD141C396546007E71D9 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB6ADF3E1C23612000D77BF1 /* Freddy.framework */; };
+		DBE4CD151C396546007E71D9 /* Freddy.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DB6ADF3E1C23612000D77BF1 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DBE4CD1B1C396553007E71D9 /* Benchmark in Resources */ = {isa = PBXBuildFile; fileRef = DBF9D62A1C3872C70038E08E /* Benchmark */; };
+		DBE4CD1C1C396567007E71D9 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D61D1C3872A20038E08E /* Card.swift */; };
+		DBE4CD1D1C396567007E71D9 /* CardSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6201C3872A20038E08E /* CardSet.swift */; };
+		DBE4CD1E1C396567007E71D9 /* ReleaseDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6241C3872A20038E08E /* ReleaseDate.swift */; };
+		DBE4CD201C3965A2007E71D9 /* CardUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6221C3872A20038E08E /* CardUtilities.m */; };
 		DBF9D6271C3872BB0038E08E /* Benchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6261C3872BB0038E08E /* Benchmark.swift */; };
 		DBF9D6281C3872BB0038E08E /* Benchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6261C3872BB0038E08E /* Benchmark.swift */; };
 		DBF9D6291C3872BB0038E08E /* Benchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF9D6261C3872BB0038E08E /* Benchmark.swift */; };
@@ -111,6 +121,20 @@
 			remoteGlobalIDString = DB6ADF591C23612900D77BF1;
 			remoteInfo = TVFreddy;
 		};
+		DBE4CD161C396546007E71D9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DB6ADF161C23610B00D77BF1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DB6ADF3D1C23612000D77BF1;
+			remoteInfo = Freddy;
+		};
+		DBE4CD191C39654B007E71D9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DB6ADF161C23610B00D77BF1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DBF9D6401C3875100038E08E;
+			remoteInfo = "Download Benchmark JSON";
+		};
 		DBF9D6461C3875280038E08E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DB6ADF161C23610B00D77BF1 /* Project object */;
@@ -133,6 +157,20 @@
 			remoteInfo = "Download Benchmark JSON";
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DBE4CD181C396546007E71D9 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DBE4CD151C396546007E71D9 /* Freddy.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		DB6ADF1F1C23610B00D77BF1 /* Freddy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Freddy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -164,6 +202,12 @@
 		DB6ADFB01C2362FF00D77BF1 /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		DB6ADFC11C23631500D77BF1 /* sample.JSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample.JSON; sourceTree = "<group>"; };
 		DB6ADFC21C23631500D77BF1 /* sampleNoWhiteSpace.JSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sampleNoWhiteSpace.JSON; sourceTree = "<group>"; };
+		DBE4CD071C39653C007E71D9 /* ProfilingHarness.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProfilingHarness.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DBE4CD091C39653C007E71D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DBE4CD0B1C39653C007E71D9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DBE4CD0E1C39653C007E71D9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		DBE4CD101C39653C007E71D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DBE4CD1F1C396597007E71D9 /* ProfilingHarness-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ProfilingHarness-Bridging-Header.h"; sourceTree = "<group>"; };
 		DBF9D61B1C3872A20038E08E /* Card.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Card.h; sourceTree = "<group>"; };
 		DBF9D61C1C3872A20038E08E /* Card.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Card.m; sourceTree = "<group>"; };
 		DBF9D61D1C3872A20038E08E /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
@@ -231,6 +275,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DBE4CD041C39653C007E71D9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DBE4CD141C396546007E71D9 /* Freddy.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -240,6 +292,7 @@
 				DB6ADF7E1C23617500D77BF1 /* Configurations */,
 				DB6ADF211C23610B00D77BF1 /* Freddy */,
 				DB6ADF2D1C23610B00D77BF1 /* FreddyTests */,
+				DBE4CD081C39653C007E71D9 /* ProfilingHarness */,
 				DB6ADF201C23610B00D77BF1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -254,6 +307,7 @@
 				DB6ADF5A1C23612900D77BF1 /* Freddy.framework */,
 				DB6ADF631C23612A00D77BF1 /* TVFreddyTests.xctest */,
 				DB6ADF761C23613200D77BF1 /* Freddy.framework */,
+				DBE4CD071C39653C007E71D9 /* ProfilingHarness.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -318,6 +372,18 @@
 				DBF9D6241C3872A20038E08E /* ReleaseDate.swift */,
 			);
 			name = Fixtures;
+			sourceTree = "<group>";
+		};
+		DBE4CD081C39653C007E71D9 /* ProfilingHarness */ = {
+			isa = PBXGroup;
+			children = (
+				DBE4CD1F1C396597007E71D9 /* ProfilingHarness-Bridging-Header.h */,
+				DBE4CD091C39653C007E71D9 /* AppDelegate.swift */,
+				DBE4CD0B1C39653C007E71D9 /* Assets.xcassets */,
+				DBE4CD0D1C39653C007E71D9 /* MainMenu.xib */,
+				DBE4CD101C39653C007E71D9 /* Info.plist */,
+			);
+			path = ProfilingHarness;
 			sourceTree = "<group>";
 		};
 		DBF9D6251C3872A40038E08E /* Supporting Files */ = {
@@ -513,6 +579,26 @@
 			productReference = DB6ADF761C23613200D77BF1 /* Freddy.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		DBE4CD061C39653C007E71D9 /* ProfilingHarness */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DBE4CD131C39653C007E71D9 /* Build configuration list for PBXNativeTarget "ProfilingHarness" */;
+			buildPhases = (
+				DBE4CD031C39653C007E71D9 /* Sources */,
+				DBE4CD041C39653C007E71D9 /* Frameworks */,
+				DBE4CD051C39653C007E71D9 /* Resources */,
+				DBE4CD181C396546007E71D9 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DBE4CD171C396546007E71D9 /* PBXTargetDependency */,
+				DBE4CD1A1C39654B007E71D9 /* PBXTargetDependency */,
+			);
+			name = ProfilingHarness;
+			productName = ProfilingHarness;
+			productReference = DBE4CD071C39653C007E71D9 /* ProfilingHarness.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -544,6 +630,9 @@
 					DB6ADF751C23613200D77BF1 = {
 						CreatedOnToolsVersion = 7.2;
 					};
+					DBE4CD061C39653C007E71D9 = {
+						CreatedOnToolsVersion = 7.2;
+					};
 					DBF9D6401C3875100038E08E = {
 						CreatedOnToolsVersion = 7.2;
 					};
@@ -555,6 +644,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = DB6ADF151C23610B00D77BF1;
 			productRefGroup = DB6ADF201C23610B00D77BF1 /* Products */;
@@ -569,6 +659,7 @@
 				DB6ADF591C23612900D77BF1 /* TVFreddy */,
 				DB6ADF621C23612A00D77BF1 /* TVFreddyTests */,
 				DB6ADF751C23613200D77BF1 /* NanoFreddy */,
+				DBE4CD061C39653C007E71D9 /* ProfilingHarness */,
 			);
 		};
 /* End PBXProject section */
@@ -629,6 +720,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DBE4CD051C39653C007E71D9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DBE4CD0C1C39653C007E71D9 /* Assets.xcassets in Resources */,
+				DBE4CD0F1C39653C007E71D9 /* MainMenu.xib in Resources */,
+				DBE4CD1B1C396553007E71D9 /* Benchmark in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -748,6 +849,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DBE4CD031C39653C007E71D9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DBE4CD0A1C39653C007E71D9 /* AppDelegate.swift in Sources */,
+				DBE4CD1D1C396567007E71D9 /* CardSet.swift in Sources */,
+				DBE4CD1C1C396567007E71D9 /* Card.swift in Sources */,
+				DBE4CD201C3965A2007E71D9 /* CardUtilities.m in Sources */,
+				DBE4CD1E1C396567007E71D9 /* ReleaseDate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -766,6 +879,16 @@
 			target = DB6ADF591C23612900D77BF1 /* TVFreddy */;
 			targetProxy = DB6ADF651C23612A00D77BF1 /* PBXContainerItemProxy */;
 		};
+		DBE4CD171C396546007E71D9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DB6ADF3D1C23612000D77BF1 /* Freddy */;
+			targetProxy = DBE4CD161C396546007E71D9 /* PBXContainerItemProxy */;
+		};
+		DBE4CD1A1C39654B007E71D9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DBF9D6401C3875100038E08E /* Download Benchmark JSON */;
+			targetProxy = DBE4CD191C39654B007E71D9 /* PBXContainerItemProxy */;
+		};
 		DBF9D6471C3875280038E08E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DBF9D6401C3875100038E08E /* Download Benchmark JSON */;
@@ -782,6 +905,17 @@
 			targetProxy = DBF9D64A1C3875390038E08E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		DBE4CD0D1C39653C007E71D9 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DBE4CD0E1C39653C007E71D9 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		DB6ADF311C23610B00D77BF1 /* Debug */ = {
@@ -846,6 +980,7 @@
 			baseConfigurationReference = DB6ADF811C23617500D77BF1 /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "-";
 				DEFINES_MODULE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				SDKROOT = macosx;
@@ -858,6 +993,7 @@
 			baseConfigurationReference = DB6ADF811C23617500D77BF1 /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "-";
 				DEFINES_MODULE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				SDKROOT = macosx;
@@ -943,6 +1079,102 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Release;
+		};
+		DBE4CD111C39653C007E71D9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ProfilingHarness/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bignerdranch.ProfilingHarness;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "ProfilingHarness/ProfilingHarness-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		DBE4CD121C39653C007E71D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ProfilingHarness/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bignerdranch.ProfilingHarness;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "ProfilingHarness/ProfilingHarness-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -1101,6 +1333,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		DBE4CD131C39653C007E71D9 /* Build configuration list for PBXNativeTarget "ProfilingHarness" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DBE4CD111C39653C007E71D9 /* Debug */,
+				DBE4CD121C39653C007E71D9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		DBF9D6431C3875100038E08E /* Build configuration list for PBXLegacyTarget "Download Benchmark JSON" */ = {
 			isa = XCConfigurationList;
