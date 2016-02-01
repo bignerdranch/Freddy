@@ -676,6 +676,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF801C23617500D77BF1 /* Debug.xcconfig */;
 			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -692,12 +694,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF811C23617500D77BF1 /* Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				DEFINES_MODULE = YES;
-				INFOPLIST_FILE = Sources/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -706,10 +703,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF811C23617500D77BF1 /* Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				DEFINES_MODULE = YES;
-				INFOPLIST_FILE = Sources/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -719,7 +712,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF831C23617500D77BF1 /* Tests.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = Tests/Info.plist;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -728,7 +720,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF831C23617500D77BF1 /* Tests.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = Tests/Info.plist;
 				SDKROOT = iphoneos;
 			};
 			name = Release;
@@ -737,12 +728,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF811C23617500D77BF1 /* Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				DEFINES_MODULE = YES;
-				INFOPLIST_FILE = Sources/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				SDKROOT = macosx;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -750,10 +736,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF811C23617500D77BF1 /* Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				DEFINES_MODULE = YES;
-				INFOPLIST_FILE = Sources/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -762,7 +744,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF831C23617500D77BF1 /* Tests.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = Tests/Info.plist;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -771,7 +752,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF831C23617500D77BF1 /* Tests.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = Tests/Info.plist;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -780,12 +760,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF811C23617500D77BF1 /* Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				DEFINES_MODULE = YES;
-				INFOPLIST_FILE = Sources/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				SDKROOT = appletvos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 3;
 			};
 			name = Debug;
@@ -794,10 +769,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF811C23617500D77BF1 /* Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				DEFINES_MODULE = YES;
-				INFOPLIST_FILE = Sources/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 			};
@@ -807,7 +778,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF831C23617500D77BF1 /* Tests.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = Tests/Info.plist;
 				SDKROOT = appletvos;
 			};
 			name = Debug;
@@ -816,7 +786,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF831C23617500D77BF1 /* Tests.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = Tests/Info.plist;
 				SDKROOT = appletvos;
 			};
 			name = Release;
@@ -825,12 +794,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF811C23617500D77BF1 /* Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				DEFINES_MODULE = YES;
-				INFOPLIST_FILE = Sources/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				SDKROOT = watchos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Debug;
@@ -839,10 +803,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF811C23617500D77BF1 /* Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				DEFINES_MODULE = YES;
-				INFOPLIST_FILE = Sources/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
