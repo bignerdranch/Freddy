@@ -24,6 +24,7 @@ class JSONEncodingDetectorTests: XCTestCase {
     func testUTF16LittleEndianWithBOMDetection() {
         let expectedEncoding: JSONEncodingDetector.Encoding = .UTF16LE
         let encodingPrefixInformation = fixtures.withPrefixSlice(.UTF16LE, includeBOM: true, body: JSONEncodingDetector.detectEncoding)
+        // TODO: Swift 2.2 replace with a single XCTAssertEqual for the `ByteStreamPrefixInformation` tuple
         XCTAssertEqual(encodingPrefixInformation.encoding, expectedEncoding)
         XCTAssertEqual(encodingPrefixInformation.byteOrderMarkLength, 2)
     }
@@ -37,6 +38,7 @@ class JSONEncodingDetectorTests: XCTestCase {
     func testUTF16BigEndianWithBOMDetection() {
         let expectedEncoding: JSONEncodingDetector.Encoding = .UTF16BE
         let encodingPrefixInformation = fixtures.withPrefixSlice(.UTF16BE, includeBOM: true, body: JSONEncodingDetector.detectEncoding)
+        // TODO: Swift 2.2 replace with a single XCTAssertEqual for the `ByteStreamPrefixInformation` tuple
         XCTAssertEqual(encodingPrefixInformation.encoding, expectedEncoding)
         XCTAssertEqual(encodingPrefixInformation.byteOrderMarkLength, 2)
     }
@@ -52,6 +54,7 @@ class JSONEncodingDetectorTests: XCTestCase {
     func testUTF32LittleEndianWithBOMDetection() {
         let expectedEncoding: JSONEncodingDetector.Encoding = .UTF32LE
         let encodingPrefixInformation = fixtures.withPrefixSlice(.UTF32LE, includeBOM: true, body: JSONEncodingDetector.detectEncoding)
+        // TODO: Swift 2.2 replace with a single XCTAssertEqual for the `ByteStreamPrefixInformation` tuple
         XCTAssertEqual(encodingPrefixInformation.encoding, expectedEncoding)
         XCTAssertEqual(encodingPrefixInformation.byteOrderMarkLength, 4)
     }
@@ -65,6 +68,7 @@ class JSONEncodingDetectorTests: XCTestCase {
     func testUTF32BigEndianWithBOMDetection() {
         let expectedEncoding: JSONEncodingDetector.Encoding = .UTF32BE
         let encodingPrefixInformation = fixtures.withPrefixSlice(.UTF32BE, includeBOM: true, body: JSONEncodingDetector.detectEncoding)
+        // TODO: Swift 2.2 replace with a single XCTAssertEqual for the `ByteStreamPrefixInformation` tuple
         XCTAssertEqual(encodingPrefixInformation.encoding, expectedEncoding)
         XCTAssertEqual(encodingPrefixInformation.byteOrderMarkLength,4)
     }
@@ -80,6 +84,7 @@ class JSONEncodingDetectorTests: XCTestCase {
     func testUTF8WithBOMDetection() {
         let expectedEncoding: JSONEncodingDetector.Encoding = .UTF8
         let encodingPrefixInformation = fixtures.withPrefixSlice(.UTF8, includeBOM: true, body: JSONEncodingDetector.detectEncoding)
+        // TODO: Swift 2.2 replace with a single XCTAssertEqual for the `ByteStreamPrefixInformation` tuple
         XCTAssertEqual(encodingPrefixInformation.encoding, expectedEncoding)
         XCTAssertEqual(encodingPrefixInformation.byteOrderMarkLength, 3)
     }
