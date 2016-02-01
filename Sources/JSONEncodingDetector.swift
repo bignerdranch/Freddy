@@ -55,7 +55,7 @@ public struct JSONEncodingDetector {
     //// xx xx xx xx  UTF-8
     ////
     //// - parameter header: The front Slice of data being read and evaluated.
-    //// - returns: The a tuple containing the detected Unicode encoding and the lenght of the byte order mark.
+    //// - returns: A tuple containing the detected Unicode encoding and the lenght of the byte order mark.
     static func detectEncoding(header: Slice<UnsafeBufferPointer<UInt8>>) -> ByteStreamPrefixInformation {
 
         guard let prefix = prefixFromHeader(header) else {
