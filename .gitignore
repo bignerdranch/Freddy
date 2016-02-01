@@ -26,3 +26,8 @@ DerivedData
 # Pods/
 
 docs/
+
+# Swift Package Manager
+#
+.build/
+Packages/
