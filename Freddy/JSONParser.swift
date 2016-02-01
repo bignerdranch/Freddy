@@ -97,7 +97,6 @@ public struct JSONParser {
     ///   source location if needed.
     public mutating func parse() throws -> JSON {
         try guardAgainstUnsupportedEncodings()
-        skipByteOrderMark()
         let value = try parseValue()
         skipWhitespace()
         guard loc == input.count else {
@@ -171,18 +170,13 @@ public struct JSONParser {
         }
     }
 
-    private mutating func skipByteOrderMark() {
+    private mutating func guardAgainstUnsupportedEncodings() throws {
         let header = input.prefix(4)
-        let bomLength = JSONEncodingDetector.byteOrderMarkLength(header)
-        loc = loc.advancedBy(bomLength)
-    }
-
-    private func guardAgainstUnsupportedEncodings() throws {
-        let header = input.prefix(4)
-        let encoding = JSONEncodingDetector.detectEncoding(header)
-        guard JSONEncodingDetector.supportedEncodings.contains(encoding) else {
-            throw Error.InvalidUnicodeStreamEncoding(detectedEncoding: encoding)
+        let encodingPrefixInformation = JSONEncodingDetector.detectEncoding(header)
+        guard JSONEncodingDetector.supportedEncodings.contains(encodingPrefixInformation.encoding) else {
+            throw Error.InvalidUnicodeStreamEncoding(detectedEncoding: encodingPrefixInformation.encoding)
         }
+        loc = loc.advancedBy(encodingPrefixInformation.byteOrderMarkLength)
     }
 
     private mutating func decodeNull() throws -> JSON {
