@@ -173,7 +173,18 @@ Then run `pod install`.
 
 ### Swift Package Manager
 
-We've [not yet](https://github.com/bignerdranch/Freddy/issues/110) reorganized the project as a Swift module. [Pull requests](https://github.com/bignerdranch/Freddy/pulls) are welcome!
+Add us to your `Package.swift`:
+
+```
+import PackageDescription
+
+let package = Package(
+    name: "My Nerdy App",
+    dependencies: [
+        .Package(url: "https://github.com/bignerdranch/Freddy.git", majorVersion: 2),
+    ]
+)
+```
 
 ## Setting Breakpoint Errors
 
