@@ -23,12 +23,12 @@ Consider some example JSON data:
         {
             "name": "Matt Mathias",
             "age": 32,
-            "spouse": true,
+            "spouse": true
         },
         {
             "name": "Sergeant Pepper",
             "age": 25,
-            "spouse": false,
+            "spouse": false
         }
     ],
     "jobs": [
