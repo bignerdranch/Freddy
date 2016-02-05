@@ -306,4 +306,20 @@ class JSONParserTests: XCTestCase {
         }
     }
 
+    func testThatParserRejectsInvalidUTF16SurrogatePairs() {
+        for invalidPairString in [
+            "\"\\ud800\\ud123\"",
+            "\"\\ud800\"",
+            "\"\\ud800abc\"",
+        ] {
+            do {
+                let _ = try JSONFromString(invalidPairString)
+                XCTFail("Unexpectedly parsed invalid surrogate pair")
+            } catch JSONParser.Error.UnicodeEscapeInvalid {
+                // do nothing - this is the expected error
+            } catch {
+                XCTFail("Unexpected error: \(error)")
+            }
+        }
+    }
 }
