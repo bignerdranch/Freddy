@@ -245,7 +245,7 @@ public struct JSONParser {
                 case Literal.n:            stringDecodingBuffer.append(Literal.NEWLINE)
                 case Literal.u:
                     loc = loc.successor()
-                    try readUnicodeEscape()
+                    try readUnicodeEscape(start: loc - 2)
 
                     // readUnicodeEscape() advances loc on its own, so we'll `continue` now
                     // to skip the typical "advance past this character" for all the other escapes
@@ -304,13 +304,9 @@ public struct JSONParser {
         return codeUnit
     }
 
-    private mutating func readUnicodeEscape() throws {
-        // If we're called, the parser already ate the "\u" leading into us. Note
-        // where that was for any errors thrown in this function.
-        let invalidEscapeError = Error.UnicodeEscapeInvalid(offset: loc - 2)
-
+    private mutating func readUnicodeEscape(start start: Int) throws {
         guard let codeUnit = readCodeUnit() else {
-            throw invalidEscapeError
+            throw Error.UnicodeEscapeInvalid(offset: start)
         }
 
         let codeUnits: [UInt16]
@@ -320,13 +316,13 @@ public struct JSONParser {
 
             // First confirm and skip over that we have another "\u"
             guard loc + 6 <= input.count && input[loc] == Literal.BACKSLASH && input[loc+1] == Literal.u else {
-                throw invalidEscapeError
+                throw Error.UnicodeEscapeInvalid(offset: start)
             }
             loc += 2
 
             // Ensure the second code unit is valid for the surrogate pair
             guard let secondCodeUnit = readCodeUnit() where UTF16.isTrailSurrogate(secondCodeUnit) else {
-                throw invalidEscapeError
+                throw Error.UnicodeEscapeInvalid(offset: start)
             }
 
             codeUnits = [codeUnit, secondCodeUnit]
@@ -337,7 +333,7 @@ public struct JSONParser {
         let transcodeHadError = transcode(UTF16.self, UTF8.self, codeUnits.generate(), { self.stringDecodingBuffer.append($0) }, stopOnError: true)
 
         if transcodeHadError {
-            throw invalidEscapeError
+            throw Error.UnicodeEscapeInvalid(offset: start)
         }
     }
 
