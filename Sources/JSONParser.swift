@@ -245,7 +245,7 @@ public struct JSONParser {
                 case Literal.n:            stringDecodingBuffer.append(Literal.NEWLINE)
                 case Literal.u:
                     loc = loc.successor()
-                    try readUnicodeEscape(&stringDecodingBuffer)
+                    try readUnicodeEscape()
 
                     // readUnicodeEscape() advances loc on its own, so we'll `continue` now
                     // to skip the typical "advance past this character" for all the other escapes
@@ -304,7 +304,7 @@ public struct JSONParser {
         return codeUnit
     }
 
-    private mutating func readUnicodeEscape(inout outputBuffer: [UInt8]) throws {
+    private mutating func readUnicodeEscape() throws {
         // If we're called, the parser already ate the "\u" leading into us. Note
         // where that was for any errors thrown in this function.
         let invalidEscapeError = Error.UnicodeEscapeInvalid(offset: loc - 2)
@@ -334,7 +334,7 @@ public struct JSONParser {
             codeUnits = [codeUnit]
         }
 
-        let transcodeHadError = transcode(UTF16.self, UTF8.self, codeUnits.generate(), { outputBuffer.append($0) }, stopOnError: true)
+        let transcodeHadError = transcode(UTF16.self, UTF8.self, codeUnits.generate(), { self.stringDecodingBuffer.append($0) }, stopOnError: true)
 
         if transcodeHadError {
             throw invalidEscapeError
