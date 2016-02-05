@@ -291,4 +291,19 @@ class JSONParserTests: XCTestCase {
         }
     }
 
+    func testThatParserAcceptsUTF16SurrogatePairs() {
+        for (jsonString, expected) in [
+            ("\"\\uD801\\uDC37\"", "𐐷"),
+            ("\"\\ud83d\\ude39\\ud83d\\udc8d\"", "😹💍"),
+        ] {
+            do {
+                let json = try JSONFromString(jsonString)
+                let decoded: String = try json.decode()
+                XCTAssertEqual(decoded, expected)
+            } catch {
+                XCTFail("Unexpected error: \(error)")
+            }
+        }
+    }
+
 }

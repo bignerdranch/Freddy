@@ -244,12 +244,17 @@ public struct JSONParser {
                 case Literal.t:            stringDecodingBuffer.append(Literal.TAB)
                 case Literal.n:            stringDecodingBuffer.append(Literal.NEWLINE)
                 case Literal.u:
-                    guard let escaped = readUnicodeEscape(loc + 1) else {
-                        throw Error.UnicodeEscapeInvalid(offset: loc)
+                    let startOfEscape = loc - 1
+                    loc = loc.successor()
+                    guard let escaped = readUnicodeEscape() else {
+                        throw Error.UnicodeEscapeInvalid(offset: startOfEscape)
                     }
 
                     stringDecodingBuffer.appendContentsOf(escaped)
-                    loc += 4
+
+                    // readUnicodeEscape() advances loc on its own, so we'll `continue` now
+                    // to skip the typical "advance past this character" for all the other escapes
+                    continue
 
                 default:
                     throw Error.ControlCharacterUnrecognized(offset: loc)
@@ -277,38 +282,67 @@ public struct JSONParser {
         throw Error.EndOfStreamUnexpected
     }
 
-    private func readUnicodeEscape(from: Int) -> [UInt8]? {
-        guard from + 4 <= input.count else {
+    private mutating func readCodeUnit() -> UInt16? {
+        guard loc + 4 <= input.count else {
             return nil
         }
-        var codepoint: UInt16 = 0
-        for i in from ..< from + 4 {
+        var codeUnit: UInt16 = 0
+        for c in input[loc..<loc+4] {
             let nibble: UInt16
-            switch input[i] {
+
+            switch c {
             case Literal.zero...Literal.nine:
-                nibble = UInt16(input[i] - Literal.zero)
+                nibble = UInt16(c - Literal.zero)
 
             case Literal.a...Literal.f:
-                nibble = 10 + UInt16(input[i] - Literal.a)
+                nibble = 10 + UInt16(c - Literal.a)
 
             case Literal.A...Literal.F:
-                nibble = 10 + UInt16(input[i] - Literal.A)
+                nibble = 10 + UInt16(c - Literal.A)
 
             default:
                 return nil
             }
-            codepoint = (codepoint << 4) | nibble
+            codeUnit = (codeUnit << 4) | nibble
         }
+        loc += 4
+        return codeUnit
+    }
+
+    private mutating func readUnicodeEscape() -> [UInt8]? {
+        guard let codeUnit = readCodeUnit() else {
+            return nil
+        }
+
         // UTF16-to-UTF8, via wikipedia
-        if codepoint <= 0x007f {
-            return [UInt8(codepoint)]
-        } else if codepoint <= 0x07ff {
-            return [0b11000000 | UInt8(codepoint >> 6),
-                0b10000000 | UInt8(codepoint & 0x3f)]
+        if codeUnit <= 0x007f {
+            return [UInt8(codeUnit)]
+        } else if codeUnit <= 0x07ff {
+            return [0b11000000 | UInt8(codeUnit >> 6),
+                0b10000000 | UInt8(codeUnit & 0x3f)]
+        } else if codeUnit >= 0xd800 && codeUnit <= 0xdfff {
+            // First half of a UTF16 surrogate pair - we must parse another code unit and combine them
+
+            // First confirm and skip over that we have another "\u"
+            guard loc + 6 <= input.count && input[loc] == Literal.BACKSLASH && input[loc+1] == Literal.u else {
+                return nil
+            }
+            loc += 2
+
+            // Ensure the second code unit is valid for the surrogate pair
+            guard let secondCodeUnit = readCodeUnit() where secondCodeUnit >= 0xdc00 else {
+                return nil
+            }
+
+            let codePoint = 0x10000 + UInt32((codeUnit - 0xd800) << 10) + UInt32(secondCodeUnit - 0xdc00)
+            return [0b11110000 | UInt8((codePoint >> 18) & 0x3f),
+                    0b10000000 | UInt8((codePoint >> 12) & 0x3f),
+                    0b10000000 | UInt8((codePoint >>  6) & 0x3f),
+                    0b10000000 | UInt8((codePoint      ) & 0x3f)]
         } else {
-            return [0b11100000 | UInt8(codepoint >> 12),
-                0b10000000 | UInt8((codepoint >> 6) & 0x3f),
-                0b10000000 | UInt8(codepoint & 0x3f)]
+            return [0b11100000 | UInt8(codeUnit >> 12),
+                    0b10000000 | UInt8((codeUnit >> 6) & 0x3f),
+                    0b10000000 | UInt8(codeUnit & 0x3f)]
         }
     }
 
