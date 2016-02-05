@@ -320,7 +320,7 @@ public struct JSONParser {
         } else if codeUnit <= 0x07ff {
             return [0b11000000 | UInt8(codeUnit >> 6),
                 0b10000000 | UInt8(codeUnit & 0x3f)]
-        } else if codeUnit >= 0xd800 && codeUnit <= 0xdfff {
+        } else if UTF16.isLeadSurrogate(codeUnit) {
             // First half of a UTF16 surrogate pair - we must parse another code unit and combine them
 
             // First confirm and skip over that we have another "\u"
@@ -330,7 +330,7 @@ public struct JSONParser {
             loc += 2
 
             // Ensure the second code unit is valid for the surrogate pair
-            guard let secondCodeUnit = readCodeUnit() where secondCodeUnit >= 0xdc00 else {
+            guard let secondCodeUnit = readCodeUnit() where UTF16.isTrailSurrogate(secondCodeUnit) else {
                 return nil
             }
 
