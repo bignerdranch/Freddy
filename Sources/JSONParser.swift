@@ -314,13 +314,9 @@ public struct JSONParser {
             return nil
         }
 
-        // UTF16-to-UTF8, via wikipedia
-        if codeUnit <= 0x007f {
-            return [UInt8(codeUnit)]
-        } else if codeUnit <= 0x07ff {
-            return [0b11000000 | UInt8(codeUnit >> 6),
-                0b10000000 | UInt8(codeUnit & 0x3f)]
-        } else if UTF16.isLeadSurrogate(codeUnit) {
+        let codeUnits: [UInt16]
+
+        if UTF16.isLeadSurrogate(codeUnit) {
             // First half of a UTF16 surrogate pair - we must parse another code unit and combine them
 
             // First confirm and skip over that we have another "\u"
@@ -334,16 +330,16 @@ public struct JSONParser {
                 return nil
             }
 
-            let codePoint = 0x10000 + UInt32((codeUnit - 0xd800) << 10) + UInt32(secondCodeUnit - 0xdc00)
-            return [0b11110000 | UInt8((codePoint >> 18) & 0x3f),
-                    0b10000000 | UInt8((codePoint >> 12) & 0x3f),
-                    0b10000000 | UInt8((codePoint >>  6) & 0x3f),
-                    0b10000000 | UInt8((codePoint      ) & 0x3f)]
+            codeUnits = [codeUnit, secondCodeUnit]
         } else {
-            return [0b11100000 | UInt8(codeUnit >> 12),
-                    0b10000000 | UInt8((codeUnit >> 6) & 0x3f),
-                    0b10000000 | UInt8(codeUnit & 0x3f)]
+            codeUnits = [codeUnit]
         }
+
+        var out = [UInt8]()
+
+        let transcodeHadError = transcode(UTF16.self, UTF8.self, codeUnits.generate(), { out.append($0) }, stopOnError: true)
+
+        return transcodeHadError ? nil : out
     }
 
     private mutating func decodeArray() throws -> JSON {
