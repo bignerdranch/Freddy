@@ -244,12 +244,12 @@ public struct JSONParser {
                 case Literal.t:            stringDecodingBuffer.append(Literal.TAB)
                 case Literal.n:            stringDecodingBuffer.append(Literal.NEWLINE)
                 case Literal.u:
-                    guard let escaped = readUnicodeEscape(loc + 1) else {
-                        throw Error.UnicodeEscapeInvalid(offset: loc)
-                    }
+                    loc = loc.successor()
+                    try readUnicodeEscape(start: loc - 2)
 
-                    stringDecodingBuffer.appendContentsOf(escaped)
-                    loc += 4
+                    // readUnicodeEscape() advances loc on its own, so we'll `continue` now
+                    // to skip the typical "advance past this character" for all the other escapes
+                    continue
 
                 default:
                     throw Error.ControlCharacterUnrecognized(offset: loc)
@@ -277,38 +277,63 @@ public struct JSONParser {
         throw Error.EndOfStreamUnexpected
     }
 
-    private func readUnicodeEscape(from: Int) -> [UInt8]? {
-        guard from + 4 <= input.count else {
+    private mutating func readCodeUnit() -> UInt16? {
+        guard loc + 4 <= input.count else {
             return nil
         }
-        var codepoint: UInt16 = 0
-        for i in from ..< from + 4 {
+        var codeUnit: UInt16 = 0
+        for c in input[loc..<loc+4] {
             let nibble: UInt16
-            switch input[i] {
+
+            switch c {
             case Literal.zero...Literal.nine:
-                nibble = UInt16(input[i] - Literal.zero)
+                nibble = UInt16(c - Literal.zero)
 
             case Literal.a...Literal.f:
-                nibble = 10 + UInt16(input[i] - Literal.a)
+                nibble = 10 + UInt16(c - Literal.a)
 
             case Literal.A...Literal.F:
-                nibble = 10 + UInt16(input[i] - Literal.A)
+                nibble = 10 + UInt16(c - Literal.A)
 
             default:
                 return nil
             }
-            codepoint = (codepoint << 4) | nibble
+            codeUnit = (codeUnit << 4) | nibble
         }
-        // UTF16-to-UTF8, via wikipedia
-        if codepoint <= 0x007f {
-            return [UInt8(codepoint)]
-        } else if codepoint <= 0x07ff {
-            return [0b11000000 | UInt8(codepoint >> 6),
-                0b10000000 | UInt8(codepoint & 0x3f)]
+        loc += 4
+        return codeUnit
+    }
+
+    private mutating func readUnicodeEscape(start start: Int) throws {
+        guard let codeUnit = readCodeUnit() else {
+            throw Error.UnicodeEscapeInvalid(offset: start)
+        }
+
+        let codeUnits: [UInt16]
+
+        if UTF16.isLeadSurrogate(codeUnit) {
+            // First half of a UTF16 surrogate pair - we must parse another code unit and combine them
+
+            // First confirm and skip over that we have another "\u"
+            guard loc + 6 <= input.count && input[loc] == Literal.BACKSLASH && input[loc+1] == Literal.u else {
+                throw Error.UnicodeEscapeInvalid(offset: start)
+            }
+            loc += 2
+
+            // Ensure the second code unit is valid for the surrogate pair
+            guard let secondCodeUnit = readCodeUnit() where UTF16.isTrailSurrogate(secondCodeUnit) else {
+                throw Error.UnicodeEscapeInvalid(offset: start)
+            }
+
+            codeUnits = [codeUnit, secondCodeUnit]
         } else {
-            return [0b11100000 | UInt8(codepoint >> 12),
-                0b10000000 | UInt8((codepoint >> 6) & 0x3f),
-                0b10000000 | UInt8(codepoint & 0x3f)]
+            codeUnits = [codeUnit]
+        }
+
+        let transcodeHadError = transcode(UTF16.self, UTF8.self, codeUnits.generate(), { self.stringDecodingBuffer.append($0) }, stopOnError: true)
+
+        if transcodeHadError {
+            throw Error.UnicodeEscapeInvalid(offset: start)
         }
     }
 
