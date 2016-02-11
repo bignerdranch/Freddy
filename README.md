@@ -14,6 +14,8 @@ So, Freddy vs. JSON, who wins?  We think it is Freddy.
 
 This section describes Freddy's basic usage. You can find more examples on parsing data, dealing with errors, serializing `JSON` instances into `NSData`, and more in the [Wiki](https://github.com/bignerdranch/Freddy/wiki).
 
+### Deserialization: Parsing Raw Data
+#### Basic Usage
 Consider some example JSON data:
 
 ```json
@@ -63,6 +65,7 @@ do {
 
 After we load in the data, we create an instance of `JSON`, the workhorse of this framework. This allows us to access the values from the JSON data. We `try` because the `data` may be malformed and the parsing could generate an error. Next, we access the `"success"` key by calling the `bool(_:)` method on `JSON`. We `try` here as well because accessing the `json` for the key `"success"` could fail - e.g., if we had passed an unknown key. This method takes two parameters, both of which are used to define a path into the `JSON` instance to find a Boolean value of interest. If a `Bool` is found at the path described by `"success"`, then `bool(_:)` returns a `Bool`. If the path does not lead to a `Bool`, then an appropriate error is thrown.
 
+#### Use Paths to Access Nested Data with Subscripting
 With Freddy, it is possible to use a path to access elements deeper in the json structure. For example:
 
 ```swift
@@ -84,6 +87,7 @@ There can be any number of subscripts, and each subscript can be either a `Strin
 
 [More on Subscripting](https://github.com/bignerdranch/Freddy/wiki/Subscripting)
 
+#### JSONDecodable: Deserializing Models Directly
 Now, let's look an example that parses the data into a model class:
 
 ```swift
@@ -130,6 +134,53 @@ extension Person: JSONDecodable {
 ```
 
 `Person` just has a few properties. It conforms to `JSONDecodable` via an extension. In the extension, we implement a `throws`ing initializer that takes an instance of `JSON` as its sole parameter. In the implementation, we `try` three functions: 1) `string(_:)`, 2) `int(_:)`, and 3) `bool(_:)`. Each of these works as you have seen before. The methods take in a path, which is used to find a value of a specific type within the `JSON` instance passed to the initializer. Since these paths could be bad, or the requested type may not match what is actually inside of the `JSON`, these methods may potentially throw an error.
+
+
+### Serialization
+Freddy's serialization support centers around the `JSON.serialize()` method.
+
+#### Basic Usage
+The `JSON` enumeration supports conversion to `NSData` directly:
+
+```swift
+let someJSON: JSON = …
+let data: NSData = try someJSON.serialize()
+```
+
+#### JSONEncodable: Serializing Other Objects
+Most of your objects aren't `Freddy.JSON` objects, though.
+You can serialize them to `NSData` by first converting them to a
+`Freddy.JSON` via `JSONEncodable.toJSON()`, the sole method of the
+`JSONEncodable` protocol, and then using `serialize()` to convert
+the `Freddy.JSON` to `NSData`:
+
+```swift
+let myObject: JSONEncodable = …
+
+// Object -> JSON -> NSData:
+let objectAsJSON: JSON = myObject.toJSON()
+let data: NSData = try objectAsJSON.serialize()
+
+// More concisely:
+let dataOneLiner = try object.toJSON().serialize()
+```
+
+Freddy provides definitions for common Swift datatypes already.
+To make your own datatypes serializable, conform them to `JSONEncodable`
+and implement that protocol's `toJSON()` method:
+
+```swift
+extension Person: JSONEncodable {
+    public func toJSON() -> JSON {
+        return .Dictionary([
+            "name": .String(name),
+            "age": .Int(age),
+            "spouse": .Bool(spouse)])
+    }
+}
+```
+
+
 
 ## Getting Started
 
