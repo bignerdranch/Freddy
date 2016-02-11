@@ -16,6 +16,9 @@
 		3F70EA941C6D0D3000972CEB /* JSONSerializing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F70EA921C6D0D2B00972CEB /* JSONSerializing.swift */; };
 		3F70EA951C6D0D3100972CEB /* JSONSerializing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F70EA921C6D0D2B00972CEB /* JSONSerializing.swift */; };
 		3F70EA961C6D0D3200972CEB /* JSONSerializing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F70EA921C6D0D2B00972CEB /* JSONSerializing.swift */; };
+		3F70EA981C6D0EC500972CEB /* JSONSerializingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F70EA971C6D0EC500972CEB /* JSONSerializingTests.swift */; };
+		3F70EA991C6D0EC500972CEB /* JSONSerializingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F70EA971C6D0EC500972CEB /* JSONSerializingTests.swift */; };
+		3F70EA9A1C6D0EC500972CEB /* JSONSerializingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F70EA971C6D0EC500972CEB /* JSONSerializingTests.swift */; };
 		DB6ADF231C23610B00D77BF1 /* Freddy.h in Headers */ = {isa = PBXBuildFile; fileRef = DB6ADF221C23610B00D77BF1 /* Freddy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DB6ADF2A1C23610B00D77BF1 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB6ADF1F1C23610B00D77BF1 /* Freddy.framework */; };
 		DB6ADF481C23612000D77BF1 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB6ADF3E1C23612000D77BF1 /* Freddy.framework */; };
@@ -106,6 +109,7 @@
 		1C67C7251C3B2446003D5A05 /* JSONEncodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONEncodable.swift; sourceTree = "<group>"; };
 		1C67C72A1C3B32A6003D5A05 /* JSONEncodableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONEncodableTests.swift; sourceTree = "<group>"; };
 		3F70EA921C6D0D2B00972CEB /* JSONSerializing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSerializing.swift; sourceTree = "<group>"; };
+		3F70EA971C6D0EC500972CEB /* JSONSerializingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSerializingTests.swift; sourceTree = "<group>"; };
 		DB6ADF1F1C23610B00D77BF1 /* Freddy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Freddy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB6ADF221C23610B00D77BF1 /* Freddy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Freddy.h; sourceTree = "<group>"; };
 		DB6ADF241C23610B00D77BF1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -245,6 +249,7 @@
 				DB6ADFAC1C2362FF00D77BF1 /* JSONDecodableTests.swift */,
 				1C67C72A1C3B32A6003D5A05 /* JSONEncodableTests.swift */,
 				DB6ADFAD1C2362FF00D77BF1 /* JSONParserTests.swift */,
+				3F70EA971C6D0EC500972CEB /* JSONSerializingTests.swift */,
 				DB6ADFAE1C2362FF00D77BF1 /* JSONSubscriptTests.swift */,
 				DB6ADFAF1C2362FF00D77BF1 /* JSONTypeTests.swift */,
 				E43B67DF1C5962CD00ACE390 /* JSONEncodingDetectorTests.swift */,
@@ -579,6 +584,7 @@
 				DB6ADFBE1C2362FF00D77BF1 /* Person.swift in Sources */,
 				DB6ADFB51C2362FF00D77BF1 /* JSONParserTests.swift in Sources */,
 				E43B67E11C5962CD00ACE390 /* JSONEncodingDetectorTests.swift in Sources */,
+				3F70EA991C6D0EC500972CEB /* JSONSerializingTests.swift in Sources */,
 				DB6ADFBB1C2362FF00D77BF1 /* JSONTypeTests.swift in Sources */,
 				DB6ADFB21C2362FF00D77BF1 /* JSONDecodableTests.swift in Sources */,
 				DB6ADFB81C2362FF00D77BF1 /* JSONSubscriptTests.swift in Sources */,
@@ -605,6 +611,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F70EA981C6D0EC500972CEB /* JSONSerializingTests.swift in Sources */,
 				DB6ADFBD1C2362FF00D77BF1 /* Person.swift in Sources */,
 				1C67C72B1C3B32A6003D5A05 /* JSONEncodableTests.swift in Sources */,
 				DB6ADFB41C2362FF00D77BF1 /* JSONParserTests.swift in Sources */,
@@ -639,6 +646,7 @@
 				DB6ADFBF1C2362FF00D77BF1 /* Person.swift in Sources */,
 				DB6ADFB61C2362FF00D77BF1 /* JSONParserTests.swift in Sources */,
 				E43B67E21C5962CD00ACE390 /* JSONEncodingDetectorTests.swift in Sources */,
+				3F70EA9A1C6D0EC500972CEB /* JSONSerializingTests.swift in Sources */,
 				DB6ADFBC1C2362FF00D77BF1 /* JSONTypeTests.swift in Sources */,
 				DB6ADFB31C2362FF00D77BF1 /* JSONDecodableTests.swift in Sources */,
 				DB6ADFB91C2362FF00D77BF1 /* JSONSubscriptTests.swift in Sources */,
