@@ -137,7 +137,7 @@ extension Person: JSONDecodable {
 
 
 ### Serialization
-Freddy's serialization support centers around the `JSON.serialize()` function.
+Freddy's serialization support centers around the `JSON.serialize()` method.
 
 #### Basic Usage
 The `JSON` enumeration supports conversion to `NSData` directly:
