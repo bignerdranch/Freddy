@@ -1,3 +1,5 @@
+// Copyright (C) 2016 Big Nerd Ranch, Inc. Licensed under the MIT license WITHOUT ANY WARRANTY.
+
 import XCTest
 import Freddy
 
