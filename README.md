@@ -135,6 +135,53 @@ extension Person: JSONDecodable {
 
 `Person` just has a few properties. It conforms to `JSONDecodable` via an extension. In the extension, we implement a `throws`ing initializer that takes an instance of `JSON` as its sole parameter. In the implementation, we `try` three functions: 1) `string(_:)`, 2) `int(_:)`, and 3) `bool(_:)`. Each of these works as you have seen before. The methods take in a path, which is used to find a value of a specific type within the `JSON` instance passed to the initializer. Since these paths could be bad, or the requested type may not match what is actually inside of the `JSON`, these methods may potentially throw an error.
 
+
+### Serialization
+Freddy's serialization support centers around the `JSON.serialize()` function.
+
+#### Basic Usage
+The `JSON` enumeration supports conversion to `NSData` directly:
+
+```swift
+let someJSON: JSON = …
+let data: NSData = try someJSON.serialize()
+```
+
+#### JSONEncodable: Serializing Other Objects
+Most of your objects aren't `Freddy.JSON` objects, though.
+You can serialize them to `NSData` by first converting them to a
+`Freddy.JSON` via `JSONEncodable.toJSON()`, the sole method of the
+`JSONEncodable` protocol, and then using `serialize()` to convert
+the `Freddy.JSON` to `NSData`:
+
+```swift
+let myObject: JSONEncodable = …
+
+// Object -> JSON -> NSData:
+let objectAsJSON: JSON = myObject.toJSON()
+let data: NSData = try objectAsJSON.serialize()
+
+// More concisely:
+let dataOneLiner = try object.toJSON().serialize()
+```
+
+Freddy provides definitions for common Swift datatypes already.
+To make your own datatypes serializable, conform them to `JSONEncodable`
+and implement that protocol's `toJSON()` method:
+
+```swift
+extension Person: JSONEncodable {
+    public func toJSON() -> JSON {
+        return .Dictionary([
+            "name": .String(name),
+            "age": .Int(age),
+            "spouse": .Bool(spouse)])
+    }
+}
+```
+
+
+
 ## Getting Started
 
 Freddy requires iOS 7.0, Mac OS X 10.9, watchOS 2.0, or tvOS 9.0. Linux is not yet supported.
