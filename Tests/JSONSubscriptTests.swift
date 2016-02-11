@@ -42,36 +42,6 @@ class JSONSubscriptTests: XCTestCase {
         self.noWhiteSpaceData = noWhiteSpaceData
     }
 
-    func testThatJSONCanBeSerialized() {
-        let data = try! json.serialize()
-        XCTAssertGreaterThan(data.length, 0, "There should be data.")
-    }
-
-    func testThatJSONDataIsEqual() {
-        let serializedJSONData = try! json.serialize()
-        let noWhiteSpaceJSON = try! JSON(data: noWhiteSpaceData, usingParser: parser())
-        let noWhiteSpaceSerializedJSONData = try! noWhiteSpaceJSON.serialize()
-        XCTAssertEqual(serializedJSONData, noWhiteSpaceSerializedJSONData, "Serialized data should be equal.")
-    }
-
-    func testThatJSONSerializationMakesEqualJSON() {
-        let serializedJSONData = try! json.serialize()
-        let serialJSON = try! JSON(data: serializedJSONData, usingParser: parser())
-        XCTAssert(json == serialJSON, "The JSON values should be equal.")
-    }
-
-    func testThatJSONSerializationHandlesBoolsCorrectly() {
-        let json = JSON.Dictionary([
-            "foo": .Bool(true),
-            "bar": .Bool(false),
-            "baz": .Int(123),
-        ])
-        let data = try! json.serialize()
-        let deserializedResult = try! JSON(data: data, usingParser: parser()).dictionary()
-        let deserialized = JSON.Dictionary(deserializedResult)
-        XCTAssertEqual(json, deserialized, "Serialize/Deserialize succeed with Bools")
-    }
-    
     func testThatJSONCanCreatePeople() {
         let peopleJSON = try! json.array("people")
         for personJSON in peopleJSON {
