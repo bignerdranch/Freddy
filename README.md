@@ -12,7 +12,7 @@ So, Freddy vs. JSON, who wins?  We think it is Freddy.
 
 ## Usage
 
-This section describes Freddy's basic usage. You can find more examples on parsing data, dealing with errors, serializing `JSON` instances into `NSData`, and more in the [Wiki](https://github.com/bignerdranch/Freddy/wiki).
+This section describes Freddy's basic usage. You can find more examples on parsing data, dealing with errors, serializing `JSON` instances into `NSData`, and more in the [Wiki](https://github.com/bignerdranch/Freddy/wiki). You can read the [documentation to see the full API](http://bignerdranch.github.io/Freddy/index.html).
 
 ### Deserialization: Parsing Raw Data
 #### Basic Usage
