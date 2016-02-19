@@ -39,6 +39,6 @@ extension Person: JSONDecodable {
 
 extension Person: JSONEncodable {
     public func toJSON() -> JSON {
-        return .Dictionary(["name": .String(name), "age": .Int(age), "eyeColor": .String(eyeColor.rawValue), "spouse": .Bool(spouse)])
+        return .Dictionary(["name": .String(name), "age": .Int(age), "eyeColor": eyeColor.toJSON(), "spouse": .Bool(spouse)])
     }
 }
