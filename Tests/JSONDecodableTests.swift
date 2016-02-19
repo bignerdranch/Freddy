@@ -17,8 +17,8 @@ class JSONDecodableTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        mattJSON = ["name": "Matt Mathias", "age": 32, "spouse": true]
-        matt = Person(name: "Matt Mathias", age: 32, spouse: true)
+        mattJSON = ["name": "Matt Mathias", "age": 32, "eyeColor": "blue", "spouse": true]
+        matt = Person(name: "Matt Mathias", age: 32, eyeColor: .Blue, spouse: true)
     }
     
     override func tearDown() {

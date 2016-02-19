@@ -73,3 +73,11 @@ extension Bool: JSONEncodable {
         return .Bool(self)
     }
 }
+
+extension RawRepresentable where RawValue: JSONEncodable {
+    /// Converts an instance of a conforming type to `JSON`.
+    /// - returns: An instance of `JSON` where the enum case is whatever the underlying `RawValue` converts to.
+    public func toJSON() -> JSON {
+        return rawValue.toJSON()
+    }
+}
