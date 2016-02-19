@@ -2,6 +2,7 @@ language: objective-c
 osx_image: xcode7.2
 install:
 - gem install xcpretty --no-rdoc --no-ri --no-document
+- gem install jazzy --no-rdoc --no-ri --no-document
 - curl -OlL "https://github.com/Carthage/Carthage/releases/download/0.11/Carthage.pkg"
 - sudo installer -pkg "Carthage.pkg" -target /
 - rm "Carthage.pkg"
@@ -14,6 +15,11 @@ script:
   'platform=tvOS Simulator,name=Apple TV 1080p' | xcpretty -c
 - carthage build --no-skip-current
 - pod lib lint --quick
+after_success:
+- "./Configurations/publish_docs.sh"
 notifications:
   slack:
     secure: VHcEZcTuVR3gfHIcM9jcxrXgE3tkVIT4gWDLpnK7O4em86dCpaVkLDwr0UcQYxvqGS1J8pQqGZCwyOBsdgaItX52eRDMIez/384B56Vl6eufdLAcwWELIEtHyFkJ6XUjmASICaeeb8SpF/rj89/AXoHU6c8shY13NKtoBBZCGq8=
+env:
+  global:
+    secure: fgx97DOi3+wTHwfyo1LhsXtQolZltBmZFKCfyeq9IWqvJ0wCvFXE3QllD66369LzC5Fz/ipPRwqsd0nH393Nq1xFLAjdZkOhVAc65GjNjKfBQsaKcsIn0/AXd0RIKimzmvBAMHSh0jy3tBKrEQVCJtR6dF6nRoQNC80TxLoDrKg=

@@ -14,6 +14,9 @@ import Foundation
 public protocol JSONParserType {
 
     /// Creates an instance of `JSON` from `NSData`.
+    /// - parameter data: An instance of `NSData` to use to create `JSON`.
+    /// - throws: An error that may arise from calling `JSONObjectWithData(_:options:)` on `NSJSONSerialization` with the given data.
+    /// - returns: An instance of `JSON`.
     static func createJSONFromData(data: NSData) throws -> JSON
 
 }
@@ -26,6 +29,10 @@ extension JSON {
         self = try parser.createJSONFromData(data)
     }
 
+    /// Create `JSON` from UTF-8 `string`.
+    public init(jsonString: Swift.String, usingParser parser: JSONParserType.Type = JSONParser.self) throws {
+        self = try parser.createJSONFromData((jsonString as NSString).dataUsingEncoding(NSUTF8StringEncoding) ?? NSData())
+    }
 }
 
 // MARK: - NSJSONSerialization
@@ -89,44 +96,4 @@ extension NSJSONSerialization: JSONParserType {
         })
     }
 
-}
-
-// MARK: - Serialize JSON
-
-extension JSON {
-
-    /// Attempt to serialize `JSON` into an `NSData`.
-    /// - returns: A byte-stream containing the `JSON` ready for wire transfer.
-    /// - throws: Errors that arise from `NSJSONSerialization`.
-    /// - see: Foundation.NSJSONSerialization
-    public func serialize() throws -> NSData {
-        let obj: AnyObject = toNSJSONSerializationObject()
-        return try NSJSONSerialization.dataWithJSONObject(obj, options: [])
-    }
-
-    /// A function to help with the serialization of `JSON`.
-    /// - returns: An `AnyObject` suitable for `NSJSONSerialization`'s use.
-    private func toNSJSONSerializationObject() -> AnyObject {
-        switch self {
-        case .Array(let jsonArray):
-            return jsonArray.map { $0.toNSJSONSerializationObject() }
-        case .Dictionary(let jsonDictionary):
-            var cocoaDictionary = Swift.Dictionary<Swift.String, AnyObject>(minimumCapacity: jsonDictionary.count)
-            for (key, json) in jsonDictionary {
-                cocoaDictionary[key] = json.toNSJSONSerializationObject()
-            }
-            return cocoaDictionary
-        case .String(let str):
-            return str
-        case .Double(let num):
-            return num
-        case .Int(let int):
-            return int
-        case .Bool(let b):
-            return b
-        case .Null:
-            return NSNull()
-        }
-
-    }
 }

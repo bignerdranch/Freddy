@@ -6,9 +6,8 @@ LD_RUNPATH_SEARCH_PATHS[sdk=iphonesimulator*]  = $(inherited) @executable_path/F
 LD_RUNPATH_SEARCH_PATHS[sdk=appletvos*]        = $(inherited) @executable_path/Frameworks @loader_path/Frameworks
 LD_RUNPATH_SEARCH_PATHS[sdk=appletvsimulator*] = $(inherited) @executable_path/Frameworks @loader_path/Frameworks
 
-SWIFT_OBJC_BRIDGING_HEADER = FreddyTests/FreddyTests-Bridging-Header.h
-CLANG_ENABLE_MODULES = YES
+SWIFT_OBJC_BRIDGING_HEADER = Tests/Tests-Bridging-Header.h
 
-INFOPLIST_FILE = FreddyTests/Info.plist
+INFOPLIST_FILE = Tests/Info.plist
 PRODUCT_BUNDLE_IDENTIFIER = com.bignerdranch.$(TARGET_NAME)
 PRODUCT_NAME = $(TARGET_NAME)

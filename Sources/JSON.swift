@@ -8,12 +8,19 @@
 
 /// An enum to describe the structure of JSON.
 public enum JSON {
+    /// A case for denoting an array with an associated value of `[JSON]`
     case Array([JSON])
+    /// A case for denoting a dictionary with an associated value of `[Swift.String: JSON]`
     case Dictionary([Swift.String: JSON])
+    /// A case for denoting a double with an associated value of `Swift.Double`.
     case Double(Swift.Double)
+    /// A case for denoting an integer with an associated value of `Swift.Int`.
     case Int(Swift.Int)
+    /// A case for denoting a string with an associated value of `Swift.String`.
     case String(Swift.String)
+    /// A case for denoting a boolean with an associated value of `Swift.Bool`.
     case Bool(Swift.Bool)
+    /// A case for denoting null.
     case Null
 }
 
@@ -30,16 +37,17 @@ extension JSON {
         case KeyNotFound(key: Swift.String)
         
         /// The JSON is not subscriptable with `type`
-        case UnexpectedSubscript(type: Any.Type)
+        case UnexpectedSubscript(type: JSONPathType.Type)
         
-        /// Unexpected JSON was found that is not convertible to `type`
-        case ValueNotConvertible(type: Any.Type)
+        /// Unexpected JSON `value` was found that is not convertible `to` type 
+        case ValueNotConvertible(value: JSON, to: Any.Type)
     }
 
 }
 
 // MARK: - Test Equality
 
+/// Return `true` if `lhs` is equal to `rhs`.
 public func ==(lhs: JSON, rhs: JSON) -> Bool {
     switch (lhs, rhs) {
     case (.Array(let arrL), .Array(let arrR)):
@@ -71,6 +79,7 @@ extension JSON: Equatable {}
 
 extension JSON: CustomStringConvertible {
 
+    /// A textual representation of `self`.
     public var description: Swift.String {
         switch self {
         case .Array(let arr):       return Swift.String(arr)

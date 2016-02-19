@@ -49,6 +49,56 @@ class JSONParserTests: XCTestCase {
         return try parser.parse()
     }
 
+    func testThatParserThrowsAnErrorForAnEmptyNSData() {
+        
+        do {
+            _ = try JSONFromString("")
+            XCTFail("Unexpectedly did not throw an error") 
+        } catch let error as JSONParser.Error {
+            XCTAssert(error == JSONParser.Error.EndOfStreamUnexpected)
+        } catch {
+            XCTFail("Unexpected error \(error)")
+        }
+    }
+
+    func testThatParserThrowsErrorForInsufficientNSData() {
+        let hex: [UInt8] = [0x7B]
+        let data = NSData(bytes: hex, length: hex.count)
+
+        do {
+            try JSONParser.createJSONFromData(data)
+            XCTFail("Unexpectedly did not throw an error")
+        } catch JSONParser.Error.EndOfStreamUnexpected {
+            return
+        } catch {
+            XCTFail("Incorrect error received.: \(error)")
+        }
+    }
+    
+    func testThatParserCompletesWithSingleZero() {
+        guard let data = "0".dataUsingEncoding(NSUTF8StringEncoding) else {
+            XCTFail("Cannot create data from string")
+            return
+        }
+
+        do {
+            try JSONParser.createJSONFromData(data)
+        } catch {
+            XCTFail("Unexpected error \(error)")
+        }
+    }
+
+    func testThatParserCompletesWithBOMAndSingleZero() {
+        let hex: [UInt8] = [0xEF, 0xBB, 0xBF, 0x30]
+        let data = NSData(bytes: hex, length: hex.count)
+
+        do {
+            try JSONParser.createJSONFromData(data)
+        } catch {
+            XCTFail("Unexpected error \(error)")
+        }
+    }
+
     func testThatParserUnderstandsNull() {
         let value = try! JSONFromString("null")
         XCTAssertEqual(value, JSON.Null)
@@ -214,4 +264,62 @@ class JSONParserTests: XCTestCase {
         }
     }
 
+    func testThatParserFailsForUnsupportedEncodings() {
+
+        let unsupportedEncodings: [JSONEncodingDetector.Encoding] = [
+            .UTF16LE,
+            .UTF16BE,
+            .UTF32LE,
+            .UTF32BE
+        ]
+        let fixtures = JSONEncodingUTFTestFixtures()
+
+        for encoding in unsupportedEncodings {
+            let hex = fixtures.hexArray(encoding, includeBOM: false)
+            let data = NSData(bytes: hex, length: hex.count)
+            let hexWithBOM = fixtures.hexArray(encoding, includeBOM: true)
+            let dataWithBOM = NSData(bytes: hexWithBOM, length: hexWithBOM.count)
+            do {
+                try JSONParser.createJSONFromData(data)
+                try JSONParser.createJSONFromData(dataWithBOM)
+                XCTFail("Unexpectedly did not throw an error")
+            } catch JSONParser.Error.InvalidUnicodeStreamEncoding(_) {
+                break
+            } catch {
+                XCTFail("Incorrect error received.: \(error)")
+            }
+        }
+    }
+
+    func testThatParserAcceptsUTF16SurrogatePairs() {
+        for (jsonString, expected) in [
+            ("\"\\uD801\\uDC37\"", "𐐷"),
+            ("\"\\ud83d\\ude39\\ud83d\\udc8d\"", "😹💍"),
+        ] {
+            do {
+                let json = try JSONFromString(jsonString)
+                let decoded: String = try json.decode()
+                XCTAssertEqual(decoded, expected)
+            } catch {
+                XCTFail("Unexpected error: \(error)")
+            }
+        }
+    }
+
+    func testThatParserRejectsInvalidUTF16SurrogatePairs() {
+        for invalidPairString in [
+            "\"\\ud800\\ud123\"",
+            "\"\\ud800\"",
+            "\"\\ud800abc\"",
+        ] {
+            do {
+                let _ = try JSONFromString(invalidPairString)
+                XCTFail("Unexpectedly parsed invalid surrogate pair")
+            } catch JSONParser.Error.UnicodeEscapeInvalid {
+                // do nothing - this is the expected error
+            } catch {
+                XCTFail("Unexpected error: \(error)")
+            }
+        }
+    }
 }

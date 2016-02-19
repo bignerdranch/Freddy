@@ -42,36 +42,6 @@ class JSONSubscriptTests: XCTestCase {
         self.noWhiteSpaceData = noWhiteSpaceData
     }
 
-    func testThatJSONCanBeSerialized() {
-        let data = try! json.serialize()
-        XCTAssertGreaterThan(data.length, 0, "There should be data.")
-    }
-
-    func testThatJSONDataIsEqual() {
-        let serializedJSONData = try! json.serialize()
-        let noWhiteSpaceJSON = try! JSON(data: noWhiteSpaceData, usingParser: parser())
-        let noWhiteSpaceSerializedJSONData = try! noWhiteSpaceJSON.serialize()
-        XCTAssertEqual(serializedJSONData, noWhiteSpaceSerializedJSONData, "Serialized data should be equal.")
-    }
-
-    func testThatJSONSerializationMakesEqualJSON() {
-        let serializedJSONData = try! json.serialize()
-        let serialJSON = try! JSON(data: serializedJSONData, usingParser: parser())
-        XCTAssert(json == serialJSON, "The JSON values should be equal.")
-    }
-
-    func testThatJSONSerializationHandlesBoolsCorrectly() {
-        let json = JSON.Dictionary([
-            "foo": .Bool(true),
-            "bar": .Bool(false),
-            "baz": .Int(123),
-        ])
-        let data = try! json.serialize()
-        let deserializedResult = try! JSON(data: data, usingParser: parser()).dictionary()
-        let deserialized = JSON.Dictionary(deserializedResult)
-        XCTAssertEqual(json, deserialized, "Serialize/Deserialize succeed with Bools")
-    }
-    
     func testThatJSONCanCreatePeople() {
         let peopleJSON = try! json.array("people")
         for personJSON in peopleJSON {
@@ -91,26 +61,6 @@ class JSONSubscriptTests: XCTestCase {
         for person in people {
             XCTAssertNotEqual(person.name, "", "There should be a name.")
         }
-    }
-    
-    func testThatMapAndPartitionCanGatherPeopleInSuccesses() {
-        let peopleJSON = try! json.array("people")
-        let (people, errors) = peopleJSON.mapAndPartition(Person.init)
-        XCTAssertEqual(errors.count, 0, "There should be no errors in `failures`.")
-        XCTAssertGreaterThan(people.count, 0, "There should be people in `successes`.")
-    }
-    
-    func testThatMapAndPartitionCanGatherErrorsInFailures() {
-        let jsonArray: JSON = [
-            [ "name": "Matt Mathias", "age": 32, "spouse": true ],
-            [ "name": "Drew Mathias", "age": 33, "spouse": true ],
-            [ "name": "Sergeant Pepper" ]
-        ]
-        let data = try! jsonArray.serialize()
-        let deserializedArray = try! JSON(data: data, usingParser: parser()).array()
-        let (successes, failures) = deserializedArray.mapAndPartition(Person.init)
-        XCTAssertEqual(failures.count, 1, "There should be one error in `failures`.")
-        XCTAssertEqual(successes.count, 2, "There should be two people in `successes`.")
     }
     
     func testThatSubscriptingJSONWorksForTopLevelObject() {
@@ -152,8 +102,9 @@ class JSONSubscriptTests: XCTestCase {
     func testJSONErrorTypeNotConvertible() {
         do {
             _ = try json.int("people", 0, "name")
-        } catch JSON.Error.ValueNotConvertible(let type) {
-            XCTAssert(type == Swift.Int, "The error should be due the value not being an `Int` case, but was \(type).")
+        } catch let JSON.Error.ValueNotConvertible(value, to) {
+            XCTAssert(to == Swift.Int, "The error should be due the value not being an `Int` case, but was \(to).")
+            XCTAssert(value == "Matt Mathias", "The error should be due the value being the String 'Matt Mathias', but was \(value).")
         } catch {
             XCTFail("The error should be due to `name` not being convertible to `int`, but was: \(error).")
         }
@@ -168,6 +119,12 @@ class JSONSubscriptTests: XCTestCase {
             XCTFail("The error should be due to the `people` `Array` not being subscriptable with `String`s, but was: \(error).")
         }
     }
+
+    func testThatOptionalSubscriptiongIntoNullSucceeds() {
+        let earlyNull = [ "foo": nil ] as JSON
+        let string = try! earlyNull.string("foo", "bar", "baz", ifNotFound: true)
+        XCTAssertNil(string)
+    }
     
 }
 
@@ -177,4 +134,31 @@ class JSONSubscriptWithNSJSONTests: JSONSubscriptTests {
         return NSJSONSerialization.self
     }
 
+}
+
+// Just for syntax validation, not for execution or being counted for coverage.
+private func testUsage() {
+    let j = JSON.Null
+
+    _ = try? j.int()
+    _ = try? j.int(ifNotFound: true)
+    _ = try? j.int(ifNull: true)
+    _ = try? j.int(or: 42)
+
+    _ = try? j.int("key")
+    _ = try? j.int("key", ifNotFound: true)
+    _ = try? j.int("key", ifNull: true)
+    _ = try? j.int("key", or: 42)
+
+    _ = try? j.int(1)
+    _ = try? j.int(2, ifNotFound: true)
+    _ = try? j.int(3, ifNull: true)
+    _ = try? j.int(4, or: 42)
+
+    let stringConst = "key"
+
+    _ = try? j.int(stringConst, 1)
+    _ = try? j.int(stringConst, 2, ifNotFound: true)
+    _ = try? j.int(stringConst, 3, ifNull: true)
+    _ = try? j.int(stringConst, 4, or: 42)
 }

@@ -62,14 +62,13 @@ private struct Literal {
 
 private let ParserMaximumDepth = 512
 
-/**
-A pure Swift JSON parser. This parser is much faster than the
-`NSJSONSerialization`-based parser (due to the overhead of having to
-dynamically cast the Objective-C objects to determine their type); however,
-it is much newer and has restrictions that the `NSJSONSerialization` parser
-does not. Two restrictions in particular are that it requires UTF-8 data as
-input and it does not allow trailing commas in arrays or dictionaries.
-**/
+
+/// A pure Swift JSON parser. This parser is much faster than the
+/// `NSJSONSerialization`-based parser (due to the overhead of having to
+/// dynamically cast the Objective-C objects to determine their type); however,
+/// it is much newer and has restrictions that the `NSJSONSerialization` parser
+/// does not. Two restrictions in particular are that it requires UTF-8 data as
+/// input and it does not allow trailing commas in arrays or dictionaries.
 public struct JSONParser {
 
     private enum Sign: Int {
@@ -87,7 +86,17 @@ public struct JSONParser {
         self.owner = owner
     }
 
+    /// Decode the root element of the `JSON` stream. This may be any fragment
+    /// or a structural element, per RFC 7159.
+    ///
+    /// The beginning bytes are used to determine the stream's encoding.
+    /// `JSONParser` currently only supports UTF-8 encoding, with or without
+    /// a byte-order mark.
+    ///
+    /// - throws: `JSONParser.Error` for any decoding failures, including a
+    ///   source location if needed.
     public mutating func parse() throws -> JSON {
+        try guardAgainstUnsupportedEncodings()
         let value = try parseValue()
         skipWhitespace()
         guard loc == input.count else {
@@ -99,6 +108,10 @@ public struct JSONParser {
     private mutating func parseValue() throws -> JSON {
         guard depth <= ParserMaximumDepth else {
             throw Error.ExceededNestingLimit(offset: loc)
+        }
+        
+        guard input.count > 0 else {
+            throw Error.EndOfStreamUnexpected
         }
 
         advancing: while loc < input.count {
@@ -155,6 +168,15 @@ public struct JSONParser {
                 return
             }
         }
+    }
+
+    private mutating func guardAgainstUnsupportedEncodings() throws {
+        let header = input.prefix(4)
+        let encodingPrefixInformation = JSONEncodingDetector.detectEncoding(header)
+        guard JSONEncodingDetector.supportedEncodings.contains(encodingPrefixInformation.encoding) else {
+            throw Error.InvalidUnicodeStreamEncoding(detectedEncoding: encodingPrefixInformation.encoding)
+        }
+        loc = loc.advancedBy(encodingPrefixInformation.byteOrderMarkLength)
     }
 
     private mutating func decodeNull() throws -> JSON {
@@ -222,12 +244,12 @@ public struct JSONParser {
                 case Literal.t:            stringDecodingBuffer.append(Literal.TAB)
                 case Literal.n:            stringDecodingBuffer.append(Literal.NEWLINE)
                 case Literal.u:
-                    guard let escaped = readUnicodeEscape(loc + 1) else {
-                        throw Error.UnicodeEscapeInvalid(offset: loc)
-                    }
+                    loc = loc.successor()
+                    try readUnicodeEscape(start: loc - 2)
 
-                    stringDecodingBuffer.appendContentsOf(escaped)
-                    loc += 4
+                    // readUnicodeEscape() advances loc on its own, so we'll `continue` now
+                    // to skip the typical "advance past this character" for all the other escapes
+                    continue
 
                 default:
                     throw Error.ControlCharacterUnrecognized(offset: loc)
@@ -255,38 +277,63 @@ public struct JSONParser {
         throw Error.EndOfStreamUnexpected
     }
 
-    private func readUnicodeEscape(from: Int) -> [UInt8]? {
-        guard from + 4 <= input.count else {
+    private mutating func readCodeUnit() -> UInt16? {
+        guard loc + 4 <= input.count else {
             return nil
         }
-        var codepoint: UInt16 = 0
-        for i in from ..< from + 4 {
+        var codeUnit: UInt16 = 0
+        for c in input[loc..<loc+4] {
             let nibble: UInt16
-            switch input[i] {
+
+            switch c {
             case Literal.zero...Literal.nine:
-                nibble = UInt16(input[i] - Literal.zero)
+                nibble = UInt16(c - Literal.zero)
 
             case Literal.a...Literal.f:
-                nibble = 10 + UInt16(input[i] - Literal.a)
+                nibble = 10 + UInt16(c - Literal.a)
 
             case Literal.A...Literal.F:
-                nibble = 10 + UInt16(input[i] - Literal.A)
+                nibble = 10 + UInt16(c - Literal.A)
 
             default:
                 return nil
             }
-            codepoint = (codepoint << 4) | nibble
+            codeUnit = (codeUnit << 4) | nibble
         }
-        // UTF16-to-UTF8, via wikipedia
-        if codepoint <= 0x007f {
-            return [UInt8(codepoint)]
-        } else if codepoint <= 0x07ff {
-            return [0b11000000 | UInt8(codepoint >> 6),
-                0b10000000 | UInt8(codepoint & 0x3f)]
+        loc += 4
+        return codeUnit
+    }
+
+    private mutating func readUnicodeEscape(start start: Int) throws {
+        guard let codeUnit = readCodeUnit() else {
+            throw Error.UnicodeEscapeInvalid(offset: start)
+        }
+
+        let codeUnits: [UInt16]
+
+        if UTF16.isLeadSurrogate(codeUnit) {
+            // First half of a UTF16 surrogate pair - we must parse another code unit and combine them
+
+            // First confirm and skip over that we have another "\u"
+            guard loc + 6 <= input.count && input[loc] == Literal.BACKSLASH && input[loc+1] == Literal.u else {
+                throw Error.UnicodeEscapeInvalid(offset: start)
+            }
+            loc += 2
+
+            // Ensure the second code unit is valid for the surrogate pair
+            guard let secondCodeUnit = readCodeUnit() where UTF16.isTrailSurrogate(secondCodeUnit) else {
+                throw Error.UnicodeEscapeInvalid(offset: start)
+            }
+
+            codeUnits = [codeUnit, secondCodeUnit]
         } else {
-            return [0b11100000 | UInt8(codepoint >> 12),
-                0b10000000 | UInt8((codepoint >> 6) & 0x3f),
-                0b10000000 | UInt8(codepoint & 0x3f)]
+            codeUnits = [codeUnit]
+        }
+
+        let transcodeHadError = transcode(UTF16.self, UTF8.self, codeUnits.generate(), { self.stringDecodingBuffer.append($0) }, stopOnError: true)
+
+        if transcodeHadError {
+            throw Error.UnicodeEscapeInvalid(offset: start)
         }
     }
 
@@ -542,12 +589,19 @@ public struct JSONParser {
 
 public extension JSONParser {
 
+    /// Creates a `JSONParser` ready to parse UTF-8 encoded `NSData`.
+    ///
+    /// If the data is mutable, it is copied before parsing. The data's lifetime
+    /// is extended for the duration of parsing.
     init(utf8Data inData: NSData) {
         let data = inData.copy() as! NSData
         let buffer = UnsafeBufferPointer(start: UnsafePointer<UInt8>(data.bytes), count: data.length)
         self.init(buffer: buffer, owner: data)
     }
 
+    /// Creates a `JSONParser` from the code units represented by the `string`.
+    ///
+    /// The synthesized string is lifetime-extended for the duration of parsing.
     init(string: String) {
         let codePoints = string.nulTerminatedUTF8
         let buffer = codePoints.withUnsafeBufferPointer { nulTerminatedBuffer in
@@ -561,6 +615,10 @@ public extension JSONParser {
 
 extension JSONParser: JSONParserType {
 
+    /// Creates an instance of `JSON` from UTF-8 encoded `NSData`.
+    /// - parameter data: An instance of `NSData` to parse `JSON` from.
+    /// - throws: Any `JSONParser.Error` that arises during decoding.
+    /// - seealso: JSONParser.parse()
     public static func createJSONFromData(data: NSData) throws -> JSON {
         var parser = JSONParser(utf8Data: data)
         return try parser.parse()
@@ -626,6 +684,9 @@ extension JSONParser {
         /// Badly-formed number with symbols ("-" or "e") but no following
         /// digits around `offset`.
         case NumberSymbolMissingDigits(offset: Int)
+
+        /// Supplied data is encoded in an unsupported format.
+        case InvalidUnicodeStreamEncoding(detectedEncoding: JSONEncodingDetector.Encoding)
     }
 
 }

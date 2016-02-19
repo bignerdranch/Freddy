@@ -16,6 +16,7 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
+.DS_Store
 
 # CocoaPods
 #
@@ -26,4 +27,11 @@ DerivedData
 # Pods/
 
 # Ignore 5-10MB JSON payloads
-FreddyTests/Benchmark/*.json
+Tests/Benchmark/*.json
+
+docs/
+
+# Swift Package Manager
+#
+.build/
+Packages/
