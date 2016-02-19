@@ -463,23 +463,34 @@ private struct NumberParser {
         buffer.removeAll(keepCapacity: true)
         buffer.appendContentsOf(input[start..<loc])
         buffer.append(0)
-        guard let string = (buffer.withUnsafeBufferPointer { String.fromCString(UnsafePointer($0.baseAddress)) }) else {
-            fatalError("NumberParser accepted invalid characters")
-        }
 
-        let json: JSON
-        switch kind {
-        case .Integer:
-            guard let intValue = Int(string) else {
+        let json: JSON = try buffer.withUnsafeBufferPointer { buffer in
+            let cBuffer = UnsafePointer<Int8>(buffer.baseAddress)
+            var parsedEnd: UnsafeMutablePointer<Int8> = nil
+
+            let json: JSON
+            errno = 0
+
+            // Construct a C locale so we ensure '.' is the decimal separator.
+            // LC_ALL_MASK isn't visible to Swift, so reconstruct it based on the number of LC_*_MASK flags.
+            let cLocale = newlocale((1 << _LC_NUM_MASK) - 1, nil, nil)
+
+            switch kind {
+            case .Integer:
+                json = .Int(strtol_l(cBuffer, &parsedEnd, 10, cLocale))
+            case .Double:
+                json = .Double(strtod_l(cBuffer, &parsedEnd, cLocale))
+            }
+
+            freelocale(cLocale)
+            if errno == ERANGE {
                 throw JSONParser.Error.NumberOverflow(offset: start)
             }
-            json = .Int(intValue)
 
-        case .Double:
-            guard let doubleValue = Double(string) else {
-                throw JSONParser.Error.NumberOverflow(offset: start)
-            }
-            json = .Double(doubleValue)
+            // Sanity check that strtoX_l found the same end as our parser.
+            assert(cBuffer.advancedBy(loc - start) == UnsafePointer(parsedEnd), "Internal parsing error")
+
+            return json
         }
 
         start = loc
