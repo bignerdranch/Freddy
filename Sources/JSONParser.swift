@@ -469,21 +469,22 @@ private struct NumberParser {
             var parsedEnd: UnsafeMutablePointer<Int8> = nil
 
             let json: JSON
-            errno = 0
 
             // Construct a C locale so we ensure '.' is the decimal separator.
             // LC_ALL_MASK isn't visible to Swift, so reconstruct it based on the number of LC_*_MASK flags.
             let cLocale = newlocale((1 << _LC_NUM_MASK) - 1, nil, nil)
 
+            errno = 0
             switch kind {
             case .Integer:
                 json = .Int(strtol_l(cBuffer, &parsedEnd, 10, cLocale))
             case .Double:
                 json = .Double(strtod_l(cBuffer, &parsedEnd, cLocale))
             }
+            let strtoXErrno = errno
 
             freelocale(cLocale)
-            if errno == ERANGE {
+            if strtoXErrno == ERANGE {
                 throw JSONParser.Error.NumberOverflow(offset: start)
             }
 
