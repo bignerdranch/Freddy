@@ -82,6 +82,7 @@ class JSONSubscriptTests: XCTestCase {
     func testJSONErrorKeyNotFound() {
         do {
             _ = try json.array("peopl")
+            XCTFail("There should be an error")
         } catch JSON.Error.KeyNotFound(let key) {
             XCTAssert(key == "peopl", "The error should be due to the key not being found.")
         } catch {
@@ -92,6 +93,7 @@ class JSONSubscriptTests: XCTestCase {
     func testJSONErrorIndexOutOfBounds() {
         do {
             _ = try json.dictionary("people", 4)
+            XCTFail("There should be an error")
         } catch JSON.Error.IndexOutOfBounds(let index) {
             XCTAssert(index == 4, "The error should be due to the index being out of bounds.")
         } catch {
@@ -102,6 +104,7 @@ class JSONSubscriptTests: XCTestCase {
     func testJSONErrorTypeNotConvertible() {
         do {
             _ = try json.int("people", 0, "name")
+            XCTFail("There should be an error")
         } catch let JSON.Error.ValueNotConvertible(value, to) {
             XCTAssert(to == Swift.Int, "The error should be due the value not being an `Int` case, but was \(to).")
             XCTAssert(value == "Matt Mathias", "The error should be due the value being the String 'Matt Mathias', but was \(value).")
@@ -111,8 +114,23 @@ class JSONSubscriptTests: XCTestCase {
     }
     
     func testJSONErrorUnexpectedSubscript() {
+        assertErrorUnexpectedSubscript(try json.string("people", "name"))
+        assertErrorUnexpectedSubscript(try json.string("people", "name", ifNotFound: false))
+        assertErrorUnexpectedSubscript(try json.string("people", "name", ifNull: false))
+    }
+
+    func testThatOptionalSubscriptingIntoNullSucceeds() {
+        let earlyNull = [ "foo": nil ] as JSON
+        let string1 = try! earlyNull.string("foo", "bar", "baz", ifNotFound: true)
+        XCTAssertNil(string1)
+        let string2 = try! earlyNull.string("foo", "bar", "baz", ifNull: true)
+        XCTAssertNil(string2)
+    }
+
+    private func assertErrorUnexpectedSubscript(@autoclosure expression: () throws -> Swift.String?) {
         do {
-            _ = try json.string("people", "name")
+            try expression()
+            XCTFail("There should be an error")
         } catch JSON.Error.UnexpectedSubscript(let type) {
             XCTAssert(type == Swift.String, "The error should be due the value not being subscriptable with string `String` case, but was \(type).")
         } catch {
@@ -120,12 +138,6 @@ class JSONSubscriptTests: XCTestCase {
         }
     }
 
-    func testThatOptionalSubscriptiongIntoNullSucceeds() {
-        let earlyNull = [ "foo": nil ] as JSON
-        let string = try! earlyNull.string("foo", "bar", "baz", ifNotFound: true)
-        XCTAssertNil(string)
-    }
-    
 }
 
 class JSONSubscriptWithNSJSONTests: JSONSubscriptTests {
