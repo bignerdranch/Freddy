@@ -17,7 +17,7 @@ extension JSON: JSONSource {
     }
     
     func isNull() -> Swift.Bool {
-        return  self != .Null
+        return  self == .Null
     }
     
     func valueForPathFragment(fragment: JSONPathType, detectNull: Swift.Bool) throws -> JSONSource {

@@ -508,7 +508,7 @@ extension JSONSource {
             return try json.map(transform)
         } catch JSONSubscriptError.SubscriptIntoNull {
             return nil
-        } catch JSONError.ValueNotConvertible where ifNull && json!.isNull() {
+        } catch JSONError.ValueNotConvertible(let value, _) where ifNull && value.isNull() {
             return nil
         }
     }
