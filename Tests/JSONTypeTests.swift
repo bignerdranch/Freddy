@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import Freddy
+@testable import Freddy
 
 class JSONTypeTests: XCTestCase {
     

@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import Freddy
+@testable import Freddy
 
 private func ==(lhs: JSONParser.Error, rhs: JSONParser.Error) -> Bool {
     switch (lhs, rhs) {

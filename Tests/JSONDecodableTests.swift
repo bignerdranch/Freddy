@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import Freddy
+@testable import Freddy
 
 class JSONDecodableTests: XCTestCase {
 
@@ -28,7 +28,7 @@ class JSONDecodableTests: XCTestCase {
 
     func testThatJSONDecodableConformanceProducesInstance() {
         do {
-            let decodedMatt = try Person(json: mattJSON)
+            let decodedMatt = try Person(source: mattJSON)
             XCTAssertEqual(matt, decodedMatt, "`matt` `decodedMatt` should be equal.")
         } catch {
             XCTFail("`matt` and `decodedMatt` are not equal: \(error).")
@@ -41,8 +41,8 @@ class JSONDecodableTests: XCTestCase {
         let fourJSON: JSON = 4
         
         do {
-            let decodedFourPointFour = try Double(json: fourPointFourJSON)
-            let decodedFour = try Double(json: fourJSON)
+            let decodedFourPointFour = try Double(source: fourPointFourJSON)
+            let decodedFour = try Double(source: fourJSON)
             XCTAssertEqual(decodedFourPointFour, fourPointFour, "`fourPointFourJSON` and `fourPointFour` should be equal.")
             XCTAssertEqual(decodedFour, 4.0, "`decodedFour` and 4.0 should be equal.")
         } catch {
@@ -50,9 +50,9 @@ class JSONDecodableTests: XCTestCase {
         }
         
         do {
-            _ = try Double(json: "bad")
+            _ = try Double(source: "bad".toJSON())
             XCTFail("Should not be able to instantiate `Double` with `String` `JSON`.")
-        } catch JSON.Error.ValueNotConvertible(let type) {
+        } catch JSONError.ValueNotConvertible(let type) {
             XCTAssert(true, "\(type) should not be covertible from 'bad' `String`.")
         } catch {
             XCTFail("Failed for unknown reason: \(error).")
@@ -65,8 +65,8 @@ class JSONDecodableTests: XCTestCase {
         let fourPointZeroJSON: JSON = 4.0
         
         do {
-            let decodedFour = try Int(json: fourJSON)
-            let decodedFourPointZero = try Int(json: fourPointZeroJSON)
+            let decodedFour = try Int(source: fourJSON)
+            let decodedFourPointZero = try Int(source: fourPointZeroJSON)
             XCTAssertEqual(decodedFour, four, "`four` and 4 should be equal.")
             XCTAssertEqual(decodedFourPointZero, four, "`decodedFourPointZero` and `four` should be equal.")
         } catch {
@@ -74,9 +74,9 @@ class JSONDecodableTests: XCTestCase {
         }
         
         do {
-            _ = try Int(json: "bad")
+            _ = try Int(source: "bad".toJSON())
             XCTFail("Should not be able to instantiate `Int` with `String` `JSON`.")
-        } catch JSON.Error.ValueNotConvertible(let type) {
+        } catch JSONError.ValueNotConvertible(let type) {
             XCTAssert(true, "\(type) should not be covertible from 'bad' `String`.")
         } catch {
             XCTFail("Failed for unknown reason: \(error).")
@@ -88,16 +88,16 @@ class JSONDecodableTests: XCTestCase {
         let stringJSON: JSON = "matt"
         
         do {
-            let decodedString = try String(json: stringJSON)
+            let decodedString = try String(source: stringJSON)
             XCTAssertEqual(decodedString, matt, "`decodedString` and `matt` should be equal.")
         } catch {
             XCTFail("Should be able to instantiate a `String` with `JSON`: \(error).")
         }
         
         do {
-            _ = try String(json: 4)
+            _ = try String(source: 4.toJSON())
             XCTFail("Should not be able to instantiate `String` with `Int` `JSON`.")
-        } catch JSON.Error.ValueNotConvertible(let type) {
+        } catch JSONError.ValueNotConvertible(let type) {
             XCTAssert(true, "\(type) should not be covertible from 'bad' `Int.")
         } catch {
             XCTFail("Failed for unknown reason: \(error).")
@@ -109,16 +109,16 @@ class JSONDecodableTests: XCTestCase {
         let boolJSON: JSON = true
         
         do {
-            let decodedBool = try Bool(json: boolJSON)
+            let decodedBool = try Bool(source: boolJSON)
             XCTAssertEqual(decodedBool, tru, "`decodedBool` and `tru` should be equal.")
         } catch {
             XCTFail("Should be able to instantiate a `Bool` with `JSON`: \(error).")
         }
         
         do {
-            _ = try Bool(json: "bad")
+            _ = try Bool(source: "bad".toJSON())
             XCTFail("Should not be able to instantiate `Bool` with `String` `JSON`.")
-        } catch JSON.Error.ValueNotConvertible(let type) {
+        } catch JSONError.ValueNotConvertible(let type) {
             XCTAssert(true, "\(type) should not be covertible from 'bad' string.")
         } catch {
             XCTFail("Failed for unknown reason: \(error).")
@@ -149,7 +149,7 @@ class JSONDecodableTests: XCTestCase {
         do {
             _ = try badJSONArray.array()
             XCTFail("array should not exist.")
-        } catch JSON.Error.ValueNotConvertible(let type) {
+        } catch JSONError.ValueNotConvertible(let type) {
             XCTAssert(true, "\(type) should not be convertible to `[JSON]`")
         } catch {
             XCTFail("Failed for unknown reason: \(error).")
@@ -170,7 +170,7 @@ class JSONDecodableTests: XCTestCase {
         do {
             _ = try badJSONDictionary.dictionary()
             XCTFail("There should be no dictionary.")
-        } catch JSON.Error.ValueNotConvertible(let type) {
+        } catch JSONError.ValueNotConvertible(let type) {
             XCTAssertTrue(true, "\(type) shold not be convertible to `[String: JSON]`.")
         } catch {
             XCTFail("Failed for unknown reason: \(error).")
@@ -205,7 +205,7 @@ class JSONDecodableTests: XCTestCase {
         do {
             let _: Int? = try JSONDictionary.int("key")
             XCTFail("Should have thrown an error when attempting to retrieve a value for key `key` in `JSONDictionary` when not specifying `ifNull` to be `true`.")
-        } catch let JSON.Error.ValueNotConvertible(_, to) where to == Int.self {
+        } catch let JSONError.ValueNotConvertible(_, to) where to == Int.self {
             return
         } catch {
             XCTFail("An unexpected exception was thrown.")

@@ -26,23 +26,19 @@ public enum JSON {
 
 // MARK: - Errors
 
-extension JSON {
-
-    /// An enum to encapsulate errors that may arise in working with `JSON`.
-    public enum Error: ErrorType {
-        /// The `index` is out of bounds for a JSON array
-        case IndexOutOfBounds(index: Swift.Int)
-        
-        /// The `key` was not found in the JSON dictionary
-        case KeyNotFound(key: Swift.String)
-        
-        /// The JSON is not subscriptable with `type`
-        case UnexpectedSubscript(type: JSONPathType.Type)
-        
-        /// Unexpected JSON `value` was found that is not convertible `to` type 
-        case ValueNotConvertible(value: JSON, to: Any.Type)
-    }
-
+/// An enum to encapsulate errors that may arise in working with `JSON`.
+public enum JSONError: ErrorType {
+    /// The `index` is out of bounds for a JSON array
+    case IndexOutOfBounds(index: Swift.Int)
+    
+    /// The `key` was not found in the JSON dictionary
+    case KeyNotFound(key: Swift.String)
+    
+    /// The JSON is not subscriptable with `type`
+    case UnexpectedSubscript(type: JSONPathType.Type)
+    
+    /// Unexpected JSON `value` was found that is not convertible `to` type
+    case ValueNotConvertible(value: JSON, to: Any.Type)
 }
 
 // MARK: - Test Equality
