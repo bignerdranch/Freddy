@@ -12,15 +12,15 @@ import Foundation
 
 extension JSON: JSONSource {
     
-    func jsonValue() -> JSON {
+    public func jsonValue() -> JSON {
         return self
     }
     
-    func isNull() -> Swift.Bool {
+    public func isNull() -> Swift.Bool {
         return  self == .Null
     }
     
-    func valueForPathFragment(fragment: JSONPathType, detectNull: Swift.Bool) throws -> JSONSource {
+    public func valueForPathFragment(fragment: JSONPathType, detectNull: Swift.Bool) throws -> JSONSource {
         switch self {
         case .Null where detectNull:
             throw JSONSubscriptError.SubscriptIntoNull(fragment)
@@ -33,7 +33,7 @@ extension JSON: JSONSource {
         }
     }
     
-    func valueAtPath(path: [JSONPathType], detectNull: Swift.Bool = false) throws -> JSONSource {
+    public func valueAtPath(path: [JSONPathType], detectNull: Swift.Bool = false) throws -> JSONSource {
         var result: JSONSource = self
         for fragment in path {
             result = try result.valueForPathFragment(fragment, detectNull: detectNull)

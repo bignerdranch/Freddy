@@ -84,7 +84,7 @@ extension Int: JSONPathType {
 
 // MARK: - JSONSource 
 
-protocol JSONSource {
+public protocol JSONSource {
     
     func jsonValue() -> JSON
     func isNull() -> Bool
@@ -498,7 +498,6 @@ extension JSONSource {
 }
 
 // MARK: - Null-to-Optional unpacking
-
 extension JSONSource {
 
     private func mapOptionalAtPath<Value>(path: [JSONPathType], ifNull: Swift.Bool, @noescape transform: JSONSource throws -> Value) throws -> Value? {
