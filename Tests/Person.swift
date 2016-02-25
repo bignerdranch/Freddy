@@ -29,7 +29,7 @@ extension Person.EyeColor: JSONDecodable {}
 extension Person.EyeColor: JSONEncodable {}
 
 extension Person: JSONDecodable {
-    init(source value: JSONSource) throws {
+    public init(source value: JSONSource) throws {
         name = try value.string("name")
         age = try value.int("age")
         eyeColor = try value.decode("eyeColor")

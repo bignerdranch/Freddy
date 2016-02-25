@@ -8,7 +8,7 @@
 
 /// A protocol to provide functionality for creating a model object with a `JSON`
 /// value.
-protocol JSONDecodable {
+public protocol JSONDecodable {
     
     /// Creates an instance of the model with a `JSON` instance.
     /// - parameter source: An instance of a `JSON` value from which to
@@ -26,7 +26,7 @@ extension Double: JSONDecodable {
     /// - throws: The initializer will throw an instance of `JSON.Error` if 
     ///           an instance of `Double` cannot be created from the `JSON` value that was
     ///           passed to this initializer.
-    init(source: JSONSource) throws {
+    public init(source: JSONSource) throws {
         let json = source.jsonValue()
         switch json  {
         case let .Double(double):
@@ -34,7 +34,7 @@ extension Double: JSONDecodable {
         case let .Int(int):
             self = Swift.Double(int)
         default:
-            throw JSONError.ValueNotConvertible(value: json, to: Swift.Double)
+            throw JSON.Error.ValueNotConvertible(value: json, to: Swift.Double)
         }
     }
     
@@ -47,7 +47,7 @@ extension Int: JSONDecodable {
     /// - throws: The initializer will throw an instance of `JSON.Error` if
     ///           an instance of `Int` cannot be created from the `JSON` value that was
     ///           passed to this initializer.
-    init(source: JSONSource) throws {
+    public init(source: JSONSource) throws {
         let json = source.jsonValue()
         switch json {
         case let .Double(double):
@@ -55,7 +55,7 @@ extension Int: JSONDecodable {
         case let .Int(int):
             self = int
         default:
-            throw JSONError.ValueNotConvertible(value: json, to: Swift.Int)
+            throw JSON.Error.ValueNotConvertible(value: json, to: Swift.Int)
         }
     }
     
@@ -67,11 +67,11 @@ extension String: JSONDecodable {
     /// - parameter json: An instance of `JSON`.
     /// - throws: The initializer will throw an instance of `JSON.Error` if
     ///           an instance of `String` cannot be created from the `JSON` value that was
-    ///           passed to this initializer.
-    init(source: JSONSource) throws {
+    ///           passed to this initializepublic public r.
+    public init(source: JSONSource) throws {
         let json = source.jsonValue()
         guard case let .String(string) = json else {
-            throw JSONError.ValueNotConvertible(value: json, to: Swift.String)
+            throw JSON.Error.ValueNotConvertible(value: json, to: Swift.String)
         }
         self = string
     }
@@ -84,11 +84,11 @@ extension Bool: JSONDecodable {
     /// - parameter json: An instance of `JSON`.
     /// - throws: The initializer will throw an instance of `JSON.Error` if
     ///           an instance of `Bool` cannot be created from the `JSON` value that was
-    ///           passed to this initializer.
-    init(source: JSONSource) throws {
+    ///           passed to this initializepublic public r.
+    public init(source: JSONSource) throws {
         let json = source.jsonValue()
         guard case let .Bool(bool) = json else {
-            throw JSONError.ValueNotConvertible(value: json, to: Swift.Bool)
+            throw JSON.Error.ValueNotConvertible(value: json, to: Swift.Bool)
         }
         self = bool
     }
@@ -102,11 +102,11 @@ extension RawRepresentable where RawValue: JSONDecodable {
     /// - throws: The initializer will throw an instance of `JSON.Error` if
     ///           an instance of `RawRepresentable` cannot be created from the `JSON` value that was
     ///           passed to this initializer.
-    init(source: JSONSource) throws {
+    public init(source: JSONSource) throws {
         let json = source.jsonValue()
         let raw = try json.decode(type: RawValue.self)
         guard let value = Self(rawValue: raw) else {
-            throw JSONError.ValueNotConvertible(value: json, to: Self.self)
+            throw JSON.Error.ValueNotConvertible(value: json, to: Self.self)
         }
         self = value
     }
@@ -122,7 +122,7 @@ internal extension JSON {
         let json = source.jsonValue()
         // Ideally should be expressed as a conditional protocol implementation on Swift.Array.
         guard case let .Array(array) = json else {
-            throw JSONError.ValueNotConvertible(value: json, to: Swift.Array<JSON>)
+            throw JSON.Error.ValueNotConvertible(value: json, to: Swift.Array<JSON>)
         }
         return array
     }
@@ -135,7 +135,7 @@ internal extension JSON {
         let json = source.jsonValue()
         // Ideally should be expressed as a conditional protocol implementation on Swift.Dictionary.
         guard case let .Dictionary(dictionary) = json else {
-            throw JSONError.ValueNotConvertible(value: json, to: Swift.Dictionary<Swift.String, JSON>)
+            throw JSON.Error.ValueNotConvertible(value: json, to: Swift.Dictionary<Swift.String, JSON>)
         }
         return dictionary
     }

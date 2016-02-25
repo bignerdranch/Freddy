@@ -41,13 +41,13 @@ extension JSONPathType {
     /// The default behavior for keying into a dictionary is to throw
     /// `JSON.Error.UnexpectedSubscript`.
     public func valueInDictionary(dictionary: [Swift.String : JSON]) throws -> JSON {
-        throw JSONError.UnexpectedSubscript(type: Self.self)
+        throw JSON.Error.UnexpectedSubscript(type: Self.self)
     }
 
     /// The default behavior for indexing into an array is to throw
     /// `JSON.Error.UnexpectedSubscript`.
     public func valueInArray(array: [JSON]) throws -> JSON {
-        throw JSONError.UnexpectedSubscript(type: Self.self)
+        throw JSON.Error.UnexpectedSubscript(type: Self.self)
     }
 
 }
@@ -60,7 +60,7 @@ extension String: JSONPathType {
     /// - returns: The `JSON` value associated with the given key.
     public func valueInDictionary(dictionary: [Swift.String : JSON]) throws -> JSON {
         guard let next = dictionary[self] else {
-            throw JSONError.KeyNotFound(key: self)
+            throw JSON.Error.KeyNotFound(key: self)
         }
         return next
     }
@@ -75,7 +75,7 @@ extension Int: JSONPathType {
     /// - returns: The `JSON` value found at the given index.
     public func valueInArray(array: [JSON]) throws -> JSON {
         guard case array.indices = self else {
-            throw JSONError.IndexOutOfBounds(index: self)
+            throw JSON.Error.IndexOutOfBounds(index: self)
         }
         return array[self]
     }
@@ -193,14 +193,14 @@ extension JSONSource {
     private func optionalAtPath(path: [JSONPathType], ifNotFound: Swift.Bool) throws -> JSONSource? {
         do {
             return try valueAtPath(path, detectNull: true)
-        } catch JSONError.IndexOutOfBounds where ifNotFound {
+        } catch JSON.Error.IndexOutOfBounds where ifNotFound {
             return nil
-        } catch JSONError.KeyNotFound where ifNotFound {
+        } catch JSON.Error.KeyNotFound where ifNotFound {
             return nil
         } catch JSONSubscriptError.SubscriptIntoNull(_ as Swift.String) where ifNotFound {
             return nil
         } catch let JSONSubscriptError.SubscriptIntoNull(fragment) {
-            throw JSONError.UnexpectedSubscript(type: fragment.dynamicType)
+            throw JSON.Error.UnexpectedSubscript(type: fragment.dynamicType)
         }
     }
 
@@ -507,7 +507,7 @@ extension JSONSource {
             return try json.map(transform)
         } catch JSONSubscriptError.SubscriptIntoNull {
             return nil
-        } catch JSONError.ValueNotConvertible(let value, _) where ifNull && value.isNull() {
+        } catch JSON.Error.ValueNotConvertible(let value, _) where ifNull && value.isNull() {
             return nil
         }
     }

@@ -29,7 +29,7 @@ extension JSON: JSONSource {
         case let .Array(array):
             return try fragment.valueInArray(array)
         default:
-            throw JSONError.UnexpectedSubscript(type: fragment.dynamicType)
+            throw JSON.Error.UnexpectedSubscript(type: fragment.dynamicType)
         }
     }
     

@@ -82,7 +82,7 @@ class JSONSubscriptTests: XCTestCase {
     func testJSONErrorKeyNotFound() {
         do {
             _ = try json.array("peopl")
-        } catch JSONError.KeyNotFound(let key) {
+        } catch JSON.Error.KeyNotFound(let key) {
             XCTAssert(key == "peopl", "The error should be due to the key not being found.")
         } catch {
             XCTFail("The error should be due to the key not being found, but was: \(error).")
@@ -92,7 +92,7 @@ class JSONSubscriptTests: XCTestCase {
     func testJSONErrorIndexOutOfBounds() {
         do {
             _ = try json.dictionary("people", 4)
-        } catch JSONError.IndexOutOfBounds(let index) {
+        } catch JSON.Error.IndexOutOfBounds(let index) {
             XCTAssert(index == 4, "The error should be due to the index being out of bounds.")
         } catch {
             XCTFail("The error should be due to the index being out of bounds, but was: \(error).")
@@ -102,7 +102,7 @@ class JSONSubscriptTests: XCTestCase {
     func testJSONErrorTypeNotConvertible() {
         do {
             _ = try json.int("people", 0, "name")
-        } catch let JSONError.ValueNotConvertible(value, to) {
+        } catch let JSON.Error.ValueNotConvertible(value, to) {
             XCTAssert(to == Swift.Int, "The error should be due the value not being an `Int` case, but was \(to).")
             XCTAssert(value == "Matt Mathias", "The error should be due the value being the String 'Matt Mathias', but was \(value).")
         } catch {
@@ -113,7 +113,7 @@ class JSONSubscriptTests: XCTestCase {
     func testJSONErrorUnexpectedSubscript() {
         do {
             _ = try json.string("people", "name")
-        } catch JSONError.UnexpectedSubscript(let type) {
+        } catch JSON.Error.UnexpectedSubscript(let type) {
             XCTAssert(type == Swift.String, "The error should be due the value not being subscriptable with string `String` case, but was \(type).")
         } catch {
             XCTFail("The error should be due to the `people` `Array` not being subscriptable with `String`s, but was: \(error).")
