@@ -112,7 +112,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of
     ///     the `JSON` instance does not match `Decoded`.
-    func decode<Decoded: JSONDecodable>(path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> Decoded {
+    public func decode<Decoded: JSONDecodable>(path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> Decoded {
         return try Decoded(source: valueAtPath(path, detectNull: false))
     }
 
@@ -121,7 +121,7 @@ extension JSONSource {
     /// - returns: A floating-point `Double`
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
     /// - seealso: `JSON.decode(_:type:)`
-    func double(path: JSONPathType...) throws -> Swift.Double {
+    public func double(path: JSONPathType...) throws -> Swift.Double {
         return try Swift.Double(source: valueAtPath(path, detectNull: false))
     }
 
@@ -130,7 +130,7 @@ extension JSONSource {
     /// - returns: A numeric `Int`
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
     /// - seealso: `JSON.decode(_:type:)`
-    func int(path: JSONPathType...) throws -> Swift.Int {
+    public func int(path: JSONPathType...) throws -> Swift.Int {
         return try Swift.Int(source: valueAtPath(path, detectNull: false))
     }
 
@@ -139,7 +139,7 @@ extension JSONSource {
     /// - returns: A textual `String`
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
     /// - seealso: `JSON.decode(_:type:)`
-    func string(path: JSONPathType...) throws -> Swift.String {
+    public func string(path: JSONPathType...) throws -> Swift.String {
         return try Swift.String(source: valueAtPath(path, detectNull: false))
     }
 
@@ -148,7 +148,7 @@ extension JSONSource {
     /// - returns: A truthy `Bool`
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
     /// - seealso: `JSON.decode(_:type:)`
-    func bool(path: JSONPathType...) throws -> Swift.Bool {
+    public func bool(path: JSONPathType...) throws -> Swift.Bool {
         return try Swift.Bool(source: valueAtPath(path, detectNull: false))
     }
 
@@ -157,7 +157,7 @@ extension JSONSource {
     /// - returns: An `Array` of `JSON` elements
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
     /// - seealso: `JSON.decode(_:type:)`
-    func array(path: JSONPathType...) throws -> [JSON] {
+    public func array(path: JSONPathType...) throws -> [JSON] {
         return try JSON.getArray(valueAtPath(path, detectNull: false))
     }
 
@@ -171,7 +171,7 @@ extension JSONSource {
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`, or
     ///           any error that arises from decoding the contained values.
     /// - seealso: `JSON.decode(_:type:)`
-    func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> [Decoded] {
+    public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> [Decoded] {
         return try JSON.getArrayOf(valueAtPath(path, detectNull: false))
     }
 
@@ -180,7 +180,7 @@ extension JSONSource {
     /// - returns: An `Dictionary` of `String` mapping to `JSON` elements
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)`.
     /// - seealso: `JSON.decode(_:type:)`
-    func dictionary(path: JSONPathType...) throws -> [Swift.String: JSON] {
+    public func dictionary(path: JSONPathType...) throws -> [Swift.String: JSON] {
         return try JSON.getDictionary(valueAtPath(path, detectNull: false))
     }
 
@@ -222,7 +222,7 @@ extension JSONSource {
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
-    func decode<Decoded: JSONDecodable>(path: JSONPathType..., ifNotFound: Swift.Bool, type: Decoded.Type = Decoded.self) throws -> Decoded? {
+    public func decode<Decoded: JSONDecodable>(path: JSONPathType..., ifNotFound: Swift.Bool, type: Decoded.Type = Decoded.self) throws -> Decoded? {
         return try optionalAtPath(path, ifNotFound: ifNotFound).map(Decoded.init)
     }
 
@@ -240,7 +240,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func double(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Double? {
+    public func double(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Double? {
         return try optionalAtPath(path, ifNotFound: ifNotFound).map(Swift.Double.init)
     }
 
@@ -258,7 +258,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func int(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Int? {
+    public func int(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Int? {
         return try optionalAtPath(path, ifNotFound: ifNotFound).map(Swift.Int.init)
     }
 
@@ -276,7 +276,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func string(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.String? {
+    public func string(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.String? {
         return try optionalAtPath(path, ifNotFound: ifNotFound).map(Swift.String.init)
     }
 
@@ -294,7 +294,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func bool(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Bool? {
+    public func bool(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Bool? {
         return try optionalAtPath(path, ifNotFound: ifNotFound).map(Swift.Bool.init)
     }
 
@@ -313,7 +313,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func array(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [JSON]? {
+    public func array(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [JSON]? {
         return try optionalAtPath(path, ifNotFound: ifNotFound).map(JSON.getArray)
     }
 
@@ -333,7 +333,7 @@ extension JSONSource {
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
-    func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [Decoded]? {
+    public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [Decoded]? {
         return try optionalAtPath(path, ifNotFound: ifNotFound).map(JSON.getArrayOf)
     }
 
@@ -352,7 +352,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func dictionary(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [Swift.String: JSON]? {
+    public func dictionary(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [Swift.String: JSON]? {
         return try optionalAtPath(path, ifNotFound: ifNotFound).map(JSON.getDictionary)
     }
 
@@ -376,7 +376,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of
     ///     the `JSON` instance does not match `Decoded`.
-    func decode<Decoded: JSONDecodable>(path: JSONPathType..., @autoclosure or fallback: () -> Decoded) throws -> Decoded {
+    public func decode<Decoded: JSONDecodable>(path: JSONPathType..., @autoclosure or fallback: () -> Decoded) throws -> Decoded {
         return try mapOptionalAtPath(path, fallback: fallback, transform: Decoded.init)
     }
 
@@ -386,7 +386,7 @@ extension JSONSource {
     /// - returns: A floating-point `Double`
     /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:fallback:transform:)`.
     /// - seealso: `optionalAtPath(_:ifNotFound)`.
-    func double(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Double) throws -> Swift.Double {
+    public func double(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Double) throws -> Swift.Double {
         return try mapOptionalAtPath(path, fallback: fallback, transform: Swift.Double.init)
     }
 
@@ -403,7 +403,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func int(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Int) throws -> Swift.Int {
+    public func int(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Int) throws -> Swift.Int {
         return try mapOptionalAtPath(path, fallback: fallback, transform: Swift.Int.init)
     }
 
@@ -420,7 +420,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func string(path: JSONPathType..., @autoclosure or fallback: () -> Swift.String) throws -> Swift.String {
+    public func string(path: JSONPathType..., @autoclosure or fallback: () -> Swift.String) throws -> Swift.String {
         return try mapOptionalAtPath(path, fallback: fallback, transform: Swift.String.init)
     }
 
@@ -437,7 +437,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func bool(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Bool) throws -> Swift.Bool {
+    public func bool(path: JSONPathType..., @autoclosure or fallback: () -> Swift.Bool) throws -> Swift.Bool {
         return try mapOptionalAtPath(path, fallback: fallback, transform: Swift.Bool.init)
     }
 
@@ -454,7 +454,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func array(path: JSONPathType..., @autoclosure or fallback: () -> [JSON]) throws -> [JSON] {
+    public func array(path: JSONPathType..., @autoclosure or fallback: () -> [JSON]) throws -> [JSON] {
         return try mapOptionalAtPath(path, fallback: fallback, transform: JSON.getArray)
     }
 
@@ -473,7 +473,7 @@ extension JSONSource {
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
-    func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., @autoclosure or fallback: () -> [Decoded]) throws -> [Decoded] {
+    public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., @autoclosure or fallback: () -> [Decoded]) throws -> [Decoded] {
         return try mapOptionalAtPath(path, fallback: fallback, transform: JSON.getArrayOf)
     }
 
@@ -491,7 +491,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func dictionary(path: JSONPathType..., @autoclosure or fallback: () -> [Swift.String: JSON]) throws -> [Swift.String: JSON] {
+    public func dictionary(path: JSONPathType..., @autoclosure or fallback: () -> [Swift.String: JSON]) throws -> [Swift.String: JSON] {
         return try mapOptionalAtPath(path, fallback: fallback, transform: JSON.getDictionary)
     }
 
@@ -530,7 +530,7 @@ extension JSONSource {
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
-    func decode<Decoded: JSONDecodable>(path: JSONPathType..., ifNull: Swift.Bool, type: Decoded.Type = Decoded.self) throws -> Decoded? {
+    public func decode<Decoded: JSONDecodable>(path: JSONPathType..., ifNull: Swift.Bool, type: Decoded.Type = Decoded.self) throws -> Decoded? {
         return try mapOptionalAtPath(path, ifNull: ifNull, transform: Decoded.init)
     }
 
@@ -548,7 +548,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func double(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Double? {
+    public func double(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Double? {
         return try mapOptionalAtPath(path, ifNull: ifNull, transform: Swift.Double.init)
     }
 
@@ -566,7 +566,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func int(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Int? {
+    public func int(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Int? {
         return try mapOptionalAtPath(path, ifNull: ifNull, transform: Swift.Int.init)
     }
 
@@ -584,7 +584,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func string(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.String? {
+    public func string(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.String? {
         return try mapOptionalAtPath(path, ifNull: ifNull, transform: Swift.String.init)
     }
 
@@ -602,7 +602,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func bool(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Bool? {
+    public func bool(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Bool? {
         return try mapOptionalAtPath(path, ifNull: ifNull, transform: Swift.Bool.init)
     }
 
@@ -621,7 +621,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func array(path: JSONPathType..., ifNull: Swift.Bool) throws -> [JSON]? {
+    public func array(path: JSONPathType..., ifNull: Swift.Bool) throws -> [JSON]? {
         return try mapOptionalAtPath(path, ifNull: ifNull, transform: JSON.getArray)
     }
 
@@ -641,7 +641,7 @@ extension JSONSource {
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
-    func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., ifNull: Swift.Bool) throws -> [Decoded]? {
+    public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., ifNull: Swift.Bool) throws -> [Decoded]? {
         return try mapOptionalAtPath(path, ifNull: ifNull, transform: JSON.getArrayOf)
     }
 
@@ -661,7 +661,7 @@ extension JSONSource {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    func dictionary(path: JSONPathType..., ifNull: Swift.Bool) throws -> [Swift.String: JSON]? {
+    public func dictionary(path: JSONPathType..., ifNull: Swift.Bool) throws -> [Swift.String: JSON]? {
         return try mapOptionalAtPath(path, ifNull: ifNull, transform: JSON.getDictionary)
     }
 
