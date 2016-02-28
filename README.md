@@ -256,7 +256,7 @@ Here is how you can set this sort of breakpoint:
 ![Add Error Breakpoint](https://github.com/bignerdranch/Freddy/raw/master/README_Images/addErrorBreakpoint.png)
 
 Now you have a breakpoint that will only trigger when a Swift error is generated.
-But you program will break whenever *any* Swift error is thrown.
+But your program will break whenever *any* Swift error is thrown.
 What if you only want to break for `Freddy`'s `JSON.Error` error?
 
 You can edit the breakpoint to add a filter:
