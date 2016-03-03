@@ -239,7 +239,8 @@ let package = Package(
 
 ### iOS 7
 
-If you would like to use Freddy with iOS 7, then you will need to copy and paste Freddy's source files into your project.
+If you would like to use Freddy with iOS 7, then you will need to copy Freddy's source files into your project.
+Embedded frameworks are only supported in iOS 8+.
 You can add Freddy as a submodule (see above), and then make sure to add the source files to your project.
 
 ## Setting Breakpoint Errors
