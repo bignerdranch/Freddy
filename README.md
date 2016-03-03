@@ -237,6 +237,11 @@ let package = Package(
 )
 ```
 
+### iOS 7
+
+If you would like to use Freddy with iOS 7, then you will need to copy and paste Freddy's source files into your project.
+You can add Freddy as a submodule (see above), and then make sure to add the source files to your project.
+
 ## Setting Breakpoint Errors
 
 It can be helpful to set breakpoints for errors when you start working with a new set of JSON.
