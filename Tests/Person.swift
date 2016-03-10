@@ -6,7 +6,7 @@
 //  Copyright © 2015 Big Nerd Ranch. Licensed under MIT.
 //
 
-import Freddy
+@testable import Freddy
 
 public struct Person: CustomStringConvertible {
     public enum EyeColor: String {
@@ -29,7 +29,7 @@ extension Person.EyeColor: JSONDecodable {}
 extension Person.EyeColor: JSONEncodable {}
 
 extension Person: JSONDecodable {
-    public init(json value: JSON) throws {
+    public init(source value: JSONSource) throws {
         name = try value.string("name")
         age = try value.int("age")
         eyeColor = try value.decode("eyeColor")

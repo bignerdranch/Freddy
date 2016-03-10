@@ -27,7 +27,7 @@ public enum JSON {
 // MARK: - Errors
 
 extension JSON {
-
+    
     /// An enum to encapsulate errors that may arise in working with `JSON`.
     public enum Error: ErrorType {
         /// The `index` is out of bounds for a JSON array
@@ -39,10 +39,9 @@ extension JSON {
         /// The JSON is not subscriptable with `type`
         case UnexpectedSubscript(type: JSONPathType.Type)
         
-        /// Unexpected JSON `value` was found that is not convertible `to` type 
+        /// Unexpected JSON `value` was found that is not convertible `to` type
         case ValueNotConvertible(value: JSON, to: Any.Type)
     }
-
 }
 
 // MARK: - Test Equality

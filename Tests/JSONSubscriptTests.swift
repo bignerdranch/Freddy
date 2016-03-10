@@ -45,7 +45,7 @@ class JSONSubscriptTests: XCTestCase {
     func testThatJSONCanCreatePeople() {
         let peopleJSON = try! json.array("people")
         for personJSON in peopleJSON {
-            let person = try? Person(json: personJSON)
+            let person = try? Person(source: personJSON)
             XCTAssertEqual(person?.name.isEmpty, false, "People should have names.")
         }
     }
