@@ -237,6 +237,12 @@ let package = Package(
 )
 ```
 
+### iOS 7
+
+If you would like to use Freddy with iOS 7, then you will need to copy Freddy's source files into your project.
+Embedded frameworks are only supported in iOS 8+.
+You can add Freddy as a submodule (see above), and then make sure to add the source files to your project.
+
 ## Setting Breakpoint Errors
 
 It can be helpful to set breakpoints for errors when you start working with a new set of JSON.
@@ -256,7 +262,7 @@ Here is how you can set this sort of breakpoint:
 ![Add Error Breakpoint](https://github.com/bignerdranch/Freddy/raw/master/README_Images/addErrorBreakpoint.png)
 
 Now you have a breakpoint that will only trigger when a Swift error is generated.
-But you program will break whenever *any* Swift error is thrown.
+But your program will break whenever *any* Swift error is thrown.
 What if you only want to break for `Freddy`'s `JSON.Error` error?
 
 You can edit the breakpoint to add a filter:
