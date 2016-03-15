@@ -40,8 +40,8 @@ class JSONEncodableTests: XCTestCase {
     }
     
     func testThatJSONEncodableEncodesModelType() {
-        let matt = Person(name: "Matt", age: 32, spouse: true)
-        let comparisonMatt: JSON = ["name": "Matt", "age": 32, "spouse": true]
+        let matt = Person(name: "Matt", age: 32, eyeColor: .Brown, spouse: true)
+        let comparisonMatt: JSON = ["name": "Matt", "age": 32, "eyeColor": "brown", "spouse": true]
         let testMatt = matt.toJSON()
         XCTAssertTrue(comparisonMatt == testMatt, "These should be the same!")
     }
@@ -61,9 +61,9 @@ class JSONEncodableTests: XCTestCase {
     }
     
     func testThatJSONEncodableEncodesArrayOfModels() {
-        let people = [ Person(name: "Matt", age: 32, spouse: true), Person(name: "Drew", age: 33, spouse: true) ]
-        let comparisonPeople: JSON = [ ["name": "Matt", "age": 32, "spouse": true],
-                                       ["name": "Drew", "age": 33, "spouse": true] ]
+        let people = [ Person(name: "Matt", age: 32, eyeColor: .Green, spouse: true), Person(name: "Drew", age: 33, eyeColor: .Blue, spouse: true) ]
+        let comparisonPeople: JSON = [ ["name": "Matt", "age": 32, "eyeColor": "green", "spouse": true],
+                                       ["name": "Drew", "age": 33, "eyeColor": "blue", "spouse": true] ]
         let testPeople = people.toJSON()
         XCTAssertTrue(comparisonPeople == testPeople, "These should be the same!")
     }
