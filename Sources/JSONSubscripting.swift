@@ -218,7 +218,7 @@ extension JSON {
 
 extension JSON {
     
-    /// An `OptionSetType` used to represent the different options available for parsing `JSON` with `Null` values or missing keys.
+    /// An `OptionSetType` used to represent the different options available for parsing `JSON` with `null` values or missing keys.
     /// * `.NullBecomesNil` - Treat `null` values as `nil`.
     /// * `.MissingKeyBecomesNil` - Treat missing keys as `nil`.
     public struct ParsingOptions: OptionSetType {
@@ -227,8 +227,10 @@ extension JSON {
             self.rawValue = rawValue
         }
         
-        public static let NullBecomesNil = ParsingOptions(rawValue: 1)
-        public static let MissingKeyBecomesNil = ParsingOptions(rawValue: 2)
+        /// Treat `null` values as `nil`.
+        public static let NullBecomesNil = ParsingOptions(rawValue: 1 << 0)
+        /// Treat missing keys as `nil`.
+        public static let MissingKeyBecomesNil = ParsingOptions(rawValue: 1 << 1)
     }
     
     private func mapOptionalAtPath<Value>(path: [JSONPathType], alongPath: ParsingOptions, @noescape transform: JSON throws -> Value) throws -> Value? {
@@ -236,7 +238,7 @@ extension JSON {
         let detectNotFound = alongPath.contains(.MissingKeyBecomesNil)
         var json: JSON?
         do {
-            json = try valueAtPath(path, detectNull: detectNull || detectNotFound)
+            json = try valueAtPath(path, detectNull: detectNull)
             return try json.map(transform)
         } catch Error.IndexOutOfBounds where detectNotFound {
             return nil
@@ -244,7 +246,7 @@ extension JSON {
             return nil
         } catch Error.ValueNotConvertible where detectNull && json == .Null {
             return nil
-        } catch SubscriptError.SubscriptIntoNull where detectNull || detectNotFound {
+        } catch SubscriptError.SubscriptIntoNull where detectNull {
             return nil
         }
     }
@@ -254,9 +256,7 @@ extension JSON {
 
     /// Optionally decodes into the returning type from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter alongPath: An `OptionSetType` named `NullOptions` describing what should
-    ///                        be done with values that are `Null` or `NotFound`. Both
-    ///                        are treated as `nil`.
+    /// - parameter alongPath: Options that control what should be done with values that are `null` or keys that are missing.
     /// - parameter type: If the context this method is called from does not
     ///                   make the return type clear, pass a type implementing `JSONDecodable`
     ///                   to disambiguate the type to decode with.
@@ -277,9 +277,7 @@ extension JSON {
 
     /// Optionally retrieves a `Double` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`.
-    /// - parameter alongPath: An `OptionSetType` named `NullOptions` describing what should
-    ///                        be done with values that are `Null` or `NotFound`. Both
-    ///                        are treated as `nil`.
+    /// - parameter alongPath: Options that control what should be done with values that are `null` or keys that are missing.
     /// - returns: A `Double` if a value could be found, otherwise `nil`.
     /// - throws: One of the following errors contained in `JSON.Error`:
     ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
@@ -296,9 +294,7 @@ extension JSON {
 
     /// Optionally retrieves a `Int` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter alongPath: An `OptionSetType` named `NullOptions` describing what should
-    ///                        be done with values that are `Null` or `NotFound`. Both
-    ///                        are treated as `nil`.
+    /// - parameter alongPath: Options that control what should be done with values that are `null` or keys that are missing.
     /// - returns: A numeric `Int` if a value could be found, otherwise `nil`.
     /// - throws: One of the following errors contained in `JSON.Error`:
     ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
@@ -315,9 +311,7 @@ extension JSON {
 
     /// Optionally retrieves a `String` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter alongPath: An `OptionSetType` named `NullOptions` describing what should
-    ///                        be done with values that are `Null` or `NotFound`. Both
-    ///                        are treated as `nil`.
+    /// - parameter alongPath: Options that control what should be done with values that are `null` or keys that are missing.
     /// - returns: A text `String` if a value could be found, otherwise `nil`.
     /// - throws: One of the following errors contained in `JSON.Error`:
     ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
@@ -334,9 +328,7 @@ extension JSON {
 
     /// Optionally retrieves a `Bool` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter alongPath: An `OptionSetType` named `NullOptions` describing what should
-    ///                        be done with values that are `Null` or `NotFound`. Both
-    ///                        are treated as `nil`.
+    /// - parameter alongPath: Options that control what should be done with values that are `null` or keys that are missing.
     /// - returns: A truthy `Bool` if a value could be found, otherwise `nil`.
     /// - throws: One of the following errors contained in `JSON.Error`:
     ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
@@ -353,9 +345,7 @@ extension JSON {
 
     /// Optionally retrieves a `[JSON]` from a path into the recieving structure.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter alongPath: An `OptionSetType` named `NullOptions` describing what should
-    ///                        be done with values that are `Null` or `NotFound`. Both
-    ///                        are treated as `nil`.
+    /// - parameter alongPath: Options that control what should be done with values that are `null` or keys that are missing.
     /// - returns: An `Array` of `JSON` elements if a value could be found,
     ///            otherwise `nil`.
     /// - throws: One of the following errors contained in `JSON.Error`:
@@ -374,9 +364,7 @@ extension JSON {
     /// Optionally decodes many values from a descendant array at a path into
     /// JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter alongPath: An `OptionSetType` named `NullOptions` describing what should
-    ///                        be done with values that are `Null` or `NotFound`. Both
-    ///                        are treated as `nil`.
+    /// - parameter alongPath: Options that control what should be done with values that are `null` or keys that are missing.
     /// - returns: An `Array` of decoded elements if found, otherwise `nil`.
     /// - throws: One of the following errors contained in `JSON.Error`:
     ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
@@ -395,9 +383,7 @@ extension JSON {
     /// Optionally retrieves a `[String: JSON]` from a path into the recieving
     /// structure.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter alongPath: An `OptionSetType` named `NullOptions` describing what should
-    ///                        be done with values that are `Null` or `NotFound`. Both
-    ///                        are treated as `nil`.
+    /// - parameter alongPath: Options that control what should be done with values that are `null` or keys that are missing.
     /// - returns: A `Dictionary` of `String` mapping to `JSON` elements if a
     ///            value could be found, otherwise `nil`.
     /// - throws: One of the following errors contained in `JSON.Error`:

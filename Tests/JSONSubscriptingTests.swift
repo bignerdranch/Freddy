@@ -216,12 +216,35 @@ class JSONSubscriptingTests: XCTestCase {
         }
     }
     
-    func testSubscriptIntoNullNotFound() {
+    func testMissingKeyOptionStillFailsIfNullEncountered() {
         do {
-            let nullJSON: JSON = .Null
-            _ = try nullJSON.string("path", alongPath: .MissingKeyBecomesNil)
+            let json = JSON.Dictionary([
+                "name": "Drew",
+                "age": nil, // should cause problems!
+                "hasPet": true,
+                "rent": 1234.5,
+                ])
+            let resident = try Resident(json: json)
+            XCTFail("Unexpected success: \(resident)")
+        } catch let JSON.Error.ValueNotConvertible(value: value, to: type) {
+            XCTAssert(type == Int.self, "unexpected type \(type) of value \(value)")
         } catch {
-            XCTFail("There should be no error: \(error).")
+            XCTFail("Unexpected error: \(error)")
+        }
+    }
+    
+    func testNullOptionsStillFailIfKeyIsMissing() {
+        do {
+            let json = JSON.Dictionary([
+                "name": "Drew",
+                "rent": 1234.5,
+                ])
+            let resident = try Resident(json: json)
+            XCTFail("Unexpected success: \(resident)")
+        } catch let JSON.Error.KeyNotFound(key: key) where key == "hasPet" {
+            // expected
+        } catch {
+            XCTFail("Unexpected error: \(error)")
         }
     }
     
