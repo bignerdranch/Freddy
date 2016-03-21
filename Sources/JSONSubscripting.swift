@@ -218,22 +218,22 @@ extension JSON {
 
 extension JSON {
     
-    /// An `OptionSetType` used to represent the different options available for parsing `JSON` with `null` values or missing keys.
+    /// An `OptionSetType` used to represent the different options available for subscripting `JSON` with `null` values or missing keys.
     /// * `.NullBecomesNil` - Treat `null` values as `nil`.
     /// * `.MissingKeyBecomesNil` - Treat missing keys as `nil`.
-    public struct ParsingOptions: OptionSetType {
+    public struct SubscriptingOptions: OptionSetType {
         public let rawValue: Swift.Int
         public init(rawValue: Swift.Int) {
             self.rawValue = rawValue
         }
         
         /// Treat `null` values as `nil`.
-        public static let NullBecomesNil = ParsingOptions(rawValue: 1 << 0)
+        public static let NullBecomesNil = SubscriptingOptions(rawValue: 1 << 0)
         /// Treat missing keys as `nil`.
-        public static let MissingKeyBecomesNil = ParsingOptions(rawValue: 1 << 1)
+        public static let MissingKeyBecomesNil = SubscriptingOptions(rawValue: 1 << 1)
     }
     
-    private func mapOptionalAtPath<Value>(path: [JSONPathType], alongPath: ParsingOptions, @noescape transform: JSON throws -> Value) throws -> Value? {
+    private func mapOptionalAtPath<Value>(path: [JSONPathType], alongPath: SubscriptingOptions, @noescape transform: JSON throws -> Value) throws -> Value? {
         let detectNull = alongPath.contains(.NullBecomesNil)
         let detectNotFound = alongPath.contains(.MissingKeyBecomesNil)
         var json: JSON?
@@ -271,7 +271,7 @@ extension JSON {
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
-    public func decode<Decoded: JSONDecodable>(path: JSONPathType..., alongPath options: ParsingOptions, type: Decoded.Type = Decoded.self) throws -> Decoded? {
+    public func decode<Decoded: JSONDecodable>(path: JSONPathType..., alongPath options: SubscriptingOptions, type: Decoded.Type = Decoded.self) throws -> Decoded? {
         return try mapOptionalAtPath(path, alongPath: options, transform: Decoded.init)
     }
 
@@ -288,7 +288,7 @@ extension JSON {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    public func double(path: JSONPathType..., alongPath options: ParsingOptions) throws -> Swift.Double? {
+    public func double(path: JSONPathType..., alongPath options: SubscriptingOptions) throws -> Swift.Double? {
         return try mapOptionalAtPath(path, alongPath: options, transform: Swift.Double.init)
     }
 
@@ -305,7 +305,7 @@ extension JSON {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    public func int(path: JSONPathType..., alongPath options: ParsingOptions) throws -> Swift.Int? {
+    public func int(path: JSONPathType..., alongPath options: SubscriptingOptions) throws -> Swift.Int? {
         return try mapOptionalAtPath(path, alongPath: options, transform: Swift.Int.init)
     }
 
@@ -322,7 +322,7 @@ extension JSON {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    public func string(path: JSONPathType..., alongPath options: ParsingOptions) throws -> Swift.String? {
+    public func string(path: JSONPathType..., alongPath options: SubscriptingOptions) throws -> Swift.String? {
         return try mapOptionalAtPath(path, alongPath: options, transform: Swift.String.init)
     }
 
@@ -339,7 +339,7 @@ extension JSON {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    public func bool(path: JSONPathType..., alongPath options: ParsingOptions) throws -> Swift.Bool? {
+    public func bool(path: JSONPathType..., alongPath options: SubscriptingOptions) throws -> Swift.Bool? {
         return try mapOptionalAtPath(path, alongPath: options, transform: Swift.Bool.init)
     }
 
@@ -357,7 +357,7 @@ extension JSON {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    public func array(path: JSONPathType..., alongPath options: ParsingOptions) throws -> [JSON]? {
+    public func array(path: JSONPathType..., alongPath options: SubscriptingOptions) throws -> [JSON]? {
         return try mapOptionalAtPath(path, alongPath: options, transform: JSON.getArray)
     }
 
@@ -376,7 +376,7 @@ extension JSON {
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
-    public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., alongPath options: ParsingOptions, type: Decoded.Type = Decoded.self) throws -> [Decoded]? {
+    public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., alongPath options: SubscriptingOptions, type: Decoded.Type = Decoded.self) throws -> [Decoded]? {
         return try mapOptionalAtPath(path, alongPath: options, transform: JSON.getArrayOf)
     }
 
@@ -395,7 +395,7 @@ extension JSON {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    public func dictionary(path: JSONPathType..., alongPath options: ParsingOptions) throws -> [Swift.String: JSON]? {
+    public func dictionary(path: JSONPathType..., alongPath options: SubscriptingOptions) throws -> [Swift.String: JSON]? {
         return try mapOptionalAtPath(path, alongPath: options, transform: JSON.getDictionary)
     }
 

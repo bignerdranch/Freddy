@@ -259,7 +259,7 @@ class JSONSubscriptingTests: XCTestCase {
         }
     }
     
-    func testParsingOptionsStillFailIfKeyIsMissing() {
+    func testSubscriptingOptionsStillFailIfKeyIsMissing() {
         do {
             let json = JSON.Dictionary([
                 "name": "Drew",
