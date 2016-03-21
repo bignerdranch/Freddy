@@ -57,9 +57,6 @@
 		DB6ADFB41C2362FF00D77BF1 /* JSONParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADFAD1C2362FF00D77BF1 /* JSONParserTests.swift */; };
 		DB6ADFB51C2362FF00D77BF1 /* JSONParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADFAD1C2362FF00D77BF1 /* JSONParserTests.swift */; };
 		DB6ADFB61C2362FF00D77BF1 /* JSONParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADFAD1C2362FF00D77BF1 /* JSONParserTests.swift */; };
-		DB6ADFB71C2362FF00D77BF1 /* JSONSubscriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADFAE1C2362FF00D77BF1 /* JSONSubscriptTests.swift */; };
-		DB6ADFB81C2362FF00D77BF1 /* JSONSubscriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADFAE1C2362FF00D77BF1 /* JSONSubscriptTests.swift */; };
-		DB6ADFB91C2362FF00D77BF1 /* JSONSubscriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADFAE1C2362FF00D77BF1 /* JSONSubscriptTests.swift */; };
 		DB6ADFBA1C2362FF00D77BF1 /* JSONTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADFAF1C2362FF00D77BF1 /* JSONTypeTests.swift */; };
 		DB6ADFBB1C2362FF00D77BF1 /* JSONTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADFAF1C2362FF00D77BF1 /* JSONTypeTests.swift */; };
 		DB6ADFBC1C2362FF00D77BF1 /* JSONTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6ADFAF1C2362FF00D77BF1 /* JSONTypeTests.swift */; };
@@ -135,7 +132,6 @@
 		DB6ADF8F1C2362E000D77BF1 /* JSONSubscripting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSubscripting.swift; sourceTree = "<group>"; };
 		DB6ADFAC1C2362FF00D77BF1 /* JSONDecodableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONDecodableTests.swift; sourceTree = "<group>"; };
 		DB6ADFAD1C2362FF00D77BF1 /* JSONParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParserTests.swift; sourceTree = "<group>"; };
-		DB6ADFAE1C2362FF00D77BF1 /* JSONSubscriptTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSubscriptTests.swift; sourceTree = "<group>"; };
 		DB6ADFAF1C2362FF00D77BF1 /* JSONTypeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONTypeTests.swift; sourceTree = "<group>"; };
 		DB6ADFB01C2362FF00D77BF1 /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		DB6ADFC11C23631500D77BF1 /* sample.JSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample.JSON; sourceTree = "<group>"; };
@@ -252,7 +248,6 @@
 				1C67C72A1C3B32A6003D5A05 /* JSONEncodableTests.swift */,
 				DB6ADFAD1C2362FF00D77BF1 /* JSONParserTests.swift */,
 				3F70EA971C6D0EC500972CEB /* JSONSerializingTests.swift */,
-				DB6ADFAE1C2362FF00D77BF1 /* JSONSubscriptTests.swift */,
 				1C7BD51E1C7A4B9300A6ED4B /* JSONSubscriptingTests.swift */,
 				DB6ADFAF1C2362FF00D77BF1 /* JSONTypeTests.swift */,
 				E43B67DF1C5962CD00ACE390 /* JSONEncodingDetectorTests.swift */,
@@ -590,7 +585,6 @@
 				3F70EA991C6D0EC500972CEB /* JSONSerializingTests.swift in Sources */,
 				DB6ADFBB1C2362FF00D77BF1 /* JSONTypeTests.swift in Sources */,
 				DB6ADFB21C2362FF00D77BF1 /* JSONDecodableTests.swift in Sources */,
-				DB6ADFB81C2362FF00D77BF1 /* JSONSubscriptTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -622,7 +616,6 @@
 				DB6ADFBA1C2362FF00D77BF1 /* JSONTypeTests.swift in Sources */,
 				E43B67E01C5962CD00ACE390 /* JSONEncodingDetectorTests.swift in Sources */,
 				DB6ADFB11C2362FF00D77BF1 /* JSONDecodableTests.swift in Sources */,
-				DB6ADFB71C2362FF00D77BF1 /* JSONSubscriptTests.swift in Sources */,
 				DC194EB91C47D87B001D4569 /* JSONTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -653,7 +646,6 @@
 				3F70EA9A1C6D0EC500972CEB /* JSONSerializingTests.swift in Sources */,
 				DB6ADFBC1C2362FF00D77BF1 /* JSONTypeTests.swift in Sources */,
 				DB6ADFB31C2362FF00D77BF1 /* JSONDecodableTests.swift in Sources */,
-				DB6ADFB91C2362FF00D77BF1 /* JSONSubscriptTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
