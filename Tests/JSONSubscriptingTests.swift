@@ -343,12 +343,18 @@ class JSONSubscriptingTests: XCTestCase {
         let earlyNull = [ "foo": nil ] as JSON
         let string = try! earlyNull.string("foo", "bar", "baz", alongPath: .NullBecomesNil)
         XCTAssertNil(string)
+
+        let deprecatedString = try! earlyNull.string("foo", "bar", "baz", ifNull: true)
+        XCTAssertNil(deprecatedString)
     }
     
     func testThatOptionalSubscriptingKeyNotFoundSucceeds() {
         let keyNotFound = [ "foo": 2 ] as JSON
         let string = try! keyNotFound.string("bar", alongPath: .MissingKeyBecomesNil)
         XCTAssertNil(string)
+
+        let deprecatedString = try! keyNotFound.string("bar", ifNotFound: true)
+        XCTAssertNil(deprecatedString)
     }
     
 }
@@ -411,4 +417,23 @@ private func testUsage() {
     _ = try? j.int(stringConst, 2, alongPath: .MissingKeyBecomesNil)
     _ = try? j.int(stringConst, 3, alongPath: .NullBecomesNil)
     _ = try? j.int(stringConst, 4, or: 42)
+}
+
+// Just for deprecated syntax validation, not for execution or being counted for coverage.
+private func testDeprecatedUsage() {
+    let j = JSON.Null
+
+    _ = try? j.int(ifNotFound: true)
+    _ = try? j.int(ifNull: true)
+
+    _ = try? j.int("key", ifNotFound: true)
+    _ = try? j.int("key", ifNull: true)
+
+    _ = try? j.int(2, ifNotFound: true)
+    _ = try? j.int(3, ifNull: true)
+
+    let stringConst = "key"
+
+    _ = try? j.int(stringConst, 2, ifNotFound: true)
+    _ = try? j.int(stringConst, 3, ifNull: true)
 }

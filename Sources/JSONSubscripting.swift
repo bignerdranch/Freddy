@@ -539,3 +539,105 @@ extension JSON {
     }
     
 }
+
+// Deprecated methods.
+
+extension JSON {
+
+    @available(*, deprecated, message="Use decode(_:alongPath:type:) with options [.MissingKeyBecomesNil]")
+    public func decode<Decoded: JSONDecodable>(path: JSONPathType..., ifNotFound: Swift.Bool, type: Decoded.Type = Decoded.self) throws -> Decoded? {
+        let options: SubscriptingOptions = ifNotFound ? [.MissingKeyBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: Decoded.init)
+    }
+
+    @available(*, deprecated, message="Use decode(_:alongPath:type:) with options [.NullBecomesNil]")
+    public func decode<Decoded: JSONDecodable>(path: JSONPathType..., ifNull: Swift.Bool, type: Decoded.Type = Decoded.self) throws -> Decoded? {
+        let options: SubscriptingOptions = ifNull ? [.NullBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: Decoded.init)
+    }
+
+    @available(*, deprecated, message="Use double(_:alongPath:) with options [.MissingKeyBecomesNil]")
+    public func double(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Double? {
+        let options: SubscriptingOptions = ifNotFound ? [.MissingKeyBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: Swift.Double.init)
+    }
+
+    @available(*, deprecated, message="Use double(_:alongPath:) with options [.NullBecomesNil]")
+    public func double(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Double? {
+        let options: SubscriptingOptions = ifNull ? [.NullBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: Swift.Double.init)
+    }
+
+    @available(*, deprecated, message="Use int(_:alongPath:) with options [.MissingKeyBecomesNil]")
+    public func int(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Int? {
+        let options: SubscriptingOptions = ifNotFound ? [.MissingKeyBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: Swift.Int.init)
+    }
+
+    @available(*, deprecated, message="Use int(_:alongPath:) with options [.NullBecomesNil]")
+    public func int(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Int? {
+        let options: SubscriptingOptions = ifNull ? [.NullBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: Swift.Int.init)
+    }
+
+    @available(*, deprecated, message="Use string(_:alongPath:) with options [.MissingKeyBecomesNil]")
+    public func string(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.String? {
+        let options: SubscriptingOptions = ifNotFound ? [.MissingKeyBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: Swift.String.init)
+    }
+
+    @available(*, deprecated, message="Use string(_:alongPath:) with options [.NullBecomesNil]")
+    public func string(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.String? {
+        let options: SubscriptingOptions = ifNull ? [.NullBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: Swift.String.init)
+    }
+
+    @available(*, deprecated, message="Use bool(_:alongPath:) with options [.MissingKeyBecomesNil]")
+    public func bool(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> Swift.Bool? {
+        let options: SubscriptingOptions = ifNotFound ? [.MissingKeyBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: Swift.Bool.init)
+    }
+
+    @available(*, deprecated, message="Use bool(_:alongPath:) with options [.NullBecomesNil]")
+    public func bool(path: JSONPathType..., ifNull: Swift.Bool) throws -> Swift.Bool? {
+        let options: SubscriptingOptions = ifNull ? [.NullBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: Swift.Bool.init)
+    }
+
+    @available(*, deprecated, message="Use array(_:alongPath:) with options [.MissingKeyBecomesNil]")
+    public func array(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [JSON]? {
+        let options: SubscriptingOptions = ifNotFound ? [.MissingKeyBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: JSON.getArray)
+    }
+
+    @available(*, deprecated, message="Use array(_:alongPath:) with options [.NullBecomesNil]")
+    public func array(path: JSONPathType..., ifNull: Swift.Bool) throws -> [JSON]? {
+        let options: SubscriptingOptions = ifNull ? [.NullBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: JSON.getArray)
+    }
+
+    @available(*, deprecated, message="Use arrayOf(_:alongPath:) with options [.MissingKeyBecomesNil]")
+    public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [Decoded]? {
+        let options: SubscriptingOptions = ifNotFound ? [.MissingKeyBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: JSON.getArrayOf)
+    }
+
+    @available(*, deprecated, message="Use arrayOf(_:alongPath:) with options [.NullBecomesNil]")
+    public func arrayOf<Decoded: JSONDecodable>(path: JSONPathType..., ifNull: Swift.Bool) throws -> [Decoded]? {
+        let options: SubscriptingOptions = ifNull ? [.NullBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: JSON.getArrayOf)
+    }
+
+    @available(*, deprecated, message="Use dictionary(_:alongPath:) with options [.MissingKeyBecomesNil]")
+    public func dictionary(path: JSONPathType..., ifNotFound: Swift.Bool) throws -> [Swift.String: JSON]? {
+        let options: SubscriptingOptions = ifNotFound ? [.MissingKeyBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: JSON.getDictionary)
+    }
+
+    @available(*, deprecated, message="Use dictionary(_:alongPath:) with options [.NullBecomesNil]")
+    public func dictionary(path: JSONPathType..., ifNull: Swift.Bool) throws -> [Swift.String: JSON]? {
+        let options: SubscriptingOptions = ifNull ? [.NullBecomesNil] : []
+        return try mapOptionalAtPath(path, alongPath: options, transform: JSON.getDictionary)
+    }
+
+}

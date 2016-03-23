@@ -194,6 +194,9 @@ class JSONDecodableTests: XCTestCase {
         do {
             let value: Int? = try JSONDictionary.int("key", alongPath: .NullBecomesNil)
             XCTAssertEqual(value, nil)
+
+            let deprecatedValue: Int? = try JSONDictionary.int("key", ifNull: true)
+            XCTAssertEqual(deprecatedValue, nil)
         } catch {
             XCTFail("Should have retrieved nil for key `key` in `JSONDictionary` when specifying `ifNull` to be `true`.")
         }
