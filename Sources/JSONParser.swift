@@ -570,12 +570,13 @@ public struct JSONParser {
                 parser.parseExponentDigits { stringDecodingBuffer.append($0) }
 
             case .Done:
+                stringDecodingBuffer.append(0)
                 guard let string = (stringDecodingBuffer.withUnsafeBufferPointer {
                     String.fromCString(UnsafePointer($0.baseAddress))
-                    }) else {
-                        // Should never fail - any problems with the number string should
-                        // result in thrown errors above
-                        fatalError("Internal error: Invalid numeric string")
+                }) else {
+                    // Should never fail - any problems with the number string should
+                    // result in thrown errors above
+                    fatalError("Internal error: Invalid numeric string")
                 }
 
                 loc = parser.loc
