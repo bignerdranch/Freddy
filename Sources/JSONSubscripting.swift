@@ -540,7 +540,7 @@ extension JSON {
     
 }
 
-// Deprecated methods.
+// MARK: - Deprecated methods
 
 extension JSON {
 
