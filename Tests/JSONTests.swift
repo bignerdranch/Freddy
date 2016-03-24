@@ -16,7 +16,7 @@ class JSONTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        let testBundle = NSBundle(forClass: JSONSubscriptTests.self)
+        let testBundle = NSBundle(forClass: JSONSubscriptingTests.self)
         guard let data = testBundle.URLForResource("sample", withExtension: "JSON").flatMap(NSData.init) else {
             XCTFail("Could not read sample data from test bundle")
             return
