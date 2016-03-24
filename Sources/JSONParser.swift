@@ -115,43 +115,48 @@ public struct JSONParser {
         }
 
         advancing: while loc < input.count {
-            switch input[loc] {
-            case Literal.LEFT_BRACKET:
-                depth += 1
-                defer { depth -= 1 }
-                return try decodeArray()
-
-            case Literal.LEFT_BRACE:
-                depth += 1
-                defer { depth -= 1 }
-                return try decodeObject()
-
-            case Literal.DOUBLE_QUOTE:
-                return try decodeString()
-
-            case Literal.f:
-                return try decodeFalse()
-
-            case Literal.n:
-                return try decodeNull()
-
-            case Literal.t:
-                return try decodeTrue()
-
-            case Literal.MINUS:
-                return try decodeNumberNegative(loc)
-
-            case Literal.zero:
-                return try decodeNumberLeadingZero(loc)
-
-            case Literal.one...Literal.nine:
-                return try decodeNumberPreDecimalDigits(loc)
-
-            case Literal.SPACE, Literal.TAB, Literal.RETURN, Literal.NEWLINE:
-                loc = loc.successor()
-
-            default:
-                break advancing
+            do {
+                switch input[loc] {
+                case Literal.LEFT_BRACKET:
+                    depth += 1
+                    defer { depth -= 1 }
+                    return try decodeArray()
+                    
+                case Literal.LEFT_BRACE:
+                    depth += 1
+                    defer { depth -= 1 }
+                    return try decodeObject()
+                    
+                case Literal.DOUBLE_QUOTE:
+                    return try decodeString()
+                    
+                case Literal.f:
+                    return try decodeFalse()
+                    
+                case Literal.n:
+                    return try decodeNull()
+                    
+                case Literal.t:
+                    return try decodeTrue()
+                    
+                case Literal.MINUS:
+                    return try decodeNumberNegative(loc)
+                    
+                case Literal.zero:
+                    return try decodeNumberLeadingZero(loc)
+                    
+                case Literal.one...Literal.nine:
+                    return try decodeNumberPreDecimalDigits(loc)
+                    
+                case Literal.SPACE, Literal.TAB, Literal.RETURN, Literal.NEWLINE:
+                    loc = loc.successor()
+                    
+                default:
+                    break advancing
+                }
+            } catch let InternalError.NumberOverflow(offset: start) {
+                loc = start
+                return try decodeNumberAsString(loc)
             }
         }
         
@@ -478,11 +483,11 @@ public struct JSONParser {
             switch c {
             case Literal.zero...Literal.nine:
                 guard case let (exponent, false) = Int.multiplyWithOverflow(10, value) else {
-                    throw Error.NumberOverflow(offset: start)
+                    throw InternalError.NumberOverflow(offset: start)
                 }
 
                 guard case let (newValue, false) = Int.addWithOverflow(exponent, Int(c - Literal.zero)) else {
-                    throw Error.NumberOverflow(offset: start)
+                    throw InternalError.NumberOverflow(offset: start)
                 }
 
                 value = newValue
@@ -502,7 +507,7 @@ public struct JSONParser {
         }
 
         guard case let (signedValue, false) = Int.multiplyWithOverflow(sign.rawValue, value) else {
-            throw Error.NumberOverflow(offset: start)
+            throw InternalError.NumberOverflow(offset: start)
         }
 
         return .Int(signedValue)
@@ -607,9 +612,178 @@ public struct JSONParser {
         feclearexcept(flags)
         let value = try f()
         guard fetestexcept(flags) == 0 else {
-            throw Error.NumberOverflow(offset: loc)
+            throw InternalError.NumberOverflow(offset: loc)
         }
         return value
+    }
+
+    private var numberIntoStringParser = NumberIntoStringParser()
+    private mutating func decodeNumberAsString(start: Int) throws -> JSON {
+        loc = start
+        try numberIntoStringParser.parse(input, start: &loc)
+
+        stringDecodingBuffer.removeAll(keepCapacity: true)
+        for i in start ..< loc {
+            stringDecodingBuffer.append(input[i])
+        }
+        stringDecodingBuffer.append(0)
+
+        guard let string = (stringDecodingBuffer.withUnsafeBufferPointer {
+            String.fromCString(UnsafePointer($0.baseAddress))
+        }) else {
+            // Should never fail - any problems with the number string should
+            // result in thrown errors above
+            fatalError("Internal error: Invalid numeric string")
+        }
+
+        return .String(string)
+    }
+}
+
+private struct NumberIntoStringParser {
+    var loc = 0
+    var input = UnsafeBufferPointer<UInt8>(start: nil, count: 0)
+
+    mutating func parse(input: UnsafeBufferPointer<UInt8>, inout start: Int) throws {
+        assert(!input.isEmpty, "NumberParser should not be given empty input")
+        loc = start
+        self.input = input
+
+        switch input[loc] {
+        case Literal.MINUS:
+            try decodeNumberNegative(start)
+
+        case Literal.zero:
+            try decodeNumberLeadingZero(start)
+
+        case Literal.one...Literal.nine:
+            try decodeNumberPreDecimalDigits(start)
+
+        default:
+            preconditionFailure("NumberParser given input that doesn't look like a number")
+        }
+
+        start = loc
+    }
+
+    mutating func decodeNumberNegative(start: Int) throws {
+        loc = loc.successor()
+
+        guard loc < input.count else {
+            throw JSONParser.Error.EndOfStreamUnexpected
+        }
+
+        switch input[loc] {
+        case Literal.zero:
+            try decodeNumberLeadingZero(start)
+
+        case Literal.one...Literal.nine:
+            try decodeNumberPreDecimalDigits(start)
+
+        default:
+            throw JSONParser.Error.NumberSymbolMissingDigits(offset: start)
+        }
+    }
+
+    mutating func decodeNumberLeadingZero(start: Int) throws {
+        loc = loc.successor()
+
+        guard loc < input.count && input[loc] == Literal.PERIOD else {
+            return
+        }
+
+        try decodeNumberDecimal(start)
+    }
+
+    mutating func decodeNumberPreDecimalDigits(start: Int) throws {
+        loc = loc.successor()
+
+        advancing: while loc < input.count {
+            switch input[loc] {
+            case Literal.zero...Literal.nine:
+                loc = loc.successor()
+
+            case Literal.PERIOD:
+                return try decodeNumberDecimal(start)
+
+            case Literal.e, Literal.E:
+                return try decodeNumberExponent(start)
+
+            default:
+                return
+            }
+        }
+    }
+
+    mutating func decodeNumberDecimal(start: Int) throws {
+        loc = loc.successor()
+
+        guard loc < input.count else {
+            throw JSONParser.Error.EndOfStreamUnexpected
+        }
+
+        switch input[loc] {
+        case Literal.zero...Literal.nine:
+            try decodeNumberPostDecimalDigits(start)
+
+        default:
+            throw JSONParser.Error.NumberMissingFractionalDigits(offset: start)
+        }
+    }
+
+    mutating func decodeNumberPostDecimalDigits(start: Int) throws {
+        loc = loc.successor()
+
+        while loc < input.count && Literal.zero...Literal.nine ~= input[loc] {
+            loc = loc.successor()
+        }
+
+        if loc < input.count && (input[loc] == Literal.e || input[loc] == Literal.E) {
+            return try decodeNumberExponent(start)
+        }
+    }
+
+    mutating func decodeNumberExponent(start: Int) throws {
+        loc = loc.successor()
+
+        guard loc < input.count else {
+            throw JSONParser.Error.EndOfStreamUnexpected
+        }
+
+        switch input[loc] {
+        case Literal.zero...Literal.nine:
+            try decodeNumberExponentDigits(start)
+
+        case Literal.PLUS, Literal.MINUS:
+            try decodeNumberExponentSign(start)
+
+        default:
+            throw JSONParser.Error.NumberSymbolMissingDigits(offset: start)
+        }
+    }
+
+    mutating func decodeNumberExponentSign(start: Int) throws {
+        loc = loc.successor()
+
+        guard loc < input.count else {
+            throw JSONParser.Error.EndOfStreamUnexpected
+        }
+
+        switch input[loc] {
+        case Literal.zero...Literal.nine:
+            try decodeNumberExponentDigits(start)
+            
+        default:
+            throw JSONParser.Error.NumberSymbolMissingDigits(offset: start)
+        }
+    }
+    
+    mutating func decodeNumberExponentDigits(start: Int) throws {
+        loc = loc.successor()
+        
+        while loc < input.count && Literal.zero...Literal.nine ~= input[loc] {
+            loc = loc.successor()
+        }
     }
 }
 
@@ -711,15 +885,16 @@ extension JSONParser {
         /// digits around `offset`.
         case NumberSymbolMissingDigits(offset: Int)
 
+        /// Supplied data is encoded in an unsupported format.
+        case InvalidUnicodeStreamEncoding(detectedEncoding: JSONEncodingDetector.Encoding)
+    }
+
+    private enum InternalError: ErrorType {
         /// Attempted to parse an integer outside the range of [Int.min, Int.max]
         /// or a double outside the range of representable doubles. Note that
         /// for doubles, this could be an overflow or an underflow - we don't
         /// get enough information from Swift here to know which it is. The number
         /// causing the overflow/underflow began at `offset`.
         case NumberOverflow(offset: Int)
-
-        /// Supplied data is encoded in an unsupported format.
-        case InvalidUnicodeStreamEncoding(detectedEncoding: JSONEncodingDetector.Encoding)
     }
-
 }
