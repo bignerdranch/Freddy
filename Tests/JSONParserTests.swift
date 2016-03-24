@@ -37,6 +37,8 @@ private func ==(lhs: JSONParser.Error, rhs: JSONParser.Error) -> Bool {
         return lOffset == rOffset
     case let (.NumberSymbolMissingDigits(lOffset), .NumberSymbolMissingDigits(rOffset)):
         return lOffset == rOffset
+    case let (.NumberOverflow(lOffset), .NumberOverflow(rOffset)):
+        return lOffset == rOffset
     case (_, _):
         return false
     }
@@ -196,6 +198,22 @@ class JSONParserTests: XCTestCase {
             } catch {
                 XCTFail("Unexpected error \(error) in \(string)")
             }
+        }
+    }
+
+    func testParserHandlingOfNumericOverflow() {
+        for (string, expectedError) in [
+            // Int64.max + 1
+            ("9223372036854775808", JSONParser.Error.NumberOverflow(offset: 0)),
+            ] {
+                do {
+                    _ = try JSONFromString(string)
+                    XCTFail("Unexpected success")
+                } catch let error as JSONParser.Error {
+                    XCTAssert(error == expectedError, "Expected \(expectedError) but got \(error)")
+                } catch {
+                    XCTFail("Unexpected error \(error)")
+                }
         }
     }
 

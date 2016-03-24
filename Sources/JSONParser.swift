@@ -477,7 +477,15 @@ public struct JSONParser {
             let c = input[loc]
             switch c {
             case Literal.zero...Literal.nine:
-                value = 10 * value + Int(c - Literal.zero)
+                guard case let (exponent, false) = Int.multiplyWithOverflow(10, value) else {
+                    throw Error.NumberOverflow(offset: start)
+                }
+
+                guard case let (newValue, false) = Int.addWithOverflow(exponent, Int(c - Literal.zero)) else {
+                    throw Error.NumberOverflow(offset: start)
+                }
+
+                value = newValue
                 loc = loc.successor()
 
             case Literal.PERIOD:
@@ -491,7 +499,11 @@ public struct JSONParser {
             }
         }
 
-        return .Int(sign.rawValue * value)
+        guard case let (signedValue, false) = Int.multiplyWithOverflow(sign.rawValue, value) else {
+            throw Error.NumberOverflow(offset: start)
+        }
+
+        return .Int(signedValue)
     }
 
     private mutating func decodeNumberDecimal(start: Int, sign: Sign, value: Double) throws -> JSON {
@@ -684,6 +696,13 @@ extension JSONParser {
         /// Badly-formed number with symbols ("-" or "e") but no following
         /// digits around `offset`.
         case NumberSymbolMissingDigits(offset: Int)
+
+        /// Attempted to parse an integer outside the range of [Int.min, Int.max]
+        /// or a double outside the range of representable doubles. Note that
+        /// for doubles, this could be an overflow or an underflow - we don't
+        /// get enough information from Swift here to know which it is. The number
+        /// causing the overflow/underflow began at `offset`.
+        case NumberOverflow(offset: Int)
 
         /// Supplied data is encoded in an unsupported format.
         case InvalidUnicodeStreamEncoding(detectedEncoding: JSONEncodingDetector.Encoding)
