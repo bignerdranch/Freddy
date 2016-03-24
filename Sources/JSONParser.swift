@@ -155,8 +155,7 @@ public struct JSONParser {
                     break advancing
                 }
             } catch let InternalError.NumberOverflow(offset: start) {
-                loc = start
-                return try decodeNumberAsString(loc)
+                return try decodeNumberAsString(start)
             }
         }
         
@@ -524,172 +523,65 @@ public struct JSONParser {
         }
     }
 
-    private mutating func decodeNumberNegative(start: Int) throws -> JSON {
-        loc = loc.successor()
-        guard loc < input.count else {
-            throw Error.EndOfStreamUnexpected
-        }
+    private mutating func decodeNumberAsString(start: Int) throws -> JSON {
+        var parser: NumberParser = {
+            let state: NumberParser.State
+            switch input[start] {
+            case Literal.MINUS: state = .LeadingMinus
+            case Literal.zero: state = .LeadingZero
+            case Literal.one...Literal.nine: state = .PreDecimalDigits
+            default:
+                fatalError("Internal error: decodeNumber called on not-a-number")
+            }
+            return NumberParser(loc: start, input: input, state: state)
+        }()
 
-        switch input[loc] {
-        case Literal.zero:
-            return try decodeNumberLeadingZero(start, sign: .Negative)
+        stringDecodingBuffer.removeAll(keepCapacity: true)
 
-        case Literal.one...Literal.nine:
-            return try decodeNumberPreDecimalDigits(start, sign: .Negative)
+        while true {
+            switch parser.state {
+            case .LeadingMinus:
+                try parser.parseNegative()
+                stringDecodingBuffer.append(Literal.MINUS)
 
-        default:
-            throw Error.NumberSymbolMissingDigits(offset: start)
-        }
-    }
+            case .LeadingZero:
+                parser.parseLeadingZero()
+                stringDecodingBuffer.append(Literal.zero)
 
-    private mutating func decodeNumberLeadingZero(start: Int, sign: Sign = .Positive) throws -> JSON {
-        loc = loc.successor()
-        guard loc < input.count else {
-            return .Int(0)
-        }
+            case .PreDecimalDigits:
+                parser.parsePreDecimalDigits { stringDecodingBuffer.append($0) }
 
-        switch (input[loc], sign) {
-        case (Literal.PERIOD, _):
-            return try decodeNumberDecimal(start, sign: sign, value: 0)
+            case .Decimal:
+                try parser.parseDecimal()
+                stringDecodingBuffer.append(Literal.PERIOD)
 
-        case (_, .Negative):
-            return .Double(-0.0)
+            case .PostDecimalDigits:
+                parser.parsePostDecimalDigits { stringDecodingBuffer.append($0) }
 
-        default:
-            return .Int(0)
-        }
-    }
+            case .Exponent:
+                stringDecodingBuffer.append(input[parser.loc])
+                _ = try parser.parseExponent()
 
-    private mutating func decodeNumberPreDecimalDigits(start: Int, sign: Sign = .Positive) throws -> JSON {
-        var value = 0
+            case .ExponentSign:
+                stringDecodingBuffer.append(input[parser.loc])
+                try parser.parseExponentSign()
 
-        advancing: while loc < input.count {
-            let c = input[loc]
-            switch c {
-            case Literal.zero...Literal.nine:
-                guard case let (exponent, false) = Int.multiplyWithOverflow(10, value) else {
-                    throw InternalError.NumberOverflow(offset: start)
+            case .ExponentDigits:
+                parser.parseExponentDigits { stringDecodingBuffer.append($0) }
+
+            case .Done:
+                guard let string = (stringDecodingBuffer.withUnsafeBufferPointer {
+                    String.fromCString(UnsafePointer($0.baseAddress))
+                    }) else {
+                        // Should never fail - any problems with the number string should
+                        // result in thrown errors above
+                        fatalError("Internal error: Invalid numeric string")
                 }
 
-                guard case let (newValue, false) = Int.addWithOverflow(exponent, Int(c - Literal.zero)) else {
-                    throw InternalError.NumberOverflow(offset: start)
-                }
-
-                value = newValue
-                loc = loc.successor()
-
-            case Literal.PERIOD:
-                return try decodeNumberDecimal(start, sign: sign, value: Double(value))
-
-            case Literal.e, Literal.E:
-                return try detectingFloatingPointErrors(start) {
-                    try decodeNumberExponent(start, sign: sign, value: Double(value))
-                }
-
-            default:
-                break advancing
+                loc = parser.loc
+                return .String(string)
             }
         }
-
-        guard case let (signedValue, false) = Int.multiplyWithOverflow(sign.rawValue, value) else {
-            throw InternalError.NumberOverflow(offset: start)
-        }
-
-        return .Int(signedValue)
-    }
-
-    private mutating func decodeNumberDecimal(start: Int, sign: Sign, value: Double) throws -> JSON {
-        loc = loc.successor()
-        guard loc < input.count else {
-            throw Error.EndOfStreamUnexpected
-        }
-
-        switch input[loc] {
-        case Literal.zero...Literal.nine:
-            return try detectingFloatingPointErrors(start) {
-                try decodeNumberPostDecimalDigits(start, sign: sign, value: value)
-            }
-
-        default:
-            throw Error.NumberMissingFractionalDigits(offset: start)
-        }
-    }
-
-    private mutating func decodeNumberPostDecimalDigits(start: Int, sign: Sign, value inValue: Double) throws -> JSON {
-        var value = inValue
-        var position = 0.1
-
-        advancing: while loc < input.count {
-            let c = input[loc]
-            switch c {
-            case Literal.zero...Literal.nine:
-                value += position * Double(c - Literal.zero)
-                position /= 10
-                loc = loc.successor()
-
-            case Literal.e, Literal.E:
-                return try decodeNumberExponent(start, sign: sign, value: value)
-
-            default:
-                break advancing
-            }
-        }
-
-        return .Double(Double(sign.rawValue) * value)
-    }
-
-    private mutating func decodeNumberExponent(start: Int, sign: Sign, value: Double) throws -> JSON {
-        loc = loc.successor()
-        guard loc < input.count else {
-            throw Error.EndOfStreamUnexpected
-        }
-
-        switch input[loc] {
-        case Literal.zero...Literal.nine:
-            return try decodeNumberExponentDigits(start, sign: sign, value: value, expSign: .Positive)
-
-        case Literal.PLUS:
-            return try decodeNumberExponentSign(start, sign: sign, value: value, expSign: .Positive)
-
-        case Literal.MINUS:
-            return try decodeNumberExponentSign(start, sign: sign, value: value, expSign: .Negative)
-
-        default:
-            throw Error.NumberSymbolMissingDigits(offset: start)
-        }
-    }
-
-    private mutating func decodeNumberExponentSign(start: Int, sign: Sign, value: Double, expSign: Sign) throws -> JSON {
-        loc = loc.successor()
-        guard loc < input.count else {
-            throw Error.EndOfStreamUnexpected
-        }
-
-        switch input[loc] {
-        case Literal.zero...Literal.nine:
-            return try decodeNumberExponentDigits(start, sign: sign, value: value, expSign: expSign)
-
-        default:
-            throw Error.NumberSymbolMissingDigits(offset: start)
-        }
-    }
-
-    private mutating func decodeNumberExponentDigits(start: Int, sign: Sign, value: Double, expSign: Sign) throws -> JSON {
-        var exponent: Double = 0
-
-        advancing: while loc < input.count {
-            let c = input[loc]
-            switch c {
-            case Literal.zero...Literal.nine:
-                exponent = exponent * 10 + Double(c - Literal.zero)
-                loc = loc.successor()
-
-            default:
-                break advancing
-            }
-        }
-
-        return .Double(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent))
     }
 
     private func detectingFloatingPointErrors<T>(loc: Int, @noescape _ f: () throws -> T) throws -> T {
@@ -700,28 +592,6 @@ public struct JSONParser {
             throw InternalError.NumberOverflow(offset: loc)
         }
         return value
-    }
-
-    private var numberIntoStringParser = NumberIntoStringParser()
-    private mutating func decodeNumberAsString(start: Int) throws -> JSON {
-        loc = start
-        try numberIntoStringParser.parse(input, start: &loc)
-
-        stringDecodingBuffer.removeAll(keepCapacity: true)
-        for i in start ..< loc {
-            stringDecodingBuffer.append(input[i])
-        }
-        stringDecodingBuffer.append(0)
-
-        guard let string = (stringDecodingBuffer.withUnsafeBufferPointer {
-            String.fromCString(UnsafePointer($0.baseAddress))
-        }) else {
-            // Should never fail - any problems with the number string should
-            // result in thrown errors above
-            fatalError("Internal error: Invalid numeric string")
-        }
-
-        return .String(string)
     }
 }
 
@@ -908,153 +778,6 @@ private struct NumberParser {
         }
 
         state = .Done
-    }
-}
-
-private struct NumberIntoStringParser {
-    var loc = 0
-    var input = UnsafeBufferPointer<UInt8>(start: nil, count: 0)
-
-    mutating func parse(input: UnsafeBufferPointer<UInt8>, inout start: Int) throws {
-        assert(!input.isEmpty, "NumberParser should not be given empty input")
-        loc = start
-        self.input = input
-
-        switch input[loc] {
-        case Literal.MINUS:
-            try decodeNumberNegative(start)
-
-        case Literal.zero:
-            try decodeNumberLeadingZero(start)
-
-        case Literal.one...Literal.nine:
-            try decodeNumberPreDecimalDigits(start)
-
-        default:
-            preconditionFailure("NumberParser given input that doesn't look like a number")
-        }
-
-        start = loc
-    }
-
-    mutating func decodeNumberNegative(start: Int) throws {
-        loc = loc.successor()
-
-        guard loc < input.count else {
-            throw JSONParser.Error.EndOfStreamUnexpected
-        }
-
-        switch input[loc] {
-        case Literal.zero:
-            try decodeNumberLeadingZero(start)
-
-        case Literal.one...Literal.nine:
-            try decodeNumberPreDecimalDigits(start)
-
-        default:
-            throw JSONParser.Error.NumberSymbolMissingDigits(offset: start)
-        }
-    }
-
-    mutating func decodeNumberLeadingZero(start: Int) throws {
-        loc = loc.successor()
-
-        guard loc < input.count && input[loc] == Literal.PERIOD else {
-            return
-        }
-
-        try decodeNumberDecimal(start)
-    }
-
-    mutating func decodeNumberPreDecimalDigits(start: Int) throws {
-        loc = loc.successor()
-
-        advancing: while loc < input.count {
-            switch input[loc] {
-            case Literal.zero...Literal.nine:
-                loc = loc.successor()
-
-            case Literal.PERIOD:
-                return try decodeNumberDecimal(start)
-
-            case Literal.e, Literal.E:
-                return try decodeNumberExponent(start)
-
-            default:
-                return
-            }
-        }
-    }
-
-    mutating func decodeNumberDecimal(start: Int) throws {
-        loc = loc.successor()
-
-        guard loc < input.count else {
-            throw JSONParser.Error.EndOfStreamUnexpected
-        }
-
-        switch input[loc] {
-        case Literal.zero...Literal.nine:
-            try decodeNumberPostDecimalDigits(start)
-
-        default:
-            throw JSONParser.Error.NumberMissingFractionalDigits(offset: start)
-        }
-    }
-
-    mutating func decodeNumberPostDecimalDigits(start: Int) throws {
-        loc = loc.successor()
-
-        while loc < input.count && Literal.zero...Literal.nine ~= input[loc] {
-            loc = loc.successor()
-        }
-
-        if loc < input.count && (input[loc] == Literal.e || input[loc] == Literal.E) {
-            return try decodeNumberExponent(start)
-        }
-    }
-
-    mutating func decodeNumberExponent(start: Int) throws {
-        loc = loc.successor()
-
-        guard loc < input.count else {
-            throw JSONParser.Error.EndOfStreamUnexpected
-        }
-
-        switch input[loc] {
-        case Literal.zero...Literal.nine:
-            try decodeNumberExponentDigits(start)
-
-        case Literal.PLUS, Literal.MINUS:
-            try decodeNumberExponentSign(start)
-
-        default:
-            throw JSONParser.Error.NumberSymbolMissingDigits(offset: start)
-        }
-    }
-
-    mutating func decodeNumberExponentSign(start: Int) throws {
-        loc = loc.successor()
-
-        guard loc < input.count else {
-            throw JSONParser.Error.EndOfStreamUnexpected
-        }
-
-        switch input[loc] {
-        case Literal.zero...Literal.nine:
-            try decodeNumberExponentDigits(start)
-            
-        default:
-            throw JSONParser.Error.NumberSymbolMissingDigits(offset: start)
-        }
-    }
-    
-    mutating func decodeNumberExponentDigits(start: Int) throws {
-        loc = loc.successor()
-        
-        while loc < input.count && Literal.zero...Literal.nine ~= input[loc] {
-            loc = loc.successor()
-        }
     }
 }
 
