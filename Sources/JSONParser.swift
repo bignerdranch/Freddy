@@ -443,7 +443,9 @@ public struct JSONParser {
         var parser = parser
         var value = 0
 
-        while true {
+        // This would be more natural as `while true { ... }` with a meaningful .Done case,
+        // but that causes compile time explosion in Swift 2.2. :-|
+        while parser.state != .Done {
             switch parser.state {
             case .LeadingMinus:
                 sign = .Negative
@@ -474,14 +476,16 @@ public struct JSONParser {
                 assertionFailure("Invalid internal state while parsing number")
 
             case .Done:
-                guard case let (signedValue, false) = Int.multiplyWithOverflow(sign.rawValue, value) else {
-                    throw InternalError.NumberOverflow(offset: parser.start)
-                }
-
-                loc = parser.loc
-                return .Int(signedValue)
+                fatalError("impossible condition")
             }
         }
+
+        guard case let (signedValue, false) = Int.multiplyWithOverflow(sign.rawValue, value) else {
+            throw InternalError.NumberOverflow(offset: parser.start)
+        }
+
+        loc = parser.loc
+        return .Int(signedValue)
     }
 
     private mutating func decodeFloatingPointValue(parser: NumberParser, sign: Sign, value: Double) throws -> JSON {
@@ -491,7 +495,9 @@ public struct JSONParser {
         var exponent = Double(0)
         var position = 0.1
 
-        while true {
+        // This would be more natural as `while true { ... }` with a meaningful .Done case,
+        // but that causes compile time explosion in Swift 2.2. :-|
+        while parser.state != .Done {
             switch parser.state {
             case .LeadingMinus, .LeadingZero, .PreDecimalDigits:
                 assertionFailure("Invalid internal state while parsing number")
@@ -517,10 +523,12 @@ public struct JSONParser {
                 }
 
             case .Done:
-                loc = parser.loc
-                return .Double(Double(sign.rawValue) * value * pow(10, Double(exponentSign.rawValue) * exponent))
+                fatalError("impossible condition")
             }
         }
+
+        loc = parser.loc
+        return .Double(Double(sign.rawValue) * value * pow(10, Double(exponentSign.rawValue) * exponent))
     }
 
     private mutating func decodeNumberAsString(start: Int) throws -> JSON {
