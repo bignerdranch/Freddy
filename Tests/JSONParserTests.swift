@@ -159,7 +159,12 @@ class JSONParserTests: XCTestCase {
             ("123", 123),
             ("  -20  ", -20),
         ] {
-            XCTAssertEqual(try! JSONFromString(string).int(), shouldBeInt)
+            do {
+                let value = try JSONFromString(string).int()
+                XCTAssertEqual(value, shouldBeInt)
+            } catch {
+                XCTFail("Unexpected error: \(error)")
+            }
         }
 
         for (string, shouldBeDouble) in [
@@ -173,7 +178,12 @@ class JSONParserTests: XCTestCase {
             ("123.45e+2", 123.45e+2),
             ("-123.45e-2", -123.45e-2),
         ] {
-            XCTAssertEqualWithAccuracy(try! JSONFromString(string).double(), shouldBeDouble, accuracy: DBL_EPSILON)
+            do {
+                let value = try JSONFromString(string).double()
+                XCTAssertEqualWithAccuracy(value, shouldBeDouble, accuracy: DBL_EPSILON)
+            } catch {
+                XCTFail("Unexpected error: \(error)")
+            }
         }
     }
 
