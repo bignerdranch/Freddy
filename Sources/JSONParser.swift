@@ -492,7 +492,9 @@ public struct JSONParser {
                 return try decodeNumberDecimal(start, sign: sign, value: Double(value))
 
             case Literal.e, Literal.E:
-                return try decodeNumberExponent(start, sign: sign, value: Double(value))
+                return try detectingFloatingPointErrors(start) {
+                    try decodeNumberExponent(start, sign: sign, value: Double(value))
+                }
 
             default:
                 break advancing
@@ -514,7 +516,9 @@ public struct JSONParser {
 
         switch input[loc] {
         case Literal.zero...Literal.nine:
-            return try decodeNumberPostDecimalDigits(start, sign: sign, value: value)
+            return try detectingFloatingPointErrors(start) {
+                try decodeNumberPostDecimalDigits(start, sign: sign, value: value)
+            }
 
         default:
             throw Error.NumberMissingFractionalDigits(offset: start)
@@ -596,6 +600,16 @@ public struct JSONParser {
         }
 
         return .Double(Double(sign.rawValue) * value * pow(10, Double(expSign.rawValue) * exponent))
+    }
+
+    private func detectingFloatingPointErrors<T>(loc: Int, @noescape _ f: () throws -> T) throws -> T {
+        let flags = FE_UNDERFLOW | FE_OVERFLOW
+        feclearexcept(flags)
+        let value = try f()
+        guard fetestexcept(flags) == 0 else {
+            throw Error.NumberOverflow(offset: loc)
+        }
+        return value
     }
 }
 
