@@ -57,20 +57,34 @@ extension NSJSONSerialization: JSONParserType {
     private static func makeJSON(object: AnyObject) -> JSON {
         switch object {
         case let n as NSNumber:
-            switch n {
-            case _ where CFNumberGetType(n) == .CharType || CFGetTypeID(n) == CFBooleanGetTypeID():
+            let numberType = CFNumberGetType(n)
+            let isBoolean = numberType == .CharType || CFGetTypeID(n) == CFBooleanGetTypeID()
+            if isBoolean {
                 return .Bool(n.boolValue)
-            case _ where !CFNumberIsFloatType(n):
-                return .Int(n.integerValue)
-            default:
-                return .Double(n.doubleValue)
             }
+
+#if /* compiling for a target with 32-bit Int */ arch(arm) || arch(i386)
+            let isInt = (!CFNumberIsFloatType(n)
+                && numberType != .SInt64Type
+                && numberType != .LongLongType)
+#else
+            let isInt = !CFNumberIsFloatType(n)
+#endif
+            if isInt {
+                return .Int(n.integerValue)
+            }
+
+            return .Double(n.doubleValue)
+
         case let arr as [AnyObject]:
             return makeJSONArray(arr)
+
         case let dict as [Swift.String: AnyObject]:
             return makeJSONDictionary(dict)
+
         case let s as Swift.String:
             return .String(s)
+
         default:
             return .Null
         }

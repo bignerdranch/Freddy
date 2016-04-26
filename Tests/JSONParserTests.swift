@@ -224,11 +224,41 @@ class JSONParserTests: XCTestCase {
                     let json = try JSONFromString(string)
 
                     // numbers overflow, but we should be able to get them out as strings
-                    XCTAssertEqual(try json.string(), string)
+                    XCTAssertEqual(try? json.string(), string)
                 } catch {
                     XCTFail("Unexpected error \(error)")
                 }
         }
+    }
+
+    // This test should be run on the iPhone 5 simulator to actually do its job.
+    func test32BitOverflowResultsInDoubleWithNSJSONSerializationParser() {
+        let jsonString = "{\"startDate\": 1466719200000}"
+        let expectedValue = 1466719200000.0
+
+        let data = jsonString.dataUsingEncoding(NSUTF8StringEncoding)!
+        guard let json = try? JSON(data: data, usingParser: NSJSONSerialization.self) else {
+            XCTFail("Failed to even parse JSON: \(jsonString)")
+            return
+        }
+
+        XCTAssertEqual(try? json.double("startDate"), expectedValue, "startDate as double")
+        XCTAssertEqual(try? json.string("startDate"), nil, "startDate as string")
+    }
+
+    // This test should be run on the iPhone 5 simulator to actually do its job.
+    func test32BitOverflowResultsInStringWithFreddyParser() {
+        let jsonString = "{\"startDate\": 1466719200000}"
+        let expectedValue = "1466719200000"
+
+        let data = jsonString.dataUsingEncoding(NSUTF8StringEncoding)!
+        guard let json = try? JSON(data: data) else {
+            XCTFail("Failed to even parse JSON: \(jsonString)")
+            return
+        }
+
+        XCTAssertEqual(try? json.double("startDate"), nil, "startDate as double")
+        XCTAssertEqual(try? json.string("startDate"), expectedValue, "startDate as string")
     }
 
     func testThatParserUnderstandsEmptyArrays() {
