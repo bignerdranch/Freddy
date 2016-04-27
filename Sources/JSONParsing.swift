@@ -64,12 +64,14 @@ extension NSJSONSerialization: JSONParserType {
             }
 
 #if /* compiling for a target with 32-bit Int */ arch(arm) || arch(i386)
-            let isInt = (!CFNumberIsFloatType(n)
-                && numberType != .SInt64Type
-                && numberType != .LongLongType)
-#else
-            let isInt = !CFNumberIsFloatType(n)
+            let overflowsInt = (numberType == .SInt64Type
+                || numberType == .LongLongType)
+            if overflowsInt {
+                return .String(n.description)
+            }
 #endif
+
+            let isInt = !CFNumberIsFloatType(n)
             if isInt {
                 return .Int(n.integerValue)
             }
