@@ -57,12 +57,9 @@ extension NSJSONSerialization: JSONParserType {
     private static func makeJSON(object: AnyObject) -> JSON {
         switch object {
         case let n as NSNumber:
-            if CFGetTypeID(n) == CFBooleanGetTypeID() {
-                return .Bool(n.boolValue)
-            }
-
             let numberType = CFNumberGetType(n)
             switch numberType {
+            case _ where CFGetTypeID(n) == CFBooleanGetTypeID(): fallthrough
             case .CharType:
                 return .Bool(n.boolValue)
 
