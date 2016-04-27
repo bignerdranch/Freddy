@@ -59,7 +59,6 @@ extension NSJSONSerialization: JSONParserType {
         case let n as NSNumber:
             let numberType = CFNumberGetType(n)
             switch numberType {
-            case _ where CFGetTypeID(n) == CFBooleanGetTypeID(): fallthrough
             case .CharType:
                 return .Bool(n.boolValue)
 
