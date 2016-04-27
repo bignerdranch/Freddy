@@ -37,8 +37,6 @@ private func ==(lhs: JSONParser.Error, rhs: JSONParser.Error) -> Bool {
         return lOffset == rOffset
     case let (.NumberSymbolMissingDigits(lOffset), .NumberSymbolMissingDigits(rOffset)):
         return lOffset == rOffset
-    case let (.NumberOverflow(lOffset), .NumberOverflow(rOffset)):
-        return lOffset == rOffset
     case (_, _):
         return false
     }
@@ -161,7 +159,12 @@ class JSONParserTests: XCTestCase {
             ("123", 123),
             ("  -20  ", -20),
         ] {
-            XCTAssertEqual(try! JSONFromString(string).int(), shouldBeInt)
+            do {
+                let value = try JSONFromString(string).int()
+                XCTAssertEqual(value, shouldBeInt)
+            } catch {
+                XCTFail("Unexpected error: \(error)")
+            }
         }
 
         for (string, shouldBeDouble) in [
@@ -175,7 +178,12 @@ class JSONParserTests: XCTestCase {
             ("123.45e+2", 123.45e+2),
             ("-123.45e-2", -123.45e-2),
         ] {
-            XCTAssertEqualWithAccuracy(try! JSONFromString(string).double(), shouldBeDouble, accuracy: DBL_EPSILON)
+            do {
+                let value = try JSONFromString(string).double()
+                XCTAssertEqualWithAccuracy(value, shouldBeDouble, accuracy: DBL_EPSILON)
+            } catch {
+                XCTFail("Unexpected error: \(error)")
+            }
         }
     }
 
@@ -202,25 +210,79 @@ class JSONParserTests: XCTestCase {
     }
 
     func testParserHandlingOfNumericOverflow() {
-        for (string, expectedError) in [
+        for string in [
             // Int64.max + 1
-            ("9223372036854775808", JSONParser.Error.NumberOverflow(offset: 0)),
+            "9223372036854775808",
 
             // DBL_MAX is 1.7976931348623158e+308, so add 1 to least significant
-            ("1.7976931348623159e+308", JSONParser.Error.NumberOverflow(offset: 0)),
+            "1.7976931348623159e+308",
 
             // DBL_TRUE_MIN is 4.9406564584124654E-324, so try something smaller
-            ("4.9406564584124654E-325", JSONParser.Error.NumberOverflow(offset: 0)),
+            "4.9406564584124654E-325",
             ] {
                 do {
-                    let value = try JSONFromString(string)
-                    XCTFail("Unexpected success: \(value)")
-                } catch let error as JSONParser.Error {
-                    XCTAssert(error == expectedError, "Expected \(expectedError) but got \(error)")
+                    let json = try JSONFromString(string)
+
+                    // numbers overflow, but we should be able to get them out as strings
+                    XCTAssertEqual(try? json.string(), string)
                 } catch {
                     XCTFail("Unexpected error \(error)")
                 }
         }
+    }
+
+    // This test should also be run on the iPhone 5 simulator to check 32-bit support.
+    func testOverflowingIntResultsInStringWithNSJSONSerializationParser() {
+        // In spite of writing this as an integer in the JSON, 64-bit NSJSONSerialization reads it in
+        // as a double (CFNumberType() in makeJSON reports 13 aka kCFNumberDoubleType.
+        //
+        // Under 32-bit, though, it only reads in as a Double if you write it with a ".0" at the end,
+        // otherwise it reads it in as a 4 = kCFNumberSInt64Type.
+        let anyValueExceedingIntMax = UInt.max
+        let jsonString = "{\"exceedsIntMax\": \(anyValueExceedingIntMax)}"
+
+        let data = jsonString.dataUsingEncoding(NSUTF8StringEncoding)!
+        guard let json = try? JSON(data: data, usingParser: NSJSONSerialization.self) else {
+            XCTFail("Failed to even parse JSON: \(jsonString)")
+            return
+        }
+
+        XCTAssertEqual(try? json.int("exceedsIntMax"), nil, "as int")
+        XCTAssertEqual(try? json.double("exceedsIntMax"), Double(anyValueExceedingIntMax), "as double")
+        XCTAssertEqual(try? json.string("exceedsIntMax"), nil, "as string")
+    }
+
+    // This test should also be run on the iPhone 5 simulator to check 32-bit support.
+    func testOverflowingIntResultsInStringWithFreddyParser() {
+        let anyValueExceedingIntMax = UInt.max
+        let jsonString = "{\"exceedsIntMax\": \(anyValueExceedingIntMax)}"
+
+        let data = jsonString.dataUsingEncoding(NSUTF8StringEncoding)!
+        guard let json = try? JSON(data: data) else {
+            XCTFail("Failed to even parse JSON: \(jsonString)")
+            return
+        }
+
+        // The Freddy parser behaves consistently across architectures.
+        XCTAssertEqual(try? json.int("exceedsIntMax"), nil, "as int")
+        XCTAssertEqual(try? json.double("exceedsIntMax"), nil, "as double")
+        XCTAssertEqual(try? json.string("exceedsIntMax"), anyValueExceedingIntMax.description, "as string")
+    }
+
+    // This was tripping a fatalError with the Freddy parser for 64-bit at one point:
+    //     fatal error: floating point value can not be converted to Int because it is greater than Int.max
+    // because we assumed the double would be in range of Int.
+    func testReturnsNilWhenDoubleValueExceedingIntMaxIsAccessedAsInt() {
+        let anyFloatingPointValueExceedingIntMax = Double(UInt(Int.max) + 1)
+        let jsonString = "{\"exceedsIntMax\": \(anyFloatingPointValueExceedingIntMax)}"
+
+        let data = jsonString.dataUsingEncoding(NSUTF8StringEncoding)!
+        guard let json = try? JSON(data: data) else {
+            XCTFail("Failed to even parse JSON: \(jsonString)")
+            return
+        }
+
+        XCTAssertEqual(try? json.int("exceedsIntMax"), nil, "as int")
     }
 
     func testThatParserUnderstandsEmptyArrays() {

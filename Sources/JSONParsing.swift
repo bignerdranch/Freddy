@@ -57,20 +57,47 @@ extension NSJSONSerialization: JSONParserType {
     private static func makeJSON(object: AnyObject) -> JSON {
         switch object {
         case let n as NSNumber:
-            switch n {
-            case _ where CFNumberGetType(n) == .CharType || CFGetTypeID(n) == CFBooleanGetTypeID():
+            let numberType = CFNumberGetType(n)
+            switch numberType {
+            case .CharType:
                 return .Bool(n.boolValue)
-            case _ where !CFNumberIsFloatType(n):
+
+            case .ShortType, .IntType, .LongType, .CFIndexType, .NSIntegerType, .SInt8Type, .SInt16Type, .SInt32Type:
                 return .Int(n.integerValue)
-            default:
+
+            case .SInt64Type, .LongLongType /* overflows 32-bit Int */:
+                #if /* 32-bit arch */ arch(arm) || arch(i386)
+                    // Why double, when the Freddy parser would bump to String?
+                    //
+                    // Returning Double avoids making the type depend on whether you're running
+                    // 32-bit or 64-bit code when using the NSJSONSerialization parser.
+                    // NSJSONSerialization appears to bump numbers larger than Int.max to Double on
+                    // 64-bit platforms but use .SInt64Type on 32-bit platforms.
+                    // If we returned a String here, you'd get a String value on 32-bit,
+                    // but a Double value on 64-bit. Instead, we return Double.
+                    //
+                    // This means that, if you switch parsers,
+                    // you'll have to switch from .double to .string for pulling out
+                    // overflowing values, but if you stick with a single parser,
+                    // you at least won't have architecture-dependent lookups!
+                    return .Double(n.doubleValue)
+                #else
+                    return .Int(n.integerValue)
+                #endif
+
+            case .Float32Type, .Float64Type, .FloatType, .DoubleType, .CGFloatType:
                 return .Double(n.doubleValue)
             }
+
         case let arr as [AnyObject]:
             return makeJSONArray(arr)
+
         case let dict as [Swift.String: AnyObject]:
             return makeJSONDictionary(dict)
+
         case let s as Swift.String:
             return .String(s)
+
         default:
             return .Null
         }
