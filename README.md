@@ -195,7 +195,7 @@ You have a few different options to install Freddy.
 Add us to your `Cartfile`:
 
 ```
-github "bignerdranch/Freddy" ~> 2.0
+github "bignerdranch/Freddy" ~> 2.1
 ```
 
 After running `carthage bootstrap`, add `Freddy.framework` to the "Linked Frameworks and Libraries" panel of your application target. [Read more](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application).
