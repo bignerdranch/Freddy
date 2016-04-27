@@ -250,13 +250,8 @@ class JSONParserTests: XCTestCase {
         // Under both 32- and 64-bit, we get:
         //     fatal error: floating point value can not be converted to Int because it is greater than Int.max
         //XCTAssertEqual(try? json.int("exceedsIntMax"), nil, "as int")
-        #if /* 32-bit architecture */ arch(i386) || arch(arm)
-            XCTAssertEqual(try? json.double("exceedsIntMax"), nil, "as double")
-            XCTAssertEqual(try? json.string("exceedsIntMax"), anyValueExceedingIntMax.description, "as string")
-        #else
-            XCTAssertEqual(try? json.double("exceedsIntMax"), Double(anyValueExceedingIntMax), "as double")
-            XCTAssertEqual(try? json.string("exceedsIntMax"), nil, "as string")
-        #endif
+        XCTAssertEqual(try? json.double("exceedsIntMax"), Double(anyValueExceedingIntMax), "as double")
+        XCTAssertEqual(try? json.string("exceedsIntMax"), nil, "as string")
     }
 
     // This test should also be run on the iPhone 5 simulator to check 32-bit support.

@@ -67,7 +67,20 @@ extension NSJSONSerialization: JSONParserType {
             let overflowsInt = (numberType == .SInt64Type
                 || numberType == .LongLongType)
             if overflowsInt {
-                return .String(n.description)
+                // Why double, when the Freddy parser would bump to String?
+                //
+                // Returning Double avoids making the type depend on whether you're running
+                // 32-bit or 64-bit code when using the NSJSONSerialization parser.
+                // NSJSONSerialization appears to bump numbers larger than Int.max to Double on
+                // 64-bit platforms but use .SInt64Type on 32-bit platforms.
+                // If we returned a String here, you'd get a String value on 32-bit,
+                // but a Double value on 64-bit. Instead, we return Double.
+                //
+                // This means that, if you switch parsers,
+                // you'll have to switch from .double to .string for pulling out
+                // overflowing values, but if you stick with a single parser,
+                // you at least won't have architecture-dependent lookups!
+                return .Double(n.doubleValue)
             }
 #endif
 
