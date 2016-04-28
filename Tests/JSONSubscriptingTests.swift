@@ -350,7 +350,12 @@ class JSONSubscriptingTests: XCTestCase {
         let string = try! keyNotFound.string("bar", alongPath: .MissingKeyBecomesNil)
         XCTAssertNil(string)
     }
-    
+
+    func testNonConvertableValueAsNil() {
+        let sample = [ "foo": 1234 ] as JSON
+        let string = try! sample.string("foo", alongPath: .NotConvertableBecomesNil)
+        XCTAssertNil(string)
+    }
 }
 
 private struct Resident {
