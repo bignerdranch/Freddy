@@ -48,7 +48,7 @@ extension Int: JSONDecodable {
     ///           passed to this initializer.
     public init(json: JSON) throws {
         switch json {
-        case let .Double(double):
+        case let .Double(double) where double <= Double(Swift.Int.max):
             self = Swift.Int(double)
         case let .Int(int):
             self = int

@@ -32,3 +32,6 @@ docs/
 #
 .build/
 Packages/
+
+# Carthage
+Carthage/Build
