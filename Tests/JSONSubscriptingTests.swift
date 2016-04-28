@@ -353,7 +353,7 @@ class JSONSubscriptingTests: XCTestCase {
 
     func testNonConvertableValueAsNil() {
         let sample = [ "foo": 1234 ] as JSON
-        let string = try! sample.string("foo", alongPath: .NotConvertableBecomesNil)
+        let string = try! sample.string("foo", alongPath: .NotConvertibleBecomesNil)
         XCTAssertNil(string)
     }
 }
