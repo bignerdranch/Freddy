@@ -232,13 +232,13 @@ extension JSON {
         /// Treat missing keys as `nil`.
         public static let MissingKeyBecomesNil = SubscriptingOptions(rawValue: 1 << 1)
         /// Treat Unconvertable values as `nil`.
-        public static let NotConvertableBecomesNil = SubscriptingOptions(rawValue: 1 << 2)
+        public static let NotConvertibleBecomesNil = SubscriptingOptions(rawValue: 1 << 2)
     }
     
     private func mapOptionalAtPath<Value>(path: [JSONPathType], alongPath: SubscriptingOptions, @noescape transform: JSON throws -> Value) throws -> Value? {
         let detectNull = alongPath.contains(.NullBecomesNil)
         let detectNotFound = alongPath.contains(.MissingKeyBecomesNil)
-        let detectNotConvertable = alongPath.contains(.NotConvertableBecomesNil)
+        let detectNotConvertable = alongPath.contains(.NotConvertibleBecomesNil)
         var json: JSON?
         do {
             json = try valueAtPath(path, detectNull: detectNull)
