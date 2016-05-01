@@ -750,6 +750,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB6ADF811C23617500D77BF1 /* Framework.xcconfig */;
 			buildSettings = {
+				COPY_PHASE_STRIP = YES;
 				SDKROOT = macosx;
 			};
 			name = Release;
