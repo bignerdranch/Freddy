@@ -259,11 +259,10 @@ extension JSON {
     /// - returns: An instance of some type that conforms to `JSONDecodable`.
     /// - throws: `Error.ValueNotConvertible` if the `JSON` instance is `.Null`.
     private static func getDecoded<Decoded: JSONDecodable>(json: JSON) throws -> Decoded {
-        if json == .Null {
+        guard json != .Null else {
             throw Error.ValueNotConvertible(value: json, to: Decoded.self)
-        } else {
-            return try Decoded.init(json: json)
         }
+        return try Decoded.init(json: json)
     }
     
     /// Optionally decodes into the returning type from a path into JSON.
