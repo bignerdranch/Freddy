@@ -254,6 +254,18 @@ extension JSON {
 
 extension JSON {
 
+    /// Decodes a `JSON` instance if it is not `.Null`, throws otherwise.
+    /// - parameter json: An instance of `JSON`.
+    /// - returns: An instance of some type that conforms to `JSONDecodable`.
+    /// - throws: `Error.ValueNotConvertible` if the `JSON` instance is `.Null`.
+    private static func getDecoded<Decoded: JSONDecodable>(json: JSON) throws -> Decoded {
+        if json == .Null {
+            throw Error.ValueNotConvertible(value: json, to: Decoded.self)
+        } else {
+            return try Decoded.init(json: json)
+        }
+    }
+    
     /// Optionally decodes into the returning type from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter alongPath: Options that control what should be done with values that are `null` or keys that are missing.
@@ -272,7 +284,7 @@ extension JSON {
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
     public func decode<Decoded: JSONDecodable>(path: JSONPathType..., alongPath options: SubscriptingOptions, type: Decoded.Type = Decoded.self) throws -> Decoded? {
-        return try mapOptionalAtPath(path, alongPath: options, transform: Decoded.init)
+        return try mapOptionalAtPath(path, alongPath: options, transform: JSON.getDecoded)
     }
 
     /// Optionally retrieves a `Double` from a path into JSON.
