@@ -189,7 +189,7 @@ extension JSON {
         return try JSON.getArray(valueAtPath(path))
     }
 
-    /// Attempts to decodes many values from a desendant JSON array at a path
+    /// Attempts to decode many values from a descendant JSON array at a path
     /// into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter type: If the context this method is called from does not
@@ -210,6 +210,20 @@ extension JSON {
     /// - seealso: `JSON.decode(_:type:)`
     public func dictionary(path: JSONPathType...) throws -> [Swift.String: JSON] {
         return try JSON.getDictionary(valueAtPath(path))
+    }
+    
+    /// Attempts to decode many values from a descendant JSON object at a path
+    /// into JSON.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter type: If the context this method is called from does not
+    ///                   make the return type clear, pass a type implementing `JSONDecodable`
+    ///                   to disambiguate the value type to decode with.
+    /// - returns: A `Dictionary` of `String` keys and decoded values.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)` or
+    ///           any error that arises from decoding the contained values.
+    /// - seealso: `JSON.decode(_:type:)`
+    public func dictionaryOf<Decoded: JSONDecodable>(path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> [Swift.String: Decoded] {
+        return try JSON.getDictionaryOf(valueAtPath(path))
     }
 
 }
@@ -398,6 +412,26 @@ extension JSON {
     public func dictionary(path: JSONPathType..., alongPath options: SubscriptingOptions) throws -> [Swift.String: JSON]? {
         return try mapOptionalAtPath(path, alongPath: options, transform: JSON.getDictionary)
     }
+    
+    /// Optionally attempts to decode many values from a descendant object at a path
+    /// into JSON.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter alongPath: Options that control what should be done with values that are `null` or keys that are missing.
+    /// - returns: A `Dictionary` of `String` mapping to decoded elements if a
+    ///            value could be found, otherwise `nil`.
+    /// - throws: One of the following errors contained in `JSON.Error`:
+    ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
+    ///     `JSON` dictionary.
+    ///   * `IndexOutOfBounds`: An index `path` is outside the bounds of a
+    ///     descendant `JSON` array.
+    ///   * `UnexpectedSubscript`: A `path` item cannot be used with the
+    ///     corresponding `JSON` value.
+    ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
+    ///     instance does not match the decoded value.
+    ///   * Any error that arises from decoding the value.
+    public func dictionaryOf<Decoded: JSONDecodable>(path: JSONPathType..., alongPath options: SubscriptingOptions, type: Decoded.Type = Decoded.self) throws -> [Swift.String: Decoded]? {
+        return try mapOptionalAtPath(path, alongPath: options, transform: JSON.getDictionaryOf)
+    }
 
 }
 
@@ -537,6 +571,26 @@ extension JSON {
     public func dictionary(path: JSONPathType..., @autoclosure or fallback: () -> [Swift.String: JSON]) throws -> [Swift.String: JSON] {
         return try mapOptionalAtPath(path, fallback: fallback, transform: JSON.getDictionary)
     }
+    
+    /// Attempts to decode many values from a descendant JSON object at a path
+    /// into the receiving structure, returning a fallback if not found.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter fallback: Value to use when one is missing at the subscript
+    /// - returns: A `Dictionary` of `String` mapping to decoded elements.
+    /// - throws: One of the following errors contained in `JSON.Error`:
+    ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
+    ///     `JSON` dictionary.
+    ///   * `IndexOutOfBounds`: An index `path` is outside the bounds of a
+    ///     descendant `JSON` array.
+    ///   * `UnexpectedSubscript`: A `path` item cannot be used with the
+    ///     corresponding `JSON` value.
+    ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
+    ///     instance does not match the decoded value.
+    ///   * Any error that arises from decoding the value.
+    public func dictionaryOf<Decoded: JSONDecodable>(path: JSONPathType..., @autoclosure or fallback: () -> [Swift.String: Decoded]) throws -> [Swift.String: Decoded] {
+        return try mapOptionalAtPath(path, fallback: fallback, transform: JSON.getDictionaryOf)
+    }
+    
     
 }
 

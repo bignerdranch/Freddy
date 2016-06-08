@@ -188,6 +188,17 @@ class JSONDecodableTests: XCTestCase {
         }
     }
     
+    func testThatDictionaryOfCanReturnDictionaryOfJSONDecodable() {
+        let oneTwoThreeJSON: JSON = ["one": 1, "two": 2, "three": 3]
+        
+        do {
+            let decodedOneTwoThree = try oneTwoThreeJSON.dictionaryOf(type: Swift.Int)
+            XCTAssertEqual(decodedOneTwoThree, ["one": 1, "two": 2, "three": 3], "`decodedOneTwoThree` should be equal to `[\"one\": 1, \"two\": 2, \"three\": 3]`.")
+        } catch {
+            XCTFail("`decodedOneTwoThree` should be equal to `[\"one\": 1, \"two\": 2, \"three\": 3]`.")
+        }
+    }
+    
     func testThatNullIsDecodedToNilWhenRequestedAtTopLevel() {
         let JSONDictionary: JSON = ["key": .Null]
         

@@ -27,6 +27,11 @@ class JSONSubscriptingTests: XCTestCase {
                 ["name": "Matt", "age": 33, "hasPet": false, "rent": .Null],
                 ["name": "Drew", "hasPet": true, "rent": 1234.5],
                 ["name": "Pat", "age": 28, "hasPet": .Null]
+            ],
+            "residentsByName": [
+                "Matt": ["name": "Matt", "age": 33, "hasPet": false, "rent": .Null],
+                "Drew": ["name": "Drew", "hasPet": true, "rent": 1234.5],
+                "Pat": ["name": "Pat", "age": 28, "hasPet": .Null]
             ]
             ])
         
@@ -61,6 +66,16 @@ class JSONSubscriptingTests: XCTestCase {
         }
     }
     
+    func testThatDictionaryOfProducesResidentsByName() {
+        do {
+            let residentsByName = try residentJSON.dictionaryOf("residentsByName", type: Resident.self)
+            let residentsNames = residentsByName.map { $1.name }
+            XCTAssertEqual(residentsNames.count, 3, "There should be 3 residents.")
+        } catch {
+            XCTFail("There should be no error: \(error).")
+        }
+    }
+    
     func testNullOptionsDecodes() {
         do {
             let firstResident = try residentJSON.decode("residents", 0, alongPath: [.NullBecomesNil, .MissingKeyBecomesNil], type: Resident.self)
@@ -70,7 +85,7 @@ class JSONSubscriptingTests: XCTestCase {
         }
     }
     
-    func testNullOptionsProducesOptionalForNotFound() {
+    func testNullOptionsProducesOptionalForNotFoundWithArrayOf() {
         do {
             let residents = try residentJSON.arrayOf("residents", type: Resident.self)
             XCTAssertNil(residents[1].age, "Drew's `age` should be nil.")
@@ -79,12 +94,35 @@ class JSONSubscriptingTests: XCTestCase {
         }
     }
     
-    func testNullOptionsProducesOptionalForNullOrNotFound() {
+    func testNullOptionsProducesOptionalForNotFoundWithDictionaryOf() {
+        do {
+            let residents = try residentJSON.dictionaryOf("residentsByName", type: Resident.self)
+            XCTAssertNotNil(residents["Drew"])
+            XCTAssertNil(residents["Drew"]?.age, "Drew's `age` should be nil.")
+        } catch {
+            XCTFail("There should be no error.")
+        }
+    }
+    
+    func testNullOptionsProducesOptionalForNullOrNotFoundWithArrayOf() {
         do {
             let residents = try residentJSON.arrayOf("residents", type: Resident.self)
             XCTAssertNil(residents.first?.rent, "Matt should have nil `rent`.")
             XCTAssertEqual(residents[1].rent!, 1234.5, "Drew's `rent` should equal 1234.5.")
             XCTAssertNil(residents.last?.rent, "Pat should have nil `rent`.")
+        } catch {
+            XCTFail("There should be no error: \(error).")
+        }
+    }
+    
+    func testNullOptionsProducesOptionalForNullOrNotFoundWithDictionaryOf() {
+        do {
+            let residents = try residentJSON.dictionaryOf("residentsByName", type: Resident.self)
+            XCTAssertNotNil(residents["Matt"])
+            XCTAssertNil(residents["Matt"]?.rent, "Matt should have nil `rent`.")
+            XCTAssertEqual(residents["Drew"]!.rent!, 1234.5, "Drew's `rent` should equal 1234.5.")
+            XCTAssertNotNil(residents["Pat"])
+            XCTAssertNil(residents["Pat"]?.rent, "Pat should have nil `rent`.")
         } catch {
             XCTFail("There should be no error: \(error).")
         }
@@ -118,6 +156,18 @@ class JSONSubscriptingTests: XCTestCase {
             let test2 = try testJSON.array("residents", alongPath: .MissingKeyBecomesNil)
             XCTAssertNil(test1, "Test1 should be nil.")
             XCTAssertNil(test2, "Test2 should be nil.")
+        } catch {
+            XCTFail("There should be no error: \(error)")
+        }
+    }
+    
+    func testDictionaryOfJSONIntAndNullCreatesOptionalWhenDetectNull() {
+        let testJSON: JSON = ["one": 1, "two": 2, "three": .Null, "four": 4]
+        do {
+            _ = try testJSON.dictionaryOf(alongPath: .NullBecomesNil, type: Int.self)
+            XCTFail("`testJSON.dictionaryOf(_:options:type:)` should throw.")
+        } catch let JSON.Error.ValueNotConvertible(value, type) {
+            XCTAssert(type == Int.self, "value (\(value)) is not equal to \(type).")
         } catch {
             XCTFail("There should be no error: \(error)")
         }
@@ -227,6 +277,16 @@ class JSONSubscriptingTests: XCTestCase {
             let jsonDict: [String: JSON] = ["name": "Matt", "age": 33, "hasPet": false, "rent": .Null]
             let mattOr = try residentJSON.dictionary("residents", 4, or: jsonDict)
             XCTAssertEqual(jsonDict, mattOr, "`jsonDict` should equal `mattOr`")
+        } catch {
+            XCTFail("There should be no error: \(error).")
+        }
+    }
+    
+    func testDictionaryOfOr() {
+        do {
+            let matt = Resident(name: "Matt", age: 32, hasPet: false, rent: 500.00)
+            let residentsOr = try residentJSON.dictionaryOf("residnts", or: ["Matt": matt])
+            XCTAssertEqual(residentsOr, ["Matt": matt], "`residents` should not be nil")
         } catch {
             XCTFail("There should be no error: \(error).")
         }
