@@ -414,7 +414,7 @@ extension JSON {
     /// Attempts to decode into the returning type from a path into
     /// JSON, or returns a fallback if not found.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter or: Fallback value to use when one is missing at the subscript.
+    /// - parameter fallback: Value to use when one is missing at the subscript.
     /// - returns: An initialized member from the inner JSON.
     /// - throws: One of the following errors contained in `JSON.Error`:
     ///   * `UnexpectedSubscript`: A given subscript cannot be used with the
@@ -427,7 +427,7 @@ extension JSON {
     
     /// Retrieves a `Double` from a path into JSON or a fallback if not found.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter or: Fallback `Double` to use when one is missing at the subscript.
+    /// - parameter fallback: `Double` to use when one is missing at the subscript.
     /// - returns: A floating-point `Double`
     /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptionalAtPath(_:fallback:transform:)`.
     /// - seealso: `optionalAtPath(_:ifNotFound)`.
@@ -437,7 +437,7 @@ extension JSON {
     
     /// Retrieves an `Int` from a path into JSON or a fallback if not found.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter or: Fallback value to use when one is missing at the subscript.
+    /// - parameter fallback: `Int` to use when one is missing at the subscript.
     /// - returns: A numeric `Int`
     /// - throws: One of the following errors contained in `JSON.Error`:
     ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
@@ -454,7 +454,7 @@ extension JSON {
     
     /// Retrieves a `String` from a path into JSON or a fallback if not found.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter or: Fallback `String` to use when one is missing at the subscript.
+    /// - parameter fallback: `String` to use when one is missing at the subscript.
     /// - returns: A textual `String`
     /// - throws: One of the following errors contained in `JSON.Error`:
     ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
@@ -471,7 +471,7 @@ extension JSON {
     
     /// Retrieves a `Bool` from a path into JSON or a fallback if not found.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter or: Fallback `Bool` to use when one is missing at the subscript.
+    /// - parameter fallback: `Bool` to use when one is missing at the subscript.
     /// - returns: A truthy `Bool`
     /// - throws: One of the following errors contained in `JSON.Error`:
     ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
@@ -488,7 +488,7 @@ extension JSON {
     
     /// Retrieves a `[JSON]` from a path into JSON or a fallback if not found.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter or: Fallback `Array` to use when one is missing at the subscript.
+    /// - parameter fallback: `Array` to use when one is missing at the subscript.
     /// - returns: An `Array` of `JSON` elements
     /// - throws: One of the following errors contained in `JSON.Error`:
     ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
@@ -506,7 +506,7 @@ extension JSON {
     /// Attempts to decodes many values from a desendant JSON array at a path
     /// into the recieving structure, returning a fallback if not found.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter or: Fallback `Array` to use when one is missing at the subscript.
+    /// - parameter fallback: `Array` to use when one is missing at the subscript.
     /// - returns: An `Array` of decoded elements
     /// - throws: One of the following errors contained in `JSON.Error`:
     ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
@@ -525,7 +525,7 @@ extension JSON {
     /// Retrieves a `[String: JSON]` from a path into JSON or a fallback if not
     /// found.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
-    /// - parameter or: Fallback `Dictionary` to use when one is missing at the subscript.
+    /// - parameter fallback: `Dictionary` to use when one is missing at the subscript.
     /// - returns: An `Dictionary` of `String` mapping to `JSON` elements
     /// - throws: One of the following errors contained in `JSON.Error`:
     ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
