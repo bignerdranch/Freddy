@@ -110,6 +110,7 @@ extension RawRepresentable where RawValue: JSONDecodable {
 internal extension JSON {
 
     /// Retrieves a `[JSON]` from the JSON.
+    /// - parameter: A `JSON` to be used to create the returned `Array`.
     /// - returns: An `Array` of `JSON` elements
     /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`.
     /// - seealso: `JSON.decode(_:type:)`
@@ -122,6 +123,7 @@ internal extension JSON {
     }
     
     /// Retrieves a `[String: JSON]` from the JSON.
+    /// - parameter: A `JSON` to be used to create the returned `Dictionary`.
     /// - returns: An `Dictionary` of `String` mapping to `JSON` elements
     /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`.
     /// - seealso: `JSON.decode(_:type:)`
@@ -135,9 +137,7 @@ internal extension JSON {
     
     /// Attempts to decode many values from a descendant JSON array at a path
     /// into JSON.
-    /// - parameter type: If the context this method is called from does not
-    ///   make the return type clear, pass a type implementing `JSONDecodable`
-    ///   to disambiguate the type to decode with.
+    /// - parameter: A `JSON` to be used to create the returned `Array` of some type conforming to `JSONDecodable`.
     /// - returns: An `Array` of decoded elements
     /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`, as
     ///   well as any error that arises from decoding the contained values.
