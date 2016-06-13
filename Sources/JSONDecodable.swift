@@ -138,7 +138,7 @@ internal extension JSON {
     /// Attempts to decode many values from a descendant JSON array at a path
     /// into JSON.
     /// - parameter: A `JSON` to be used to create the returned `Array` of some type conforming to `JSONDecodable`.
-    /// - returns: An `Array` of decoded elements
+    /// - returns: An `Array` of `Decoded` elements.
     /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`, as
     ///   well as any error that arises from decoding the contained values.
     /// - seealso: `JSON.decode(_:type:)`
