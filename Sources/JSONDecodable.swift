@@ -150,18 +150,15 @@ internal extension JSON {
     
     /// Attempts to decode many values from a descendant JSON object at a path
     /// into JSON.
-    /// - parameter type: If the context this method is called from does not
-    ///                   make the return type clear, pass a type implementing `JSONDecodable`
-    ///                   to disambiguate the value type to decode with.
-    /// - returns: A `Dictionary` of string keys and decoded values.
+    /// - returns: A `Dictionary` of string keys and `Decoded` values.
     /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)` or
     ///           any error that arises from decoding the contained values.
     /// - seealso: `JSON.decode(_:type:)`
     static func getDictionaryOf<Decoded: JSONDecodable>(json: JSON) throws -> [Swift.String: Decoded] {
         guard case let .Dictionary(dictionary) = json else {
-            throw Error.ValueNotConvertible(value: json, to: Swift.Dictionary<Swift.String, JSON>)
+            throw Error.ValueNotConvertible(value: json, to: Swift.Dictionary<Swift.String, Decoded>)
         }
-        var decodedDictionary: [Swift.String: Decoded] = [:]
+        var decodedDictionary = Swift.Dictionary<Swift.String, Decoded>(minimumCapacity: dictionary.count)
         for (key, value) in dictionary {
             decodedDictionary[key] = try Decoded(json: value)
         }

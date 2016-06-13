@@ -417,6 +417,9 @@ extension JSON {
     /// into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter alongPath: Options that control what should be done with values that are `null` or keys that are missing.
+    /// - parameter type: If the context this method is called from does not
+    ///                   make the return type clear, pass a type implementing `JSONDecodable`
+    ///                   to disambiguate the value type to decode with.
     /// - returns: A `Dictionary` of `String` mapping to decoded elements if a
     ///            value could be found, otherwise `nil`.
     /// - throws: One of the following errors contained in `JSON.Error`:
