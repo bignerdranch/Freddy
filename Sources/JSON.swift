@@ -21,7 +21,7 @@ public enum JSON {
     /// A case for denoting a boolean with an associated value of `Swift.Bool`.
     case Bool(Swift.Bool)
     /// A case for denoting null.
-    case Null
+    case null
 }
 
 // MARK: - Errors
@@ -29,18 +29,18 @@ public enum JSON {
 extension JSON {
 
     /// An enum to encapsulate errors that may arise in working with `JSON`.
-    public enum Error: ErrorType {
+    public enum Error: ErrorProtocol {
         /// The `index` is out of bounds for a JSON array
-        case IndexOutOfBounds(index: Swift.Int)
+        case indexOutOfBounds(index: Swift.Int)
         
         /// The `key` was not found in the JSON dictionary
-        case KeyNotFound(key: Swift.String)
+        case keyNotFound(key: Swift.String)
         
         /// The JSON is not subscriptable with `type`
-        case UnexpectedSubscript(type: JSONPathType.Type)
+        case unexpectedSubscript(type: JSONPathType.Type)
         
         /// Unexpected JSON `value` was found that is not convertible `to` type 
-        case ValueNotConvertible(value: JSON, to: Any.Type)
+        case valueNotConvertible(value: JSON, to: Any.Type)
     }
 
 }
@@ -66,7 +66,7 @@ public func ==(lhs: JSON, rhs: JSON) -> Bool {
         return Double(intL) == dubR
     case (.Bool(let bL), .Bool(let bR)):
         return bL == bR
-    case (.Null, .Null):
+    case (.null, .null):
         return true
     default:
         return false
@@ -88,7 +88,7 @@ extension JSON: CustomStringConvertible {
         case .Double(let double):   return Swift.String(double)
         case .Int(let int):         return Swift.String(int)
         case .Bool(let bool):       return Swift.String(bool)
-        case .Null:                 return "null"
+        case .null:                 return "null"
         }
     }
 

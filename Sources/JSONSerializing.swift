@@ -10,9 +10,9 @@ extension JSON {
     /// - returns: A byte-stream containing the `JSON` ready for wire transfer.
     /// - throws: Errors that arise from `NSJSONSerialization`.
     /// - see: Foundation.NSJSONSerialization
-    public func serialize() throws -> NSData {
+    public func serialize() throws -> Data {
         let obj: AnyObject = toNSJSONSerializationObject()
-        return try NSJSONSerialization.dataWithJSONObject(obj, options: [])
+        return try JSONSerialization.data(withJSONObject: obj, options: [])
     }
 
     /// A function to help with the serialization of `JSON`.
@@ -35,7 +35,7 @@ extension JSON {
             return int
         case .Bool(let b):
             return b
-        case .Null:
+        case .null:
             return NSNull()
         }
 
