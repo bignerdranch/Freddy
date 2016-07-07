@@ -138,7 +138,7 @@ internal extension JSON {
     /// Attempts to decode many values from a descendant JSON array at a path
     /// into JSON.
     /// - parameter: A `JSON` to be used to create the returned `Array` of some type conforming to `JSONDecodable`.
-    /// - returns: An `Array` of decoded elements
+    /// - returns: An `Array` of `Decoded` elements.
     /// - throws: Any of the `JSON.Error` cases thrown by `decode(type:)`, as
     ///   well as any error that arises from decoding the contained values.
     /// - seealso: `JSON.decode(_:type:)`
@@ -146,6 +146,23 @@ internal extension JSON {
         // Ideally should be expressed as a conditional protocol implementation on Swift.Dictionary.
         // This implementation also doesn't do the `type = Type.self` trick.
         return try getArray(json).map(Decoded.init)
+    }
+    
+    /// Attempts to decode many values from a descendant JSON object at a path
+    /// into JSON.
+    /// - returns: A `Dictionary` of string keys and `Decoded` values.
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(_:type:)` or
+    ///           any error that arises from decoding the contained values.
+    /// - seealso: `JSON.decode(_:type:)`
+    static func getDictionaryOf<Decoded: JSONDecodable>(json: JSON) throws -> [Swift.String: Decoded] {
+        guard case let .Dictionary(dictionary) = json else {
+            throw Error.ValueNotConvertible(value: json, to: Swift.Dictionary<Swift.String, Decoded>)
+        }
+        var decodedDictionary = Swift.Dictionary<Swift.String, Decoded>(minimumCapacity: dictionary.count)
+        for (key, value) in dictionary {
+            decodedDictionary[key] = try Decoded(json: value)
+        }
+        return decodedDictionary
     }
     
 }
