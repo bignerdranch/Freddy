@@ -35,13 +35,13 @@ extension JSONPathType {
     /// The default behavior for keying into a dictionary is to throw
     /// `JSON.Error.UnexpectedSubscript`.
     public func valueInDictionary(_ dictionary: [Swift.String : JSON]) throws -> JSON {
-        throw JSON.Error.unexpectedSubscript(type: Self.self)
+        throw JSON.JSONError.unexpectedSubscript(type: Self.self)
     }
 
     /// The default behavior for indexing into an array is to throw
     /// `JSON.Error.UnexpectedSubscript`.
     public func valueInArray(_ array: [JSON]) throws -> JSON {
-        throw JSON.Error.unexpectedSubscript(type: Self.self)
+        throw JSON.JSONError.unexpectedSubscript(type: Self.self)
     }
 
 }
@@ -55,7 +55,7 @@ extension String: JSONPathType {
     /// - returns: The `JSON` value associated with the given key.
     public func valueInDictionary(_ dictionary: [Swift.String : JSON]) throws -> JSON {
         guard let next = dictionary[self] else {
-            throw JSON.Error.keyNotFound(key: self)
+            throw JSON.JSONError.keyNotFound(key: self)
         }
         return next
     }
@@ -71,7 +71,7 @@ extension Int: JSONPathType {
     /// - returns: The `JSON` value found at the given index.
     public func valueInArray(_ array: [JSON]) throws -> JSON {
         guard case array.indices = self else {
-            throw JSON.Error.indexOutOfBounds(index: self)
+            throw JSON.JSONError.indexOutOfBounds(index: self)
         }
         return array[self]
     }
@@ -82,7 +82,7 @@ extension Int: JSONPathType {
 
 private extension JSON {
 
-    enum SubscriptError: ErrorProtocol {
+    enum SubscriptError: Error {
         case subscriptIntoNull(JSONPathType)
     }
 
@@ -95,7 +95,7 @@ private extension JSON {
         case let .Array(array):
             return try fragment.valueInArray(array)
         default:
-            throw Error.unexpectedSubscript(type: fragment.dynamicType)
+            throw JSONError.unexpectedSubscript(type: fragment.dynamicType)
         }
     }
 
@@ -256,11 +256,11 @@ extension JSON {
         do {
             json = try valueAtPath(path, detectNull: detectNull)
             return try json.map(transform)
-        } catch Error.indexOutOfBounds where detectNotFound {
+        } catch JSONError.indexOutOfBounds where detectNotFound {
             return nil
-        } catch Error.keyNotFound where detectNotFound {
+        } catch JSONError.keyNotFound where detectNotFound {
             return nil
-        } catch Error.valueNotConvertible where detectNull && json == .null {
+        } catch JSONError.valueNotConvertible where detectNull && json == .null {
             return nil
         } catch SubscriptError.subscriptIntoNull where detectNull {
             return nil

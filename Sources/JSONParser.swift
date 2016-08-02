@@ -100,18 +100,18 @@ public struct JSONParser {
         let value = try parseValue()
         skipWhitespace()
         guard loc == input.count else {
-            throw Error.endOfStreamGarbage(offset: loc)
+            throw ParserError.endOfStreamGarbage(offset: loc)
         }
         return value
     }
 
     private mutating func parseValue() throws -> JSON {
         guard depth <= ParserMaximumDepth else {
-            throw Error.exceededNestingLimit(offset: loc)
+            throw ParserError.exceededNestingLimit(offset: loc)
         }
         
         guard input.count > 0 else {
-            throw Error.endOfStreamUnexpected
+            throw ParserError.endOfStreamUnexpected
         }
 
         advancing: while loc < input.count {
@@ -159,7 +159,7 @@ public struct JSONParser {
             }
         }
         
-        throw Error.valueInvalid(offset: loc, character: UnicodeScalar(input[loc]))
+        throw ParserError.valueInvalid(offset: loc, character: UnicodeScalar(input[loc]))
     }
 
     private mutating func skipWhitespace() {
@@ -178,20 +178,20 @@ public struct JSONParser {
         let header = input.prefix(4)
         let encodingPrefixInformation = JSONEncodingDetector.detectEncoding(header)
         guard JSONEncodingDetector.supportedEncodings.contains(encodingPrefixInformation.encoding) else {
-            throw Error.invalidUnicodeStreamEncoding(detectedEncoding: encodingPrefixInformation.encoding)
+            throw ParserError.invalidUnicodeStreamEncoding(detectedEncoding: encodingPrefixInformation.encoding)
         }
         loc = loc.advanced(by: encodingPrefixInformation.byteOrderMarkLength)
     }
 
     private mutating func decodeNull() throws -> JSON {
         guard input.index(loc, offsetBy: 3, limitedBy: input.count) != input.count else {
-            throw Error.literalNilMisspelled(offset: loc)
+            throw ParserError.literalNilMisspelled(offset: loc)
         }
 
         if     input[loc+1] != Literal.u
             || input[loc+2] != Literal.l
             || input[loc+3] != Literal.l {
-                throw Error.literalNilMisspelled(offset: loc)
+                throw ParserError.literalNilMisspelled(offset: loc)
         }
 
         loc += 4
@@ -200,13 +200,13 @@ public struct JSONParser {
 
     private mutating func decodeTrue() throws -> JSON {
         guard input.index(loc, offsetBy: 3, limitedBy: input.count) != input.count else {
-            throw Error.literalNilMisspelled(offset: loc)
+            throw ParserError.literalNilMisspelled(offset: loc)
         }
 
         if     input[loc+1] != Literal.r
             || input[loc+2] != Literal.u
             || input[loc+3] != Literal.e {
-            throw Error.literalTrueMisspelled(offset: loc)
+            throw ParserError.literalTrueMisspelled(offset: loc)
         }
 
         loc += 4
@@ -215,14 +215,14 @@ public struct JSONParser {
 
     private mutating func decodeFalse() throws -> JSON {
         guard input.index(loc, offsetBy: 4, limitedBy: input.count) != input.count else {
-            throw Error.literalNilMisspelled(offset: loc)
+            throw ParserError.literalNilMisspelled(offset: loc)
         }
 
         if     input[loc+1] != Literal.a
             || input[loc+2] != Literal.l
             || input[loc+3] != Literal.s
             || input[loc+4] != Literal.e {
-            throw Error.literalFalseMisspelled(offset: loc)
+            throw ParserError.literalFalseMisspelled(offset: loc)
         }
 
         loc += 5
@@ -255,7 +255,7 @@ public struct JSONParser {
                     continue
 
                 default:
-                    throw Error.controlCharacterUnrecognized(offset: loc)
+                    throw ParserError.controlCharacterUnrecognized(offset: loc)
                 }
                 loc = (loc + 1)
 
@@ -275,7 +275,7 @@ public struct JSONParser {
             }
         }
 
-        throw Error.endOfStreamUnexpected
+        throw ParserError.endOfStreamUnexpected
     }
 
     private mutating func readCodeUnit() -> UInt16? {
@@ -307,7 +307,7 @@ public struct JSONParser {
 
     private mutating func readUnicodeEscape(start: Int) throws {
         guard let codeUnit = readCodeUnit() else {
-            throw Error.unicodeEscapeInvalid(offset: start)
+            throw ParserError.unicodeEscapeInvalid(offset: start)
         }
 
         let codeUnits: [UInt16]
@@ -317,13 +317,13 @@ public struct JSONParser {
 
             // First confirm and skip over that we have another "\u"
             guard loc + 6 <= input.count && input[loc] == Literal.BACKSLASH && input[loc+1] == Literal.u else {
-                throw Error.unicodeEscapeInvalid(offset: start)
+                throw ParserError.unicodeEscapeInvalid(offset: start)
             }
             loc += 2
 
             // Ensure the second code unit is valid for the surrogate pair
             guard let secondCodeUnit = readCodeUnit() where UTF16.isTrailSurrogate(secondCodeUnit) else {
-                throw Error.unicodeEscapeInvalid(offset: start)
+                throw ParserError.unicodeEscapeInvalid(offset: start)
             }
 
             codeUnits = [codeUnit, secondCodeUnit]
@@ -336,7 +336,7 @@ public struct JSONParser {
         }
 
         if transcodeHadError {
-            throw Error.unicodeEscapeInvalid(offset: start)
+            throw ParserError.unicodeEscapeInvalid(offset: start)
         }
     }
 
@@ -355,7 +355,7 @@ public struct JSONParser {
 
             if !items.isEmpty {
                 guard loc < input.count && input[loc] == Literal.COMMA else {
-                    throw Error.collectionMissingSeparator(offset: start)
+                    throw ParserError.collectionMissingSeparator(offset: start)
                 }
                 loc = (loc + 1)
             }
@@ -363,7 +363,7 @@ public struct JSONParser {
             items.append(try parseValue())
         }
 
-        throw Error.endOfStreamUnexpected
+        throw ParserError.endOfStreamUnexpected
     }
 
     // Decoding objects can be recursive, so we have to keep more than one
@@ -412,7 +412,7 @@ public struct JSONParser {
 
             if !pairs.isEmpty {
                 guard loc < input.count && input[loc] == Literal.COMMA else {
-                    throw Error.collectionMissingSeparator(offset: start)
+                    throw ParserError.collectionMissingSeparator(offset: start)
                 }
                 loc = (loc + 1)
 
@@ -420,21 +420,21 @@ public struct JSONParser {
             }
 
             guard loc < input.count && input[loc] == Literal.DOUBLE_QUOTE else {
-                throw Error.dictionaryMissingKey(offset: start)
+                throw ParserError.dictionaryMissingKey(offset: start)
             }
 
             let key = try decodeString().string()
             skipWhitespace()
 
             guard loc < input.count && input[loc] == Literal.COLON else {
-                throw Error.collectionMissingSeparator(offset: start)
+                throw ParserError.collectionMissingSeparator(offset: start)
             }
             loc = (loc + 1)
 
             pairs.append((key, try parseValue()))
         }
 
-        throw Error.endOfStreamUnexpected
+        throw ParserError.endOfStreamUnexpected
     }
 
     private mutating func decodeIntegralValue(_ parser: NumberParser) throws -> JSON {
@@ -630,7 +630,7 @@ private struct NumberParser {
 
         loc = (loc + 1)
         guard loc < input.count else {
-            throw JSONParser.Error.endOfStreamUnexpected
+            throw JSONParser.ParserError.endOfStreamUnexpected
         }
 
         switch input[loc] {
@@ -641,7 +641,7 @@ private struct NumberParser {
             state = .preDecimalDigits
 
         default:
-            throw JSONParser.Error.numberSymbolMissingDigits(offset: start)
+            throw JSONParser.ParserError.numberSymbolMissingDigits(offset: start)
         }
     }
 
@@ -691,7 +691,7 @@ private struct NumberParser {
         assert(state == .decimal, "Unexpected state entering parseDecimal")
         loc = (loc + 1)
         guard loc < input.count else {
-            throw JSONParser.Error.endOfStreamUnexpected
+            throw JSONParser.ParserError.endOfStreamUnexpected
         }
 
         switch input[loc] {
@@ -699,7 +699,7 @@ private struct NumberParser {
             state = .postDecimalDigits
 
         default:
-            throw JSONParser.Error.numberMissingFractionalDigits(offset: start)
+            throw JSONParser.ParserError.numberMissingFractionalDigits(offset: start)
         }
     }
 
@@ -730,7 +730,7 @@ private struct NumberParser {
 
         loc = (loc + 1)
         guard loc < input.count else {
-            throw JSONParser.Error.endOfStreamUnexpected
+            throw JSONParser.ParserError.endOfStreamUnexpected
         }
 
         switch input[loc] {
@@ -745,7 +745,7 @@ private struct NumberParser {
             return .negative
 
         default:
-            throw JSONParser.Error.numberSymbolMissingDigits(offset: start)
+            throw JSONParser.ParserError.numberSymbolMissingDigits(offset: start)
         }
 
         return .positive
@@ -755,7 +755,7 @@ private struct NumberParser {
         assert(state == .exponentSign, "Unexpected state entering parseExponentSign")
         loc = (loc + 1)
         guard loc < input.count else {
-            throw JSONParser.Error.endOfStreamUnexpected
+            throw JSONParser.ParserError.endOfStreamUnexpected
         }
 
         switch input[loc] {
@@ -763,7 +763,7 @@ private struct NumberParser {
             state = .exponentDigits
 
         default:
-            throw JSONParser.Error.numberSymbolMissingDigits(offset: start)
+            throw JSONParser.ParserError.numberSymbolMissingDigits(offset: start)
         }
     }
 
@@ -832,7 +832,7 @@ extension JSONParser {
     /// document. Most errors include an associated `offset`, representing the
     /// offset into the UTF-8 characters making up the document where the error
     /// occurred.
-    public enum Error: ErrorProtocol {
+    public enum ParserError: Error {
         /// The parser ran out of data prematurely. This usually means a value
         /// was not escaped, such as a string literal not ending with a double
         /// quote.
@@ -887,7 +887,7 @@ extension JSONParser {
         case invalidUnicodeStreamEncoding(detectedEncoding: JSONEncodingDetector.Encoding)
     }
 
-    private enum InternalError: ErrorProtocol {
+    private enum InternalError: Error {
         /// Attempted to parse an integer outside the range of [Int.min, Int.max]
         /// or a double outside the range of representable doubles. Note that
         /// for doubles, this could be an overflow or an underflow - we don't
