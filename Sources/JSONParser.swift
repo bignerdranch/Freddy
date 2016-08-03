@@ -322,7 +322,7 @@ public struct JSONParser {
             loc += 2
 
             // Ensure the second code unit is valid for the surrogate pair
-            guard let secondCodeUnit = readCodeUnit() where UTF16.isTrailSurrogate(secondCodeUnit) else {
+            guard let secondCodeUnit = readCodeUnit() , UTF16.isTrailSurrogate(secondCodeUnit) else {
                 throw Error.unicodeEscapeInvalid(offset: start)
             }
 
