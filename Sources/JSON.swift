@@ -29,7 +29,7 @@ public enum JSON {
 extension JSON {
 
     /// An enum to encapsulate errors that may arise in working with `JSON`.
-    public enum Error: ErrorProtocol {
+    public enum Error: Swift.Error {
         /// The `index` is out of bounds for a JSON array
         case indexOutOfBounds(index: Swift.Int)
         
