@@ -26,7 +26,7 @@ extension JSON: ArrayLiteralConvertible {
 // MARK: - DictionaryLiteralConvertible
 
 extension JSON: DictionaryLiteralConvertible {
-    
+
     /// Create an instance by copying each key/value pair of the `pairs` into
     /// a new `Dictionary`.
     public init<Dictionary: Sequence where Dictionary.Iterator.Element == (Swift.String, JSON)>(_ pairs: Dictionary) {
@@ -34,14 +34,18 @@ extension JSON: DictionaryLiteralConvertible {
         for (key, value) in pairs {
             dictionary[key] = value
         }
-        self = .Dictionary(dictionary)
+        self.init(dictionary)
     }
-    
+
     /// Create an instance initialized with `pairs`.
     public init(dictionaryLiteral pairs: (Swift.String, JSON)...) {
         self.init(pairs)
     }
 
+    /// Create an instance initialized to `dictionary`.
+    public init(_ dictionary: Swift.Dictionary<Swift.String, JSON>) {
+        self = .Dictionary(dictionary)
+    }
 }
 
 // MARK: - FloatLiteralConvertible
