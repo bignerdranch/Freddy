@@ -36,7 +36,7 @@ class JSONSubscriptingTests: XCTestCase {
             ])
         
         let testBundle = Bundle(for: JSONSubscriptingTests.self)
-        guard let data = testBundle.urlForResource("sample", withExtension: "JSON").flatMap(NSData.init(contentsOf:)) else {
+        guard let data = testBundle.url(forResource: "sample", withExtension: "JSON").flatMap(NSData.init(contentsOf:)) else {
             XCTFail("Could not read sample data from test bundle")
             return
         }
@@ -48,7 +48,7 @@ class JSONSubscriptingTests: XCTestCase {
             return
         }
         
-        guard let noWhiteSpaceData = testBundle.urlForResource("sampleNoWhiteSpace", withExtension: "JSON").flatMap(NSData.init(contentsOf:)) else {
+        guard let noWhiteSpaceData = testBundle.url(forResource: "sampleNoWhiteSpace", withExtension: "JSON").flatMap(NSData.init(contentsOf:)) else {
             XCTFail("Could not read sample data (no whitespace) from test bundle")
             return
         }

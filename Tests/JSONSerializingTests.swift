@@ -41,7 +41,7 @@ class JSONSerializingTests: XCTestCase {
 
 func dataFromFixture(_ filename: String) -> Data {
     let testBundle = Bundle(for: JSONSerializingTests.self)
-    guard let URL = testBundle.urlForResource(filename, withExtension: nil) else {
+    guard let URL = testBundle.url(forResource: filename, withExtension: nil) else {
         preconditionFailure("failed to find file \"\(filename)\" in bundle \(testBundle)")
     }
 
