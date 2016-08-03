@@ -82,7 +82,7 @@ extension Int: JSONPathType {
 
 private extension JSON {
 
-    enum SubscriptError: ErrorProtocol {
+    enum SubscriptError: Swift.Error {
         case subscriptIntoNull(JSONPathType)
     }
 
