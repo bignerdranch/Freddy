@@ -146,9 +146,8 @@ extension JSON {
         return try Decoded(json: valueAtPath(path))
     }
 
-    public func transformed<Transformer: JSONValueTransformer where Transformer.In == Swift.String>(path: JSONPathType..., transformer: Transformer) throws -> Transformer.Out {
-        let s = try Swift.String(json: valueAtPath(path))
-        return try transformer.transformValue(s)
+    public func transformed<Transformer: JSONValueTransformer>(path: JSONPathType..., transformer: Transformer) throws -> Transformer.Out {
+        return try transformer.transformed(valueAtPath(path))
     }
 
     /// Retrieves a `Double` from a path into JSON.

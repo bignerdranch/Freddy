@@ -13,10 +13,9 @@ public enum JSONValueTransformerError: ErrorType {
 }
 
 public protocol JSONValueTransformer {
-    associatedtype In
     associatedtype Out
 
-    func transformValue(value: In) throws -> Out
+    func transformed(value: JSON) throws -> Out
 }
 
 public struct JSONDateTransformer {
@@ -51,27 +50,12 @@ public struct JSONDateTransformer {
 }
 
 extension JSONDateTransformer: JSONValueTransformer {
-    public func transformValue(value: String) throws -> NSDate {
-        guard let date = formatter.dateFromString(value) else {
-            throw Error.InvalidValue(value)
+    public func transformed(value: JSON) throws -> NSDate {
+        let s = try value.string()
+        guard let date = formatter.dateFromString(s) else {
+            throw Error.InvalidValue(s)
         }
 
         return date
-    }
-}
-
-public struct JSONTransformerChainLink<TransformerIn: JSONValueTransformer, TransformerOut: JSONValueTransformer where TransformerIn.Out == TransformerOut.In> {
-    private let transformerIn: TransformerIn
-    private let transformerOut: TransformerOut
-
-    public init(from transformerIn: TransformerIn, to transformerOut: TransformerOut) {
-        self.transformerIn = transformerIn
-        self.transformerOut = transformerOut
-    }
-}
-
-extension JSONTransformerChainLink: JSONValueTransformer {
-    public func transformValue(value: TransformerIn.In) throws -> TransformerOut.Out {
-        return try transformerOut.transformValue(transformerIn.transformValue(value))
     }
 }

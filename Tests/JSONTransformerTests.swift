@@ -30,27 +30,4 @@ class JSONTransformerTests: XCTestCase {
         }
     }
 
-    struct MyDateContainer {
-        let date: NSDate
-    }
-
-    struct MyDateContainerTransformer: JSONValueTransformer {
-        func transformValue(value: NSDate) throws -> MyDateContainer {
-            return MyDateContainer(date: value)
-        }
-    }
-
-    func testTransformerChainLink() {
-        let (s, expectedDate, format) = dateTestData[0]
-        let json = JSON.String(s)
-        let transformer = JSONTransformerChainLink(from: JSONDateTransformer(iso8601: format), to: MyDateContainerTransformer())
-        do {
-            let container = try json.transformed(transformer: transformer)
-            let diff = container.date.timeIntervalSinceDate(expectedDate)
-            XCTAssertEqualWithAccuracy(diff, 0, accuracy: 0.01)
-        } catch {
-            XCTFail("Unexpected error \(error)")
-        }
-    }
-
 }
