@@ -20,21 +20,21 @@ extension JSON {
     private func toNSJSONSerializationObject() -> AnyObject {
         switch self {
         case .Array(let jsonArray):
-            return jsonArray.map { $0.toNSJSONSerializationObject() }
+            return jsonArray.map { $0.toNSJSONSerializationObject() } as AnyObject
         case .Dictionary(let jsonDictionary):
             var cocoaDictionary = Swift.Dictionary<Swift.String, AnyObject>(minimumCapacity: jsonDictionary.count)
             for (key, json) in jsonDictionary {
                 cocoaDictionary[key] = json.toNSJSONSerializationObject()
             }
-            return cocoaDictionary
+            return cocoaDictionary as AnyObject
         case .String(let str):
-            return str
+            return str as AnyObject
         case .Double(let num):
-            return num
+            return num as AnyObject
         case .Int(let int):
-            return int
+            return int as AnyObject
         case .Bool(let b):
-            return b
+            return b as AnyObject
         case .null:
             return NSNull()
         }
