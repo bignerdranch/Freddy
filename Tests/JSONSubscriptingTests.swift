@@ -421,7 +421,7 @@ private struct Resident {
 }
 
 extension Resident: JSONDecodable {
-    private init(json: JSON) throws {
+    fileprivate init(json: JSON) throws {
         name = try json.string("name")
         age = try json.int("age", alongPath: .MissingKeyBecomesNil)
         hasPet = try json.bool("hasPet", alongPath: .NullBecomesNil)
