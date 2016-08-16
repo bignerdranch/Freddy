@@ -44,15 +44,10 @@ private func ==(lhs: JSONParser.Error, rhs: JSONParser.Error) -> Bool {
 
 class JSONParserTests: XCTestCase {
 
-    private func JSONFromString(_ s: String) throws -> JSON {
-        var parser = JSONParser(string: s)
-        return try parser.parse()
-    }
-
     func testThatParserThrowsAnErrorForAnEmptyNSData() {
         
         do {
-            _ = try JSONFromString("")
+            _ = try JSONParser.parse("")
             XCTFail("Unexpectedly did not throw an error") 
         } catch let error as JSONParser.Error {
             XCTAssert(error == JSONParser.Error.endOfStreamUnexpected)
@@ -66,7 +61,7 @@ class JSONParserTests: XCTestCase {
         let data = Data(bytes: UnsafePointer<UInt8>(hex), count: hex.count)
 
         do {
-            try JSONParser.createJSONFromData(data)
+            _ = try JSONParser.parse(utf8: data)
             XCTFail("Unexpectedly did not throw an error")
         } catch JSONParser.Error.endOfStreamUnexpected {
             return
@@ -82,7 +77,7 @@ class JSONParserTests: XCTestCase {
         }
 
         do {
-            try JSONParser.createJSONFromData(data)
+            _ = try JSONParser.parse(utf8: data)
         } catch {
             XCTFail("Unexpected error \(error)")
         }
@@ -93,30 +88,30 @@ class JSONParserTests: XCTestCase {
         let data = Data(bytes: UnsafePointer<UInt8>(hex), count: hex.count)
 
         do {
-            try JSONParser.createJSONFromData(data)
+            _ = try JSONParser.parse(utf8: data)
         } catch {
             XCTFail("Unexpected error \(error)")
         }
     }
 
     func testThatParserUnderstandsNull() {
-        let value = try! JSONFromString("null")
+        let value = try! JSONParser.parse("null")
         XCTAssertEqual(value, JSON.null)
     }
 
     func testThatParserSkipsLeadingWhitespace() {
-        let value = try! JSONFromString("   \t\r\nnull")
+        let value = try! JSONParser.parse("   \t\r\nnull")
         XCTAssertEqual(value, JSON.null)
     }
 
     func testThatParserAllowsTrailingWhitespace() {
-        let value = try! JSONFromString("null   ")
+        let value = try! JSONParser.parse("null   ")
         XCTAssertEqual(value, JSON.null)
     }
 
     func testThatParserFailsWhenTrailingDataIsPresent() {
         do {
-            _ = try JSONFromString("null   true")
+            _ = try JSONParser.parse("null   true")
         } catch JSONParser.Error.endOfStreamGarbage(let offset) {
             XCTAssertEqual(offset, 7)
         } catch {
@@ -125,31 +120,31 @@ class JSONParserTests: XCTestCase {
     }
 
     func testThatParserUnderstandsTrue() {
-        let value = try! JSONFromString("true")
+        let value = try! JSONParser.parse("true")
         XCTAssertEqual(value, JSON.Bool(true))
     }
 
     func testThatParserUnderstandsFalse() {
-        let value = try! JSONFromString("false")
+        let value = try! JSONParser.parse("false")
         XCTAssertEqual(value, JSON.Bool(false))
     }
 
     func testThatParserUnderstandsStringsWithoutEscapes() {
         let string = "a b c d 😀 x y z"
-        let value = try! JSONFromString("\"\(string)\"")
+        let value = try! JSONParser.parse("\"\(string)\"")
         XCTAssertEqual(value, JSON.String(string))
     }
 
     func testThatParserUnderstandsStringsWithEscapedCharacters() {
         let expect = " \" \\ / \n \r \t \u{000c} \u{0008} "
-        let value = try! JSONFromString("\" \\\" \\\\ \\/ \\n \\r \\t \\f \\b \"")
+        let value = try! JSONParser.parse("\" \\\" \\\\ \\/ \\n \\r \\t \\f \\b \"")
         XCTAssertEqual(value, JSON.String(expect))
     }
 
     func testThatParserUnderstandsStringsWithEscapedUnicode() {
         // try 1-, 2-, and 3-byte UTF8 sequences
         let expect = "\u{0060}\u{012a}\u{12AB}"
-        let value = try! JSONFromString("\"\\u0060\\u012a\\u12AB\"")
+        let value = try! JSONParser.parse("\"\\u0060\\u012a\\u12AB\"")
         XCTAssertEqual(value, JSON.String(expect))
     }
 
@@ -160,7 +155,7 @@ class JSONParserTests: XCTestCase {
             ("  -20  ", -20),
         ] {
             do {
-                let value = try JSONFromString(string).int()
+                let value = try JSONParser.parse(string).int()
                 XCTAssertEqual(value, shouldBeInt)
             } catch {
                 XCTFail("Unexpected error: \(error)")
@@ -179,7 +174,7 @@ class JSONParserTests: XCTestCase {
             ("-123.45e-2", -123.45e-2),
         ] {
             do {
-                let value = try JSONFromString(string).double()
+                let value = try JSONParser.parse(string).double()
                 XCTAssertEqualWithAccuracy(value, shouldBeDouble, accuracy: DBL_EPSILON)
             } catch {
                 XCTFail("Unexpected error: \(error)")
@@ -200,7 +195,7 @@ class JSONParserTests: XCTestCase {
             ("0e1",   JSONParser.Error.endOfStreamGarbage(offset: 1)),
         ] {
             do {
-                _ = try JSONFromString(string)
+                _ = try JSONParser.parse(string)
             } catch let error as JSONParser.Error {
                 XCTAssert(error == expectedError)
             } catch {
@@ -221,7 +216,7 @@ class JSONParserTests: XCTestCase {
             "4.9406564584124654E-325",
             ] {
                 do {
-                    let json = try JSONFromString(string)
+                    let json = try JSONParser.parse(string)
 
                     // numbers overflow, but we should be able to get them out as strings
                     XCTAssertEqual(try? json.string(), string)
@@ -288,7 +283,7 @@ class JSONParserTests: XCTestCase {
     func testThatParserUnderstandsEmptyArrays() {
         let expect = JSON.Array([])
         for string in ["[]", "[  ]", "  [  ]  "] {
-            let value = try! JSONFromString(string)
+            let value = try! JSONParser.parse(string)
             XCTAssertEqual(value, expect)
         }
     }
@@ -299,7 +294,7 @@ class JSONParserTests: XCTestCase {
             ("[true]", [JSON.Bool(true)]),
             ("[ [\"nested\"]]", [JSON.Array([.String("nested")])])
         ] {
-            let value = try! JSONFromString(s)
+            let value = try! JSONParser.parse(s)
             XCTAssertEqual(value, JSON.Array(expect))
         }
     }
@@ -312,14 +307,14 @@ class JSONParserTests: XCTestCase {
                 [JSON.Array([.String("nested"), .null]),
                  .Array([.Array([.String("doubly"), .Bool(true)])])])
         ] {
-            let value = try! JSONFromString(string)
+            let value = try! JSONParser.parse(string)
             XCTAssertEqual(value, JSON.Array(expect))
         }
     }
 
     func testThatParserUnderstandsEmptyObjects() {
         for string in ["{}", "  {   }  "] {
-            let value = try! JSONFromString(string)
+            let value = try! JSONParser.parse(string)
             XCTAssertEqual(value, JSON.Dictionary([:]))
         }
     }
@@ -330,7 +325,7 @@ class JSONParserTests: XCTestCase {
             ("{  \"foo\"  :  [null]  }", ["foo": JSON.Array([.null])]),
             ("{  \"a\" : { \"b\": true }  }", ["a": JSON.Dictionary(["b":.Bool(true)])]),
         ] {
-            let value = try! JSONFromString(string)
+            let value = try! JSONParser.parse(string)
             XCTAssertEqual(value, JSON.Dictionary(expect))
         }
     }
@@ -345,7 +340,7 @@ class JSONParserTests: XCTestCase {
                 ["a": JSON.Dictionary(["b":.Bool(true)]),
                  "c": .Dictionary(["x": .Bool(true), "y": .null])]),
         ] {
-            let value = try! JSONFromString(string)
+            let value = try! JSONParser.parse(string)
             XCTAssertEqual(value, JSON.Dictionary(expect))
         }
     }
@@ -366,8 +361,8 @@ class JSONParserTests: XCTestCase {
             let hexWithBOM = fixtures.hexArray(encoding, includeBOM: true)
             let dataWithBOM = Data(bytes: UnsafePointer<UInt8>(hexWithBOM), count: hexWithBOM.count)
             do {
-                try JSONParser.createJSONFromData(data)
-                try JSONParser.createJSONFromData(dataWithBOM)
+                _ = try JSONParser.parse(utf8: data)
+                _ = try JSONParser.parse(utf8: dataWithBOM)
                 XCTFail("Unexpectedly did not throw an error")
             } catch JSONParser.Error.invalidUnicodeStreamEncoding(_) {
                 break
@@ -383,7 +378,7 @@ class JSONParserTests: XCTestCase {
             ("\"\\ud83d\\ude39\\ud83d\\udc8d\"", "😹💍"),
         ] {
             do {
-                let json = try JSONFromString(jsonString)
+                let json = try JSONParser.parse(jsonString)
                 let decoded: String = try json.decode()
                 XCTAssertEqual(decoded, expected)
             } catch {
@@ -399,7 +394,7 @@ class JSONParserTests: XCTestCase {
             "\"\\ud800abc\"",
         ] {
             do {
-                let _ = try JSONFromString(invalidPairString)
+                let _ = try JSONParser.parse(invalidPairString)
                 XCTFail("Unexpectedly parsed invalid surrogate pair")
             } catch JSONParser.Error.unicodeEscapeInvalid {
                 // do nothing - this is the expected error
