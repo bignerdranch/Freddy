@@ -12,7 +12,7 @@ extension JSON: ExpressibleByArrayLiteral {
     
     /// Create an instance by copying each element of the `collection` into a
     /// new `Array`.
-    public init<Collection: Swift.Collection where Collection.Iterator.Element == JSON>(_ collection: Collection) {
+    public init<Collection: Swift.Collection>(_ collection: Collection) where Collection.Iterator.Element == JSON {
         self = .Array(Swift.Array(collection))
     }
 
@@ -29,7 +29,7 @@ extension JSON: ExpressibleByDictionaryLiteral {
 
     /// Create an instance by copying each key/value pair of the `pairs` into
     /// a new `Dictionary`.
-    public init<Dictionary: Sequence where Dictionary.Iterator.Element == (Swift.String, JSON)>(_ pairs: Dictionary) {
+    public init<Dictionary: Sequence>(_ pairs: Dictionary) where Dictionary.Iterator.Element == (Swift.String, JSON) {
         var dictionary = Swift.Dictionary<Swift.String, JSON>(minimumCapacity: pairs.underestimatedCount)
         for (key, value) in pairs {
             dictionary[key] = value

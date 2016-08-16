@@ -71,19 +71,17 @@ private let ParserMaximumDepth = 512
 /// input and it does not allow trailing commas in arrays or dictionaries.
 public struct JSONParser {
 
-    private enum Sign: Int {
+    fileprivate enum Sign: Int {
         case positive = 1
         case negative = -1
     }
 
     private let input: UnsafeBufferPointer<UInt8>
-    private let owner: Any?
     private var loc = 0
     private var depth = 0
 
-    private init<T>(buffer: UnsafeBufferPointer<UInt8>, owner: T) {
-        self.input = buffer
-        self.owner = owner
+    fileprivate init(input: UnsafeBufferPointer<UInt8>) {
+        self.input = input
     }
 
     /// Decode the root element of the `JSON` stream. This may be any fragment
@@ -322,7 +320,7 @@ public struct JSONParser {
             loc += 2
 
             // Ensure the second code unit is valid for the surrogate pair
-            guard let secondCodeUnit = readCodeUnit() , UTF16.isTrailSurrogate(secondCodeUnit) else {
+            guard let secondCodeUnit = readCodeUnit(), UTF16.isTrailSurrogate(secondCodeUnit) else {
                 throw Error.unicodeEscapeInvalid(offset: start)
             }
 
@@ -467,7 +465,7 @@ public struct JSONParser {
                 }
 
             case .decimal, .exponent:
-                return try detectingFloatingPointErrors(parser.start) {
+                return try detectingFloatingPointErrors(start: parser.start) {
                     try decodeFloatingPointValue(parser, sign: sign, value: Double(value))
                 }
 
@@ -588,7 +586,7 @@ public struct JSONParser {
         }
     }
 
-    private func detectingFloatingPointErrors<T>(_ loc: Int, _ f: @noescape() throws -> T) throws -> T {
+    private func detectingFloatingPointErrors<T>(start loc: Int, _ f: () throws -> T) throws -> T {
         let flags = FE_UNDERFLOW | FE_OVERFLOW
         feclearexcept(flags)
         let value = try f()
@@ -662,7 +660,7 @@ private struct NumberParser {
         state = .decimal
     }
 
-    mutating func parsePreDecimalDigits(f: @noescape(UInt8) throws -> Void) rethrows {
+    mutating func parsePreDecimalDigits(f: (UInt8) throws -> Void) rethrows {
         assert(state == .preDecimalDigits, "Unexpected state entering parsePreDecimalDigits")
         advancing: while loc < input.count {
             let c = input[loc]
@@ -703,7 +701,7 @@ private struct NumberParser {
         }
     }
 
-    mutating func parsePostDecimalDigits(f: @noescape(UInt8) throws -> Void) rethrows {
+    mutating func parsePostDecimalDigits(f: (UInt8) throws -> Void) rethrows {
         assert(state == .postDecimalDigits, "Unexpected state entering parsePostDecimalDigits")
 
         advancing: while loc < input.count {
@@ -767,7 +765,7 @@ private struct NumberParser {
         }
     }
 
-    mutating func parseExponentDigits(f: @noescape(UInt8) throws -> Void) rethrows {
+    mutating func parseExponentDigits(f: (UInt8) throws -> Void) rethrows {
         assert(state == .exponentDigits, "Unexpected state entering parseExponentDigits")
         advancing: while loc < input.count {
             let c = input[loc]
@@ -791,22 +789,38 @@ public extension JSONParser {
     ///
     /// If the data is mutable, it is copied before parsing. The data's lifetime
     /// is extended for the duration of parsing.
+    @available(*, unavailable, message: "Replaced with parse(utf8:)")
     init(utf8Data inData: Data) {
-        let data = (inData as NSData).copy() as! Data
-        let buffer = UnsafeBufferPointer(start: UnsafePointer<UInt8>((data as NSData).bytes), count: data.count)
-        self.init(buffer: buffer, owner: data)
+        fatalError("unavailable code cannot be executed")
     }
 
     /// Creates a `JSONParser` from the code units represented by the `string`.
     ///
     /// The synthesized string is lifetime-extended for the duration of parsing.
+    @available(*, unavailable, message: "Replaced with parse(utf8:)")
     init(string: String) {
-        let codePoints = string.nulTerminatedUTF8
-        let buffer = codePoints.withUnsafeBufferPointer { nulTerminatedBuffer in
-            // don't want to include the nul termination in the buffer - trim it off
-            UnsafeBufferPointer(start: nulTerminatedBuffer.baseAddress, count: nulTerminatedBuffer.count - 1)
+        fatalError("unavailable code cannot be executed")
+    }
+
+    /// Creates an instance of `JSON` from UTF-8 encoded `data`.
+    static func parse(utf8 data: Data) throws -> JSON {
+        return try data.withUnsafeBytes { (ptr: UnsafePointer<UInt8>) -> JSON in
+            let buffer = UnsafeBufferPointer(start: ptr, count: data.count)
+            var parser = JSONParser(input: buffer)
+            return try parser.parse()
         }
-        self.init(buffer: buffer, owner: codePoints)
+    }
+
+    /// Creates an instance of `JSON` from `string`.
+    static func parse(_ string: String) throws -> JSON {
+        return try string.utf8CString.withUnsafeBufferPointer { (nulTerminatedBuffer) throws -> JSON in
+            return try nulTerminatedBuffer.baseAddress!.withMemoryRebound(to: UInt8.self, capacity: nulTerminatedBuffer.count) { (utf8Base) throws -> JSON in
+                // don't want to include the nul termination in the buffer - trim it off
+                let buffer = UnsafeBufferPointer(start: utf8Base, count: nulTerminatedBuffer.count - 1)
+                var parser = JSONParser(input: buffer)
+                return try parser.parse()
+            }
+        }
     }
 
 }
@@ -818,8 +832,7 @@ extension JSONParser: JSONParserType {
     /// - throws: Any `JSONParser.Error` that arises during decoding.
     /// - seealso: JSONParser.parse()
     public static func createJSONFromData(_ data: Data) throws -> JSON {
-        var parser = JSONParser(utf8Data: data)
-        return try parser.parse()
+        return try parse(utf8: data)
     }
 
 }
@@ -887,7 +900,7 @@ extension JSONParser {
         case invalidUnicodeStreamEncoding(detectedEncoding: JSONEncodingDetector.Encoding)
     }
 
-    private enum InternalError: Swift.Error {
+    fileprivate enum InternalError: Swift.Error {
         /// Attempted to parse an integer outside the range of [Int.min, Int.max]
         /// or a double outside the range of representable doubles. Note that
         /// for doubles, this could be an overflow or an underflow - we don't
