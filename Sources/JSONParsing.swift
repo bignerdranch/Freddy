@@ -46,7 +46,7 @@ extension JSONSerialization: JSONParserType {
     /// - returns: An instance of `JSON`.
     /// - throws: An error that may arise if the `NSData` cannot be parsed into an object.
     public static func createJSONFromData(_ data: Data) throws -> JSON {
-        return makeJSON(try JSONSerialization.jsonObject(with: data, options: []))
+        return makeJSON(try JSONSerialization.jsonObject(with: data, options: []) as AnyObject)
     }
 
     // MARK: Make JSON

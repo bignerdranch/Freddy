@@ -71,7 +71,7 @@ private let ParserMaximumDepth = 512
 /// input and it does not allow trailing commas in arrays or dictionaries.
 public struct JSONParser {
 
-    private enum Sign: Int {
+    fileprivate enum Sign: Int {
         case positive = 1
         case negative = -1
     }
@@ -81,7 +81,7 @@ public struct JSONParser {
     private var loc = 0
     private var depth = 0
 
-    private init<T>(buffer: UnsafeBufferPointer<UInt8>, owner: T) {
+    fileprivate init<T>(buffer: UnsafeBufferPointer<UInt8>, owner: T) {
         self.input = buffer
         self.owner = owner
     }
@@ -322,7 +322,7 @@ public struct JSONParser {
             loc += 2
 
             // Ensure the second code unit is valid for the surrogate pair
-            guard let secondCodeUnit = readCodeUnit() where UTF16.isTrailSurrogate(secondCodeUnit) else {
+            guard let secondCodeUnit = readCodeUnit() , UTF16.isTrailSurrogate(secondCodeUnit) else {
                 throw Error.unicodeEscapeInvalid(offset: start)
             }
 
@@ -793,7 +793,7 @@ public extension JSONParser {
     /// is extended for the duration of parsing.
     init(utf8Data inData: Data) {
         let data = (inData as NSData).copy() as! Data
-        let buffer = UnsafeBufferPointer(start: UnsafePointer<UInt8>((data as NSData).bytes), count: data.count)
+        let buffer = UnsafeBufferPointer(start: UnsafePointer<UInt8>(OpaquePointer((data as NSData).bytes)), count: data.count)
         self.init(buffer: buffer, owner: data)
     }
 
@@ -801,7 +801,9 @@ public extension JSONParser {
     ///
     /// The synthesized string is lifetime-extended for the duration of parsing.
     init(string: String) {
-        let codePoints = string.nulTerminatedUTF8
+        let codePoints = string.utf8CString.map { (val) -> UInt8 in
+            UInt8(val)
+        }
         let buffer = codePoints.withUnsafeBufferPointer { nulTerminatedBuffer in
             // don't want to include the nul termination in the buffer - trim it off
             UnsafeBufferPointer(start: nulTerminatedBuffer.baseAddress, count: nulTerminatedBuffer.count - 1)
@@ -887,7 +889,7 @@ extension JSONParser {
         case invalidUnicodeStreamEncoding(detectedEncoding: JSONEncodingDetector.Encoding)
     }
 
-    private enum InternalError: Swift.Error {
+    fileprivate enum InternalError: Swift.Error {
         /// Attempted to parse an integer outside the range of [Int.min, Int.max]
         /// or a double outside the range of representable doubles. Note that
         /// for doubles, this could be an overflow or an underflow - we don't

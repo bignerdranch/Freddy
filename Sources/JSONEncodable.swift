@@ -34,7 +34,7 @@ extension Dictionary where Value: JSONEncodable {
         var jsonDictionary = [String: JSON]()
         
         for (k, v) in self {
-            let key = String(k)
+            let key = String(describing:k)
             jsonDictionary[key] = v.toJSON()
         }
         
