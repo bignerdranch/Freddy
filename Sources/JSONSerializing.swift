@@ -34,7 +34,7 @@ extension JSON {
         case .Int(let int):
             return int
         case .Bool(let b):
-            return Swift.String(b) // force boolean to be encoded as "true" / "false", otherwise, will be 1 / 0
+            return NSNumber(booleanLiteral: b) // force boolean to be encoded as "true" / "false", otherwise, will be 1 / 0
         case .null:
             return NSNull()
         }
