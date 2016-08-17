@@ -36,12 +36,16 @@ extension JSON: ExpressibleByDictionaryLiteral {
         }
         self = .Dictionary(dictionary)
     }
-    
+
     /// Create an instance initialized with `pairs`.
     public init(dictionaryLiteral pairs: (Swift.String, JSON)...) {
         self.init(pairs)
     }
 
+    /// Create an instance initialized to `dictionary`.
+    public init(_ dictionary: Swift.Dictionary<Swift.String, JSON>) {
+        self = .Dictionary(dictionary)
+    }
 }
 
 // MARK: - FloatLiteralConvertible
