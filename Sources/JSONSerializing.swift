@@ -20,7 +20,7 @@ extension JSON {
     private func toNSJSONSerializationObject() -> Any {
         switch self {
         case .Array(let jsonArray):
-            return jsonArray.map { $0.toNSJSONSerializationObject() } as AnyObject
+            return jsonArray.map { $0.toNSJSONSerializationObject() }
         case .Dictionary(let jsonDictionary):
             var cocoaDictionary = Swift.Dictionary<Swift.String, Any>(minimumCapacity: jsonDictionary.count)
             for (key, json) in jsonDictionary {
