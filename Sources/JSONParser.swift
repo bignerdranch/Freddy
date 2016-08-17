@@ -797,7 +797,7 @@ public extension JSONParser {
     /// Creates a `JSONParser` from the code units represented by the `string`.
     ///
     /// The synthesized string is lifetime-extended for the duration of parsing.
-    @available(*, unavailable, message: "Replaced with parse(utf8:)")
+    @available(*, unavailable, message: "Replaced with parse(string:)")
     init(string: String) {
         fatalError("unavailable code cannot be executed")
     }
@@ -811,7 +811,7 @@ public extension JSONParser {
     }
     
     /// Creates an instance of `JSON` from `string`.
-    static func parse(_ string: String) throws -> JSON {
+    static func parse(string: String) throws -> JSON {
         return try string.utf8CString.withUnsafeBufferPointer { (nulTerminatedBuffer) throws -> JSON in
             return try nulTerminatedBuffer.baseAddress!.withMemoryRebound(to: UInt8.self, capacity: nulTerminatedBuffer.count) { (utf8Base) throws -> JSON in
                 // don't want to include the nul termination in the buffer - trim it off
