@@ -34,7 +34,7 @@ extension JSON {
         case .Int(let int):
             return int as AnyObject
         case .Bool(let b):
-            return b as AnyObject
+            return NSNumber(value: b)
         case .null:
             return NSNull()
         }
