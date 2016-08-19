@@ -39,7 +39,8 @@ class JSONDecodableTests: XCTestCase {
         let fourPointFour = 4.4
         let fourPointFourJSON: JSON = 4.4
         let fourJSON: JSON = 4
-        
+        let fourPointFourStringJSON: JSON = "4.4"
+
         do {
             let decodedFourPointFour = try Double(json: fourPointFourJSON)
             let decodedFour = try Double(json: fourJSON)
@@ -48,10 +49,17 @@ class JSONDecodableTests: XCTestCase {
         } catch {
             XCTFail("Should be able to instantiate a `Double` with `JSON`: \(error).")
         }
-        
+
+        do {
+            let decodedFourPointFour = try Double(json: fourPointFourStringJSON)
+            XCTAssertEqual(decodedFourPointFour, fourPointFour, "`fourPointFour` and '4.4' `String` should be equal.")
+        } catch {
+            XCTFail("Failed for unknown reason: \(error).")
+        }
+
         do {
             _ = try Double(json: "bad")
-            XCTFail("Should not be able to instantiate `Double` with `String` `JSON`.")
+            XCTFail("Should not be able to instantiate `Double` with `String` not matching a double representation `JSON`.")
         } catch JSON.Error.ValueNotConvertible(let type) {
             XCTAssert(true, "\(type) should not be covertible from 'bad' `String`.")
         } catch {
@@ -63,7 +71,10 @@ class JSONDecodableTests: XCTestCase {
         let four = 4
         let fourJSON: JSON = 4
         let fourPointZeroJSON: JSON = 4.0
-        
+        let fourStringJSON: JSON = "4"
+        let fourPointZeroStringJSON: JSON = "4.0"
+        let fourPointFourStringJSON: JSON = "4.4"
+
         do {
             let decodedFour = try Int(json: fourJSON)
             let decodedFourPointZero = try Int(json: fourPointZeroJSON)
@@ -72,10 +83,28 @@ class JSONDecodableTests: XCTestCase {
         } catch {
             XCTFail("Should be able to instantiate an `Int` with `JSON`: \(error).")
         }
-        
+
+        do {
+            let decodedFour = try Int(json: fourStringJSON)
+            let decodedFourPointZero = try Int(json: fourPointZeroStringJSON)
+            XCTAssertEqual(decodedFour, four, "`four` and '4' `String` should be equal.")
+            XCTAssertEqual(decodedFourPointZero, four, "`decodedFourPointZero` and '4.0' `String` should be equal.")
+        } catch {
+            XCTFail("Failed for unknown reason: \(error).")
+        }
+
+        do {
+            _ = try Int(json: fourPointFourStringJSON)
+            XCTFail("Should not be able to instantiate `Int` with '4.4' `String` `JSON`.")
+        } catch JSON.Error.ValueNotConvertible(let type) {
+            XCTAssert(true, "\(type) should not be covertible from '4.4' `String`.")
+        } catch {
+            XCTFail("Failed for unknown reason: \(error).")
+        }
+
         do {
             _ = try Int(json: "bad")
-            XCTFail("Should not be able to instantiate `Int` with `String` `JSON`.")
+            XCTFail("Should not be able to instantiate `Int` with `String` not matching an integer representation `JSON`.")
         } catch JSON.Error.ValueNotConvertible(let type) {
             XCTAssert(true, "\(type) should not be covertible from 'bad' `String`.")
         } catch {
