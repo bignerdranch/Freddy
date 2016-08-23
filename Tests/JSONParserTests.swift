@@ -249,7 +249,6 @@ class JSONParserTests: XCTestCase {
 
         XCTAssertEqual(try? json.int("exceedsIntMax"), nil, "as int")
         XCTAssertEqual(try? json.double("exceedsIntMax"), Double(anyValueExceedingIntMax), "as double")
-        XCTAssertEqual(try? json.string("exceedsIntMax"), nil, "as string")
     }
 
     // This test should also be run on the iPhone 5 simulator to check 32-bit support.
