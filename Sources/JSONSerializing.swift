@@ -11,28 +11,27 @@ extension JSON {
     /// - throws: Errors that arise from `NSJSONSerialization`.
     /// - see: Foundation.NSJSONSerialization
     public func serialize() throws -> Data {
-        let obj: AnyObject = toNSJSONSerializationObject()
-        return try JSONSerialization.data(withJSONObject: obj, options: [])
+        return try JSONSerialization.data(withJSONObject: toNSJSONSerializationValue(), options: [])
     }
 
     /// A function to help with the serialization of `JSON`.
-    /// - returns: An `AnyObject` suitable for `NSJSONSerialization`'s use.
-    private func toNSJSONSerializationObject() -> AnyObject {
+    /// - returns: An `Any` suitable for `NSJSONSerialization`'s use.
+    private func toNSJSONSerializationValue() -> Any {
         switch self {
         case .Array(let jsonArray):
-            return jsonArray.map { $0.toNSJSONSerializationObject() } as AnyObject
+            return jsonArray.map { $0.toNSJSONSerializationValue() }
         case .Dictionary(let jsonDictionary):
-            var cocoaDictionary = Swift.Dictionary<Swift.String, AnyObject>(minimumCapacity: jsonDictionary.count)
+            var cocoaDictionary = Swift.Dictionary<Swift.String, Any>(minimumCapacity: jsonDictionary.count)
             for (key, json) in jsonDictionary {
-                cocoaDictionary[key] = json.toNSJSONSerializationObject()
+                cocoaDictionary[key] = json.toNSJSONSerializationValue()
             }
-            return cocoaDictionary as AnyObject
+            return cocoaDictionary
         case .String(let str):
-            return str as AnyObject
+            return str
         case .Double(let num):
-            return num as AnyObject
+            return NSNumber(value: num)
         case .Int(let int):
-            return int as AnyObject
+            return NSNumber(value: int)
         case .Bool(let b):
             return NSNumber(value: b)
         case .null:

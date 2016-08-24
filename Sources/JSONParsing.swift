@@ -52,7 +52,7 @@ extension JSONSerialization: JSONParserType {
     // MARK: Make JSON
 
     /// Makes a `JSON` object by matching its argument to a case in the `JSON` enum.
-    /// - parameter object: The instance of `AnyObject` returned from serializing the JSON.
+    /// - parameter object: The instance of `Any` returned from serializing the JSON.
     /// - returns: An instance of `JSON` matching the JSON given to the function.
     private static func makeJSON(_ object: Any) -> JSON {
         switch object {
