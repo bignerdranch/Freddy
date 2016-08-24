@@ -12,7 +12,7 @@ extension JSON: ArrayLiteralConvertible {
     
     /// Create an instance by copying each element of the `collection` into a
     /// new `Array`.
-    public init<Collection: CollectionType where Collection.Generator.Element == JSON>(_ collection: Collection) {
+    public init<Collection: Swift.Collection where Collection.Iterator.Element == JSON>(_ collection: Collection) {
         self = .Array(Swift.Array(collection))
     }
 
@@ -29,8 +29,8 @@ extension JSON: DictionaryLiteralConvertible {
     
     /// Create an instance by copying each key/value pair of the `pairs` into
     /// a new `Dictionary`.
-    public init<Dictionary: SequenceType where Dictionary.Generator.Element == (Swift.String, JSON)>(_ pairs: Dictionary) {
-        var dictionary = Swift.Dictionary<Swift.String, JSON>(minimumCapacity: pairs.underestimateCount())
+    public init<Dictionary: Sequence where Dictionary.Iterator.Element == (Swift.String, JSON)>(_ pairs: Dictionary) {
+        var dictionary = Swift.Dictionary<Swift.String, JSON>(minimumCapacity: pairs.underestimatedCount)
         for (key, value) in pairs {
             dictionary[key] = value
         }
@@ -124,7 +124,7 @@ extension JSON: NilLiteralConvertible {
 
     /// Create an instance initialized with `nil`.
     public init(nilLiteral: ()) {
-        self = .Null
+        self = .null
     }
 
 }

@@ -9,7 +9,7 @@ class JSONSerializingTests: XCTestCase {
 
     func testThatJSONCanBeSerialized() {
         let data = try! json.serialize()
-        XCTAssertGreaterThan(data.length, 0, "There should be data.")
+        XCTAssertGreaterThan(data.count, 0, "There should be data.")
     }
 
     func testThatJSONDataIsEqual() {
@@ -39,20 +39,20 @@ class JSONSerializingTests: XCTestCase {
 }
 
 
-func dataFromFixture(filename: String) -> NSData {
-    let testBundle = NSBundle(forClass: JSONSerializingTests.self)
-    guard let URL = testBundle.URLForResource(filename, withExtension: nil) else {
+func dataFromFixture(_ filename: String) -> Data {
+    let testBundle = Bundle(for: JSONSerializingTests.self)
+    guard let URL = testBundle.urlForResource(filename, withExtension: nil) else {
         preconditionFailure("failed to find file \"\(filename)\" in bundle \(testBundle)")
     }
 
-    guard let data = NSData(contentsOfURL: URL) else {
+    guard let data = try? Data(contentsOf: URL) else {
         preconditionFailure("NSData failed to read file \(URL.path)")
     }
     return data
 }
 
 
-func JSONFromFixture(filename: String) -> JSON {
+func JSONFromFixture(_ filename: String) -> JSON {
     let data = dataFromFixture(filename)
     do {
         let json = try JSON(data: data)
