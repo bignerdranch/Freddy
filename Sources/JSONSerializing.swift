@@ -11,18 +11,18 @@ extension JSON {
     /// - throws: Errors that arise from `NSJSONSerialization`.
     /// - see: Foundation.NSJSONSerialization
     public func serialize() throws -> Data {
-        let obj: AnyObject = toNSJSONSerializationObject()
+        let obj = toNSJSONSerializationObject()
         return try JSONSerialization.data(withJSONObject: obj, options: [])
     }
 
     /// A function to help with the serialization of `JSON`.
     /// - returns: An `AnyObject` suitable for `NSJSONSerialization`'s use.
-    private func toNSJSONSerializationObject() -> AnyObject {
+    private func toNSJSONSerializationObject() -> Any {
         switch self {
         case .Array(let jsonArray):
             return jsonArray.map { $0.toNSJSONSerializationObject() }
         case .Dictionary(let jsonDictionary):
-            var cocoaDictionary = Swift.Dictionary<Swift.String, AnyObject>(minimumCapacity: jsonDictionary.count)
+            var cocoaDictionary = Swift.Dictionary<Swift.String, Any>(minimumCapacity: jsonDictionary.count)
             for (key, json) in jsonDictionary {
                 cocoaDictionary[key] = json.toNSJSONSerializationObject()
             }
@@ -34,7 +34,7 @@ extension JSON {
         case .Int(let int):
             return int
         case .Bool(let b):
-            return b
+            return NSNumber(booleanLiteral: b) // force boolean to be encoded as "true" / "false", otherwise, will be 1 / 0
         case .null:
             return NSNull()
         }

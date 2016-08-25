@@ -82,12 +82,12 @@ extension JSON: CustomStringConvertible {
     /// A textual representation of `self`.
     public var description: Swift.String {
         switch self {
-        case .Array(let arr):       return Swift.String(arr)
-        case .Dictionary(let dict): return Swift.String(dict)
+        case .Array(let arr):       return Swift.String(describing:arr)
+        case .Dictionary(let dict): return Swift.String(describing:dict)
         case .String(let string):   return string
-        case .Double(let double):   return Swift.String(double)
-        case .Int(let int):         return Swift.String(int)
-        case .Bool(let bool):       return Swift.String(bool)
+        case .Double(let double):   return Swift.String(describing:double)
+        case .Int(let int):         return Swift.String(describing:int)
+        case .Bool(let bool):       return Swift.String(describing:bool)
         case .null:                 return "null"
         }
     }
