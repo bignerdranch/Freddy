@@ -153,6 +153,19 @@ class JSONParserTests: XCTestCase {
         XCTAssertEqual(value, JSON.String(expect))
     }
 
+    func testThatParserFailsWhenIncompleteDataIsPresent() {
+        for s in [" ", "[0,", "{\"\":"] {
+            do {
+                let value = try JSONFromString(" ")
+                XCTFail("Unexpectedly parsed \(s) as \(value)")
+            } catch JSONParser.Error.EndOfStreamUnexpected {
+                // expected error - do nothing
+            } catch {
+                XCTFail("Unexpected error \(error)")
+            }
+        }
+    }
+
     func testThatParserUnderstandsNumbers() {
         for (string, shouldBeInt) in [
             ("  0  ", 0),
