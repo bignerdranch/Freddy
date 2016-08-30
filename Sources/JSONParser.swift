@@ -158,8 +158,12 @@ public struct JSONParser {
                 return try decodeNumberAsString(start)
             }
         }
-        
-        throw Error.ValueInvalid(offset: loc, character: UnicodeScalar(input[loc]))
+
+        if loc < input.count {
+            throw Error.ValueInvalid(offset: loc, character: UnicodeScalar(input[loc]))
+        } else {
+            throw Error.EndOfStreamUnexpected
+        }
     }
 
     private mutating func skipWhitespace() {
