@@ -171,6 +171,15 @@ class JSONParserTests: XCTestCase {
             ("  0  ", 0),
             ("123", 123),
             ("  -20  ", -20),
+            ("-0", 0),
+            ("0e0", 0),
+            ("0e1", 0),
+            ("0e1", 0),
+            ("-0e20", 0),
+            ("0.1e1", 1),
+            ("0.1E1", 1),
+            ("0e01", 0),
+            ("0.1e0001", 1),
         ] {
             do {
                 let value = try JSONFromString(string).int()
@@ -190,6 +199,8 @@ class JSONParserTests: XCTestCase {
             ("123.45E2", 123.45E2),
             ("123.45e+2", 123.45e+2),
             ("-123.45e-2", -123.45e-2),
+            ("0.1e-1", 0.01),
+            ("-0.1E-1", -0.01),
         ] {
             do {
                 let value = try JSONFromString(string).double()
@@ -210,10 +221,10 @@ class JSONParserTests: XCTestCase {
             ("1.0e",  JSONParser.Error.EndOfStreamUnexpected),
             ("1.0e+", JSONParser.Error.EndOfStreamUnexpected),
             ("1.0e-", JSONParser.Error.EndOfStreamUnexpected),
-            ("0e1",   JSONParser.Error.EndOfStreamGarbage(offset: 1)),
         ] {
             do {
-                _ = try JSONFromString(string)
+                let value = try JSONFromString(string)
+                XCTFail("Unexpectedly parsed \(string) as \(value)")
             } catch let error as JSONParser.Error {
                 XCTAssert(error == expectedError)
             } catch {

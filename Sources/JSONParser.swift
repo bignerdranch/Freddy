@@ -663,12 +663,16 @@ private struct NumberParser {
             return
         }
 
-        guard input[loc] == Literal.PERIOD else {
-            state = .Done
-            return
-        }
+        switch input[loc] {
+        case Literal.PERIOD:
+            state = .Decimal
 
-        state = .Decimal
+        case Literal.e, Literal.E:
+            state = .Exponent
+
+        default:
+            state = .Done
+        }
     }
 
     mutating func parsePreDecimalDigits(@noescape f: (UInt8) throws -> Void) rethrows {
