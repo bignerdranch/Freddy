@@ -178,6 +178,8 @@ class JSONParserTests: XCTestCase {
             ("-0e20", 0),
             ("0.1e1", 1),
             ("0.1E1", 1),
+            ("0e01", 0),
+            ("0.1e0001", 1),
         ] {
             do {
                 let value = try JSONFromString(string).int()
