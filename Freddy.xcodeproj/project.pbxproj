@@ -462,9 +462,11 @@
 					};
 					DB6ADF3D1C23612000D77BF1 = {
 						CreatedOnToolsVersion = 7.2;
+						LastSwiftMigration = 0800;
 					};
 					DB6ADF461C23612000D77BF1 = {
 						CreatedOnToolsVersion = 7.2;
+						LastSwiftMigration = 0800;
 					};
 					DB6ADF591C23612900D77BF1 = {
 						CreatedOnToolsVersion = 7.2;
