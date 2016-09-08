@@ -13,7 +13,7 @@ extension JSON: ExpressibleByArrayLiteral {
     /// Create an instance by copying each element of the `collection` into a
     /// new `Array`.
     public init<Collection: Swift.Collection>(_ collection: Collection) where Collection.Iterator.Element == JSON {
-        self = .Array(Swift.Array(collection))
+        self = .array(Swift.Array(collection))
     }
 
     /// Create an instance initialized with `elements`.
@@ -44,7 +44,7 @@ extension JSON: ExpressibleByDictionaryLiteral {
 
     /// Create an instance initialized to `dictionary`.
     public init(_ dictionary: Swift.Dictionary<Swift.String, JSON>) {
-        self = .Dictionary(dictionary)
+        self = .dictionary(dictionary)
     }
 }
 
@@ -54,7 +54,7 @@ extension JSON: ExpressibleByFloatLiteral {
     
     /// Create an instance initialized to `Double` `value`.
     public init(_ value: Swift.Double) {
-        self = .Double(value)
+        self = .double(value)
     }
     
     /// Create a literal instance initialized to `value`.
@@ -70,7 +70,7 @@ extension JSON: ExpressibleByIntegerLiteral {
     
     /// Create an instance initialized to `Int` by `value`.
     public init(_ value: Swift.Int) {
-        self = .Int(value)
+        self = .int(value)
     }
     
     /// Create a literal instance initialized to `value`.
@@ -86,7 +86,7 @@ extension JSON: ExpressibleByStringLiteral {
     
     /// Create an instance initialized to `String` by `text`.
     public init(_ text: Swift.String) {
-        self = .String(text)
+        self = .string(text)
     }
 
     /// Create a literal instance initialized to `value`.
@@ -112,7 +112,7 @@ extension JSON: ExpressibleByBooleanLiteral {
 
     /// Create an instance initialized to `Bool` by `value`.
     public init(_ value: Swift.Bool) {
-        self = .Bool(value)
+        self = .bool(value)
     }
 
     /// Create a literal instance initialized to `value`.

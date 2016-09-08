@@ -153,7 +153,7 @@ public struct JSONParser {
                     break advancing
                 }
             } catch let InternalError.numberOverflow(offset: start) {
-                return try decodeNumberAsString(start)
+                return try decodeNumberAsString(from: start)
             }
         }
         
@@ -165,7 +165,6 @@ public struct JSONParser {
             switch input[loc] {
             case Literal.SPACE, Literal.TAB, Literal.RETURN, Literal.NEWLINE:
                 loc = (loc + 1)
-
             default:
                 return
             }
@@ -208,7 +207,7 @@ public struct JSONParser {
         }
 
         loc += 4
-        return .Bool(true)
+        return .bool(true)
     }
 
     private mutating func decodeFalse() throws -> JSON {
@@ -224,7 +223,7 @@ public struct JSONParser {
         }
 
         loc += 5
-        return .Bool(false)
+        return .bool(false)
     }
 
     private var stringDecodingBuffer = [UInt8]()
@@ -265,7 +264,7 @@ public struct JSONParser {
                     String(cString: UnsafePointer($0.baseAddress!))
                 }
                 
-                return .String(string)
+                return .string(string)
 
             case let other:
                 stringDecodingBuffer.append(other)
@@ -348,7 +347,7 @@ public struct JSONParser {
 
             if loc < input.count && input[loc] == Literal.RIGHT_BRACKET {
                 loc = (loc + 1)
-                return .Array(items)
+                return .array(items)
             }
 
             if !items.isEmpty {
@@ -405,7 +404,7 @@ public struct JSONParser {
                     obj[k] = v
                 }
                 decodeObjectBuffers.putBuffer(pairs)
-                return .Dictionary(obj)
+                return .dictionary(obj)
             }
 
             if !pairs.isEmpty {
@@ -421,7 +420,7 @@ public struct JSONParser {
                 throw Error.dictionaryMissingKey(offset: start)
             }
 
-            let key = try decodeString().string()
+            let key = try decodeString().getString()
             skipWhitespace()
 
             guard loc < input.count && input[loc] == Literal.COLON else {
@@ -482,7 +481,7 @@ public struct JSONParser {
         }
 
         loc = parser.loc
-        return .Int(signedValue)
+        return .int(signedValue)
     }
 
     private mutating func decodeFloatingPointValue(_ parser: NumberParser, sign: Sign, value: Double) throws -> JSON {
@@ -525,20 +524,21 @@ public struct JSONParser {
         }
 
         loc = parser.loc
-        return .Double(Double(sign.rawValue) * value * pow(10, Double(exponentSign.rawValue) * exponent))
+        return .double(Double(sign.rawValue) * value * pow(10, Double(exponentSign.rawValue) * exponent))
     }
 
-    private mutating func decodeNumberAsString(_ start: Int) throws -> JSON {
+
+    private mutating func decodeNumberAsString(from position: Int) throws -> JSON {
         var parser: NumberParser = {
             let state: NumberParser.State
-            switch input[start] {
+            switch input[position] {
             case Literal.MINUS: state = .leadingMinus
             case Literal.zero: state = .leadingZero
             case Literal.one...Literal.nine: state = .preDecimalDigits
             default:
                 fatalError("Internal error: decodeNumber called on not-a-number")
             }
-            return NumberParser(loc: start, input: input, state: state)
+            return NumberParser(loc: position, input: input, state: state)
         }()
 
         stringDecodingBuffer.removeAll(keepingCapacity: true)
@@ -581,7 +581,7 @@ public struct JSONParser {
                 }
 
                 loc = parser.loc
-                return .String(string)
+                return .string(string)
             }
         }
     }

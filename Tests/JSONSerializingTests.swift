@@ -26,14 +26,14 @@ class JSONSerializingTests: XCTestCase {
     }
 
     func testThatJSONSerializationHandlesBoolsCorrectly() {
-        let json = JSON.Dictionary([
-            "foo": .Bool(true),
-            "bar": .Bool(false),
-            "baz": .Int(123),
+        let json = JSON.dictionary([
+            "foo": .bool(true),
+            "bar": .bool(false),
+            "baz": .int(123),
         ])
         let data = try! json.serialize()
-        let deserializedResult = try! JSON(data: data).dictionary()
-        let deserialized = JSON.Dictionary(deserializedResult)
+        let deserializedResult = try! JSON(data: data).getDictionary()
+        let deserialized = JSON.dictionary(deserializedResult)
         XCTAssertEqual(json, deserialized, "Serialize/Deserialize succeed with Bools")
     }
 }

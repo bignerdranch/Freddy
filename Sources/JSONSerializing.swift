@@ -18,21 +18,21 @@ extension JSON {
     /// - returns: An `Any` suitable for `NSJSONSerialization`'s use.
     private func toNSJSONSerializationValue() -> Any {
         switch self {
-        case .Array(let jsonArray):
+        case .array(let jsonArray):
             return jsonArray.map { $0.toNSJSONSerializationValue() }
-        case .Dictionary(let jsonDictionary):
+        case .dictionary(let jsonDictionary):
             var cocoaDictionary = Swift.Dictionary<Swift.String, Any>(minimumCapacity: jsonDictionary.count)
             for (key, json) in jsonDictionary {
                 cocoaDictionary[key] = json.toNSJSONSerializationValue()
             }
             return cocoaDictionary
-        case .String(let str):
+        case .string(let str):
             return str
-        case .Double(let num):
+        case .double(let num):
             return NSNumber(value: num)
-        case .Int(let int):
+        case .int(let int):
             return NSNumber(value: int)
-        case .Bool(let b):
+        case .bool(let b):
             return NSNumber(value: b)
         case .null:
             return NSNull()
