@@ -46,7 +46,7 @@ func dataFromFixture(_ filename: String) -> Data {
     }
 
     guard let data = try? Data(contentsOf: URL) else {
-        preconditionFailure("NSData failed to read file \(URL.path)")
+        preconditionFailure("Data failed to read file \(URL.path)")
     }
     return data
 }

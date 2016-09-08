@@ -10,11 +10,11 @@ import Foundation
 
 // MARK: - Deserialize JSON
 
-/// Protocol describing a backend parser that can produce `JSON` from `NSData`.
+/// Protocol describing a backend parser that can produce `JSON` from `Data`.
 public protocol JSONParserType {
 
-    /// Creates an instance of `JSON` from `NSData`.
-    /// - parameter data: An instance of `NSData` to use to create `JSON`.
+    /// Creates an instance of `JSON` from `Data`.
+    /// - parameter data: An instance of `Data` to use to create `JSON`.
     /// - throws: An error that may arise from calling `JSONObjectWithData(_:options:)` on `NSJSONSerialization` with the given data.
     /// - returns: An instance of `JSON`.
     static func createJSONFromData(_ data: Data) throws -> JSON
@@ -39,12 +39,12 @@ extension JSON {
 
 extension JSONSerialization: JSONParserType {
 
-    // MARK: Decode NSData
+    // MARK: Decode Data
 
     /// Use the built-in, Objective-C based JSON parser to create `JSON`.
-    /// - parameter data: An instance of `NSData`.
+    /// - parameter data: An instance of `Data`.
     /// - returns: An instance of `JSON`.
-    /// - throws: An error that may arise if the `NSData` cannot be parsed into an object.
+    /// - throws: An error that may arise if the `Data` cannot be parsed into an object.
     public static func createJSONFromData(_ data: Data) throws -> JSON {
         return makeJSON(try JSONSerialization.jsonObject(with: data, options: []))
     }

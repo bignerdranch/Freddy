@@ -6,7 +6,7 @@ import Foundation
 
 extension JSON {
 
-    /// Attempt to serialize `JSON` into an `NSData`.
+    /// Attempt to serialize `JSON` into an `Data`.
     /// - returns: A byte-stream containing the `JSON` ready for wire transfer.
     /// - throws: Errors that arise from `NSJSONSerialization`.
     /// - see: Foundation.NSJSONSerialization

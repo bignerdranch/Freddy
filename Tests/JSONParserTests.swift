@@ -44,7 +44,7 @@ private func ==(lhs: JSONParser.Error, rhs: JSONParser.Error) -> Bool {
 
 class JSONParserTests: XCTestCase {
 
-    func testThatParserThrowsAnErrorForAnEmptyNSData() {
+    func testThatParserThrowsAnErrorForAnEmptyData() {
         
         do {
             _ = try JSONParser.parse("")
@@ -56,7 +56,7 @@ class JSONParserTests: XCTestCase {
         }
     }
 
-    func testThatParserThrowsErrorForInsufficientNSData() {
+    func testThatParserThrowsErrorForInsufficientData() {
         let hex: [UInt8] = [0x7B]
         let data = Data(bytes: UnsafePointer<UInt8>(hex), count: hex.count)
 

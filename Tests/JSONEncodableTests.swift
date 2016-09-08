@@ -13,7 +13,7 @@ class JSONEncodableTests: XCTestCase {
 
     func testThatJSONEncodableEncodesString() {
         let matt = "Matt"
-        let comparisonMatt = JSON.String(matt)
+        let comparisonMatt = JSON.string(matt)
         let testMatt = matt.toJSON()
         XCTAssertTrue(comparisonMatt == testMatt, "These should be the same!")
     }
@@ -27,14 +27,14 @@ class JSONEncodableTests: XCTestCase {
     
     func testThatJSONEncodableEncodesInt() {
         let thirtyTwo = 32
-        let comparisonThirtyTwo = JSON.Int(thirtyTwo)
+        let comparisonThirtyTwo = JSON.int(thirtyTwo)
         let testThirtyTwo = thirtyTwo.toJSON()
         XCTAssertTrue(comparisonThirtyTwo == testThirtyTwo, "These should be the same!")
     }
     
     func testThatJSONEncodableEncodesDouble() {
         let threePointOneFour = 3.14
-        let comparisonThreePointOneFour = JSON.Double(threePointOneFour)
+        let comparisonThreePointOneFour = JSON.double(threePointOneFour)
         let testThreePointOneFour = threePointOneFour.toJSON()
         XCTAssertTrue(comparisonThreePointOneFour == testThreePointOneFour, "These should be the same!")
     }
@@ -48,7 +48,7 @@ class JSONEncodableTests: XCTestCase {
     
     func testThatJSONEncodableEncodesArray() {
         let veggies = ["lettuce", "onion"]
-        let comparisonVeggies = JSON.Array(["lettuce", "onion"])
+        let comparisonVeggies = JSON.array(["lettuce", "onion"])
         let testVeggies = veggies.toJSON()
         XCTAssertTrue(comparisonVeggies == testVeggies, "These should be the same!")
     }

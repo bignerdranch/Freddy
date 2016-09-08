@@ -12,7 +12,7 @@ import Freddy
 class JSONTypeTests: XCTestCase {
     
     func testCastInitializeArray() {
-        let array: [JSON] = [ 1, 2, 3 ]
+        let array: [JSON] = [1, 2, 3]
         let expected = JSON.array(array)
         let json = JSON(array)
         XCTAssertEqual(json, expected)
@@ -20,13 +20,13 @@ class JSONTypeTests: XCTestCase {
 
     func testCastInitializeAnyCollection() {
         let collection = (1 ... 3).lazy.map { JSON.int($0) }
-        let expected: JSON = .array([1,2,3])
+        let expected: JSON = .array([1, 2, 3])
         let json = JSON(collection)
         XCTAssertEqual(json, expected)
     }
 
     func testCastInitializeDictionary() {
-        let dictionary: [String:JSON] = ["foo" : 1, "bar" : 2, "baz" : 3]
+        let dictionary: [String:JSON] = ["foo": 1, "bar": 2, "baz": 3]
         let expected = JSON.dictionary(dictionary)
         let json = JSON(dictionary)
         XCTAssertEqual(json, expected)

@@ -785,7 +785,7 @@ private struct NumberParser {
 
 public extension JSONParser {
 
-    /// Creates a `JSONParser` ready to parse UTF-8 encoded `NSData`.
+    /// Creates a `JSONParser` ready to parse UTF-8 encoded `Data`.
     ///
     /// If the data is mutable, it is copied before parsing. The data's lifetime
     /// is extended for the duration of parsing.
@@ -827,8 +827,8 @@ public extension JSONParser {
 
 extension JSONParser: JSONParserType {
 
-    /// Creates an instance of `JSON` from UTF-8 encoded `NSData`.
-    /// - parameter data: An instance of `NSData` to parse `JSON` from.
+    /// Creates an instance of `JSON` from UTF-8 encoded `Data`.
+    /// - parameter data: An instance of `Data` to parse `JSON` from.
     /// - throws: Any `JSONParser.Error` that arises during decoding.
     /// - seealso: JSONParser.parse()
     public static func createJSONFromData(_ data: Data) throws -> JSON {
