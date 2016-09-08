@@ -52,9 +52,9 @@ extension JSONSerialization: JSONParserType {
     // MARK: Make JSON
 
     /// Makes a `JSON` object by matching its argument to a case in the `JSON` enum.
-    /// - parameter object: The instance of `AnyObject` returned from serializing the JSON.
+    /// - parameter object: The instance of `Any` returned from serializing the JSON.
     /// - returns: An instance of `JSON` matching the JSON given to the function.
-    private static func makeJSON(_ object: AnyObject) -> JSON {
+    private static func makeJSON(_ object: Any) -> JSON {
         switch object {
         case let n as NSNumber:
             let numberType = CFNumberGetType(n)
@@ -89,10 +89,10 @@ extension JSONSerialization: JSONParserType {
                 return .Double(n.doubleValue)
             }
 
-        case let arr as [AnyObject]:
+        case let arr as [Any]:
             return makeJSONArray(arr)
 
-        case let dict as [Swift.String: AnyObject]:
+        case let dict as [Swift.String: Any]:
             return makeJSONDictionary(dict)
 
         case let s as Swift.String:
@@ -108,7 +108,7 @@ extension JSONSerialization: JSONParserType {
     /// Makes a `JSON` array from the object passed in.
     /// - parameter jsonArray: The array to transform into a `JSON`.
     /// - returns: An instance of `JSON` matching the array.
-    private static func makeJSONArray(_ jsonArray: [AnyObject]) -> JSON {
+    private static func makeJSONArray(_ jsonArray: [Any]) -> JSON {
         return .Array(jsonArray.map(makeJSON))
     }
 
@@ -117,7 +117,7 @@ extension JSONSerialization: JSONParserType {
     /// Makes a `JSON` dictionary from the Cocoa dictionary passed in.
     /// - parameter jsonDict: The dictionary to transform into `JSON`.
     /// - returns: An instance of `JSON` matching the dictionary.
-    private static func makeJSONDictionary(_ jsonDict: [Swift.String: AnyObject]) -> JSON {
+    private static func makeJSONDictionary(_ jsonDict: [Swift.String: Any]) -> JSON {
         return JSON(jsonDict.lazy.map { (key, value) in
             (key, makeJSON(value))
         })
