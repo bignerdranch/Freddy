@@ -10,7 +10,7 @@ script:
 - set -o pipefail && xcodebuild test -scheme 'MobileFreddy' -sdk iphonesimulator -destination
   'platform=iOS Simulator,name=iPhone 5' | xcpretty -c
 - set -o pipefail && xcodebuild test -scheme 'TVFreddy' -sdk appletvsimulator -destination
-  'platform=tvOS Simulator,name=Apple TV 1080p' | xcpretty -c
+  'platform=tvOS Simulator,name=Apple TV 1080p'
 - carthage build --no-skip-current
 - pod lib lint --quick
 after_success:
