@@ -70,6 +70,12 @@
 		DB6ADFC71C23631500D77BF1 /* sampleNoWhiteSpace.JSON in Resources */ = {isa = PBXBuildFile; fileRef = DB6ADFC21C23631500D77BF1 /* sampleNoWhiteSpace.JSON */; };
 		DB6ADFC81C23631500D77BF1 /* sampleNoWhiteSpace.JSON in Resources */ = {isa = PBXBuildFile; fileRef = DB6ADFC21C23631500D77BF1 /* sampleNoWhiteSpace.JSON */; };
 		DC194EB91C47D87B001D4569 /* JSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC194EB81C47D87B001D4569 /* JSONTests.swift */; };
+		DC5F54FB1D82E79400670855 /* JSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC194EB81C47D87B001D4569 /* JSONTests.swift */; };
+		DC5F54FC1D82E79500670855 /* JSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC194EB81C47D87B001D4569 /* JSONTests.swift */; };
+		DC5F54FD1D82E79900670855 /* JSONEncodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C67C72A1C3B32A6003D5A05 /* JSONEncodableTests.swift */; };
+		DC5F54FE1D82E79A00670855 /* JSONEncodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C67C72A1C3B32A6003D5A05 /* JSONEncodableTests.swift */; };
+		DC5F54FF1D82E79F00670855 /* JSONSubscriptingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7BD51E1C7A4B9300A6ED4B /* JSONSubscriptingTests.swift */; };
+		DC5F55001D82E7A000670855 /* JSONSubscriptingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7BD51E1C7A4B9300A6ED4B /* JSONSubscriptingTests.swift */; };
 		E43B67DB1C59598700ACE390 /* JSONEncodingDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43B67DA1C59598700ACE390 /* JSONEncodingDetector.swift */; };
 		E43B67DC1C59598700ACE390 /* JSONEncodingDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43B67DA1C59598700ACE390 /* JSONEncodingDetector.swift */; };
 		E43B67DD1C59598700ACE390 /* JSONEncodingDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43B67DA1C59598700ACE390 /* JSONEncodingDetector.swift */; };
@@ -587,8 +593,11 @@
 				DB6ADFB51C2362FF00D77BF1 /* JSONParserTests.swift in Sources */,
 				E43B67E11C5962CD00ACE390 /* JSONEncodingDetectorTests.swift in Sources */,
 				3F70EA991C6D0EC500972CEB /* JSONSerializingTests.swift in Sources */,
+				DC5F54FF1D82E79F00670855 /* JSONSubscriptingTests.swift in Sources */,
 				DB6ADFBB1C2362FF00D77BF1 /* JSONTypeTests.swift in Sources */,
+				DC5F54FD1D82E79900670855 /* JSONEncodableTests.swift in Sources */,
 				DB6ADFB21C2362FF00D77BF1 /* JSONDecodableTests.swift in Sources */,
+				DC5F54FB1D82E79400670855 /* JSONTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -648,8 +657,11 @@
 				DB6ADFB61C2362FF00D77BF1 /* JSONParserTests.swift in Sources */,
 				E43B67E21C5962CD00ACE390 /* JSONEncodingDetectorTests.swift in Sources */,
 				3F70EA9A1C6D0EC500972CEB /* JSONSerializingTests.swift in Sources */,
+				DC5F55001D82E7A000670855 /* JSONSubscriptingTests.swift in Sources */,
 				DB6ADFBC1C2362FF00D77BF1 /* JSONTypeTests.swift in Sources */,
+				DC5F54FE1D82E79A00670855 /* JSONEncodableTests.swift in Sources */,
 				DB6ADFB31C2362FF00D77BF1 /* JSONDecodableTests.swift in Sources */,
+				DC5F54FC1D82E79500670855 /* JSONTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
