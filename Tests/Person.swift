@@ -30,15 +30,15 @@ extension Person.EyeColor: JSONEncodable {}
 
 extension Person: JSONDecodable {
     public init(json value: JSON) throws {
-        name = try value.string("name")
-        age = try value.int("age")
-        eyeColor = try value.decode("eyeColor")
-        spouse = try value.bool("spouse")
+        name = try value.getString(at: "name")
+        age = try value.getInt(at: "age")
+        eyeColor = try value.decode(at: "eyeColor")
+        spouse = try value.getBool(at: "spouse")
     }
 }
 
 extension Person: JSONEncodable {
     public func toJSON() -> JSON {
-        return .Dictionary(["name": .String(name), "age": .Int(age), "eyeColor": eyeColor.toJSON(), "spouse": .Bool(spouse)])
+        return .dictionary(["name": .string(name), "age": .int(age), "eyeColor": eyeColor.toJSON(), "spouse": .bool(spouse)])
     }
 }

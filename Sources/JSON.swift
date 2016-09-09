@@ -9,17 +9,17 @@
 /// An enum to describe the structure of JSON.
 public enum JSON {
     /// A case for denoting an array with an associated value of `[JSON]`
-    case Array([JSON])
+    case array([JSON])
     /// A case for denoting a dictionary with an associated value of `[Swift.String: JSON]`
-    case Dictionary([Swift.String: JSON])
+    case dictionary([String: JSON])
     /// A case for denoting a double with an associated value of `Swift.Double`.
-    case Double(Swift.Double)
+    case double(Double)
     /// A case for denoting an integer with an associated value of `Swift.Int`.
-    case Int(Swift.Int)
+    case int(Int)
     /// A case for denoting a string with an associated value of `Swift.String`.
-    case String(Swift.String)
+    case string(String)
     /// A case for denoting a boolean with an associated value of `Swift.Bool`.
-    case Bool(Swift.Bool)
+    case bool(Bool)
     /// A case for denoting null.
     case null
 }
@@ -31,10 +31,10 @@ extension JSON {
     /// An enum to encapsulate errors that may arise in working with `JSON`.
     public enum Error: Swift.Error {
         /// The `index` is out of bounds for a JSON array
-        case indexOutOfBounds(index: Swift.Int)
+        case indexOutOfBounds(index: Int)
         
         /// The `key` was not found in the JSON dictionary
-        case keyNotFound(key: Swift.String)
+        case keyNotFound(key: String)
         
         /// The JSON is not subscriptable with `type`
         case unexpectedSubscript(type: JSONPathType.Type)
@@ -50,21 +50,21 @@ extension JSON {
 /// Return `true` if `lhs` is equal to `rhs`.
 public func ==(lhs: JSON, rhs: JSON) -> Bool {
     switch (lhs, rhs) {
-    case (.Array(let arrL), .Array(let arrR)):
+    case (.array(let arrL), .array(let arrR)):
         return arrL == arrR
-    case (.Dictionary(let dictL), .Dictionary(let dictR)):
+    case (.dictionary(let dictL), .dictionary(let dictR)):
         return dictL == dictR
-    case (.String(let strL), .String(let strR)):
+    case (.string(let strL), .string(let strR)):
         return strL == strR
-    case (.Double(let dubL), .Double(let dubR)):
+    case (.double(let dubL), .double(let dubR)):
         return dubL == dubR
-    case (.Double(let dubL), .Int(let intR)):
+    case (.double(let dubL), .int(let intR)):
         return dubL == Double(intR)
-    case (.Int(let intL), .Int(let intR)):
+    case (.int(let intL), .int(let intR)):
         return intL == intR
-    case (.Int(let intL), .Double(let dubR)):
+    case (.int(let intL), .double(let dubR)):
         return Double(intL) == dubR
-    case (.Bool(let bL), .Bool(let bR)):
+    case (.bool(let bL), .bool(let bR)):
         return bL == bR
     case (.null, .null):
         return true
@@ -82,12 +82,12 @@ extension JSON: CustomStringConvertible {
     /// A textual representation of `self`.
     public var description: Swift.String {
         switch self {
-        case .Array(let arr):       return Swift.String(describing: arr)
-        case .Dictionary(let dict): return Swift.String(describing: dict)
-        case .String(let string):   return string
-        case .Double(let double):   return Swift.String(describing: double)
-        case .Int(let int):         return Swift.String(describing: int)
-        case .Bool(let bool):       return Swift.String(describing: bool)
+        case .array(let arr):       return String(describing: arr)
+        case .dictionary(let dict): return String(describing: dict)
+        case .string(let string):   return string
+        case .double(let double):   return String(describing: double)
+        case .int(let int):         return String(describing: int)
+        case .bool(let bool):       return String(describing: bool)
         case .null:                 return "null"
         }
     }

@@ -14,6 +14,7 @@ script:
 - carthage build --no-skip-current
 - pod lib lint --quick
 after_success:
+- sleep 5
 - "./Configurations/publish_docs.sh"
 notifications:
   slack:

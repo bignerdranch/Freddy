@@ -44,7 +44,7 @@ private func ==(lhs: JSONParser.Error, rhs: JSONParser.Error) -> Bool {
 
 class JSONParserTests: XCTestCase {
 
-    func testThatParserThrowsAnErrorForAnEmptyNSData() {
+    func testThatParserThrowsAnErrorForAnEmptyData() {
         
         do {
             _ = try JSONParser.parse("")
@@ -56,7 +56,7 @@ class JSONParserTests: XCTestCase {
         }
     }
 
-    func testThatParserThrowsErrorForInsufficientNSData() {
+    func testThatParserThrowsErrorForInsufficientData() {
         let hex: [UInt8] = [0x7B]
         let data = Data(bytes: UnsafePointer<UInt8>(hex), count: hex.count)
 
@@ -121,31 +121,31 @@ class JSONParserTests: XCTestCase {
 
     func testThatParserUnderstandsTrue() {
         let value = try! JSONParser.parse("true")
-        XCTAssertEqual(value, JSON.Bool(true))
+        XCTAssertEqual(value, JSON.bool(true))
     }
 
     func testThatParserUnderstandsFalse() {
         let value = try! JSONParser.parse("false")
-        XCTAssertEqual(value, JSON.Bool(false))
+        XCTAssertEqual(value, JSON.bool(false))
     }
 
     func testThatParserUnderstandsStringsWithoutEscapes() {
         let string = "a b c d 😀 x y z"
         let value = try! JSONParser.parse("\"\(string)\"")
-        XCTAssertEqual(value, JSON.String(string))
+        XCTAssertEqual(value, JSON.string(string))
     }
 
     func testThatParserUnderstandsStringsWithEscapedCharacters() {
         let expect = " \" \\ / \n \r \t \u{000c} \u{0008} "
         let value = try! JSONParser.parse("\" \\\" \\\\ \\/ \\n \\r \\t \\f \\b \"")
-        XCTAssertEqual(value, JSON.String(expect))
+        XCTAssertEqual(value, JSON.string(expect))
     }
 
     func testThatParserUnderstandsStringsWithEscapedUnicode() {
         // try 1-, 2-, and 3-byte UTF8 sequences
         let expect = "\u{0060}\u{012a}\u{12AB}"
         let value = try! JSONParser.parse("\"\\u0060\\u012a\\u12AB\"")
-        XCTAssertEqual(value, JSON.String(expect))
+        XCTAssertEqual(value, JSON.string(expect))
     }
 
     func testThatParserUnderstandsNumbers() {
@@ -155,7 +155,7 @@ class JSONParserTests: XCTestCase {
             ("  -20  ", -20),
         ] {
             do {
-                let value = try JSONParser.parse(string).int()
+                let value = try JSONParser.parse(string).getInt()
                 XCTAssertEqual(value, shouldBeInt)
             } catch {
                 XCTFail("Unexpected error: \(error)")
@@ -174,7 +174,7 @@ class JSONParserTests: XCTestCase {
             ("-123.45e-2", -123.45e-2),
         ] {
             do {
-                let value = try JSONParser.parse(string).double()
+                let value = try JSONParser.parse(string).getDouble()
                 XCTAssertEqualWithAccuracy(value, shouldBeDouble, accuracy: DBL_EPSILON)
             } catch {
                 XCTFail("Unexpected error: \(error)")
@@ -219,7 +219,7 @@ class JSONParserTests: XCTestCase {
                     let json = try JSONParser.parse(string)
 
                     // numbers overflow, but we should be able to get them out as strings
-                    XCTAssertEqual(try? json.string(), string)
+                    XCTAssertEqual(try? json.getString(), string)
                 } catch {
                     XCTFail("Unexpected error \(error)")
                 }
@@ -242,8 +242,8 @@ class JSONParserTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(try? json.int("exceedsIntMax"), nil, "as int")
-        XCTAssertEqual(try? json.double("exceedsIntMax"), Double(anyValueExceedingIntMax), "as double")
+        XCTAssertEqual(try? json.getInt(at: "exceedsIntMax"), nil, "as int")
+        XCTAssertEqual(try? json.getDouble(at: "exceedsIntMax"), Double(anyValueExceedingIntMax), "as double")
     }
 
     // This test should also be run on the iPhone 5 simulator to check 32-bit support.
@@ -258,9 +258,9 @@ class JSONParserTests: XCTestCase {
         }
 
         // The Freddy parser behaves consistently across architectures.
-        XCTAssertEqual(try? json.int("exceedsIntMax"), nil, "as int")
-        XCTAssertEqual(try? json.double("exceedsIntMax"), nil, "as double")
-        XCTAssertEqual(try? json.string("exceedsIntMax"), anyValueExceedingIntMax.description, "as string")
+        XCTAssertEqual(try? json.getInt(at: "exceedsIntMax"), nil, "as int")
+        XCTAssertEqual(try? json.getDouble(at: "exceedsIntMax"), nil, "as double")
+        XCTAssertEqual(try? json.getString(at: "exceedsIntMax"), anyValueExceedingIntMax.description, "as string")
     }
 
     // This was tripping a fatalError with the Freddy parser for 64-bit at one point:
@@ -276,11 +276,11 @@ class JSONParserTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(try? json.int("exceedsIntMax"), nil, "as int")
+        XCTAssertEqual(try? json.getInt(at: "exceedsIntMax"), nil, "as int")
     }
 
     func testThatParserUnderstandsEmptyArrays() {
-        let expect = JSON.Array([])
+        let expect = JSON.array([])
         for string in ["[]", "[  ]", "  [  ]  "] {
             let value = try! JSONParser.parse(string)
             XCTAssertEqual(value, expect)
@@ -290,57 +290,57 @@ class JSONParserTests: XCTestCase {
     func testThatParserUnderstandsSingleItemArrays() {
         for (s, expect) in [
             (" [ null ] ", [JSON.null]),
-            ("[true]", [JSON.Bool(true)]),
-            ("[ [\"nested\"]]", [JSON.Array([.String("nested")])])
+            ("[true]", [JSON.bool(true)]),
+            ("[ [\"nested\"]]", [JSON.array([.string("nested")])])
         ] {
             let value = try! JSONParser.parse(s)
-            XCTAssertEqual(value, JSON.Array(expect))
+            XCTAssertEqual(value, JSON.array(expect))
         }
     }
 
     func testThatParserUnderstandsMultipleItemArrays() {
         for (string, expect) in [
-            (" [ null   ,   \"foo\" ] ", [JSON.null, .String("foo")]),
-            ("[true,true,false]", [JSON.Bool(true), .Bool(true), .Bool(false)]),
+            (" [ null   ,   \"foo\" ] ", [JSON.null, .string("foo")]),
+            ("[true,true,false]", [JSON.bool(true), .bool(true), .bool(false)]),
             ("[ [\"nested\",null], [[\"doubly\",true]]   ]",
-                [JSON.Array([.String("nested"), .null]),
-                 .Array([.Array([.String("doubly"), .Bool(true)])])])
+                [JSON.array([.string("nested"), .null]),
+                 .array([.array([.string("doubly"), .bool(true)])])])
         ] {
             let value = try! JSONParser.parse(string)
-            XCTAssertEqual(value, JSON.Array(expect))
+            XCTAssertEqual(value, JSON.array(expect))
         }
     }
 
     func testThatParserUnderstandsEmptyObjects() {
         for string in ["{}", "  {   }  "] {
             let value = try! JSONParser.parse(string)
-            XCTAssertEqual(value, JSON.Dictionary([:]))
+            XCTAssertEqual(value, JSON.dictionary([:]))
         }
     }
 
     func testThatParserUnderstandsSingleItemObjects() {
         for (string, expect) in [
-            ("{\"a\":\"b\"}", ["a":JSON.String("b")]),
-            ("{  \"foo\"  :  [null]  }", ["foo": JSON.Array([.null])]),
-            ("{  \"a\" : { \"b\": true }  }", ["a": JSON.Dictionary(["b":.Bool(true)])]),
+            ("{\"a\":\"b\"}", ["a":JSON.string("b")]),
+            ("{  \"foo\"  :  [null]  }", ["foo": JSON.array([.null])]),
+            ("{  \"a\" : { \"b\": true }  }", ["a": JSON.dictionary(["b":.bool(true)])]),
         ] {
             let value = try! JSONParser.parse(string)
-            XCTAssertEqual(value, JSON.Dictionary(expect))
+            XCTAssertEqual(value, JSON.dictionary(expect))
         }
     }
 
     func testThatParserUnderstandsMultipleItemObjects() {
         for (string, expect) in [
             ("{\"a\":\"b\",\"c\":\"d\"}",
-                ["a":JSON.String("b"),"c":.String("d")]),
+                ["a":JSON.string("b"),"c":.string("d")]),
             ("{  \"foo\"  :  [null]   ,   \"bar\":  true  }",
-                ["foo": JSON.Array([.null]), "bar": .Bool(true)]),
+                ["foo": JSON.array([.null]), "bar": .bool(true)]),
             ("{  \"a\" : { \"b\": true }, \"c\": { \"x\" : true, \"y\": null }  }",
-                ["a": JSON.Dictionary(["b":.Bool(true)]),
-                 "c": .Dictionary(["x": .Bool(true), "y": .null])]),
+                ["a": JSON.dictionary(["b":.bool(true)]),
+                 "c": .dictionary(["x": .bool(true), "y": .null])]),
         ] {
             let value = try! JSONParser.parse(string)
-            XCTAssertEqual(value, JSON.Dictionary(expect))
+            XCTAssertEqual(value, JSON.dictionary(expect))
         }
     }
 

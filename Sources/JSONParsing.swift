@@ -10,11 +10,11 @@ import Foundation
 
 // MARK: - Deserialize JSON
 
-/// Protocol describing a backend parser that can produce `JSON` from `NSData`.
+/// Protocol describing a backend parser that can produce `JSON` from `Data`.
 public protocol JSONParserType {
 
-    /// Creates an instance of `JSON` from `NSData`.
-    /// - parameter data: An instance of `NSData` to use to create `JSON`.
+    /// Creates an instance of `JSON` from `Data`.
+    /// - parameter data: An instance of `Data` to use to create `JSON`.
     /// - throws: An error that may arise from calling `JSONObjectWithData(_:options:)` on `NSJSONSerialization` with the given data.
     /// - returns: An instance of `JSON`.
     static func createJSONFromData(_ data: Data) throws -> JSON
@@ -39,12 +39,12 @@ extension JSON {
 
 extension JSONSerialization: JSONParserType {
 
-    // MARK: Decode NSData
+    // MARK: Decode Data
 
     /// Use the built-in, Objective-C based JSON parser to create `JSON`.
-    /// - parameter data: An instance of `NSData`.
+    /// - parameter data: An instance of `Data`.
     /// - returns: An instance of `JSON`.
-    /// - throws: An error that may arise if the `NSData` cannot be parsed into an object.
+    /// - throws: An error that may arise if the `Data` cannot be parsed into an object.
     public static func createJSONFromData(_ data: Data) throws -> JSON {
         return makeJSON(try JSONSerialization.jsonObject(with: data, options: []))
     }
@@ -60,10 +60,10 @@ extension JSONSerialization: JSONParserType {
             let numberType = CFNumberGetType(n)
             switch numberType {
             case .charType:
-                return .Bool(n.boolValue)
+                return .bool(n.boolValue)
 
             case .shortType, .intType, .longType, .cfIndexType, .nsIntegerType, .sInt8Type, .sInt16Type, .sInt32Type:
-                return .Int(n.intValue)
+                return .int(n.intValue)
 
             case .sInt64Type, .longLongType /* overflows 32-bit Int */:
                 #if /* 32-bit arch */ arch(arm) || arch(i386)
@@ -80,13 +80,13 @@ extension JSONSerialization: JSONParserType {
                     // you'll have to switch from .double to .string for pulling out
                     // overflowing values, but if you stick with a single parser,
                     // you at least won't have architecture-dependent lookups!
-                    return .Double(n.doubleValue)
+                    return .double(n.doubleValue)
                 #else
-                    return .Int(n.intValue)
+                    return .int(n.intValue)
                 #endif
 
             case .float32Type, .float64Type, .floatType, .doubleType, .cgFloatType:
-                return .Double(n.doubleValue)
+                return .double(n.doubleValue)
             }
 
         case let arr as [Any]:
@@ -96,7 +96,7 @@ extension JSONSerialization: JSONParserType {
             return makeJSONDictionary(dict)
 
         case let s as Swift.String:
-            return .String(s)
+            return .string(s)
 
         default:
             return .null
@@ -109,7 +109,7 @@ extension JSONSerialization: JSONParserType {
     /// - parameter jsonArray: The array to transform into a `JSON`.
     /// - returns: An instance of `JSON` matching the array.
     private static func makeJSONArray(_ jsonArray: [Any]) -> JSON {
-        return .Array(jsonArray.map(makeJSON))
+        return .array(jsonArray.map(makeJSON))
     }
 
     // MARK: Make a JSON Dictionary
