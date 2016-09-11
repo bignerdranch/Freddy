@@ -3,18 +3,18 @@ osx_image: xcode8
 install:
 - gem install xcpretty --no-rdoc --no-ri --no-document
 - gem install jazzy --no-rdoc --no-ri --no-document
-- brew install carthage --force-bottle
+- brew outdated carthage || brew upgrade carthage
 script:
 - open -b com.apple.iphonesimulator # Travis CI workaround
 - set -o pipefail && xcodebuild test -scheme 'Freddy' -sdk macosx | xcpretty -c
 - set -o pipefail && xcodebuild test -scheme 'MobileFreddy' -sdk iphonesimulator -destination
   'platform=iOS Simulator,name=iPhone 5' | xcpretty -c
+- open -b com.apple.appletvsimulator # Travis CI workaround
 - set -o pipefail && xcodebuild test -scheme 'TVFreddy' -sdk appletvsimulator -destination
   'platform=tvOS Simulator,name=Apple TV 1080p' | xcpretty -c
 - carthage build --no-skip-current
 - pod lib lint --quick
 after_success:
-- sleep 5
 - "./Configurations/publish_docs.sh"
 notifications:
   slack:
