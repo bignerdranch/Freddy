@@ -35,3 +35,6 @@ Packages/
 
 # Carthage
 Carthage/Build
+report.xml
+fastlane/test_output
+fastlane/build_output

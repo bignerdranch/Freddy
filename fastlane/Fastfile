@@ -1,0 +1,27 @@
+opt_out_usage
+default_platform :ios
+
+platform :ios do
+  lane :travis do
+    macOS
+    iOS
+    tvOS
+    lint
+  end
+
+  lane :macOS do
+    scan(scheme: "Freddy")
+  end
+
+  lane :iOS do
+    scan(scheme: "MobileFreddy", device: "iPhone 7 (10.0)")
+  end
+
+  lane :tvOS do
+    scan(scheme: "TVFreddy")
+  end
+
+  lane :lint do
+    pod_lib_lint(quick: true)
+  end
+end
