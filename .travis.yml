@@ -4,6 +4,7 @@ install:
   - gem install fastlane --no-rdoc --no-ri --no-document
   - gem install xcpretty --no-rdoc --no-ri --no-document
   - gem install jazzy --no-rdoc --no-ri --no-document
+  - gem install cocoapods --no-rdoc --no-ri --no-document
 script:
   bundle exec fastlane travis
 notifications:
