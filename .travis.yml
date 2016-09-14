@@ -1,12 +1,16 @@
 language: objective-c
 osx_image: xcode8
+cache: bundler
+rvm: 2.2.1
 install:
+  - bundle install
   - gem install fastlane --no-rdoc --no-ri --no-document
   - gem install xcpretty --no-rdoc --no-ri --no-document
   - gem install jazzy --no-rdoc --no-ri --no-document
   - gem install cocoapods --no-rdoc --no-ri --no-document
+  - brew outdated carthage || brew upgrade carthage
 script:
-  bundle exec fastlane travis
+  - bundle exec fastlane travis
 notifications:
   slack:
     secure: VHcEZcTuVR3gfHIcM9jcxrXgE3tkVIT4gWDLpnK7O4em86dCpaVkLDwr0UcQYxvqGS1J8pQqGZCwyOBsdgaItX52eRDMIez/384B56Vl6eufdLAcwWELIEtHyFkJ6XUjmASICaeeb8SpF/rj89/AXoHU6c8shY13NKtoBBZCGq8=
