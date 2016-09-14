@@ -5,32 +5,41 @@ fastlane documentation
 sudo gem install fastlane
 ```
 # Available Actions
-## iOS
-### ios travis
+### travis
 ```
-fastlane ios travis
+fastlane travis
 ```
-
-### ios macOS
+Perform the build steps on travis CI
+### macOS
 ```
-fastlane ios macOS
+fastlane macOS
 ```
-
-### ios iOS
+Build Freddy for macOS
+### iOS
 ```
-fastlane ios iOS
+fastlane iOS
 ```
-
-### ios tvOS
+Build Freddy for iOS
+### tvOS
 ```
-fastlane ios tvOS
+fastlane tvOS
 ```
-
-### ios lint
+Build Freddy for tvOS
+### validate_cocoapods
 ```
-fastlane ios lint
+fastlane validate_cocoapods
 ```
-
+Validate cocoapods podspec file
+### validate_carthage
+```
+fastlane validate_carthage
+```
+Validate carthage build
+### create_docs
+```
+fastlane create_docs
+```
+Create docs
 
 ----
 
