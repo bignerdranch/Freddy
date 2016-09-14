@@ -3,11 +3,6 @@ osx_image: xcode8
 cache: bundler
 rvm: 2.2.1
 install:
-  - bundle install
-  - gem install fastlane --no-rdoc --no-ri --no-document
-  - gem install xcpretty --no-rdoc --no-ri --no-document
-  - gem install jazzy --no-rdoc --no-ri --no-document
-  - gem install cocoapods --no-rdoc --no-ri --no-document
   - brew outdated carthage || brew upgrade carthage
 script:
   - bundle exec fastlane travis
