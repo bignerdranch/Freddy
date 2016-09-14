@@ -277,6 +277,7 @@ PLATFORMS
 DEPENDENCIES
   cocoapods
   fastlane
+  json (~> 1.8.0)
 
 RUBY VERSION
    ruby 2.2.1p85
