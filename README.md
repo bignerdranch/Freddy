@@ -176,7 +176,7 @@ and implement that protocol's `toJSON()` method:
 ```swift
 extension Person: JSONEncodable {
     public func toJSON() -> JSON {
-        return .Dictionary([
+        return .dictionary([
             "name": .string(name),
             "age": .int(age),
             "spouse": .bool(spouse)])
@@ -188,9 +188,7 @@ extension Person: JSONEncodable {
 
 ## Getting Started
 
-Freddy requires iOS 7.0, Mac OS X 10.9, watchOS 2.0, or tvOS 9.0. Linux is not yet supported.
-
-Dynamic frameworks on iOS require a minimum deployment target of iOS 8.0. For a project targeting iOS 7, see ["Submodules"](https://github.com/bignerdranch/Freddy#submodules).
+Freddy requires iOS 8.0, Mac OS X 10.9, watchOS 2.0, or tvOS 9.0. Linux is not yet supported.
 
 You have a few different options to install Freddy.
 
@@ -243,9 +241,7 @@ let package = Package(
 
 ### iOS 7
 
-If you would like to use Freddy with iOS 7, then you will need to copy Freddy's source files into your project.
-Embedded frameworks are only supported in iOS 8+.
-You can add Freddy as a submodule (see above), and then make sure to add the source files to your project.
+If you would like to use Freddy with iOS 7, then you will need to use a previous release of Freddy.
 
 ## Setting Breakpoint Errors
 
