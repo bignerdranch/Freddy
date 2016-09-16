@@ -185,6 +185,16 @@ class JSONSubscriptingTests: XCTestCase {
         }
     }
     
+    func testDecodeNullBecomesNilProducesOptional() {
+        let json: JSON = ["type": "Apartment", "resident": .null]
+        do {
+            let apartment = try json.decode(alongPath: .NullBecomesNil, type: Apartment.self)
+            XCTAssertNil(apartment?.resident, "This resident should be nil!")
+        } catch {
+            XCTFail("There should be no error: \(error)")
+        }
+    }
+    
     func testJSONDictionaryUnexpectedSubscript() {
         do {
             _ = try residentJSON.decode(at: 1, type: Resident.self)
@@ -426,6 +436,18 @@ extension Resident: JSONDecodable {
         age = try json.getInt(at: "age", alongPath: .MissingKeyBecomesNil)
         hasPet = try json.getBool(at: "hasPet", alongPath: .NullBecomesNil)
         rent = try json.getDouble(at: "rent", alongPath: [.NullBecomesNil, .MissingKeyBecomesNil])
+    }
+}
+
+private struct Apartment {
+    let type: String
+    let resident: Resident?
+}
+
+extension Apartment: JSONDecodable {
+    fileprivate init(json: JSON) throws {
+        type = try json.getString(at: "type")
+        resident = try json.decode(at: "resident", alongPath: .NullBecomesNil, type: Resident.self)
     }
 }
 

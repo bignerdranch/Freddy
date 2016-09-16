@@ -148,11 +148,33 @@ class JSONParserTests: XCTestCase {
         XCTAssertEqual(value, JSON.string(expect))
     }
 
+    func testThatParserFailsWhenIncompleteDataIsPresent() {
+        for s in [" ", "[0,", "{\"\":"] {
+            do {
+                let value = try JSONParser.parse(" ")
+                XCTFail("Unexpectedly parsed \(s) as \(value)")
+            } catch JSONParser.Error.endOfStreamUnexpected {
+                // expected error - do nothing
+            } catch {
+                XCTFail("Unexpected error \(error)")
+            }
+        }
+    }
+
     func testThatParserUnderstandsNumbers() {
         for (string, shouldBeInt) in [
             ("  0  ", 0),
             ("123", 123),
             ("  -20  ", -20),
+            ("-0", 0),
+            ("0e0", 0),
+            ("0e1", 0),
+            ("0e1", 0),
+            ("-0e20", 0),
+            ("0.1e1", 1),
+            ("0.1E1", 1),
+            ("0e01", 0),
+            ("0.1e0001", 1),
         ] {
             do {
                 let value = try JSONParser.parse(string).getInt()
@@ -172,6 +194,8 @@ class JSONParserTests: XCTestCase {
             ("123.45E2", 123.45E2),
             ("123.45e+2", 123.45e+2),
             ("-123.45e-2", -123.45e-2),
+            ("0.1e-1", 0.01),
+            ("-0.1E-1", -0.01),
         ] {
             do {
                 let value = try JSONParser.parse(string).getDouble()
@@ -192,10 +216,10 @@ class JSONParserTests: XCTestCase {
             ("1.0e",  JSONParser.Error.endOfStreamUnexpected),
             ("1.0e+", JSONParser.Error.endOfStreamUnexpected),
             ("1.0e-", JSONParser.Error.endOfStreamUnexpected),
-            ("0e1",   JSONParser.Error.endOfStreamGarbage(offset: 1)),
         ] {
             do {
-                _ = try JSONParser.parse(string)
+                let value = try JSONParser.parse(string)
+                XCTFail("Unexpectedly parsed \(string) as \(value)")
             } catch let error as JSONParser.Error {
                 XCTAssert(error == expectedError)
             } catch {

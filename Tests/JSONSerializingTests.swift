@@ -7,9 +7,14 @@ class JSONSerializingTests: XCTestCase {
     let json = JSONFromFixture("sample.JSON")
     let noWhiteSpaceData = dataFromFixture("sampleNoWhiteSpace.JSON")
 
-    func testThatJSONCanBeSerialized() {
+    func testThatJSONCanBeSerializedToNSData() {
         let data = try! json.serialize()
         XCTAssertGreaterThan(data.count, 0, "There should be data.")
+    }
+    
+    func testThatJSONCanBeSerializedToString() {
+        let string = try! json.serializeString()
+        XCTAssertGreaterThan(string.characters.count, 0, "There should be characters.")
     }
 
     func testThatJSONDataIsEqual() {
@@ -18,10 +23,23 @@ class JSONSerializingTests: XCTestCase {
         let noWhiteSpaceSerializedJSONData = try! noWhiteSpaceJSON.serialize()
         XCTAssertEqual(serializedJSONData, noWhiteSpaceSerializedJSONData, "Serialized data should be equal.")
     }
+    
+    func testThatJSONStringIsEqual() {
+        let serializedJSONString = try! json.serializeString()
+        let noWhiteSpaceJSON = try! JSON(data: noWhiteSpaceData)
+        let noWhiteSpaceSerializedJSONString = try! noWhiteSpaceJSON.serializeString()
+        XCTAssertEqual(serializedJSONString, noWhiteSpaceSerializedJSONString, "Serialized string should be equal.")
+    }
 
-    func testThatJSONSerializationMakesEqualJSON() {
+    func testThatJSONDataSerializationMakesEqualJSON() {
         let serializedJSONData = try! json.serialize()
         let serialJSON = try! JSON(data: serializedJSONData)
+        XCTAssert(json == serialJSON, "The JSON values should be equal.")
+    }
+    
+    func testThatJSONStringSerializationMakesEqualJSON() {
+        let serializedJSONString = try! json.serializeString()
+        let serialJSON = try! JSON(jsonString: serializedJSONString)
         XCTAssert(json == serialJSON, "The JSON values should be equal.")
     }
 
@@ -33,6 +51,18 @@ class JSONSerializingTests: XCTestCase {
         ])
         let data = try! json.serialize()
         let deserializedResult = try! JSON(data: data).getDictionary()
+        let deserialized = JSON.dictionary(deserializedResult)
+        XCTAssertEqual(json, deserialized, "Serialize/Deserialize succeed with Bools")
+    }
+    
+    func testThatJSONStringSerializationHandlesBoolsCorrectly() {
+        let json = JSON.dictionary([
+            "foo": .bool(true),
+            "bar": .bool(false),
+            "baz": .int(123),
+        ])
+        let string = try! json.serializeString()
+        let deserializedResult = try! JSON(jsonString: string).getDictionary()
         let deserialized = JSON.dictionary(deserializedResult)
         XCTAssertEqual(json, deserialized, "Serialize/Deserialize succeed with Bools")
     }

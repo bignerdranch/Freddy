@@ -41,6 +41,9 @@ extension JSON {
         
         /// Unexpected JSON `value` was found that is not convertible `to` type 
         case valueNotConvertible(value: JSON, to: Any.Type)
+        
+        /// The JSON is not serializable to a `String`.
+        case stringSerializationError
     }
 
 }
