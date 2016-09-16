@@ -158,8 +158,12 @@ public struct JSONParser {
                 return try decodeNumberAsString(start)
             }
         }
-        
-        throw Error.ValueInvalid(offset: loc, character: UnicodeScalar(input[loc]))
+
+        if loc < input.count {
+            throw Error.ValueInvalid(offset: loc, character: UnicodeScalar(input[loc]))
+        } else {
+            throw Error.EndOfStreamUnexpected
+        }
     }
 
     private mutating func skipWhitespace() {
@@ -659,12 +663,16 @@ private struct NumberParser {
             return
         }
 
-        guard input[loc] == Literal.PERIOD else {
-            state = .Done
-            return
-        }
+        switch input[loc] {
+        case Literal.PERIOD:
+            state = .Decimal
 
-        state = .Decimal
+        case Literal.e, Literal.E:
+            state = .Exponent
+
+        default:
+            state = .Done
+        }
     }
 
     mutating func parsePreDecimalDigits(@noescape f: (UInt8) throws -> Void) rethrows {

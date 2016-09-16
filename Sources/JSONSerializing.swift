@@ -14,6 +14,18 @@ extension JSON {
         let obj: AnyObject = toNSJSONSerializationObject()
         return try NSJSONSerialization.dataWithJSONObject(obj, options: [])
     }
+    
+    /// Attempt to serialize `JSON` into a `String`.
+    /// - returns: A `String` containing the `JSON`.
+    /// - throws: A `JSON.Error.StringSerializationError` or errors that arise from `NSJSONSerialization`.
+    /// - see: Foundation.NSJSONSerialization
+    public func serializeString() throws -> Swift.String {
+        let data = try self.serialize()
+        guard let json = Swift.String(data: data, encoding: NSUTF8StringEncoding) else {
+            throw Error.StringSerializationError
+        }
+        return json
+    }
 
     /// A function to help with the serialization of `JSON`.
     /// - returns: An `AnyObject` suitable for `NSJSONSerialization`'s use.
