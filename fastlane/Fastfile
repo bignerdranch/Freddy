@@ -5,7 +5,7 @@ opt_out_usage
 #######################################################################
 
 before_all do
-    reset_simulators
+#    reset_simulators
 end
 
 after_all do |lane|
@@ -35,7 +35,7 @@ end
 
 desc "Build Freddy for iOS"
 lane :iOS do
-  scan(scheme: "MobileFreddy", device: "iPhone 7 (10.0)")
+  scan(scheme: "MobileFreddy", device: "iPhone 5 (10.0)")
 end
 
 desc "Build Freddy for tvOS"
@@ -66,4 +66,17 @@ lane :create_docs do
   else
     puts "This is a CI only lane, skipping"
   end
+end
+
+desc "Test testing"
+lane :test_testing do
+  sh("xcrun simctl create TestingiPhone5 com.apple.CoreSimulator.SimDeviceType.iPhone-5 com.apple.CoreSimulator.SimRuntime.iOS-10-0")
+  sh("xcrun simctl boot TestingiPhone5")
+  scan(scheme: "MobileFreddy", device: "TestingiPhone5")
+  # sh("xcrun simctl shutdown TestingiPhone5")
+  # sh("xcrun simctl delete TestingiPhone5")
+
+  sh("xcrun simctl create TestTV com.apple.CoreSimulator.SimDeviceType.Apple-TV-1080p com.apple.CoreSimulator.SimRuntime.tvOS-10-0")
+  sh("xcrun simctl boot TestTV")
+  scan(scheme: "TVFreddy", device: "TestTV")
 end

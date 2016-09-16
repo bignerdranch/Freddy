@@ -40,6 +40,11 @@ Validate carthage build
 fastlane create_docs
 ```
 Create docs
+### test_testing
+```
+fastlane test_testing
+```
+Test testing
 
 ----
 
