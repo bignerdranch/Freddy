@@ -33,7 +33,7 @@ extension Double: JSONDecodable {
         case let .Int(int):
             self = Swift.Double(int)
         case let .String(string):
-            if let double = Swift.Double(string) where double <= Double(Swift.Int.max) {
+            if let double = Swift.Double(string) {
                 self = double
                 return
             }
