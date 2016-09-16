@@ -37,7 +37,7 @@ extension Double: JSONDecodable {
                 self = double
                 return
             }
-            fallthrough
+            throw JSON.Error.ValueNotConvertible(value: json, to: Swift.Double)
         default:
             throw JSON.Error.ValueNotConvertible(value: json, to: Swift.Double)
         }
@@ -67,7 +67,8 @@ extension Int: JSONDecodable {
                 self = int
                 return
             }
-            fallthrough
+            
+            throw JSON.Error.ValueNotConvertible(value: json, to: Swift.Int)
         default:
             throw JSON.Error.ValueNotConvertible(value: json, to: Swift.Int)
         }
