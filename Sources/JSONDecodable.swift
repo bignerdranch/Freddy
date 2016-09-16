@@ -59,12 +59,14 @@ extension Int: JSONDecodable {
         case let .Int(int):
             self = int
         case let .String(string):
-            if let double = Swift.Double(string) where double <= Double(Swift.Int.max) && Swift.Double(Swift.Int(double)) == double {
-                self = Swift.Int(double)
+
+            if let int = Swift.Int(string) {
+                self = int
                 return
             }
-            else if let int = Swift.Int(string) {
-                self = int
+
+            if let double = Swift.Double(string) where double <= Double(Swift.Int.max) && Swift.Double(Swift.Int(double)) == double {
+                self = Swift.Int(double)
                 return
             }
             
