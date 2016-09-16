@@ -35,12 +35,18 @@ end
 
 desc "Build Freddy for iOS"
 lane :iOS do
-  scan(scheme: "MobileFreddy", device: "iPhone 5 (10.0)")
+  device_id = sh("xcrun simctl create TestingiPhone5 com.apple.CoreSimulator.SimDeviceType.iPhone-5 com.apple.CoreSimulator.SimRuntime.iOS-10-0")
+  puts "device_id: #{device_id}"
+  sh("open -a /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/ --args -CurrentDeviceUDID #{device_id}")
+  scan(scheme: "MobileFreddy", device: "TestingiPhone5")
 end
 
 desc "Build Freddy for tvOS"
 lane :tvOS do
-  scan(scheme: "TVFreddy")
+  device_id = sh("xcrun simctl create TestTV com.apple.CoreSimulator.SimDeviceType.Apple-TV-1080p com.apple.CoreSimulator.SimRuntime.tvOS-10-0")
+  puts "device_id: #{device_id}"
+  sh("open -a /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/ --args -CurrentDeviceUDID #{device_id}")
+  scan(scheme: "TVFreddy", device: "TestTV")
 end
 
 desc "Validate cocoapods podspec file"
@@ -70,13 +76,16 @@ end
 
 desc "Test testing"
 lane :test_testing do
-  sh("xcrun simctl create TestingiPhone5 com.apple.CoreSimulator.SimDeviceType.iPhone-5 com.apple.CoreSimulator.SimRuntime.iOS-10-0")
-  sh("xcrun simctl boot TestingiPhone5")
+  device_id = sh("xcrun simctl create TestingiPhone5 com.apple.CoreSimulator.SimDeviceType.iPhone-5 com.apple.CoreSimulator.SimRuntime.iOS-10-0")
+  puts "device_id: #{device_id}"
+  sh("open -a /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/ --args -CurrentDeviceUDID #{device_id}")
+
+#  sh("xcrun simctl boot TestingiPhone5")
   scan(scheme: "MobileFreddy", device: "TestingiPhone5")
   # sh("xcrun simctl shutdown TestingiPhone5")
   # sh("xcrun simctl delete TestingiPhone5")
 
-  sh("xcrun simctl create TestTV com.apple.CoreSimulator.SimDeviceType.Apple-TV-1080p com.apple.CoreSimulator.SimRuntime.tvOS-10-0")
-  sh("xcrun simctl boot TestTV")
-  scan(scheme: "TVFreddy", device: "TestTV")
+#  sh("xcrun simctl create TestTV com.apple.CoreSimulator.SimDeviceType.Apple-TV-1080p com.apple.CoreSimulator.SimRuntime.tvOS-10-0")
+#  sh("xcrun simctl boot TestTV")
+#  scan(scheme: "TVFreddy", device: "TestTV")
 end
