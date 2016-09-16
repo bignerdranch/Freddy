@@ -831,7 +831,7 @@ extension JSONParser: JSONParserType {
     /// - parameter data: An instance of `Data` to parse `JSON` from.
     /// - throws: Any `JSONParser.Error` that arises during decoding.
     /// - seealso: JSONParser.parse()
-    public static func createJSONFromData(_ data: Data) throws -> JSON {
+    public static func createJSON(from data: Data) throws -> JSON {
         return try parse(utf8: data)
     }
 

@@ -17,7 +17,7 @@ public protocol JSONParserType {
     /// - parameter data: An instance of `Data` to use to create `JSON`.
     /// - throws: An error that may arise from calling `JSONObjectWithData(_:options:)` on `NSJSONSerialization` with the given data.
     /// - returns: An instance of `JSON`.
-    static func createJSONFromData(_ data: Data) throws -> JSON
+    static func createJSON(from data: Data) throws -> JSON
 
 }
 
@@ -26,12 +26,12 @@ extension JSON {
     /// Create `JSON` from UTF-8 `data`. By default, parses using the
     /// Swift-native `JSONParser` backend.
     public init(data: Data, usingParser parser: JSONParserType.Type = JSONParser.self) throws {
-        self = try parser.createJSONFromData(data)
+        self = try parser.createJSON(from: data)
     }
 
     /// Create `JSON` from UTF-8 `string`.
     public init(jsonString: Swift.String, usingParser parser: JSONParserType.Type = JSONParser.self) throws {
-        self = try parser.createJSONFromData((jsonString as NSString).data(using: Swift.String.Encoding.utf8.rawValue) ?? Data())
+        self = try parser.createJSON(from: (jsonString as NSString).data(using: Swift.String.Encoding.utf8.rawValue) ?? Data())
     }
 }
 
@@ -45,8 +45,8 @@ extension JSONSerialization: JSONParserType {
     /// - parameter data: An instance of `Data`.
     /// - returns: An instance of `JSON`.
     /// - throws: An error that may arise if the `Data` cannot be parsed into an object.
-    public static func createJSONFromData(_ data: Data) throws -> JSON {
-        return makeJSON(try JSONSerialization.jsonObject(with: data, options: []))
+    public static func createJSON(from data: Data) throws -> JSON {
+        return makeJSON(with: try JSONSerialization.jsonObject(with: data, options: []))
     }
 
     // MARK: Make JSON
@@ -54,7 +54,7 @@ extension JSONSerialization: JSONParserType {
     /// Makes a `JSON` object by matching its argument to a case in the `JSON` enum.
     /// - parameter object: The instance of `Any` returned from serializing the JSON.
     /// - returns: An instance of `JSON` matching the JSON given to the function.
-    private static func makeJSON(_ object: Any) -> JSON {
+    private static func makeJSON(with object: Any) -> JSON {
         switch object {
         case let n as NSNumber:
             let numberType = CFNumberGetType(n)
@@ -119,7 +119,7 @@ extension JSONSerialization: JSONParserType {
     /// - returns: An instance of `JSON` matching the dictionary.
     private static func makeJSONDictionary(_ jsonDict: [Swift.String: Any]) -> JSON {
         return JSON(jsonDict.lazy.map { (key, value) in
-            (key, makeJSON(value))
+            (key, makeJSON(with: value))
         })
     }
 
