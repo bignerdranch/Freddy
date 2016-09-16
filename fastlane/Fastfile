@@ -1,0 +1,69 @@
+opt_out_usage
+
+#######################################################################
+# Lifecycle Hooks
+#######################################################################
+
+before_all do
+    reset_simulators
+end
+
+after_all do |lane|
+    # This block is called, only if the executed lane was successful
+end
+
+error do |lane, exception|
+end
+
+#######################################################################
+# Lanes
+#######################################################################
+
+desc "Perform the build steps on travis CI"
+lane :travis do
+  macOS
+  iOS
+  tvOS
+  validate_cocoapods
+  validate_carthage
+end
+
+desc "Build Freddy for macOS"
+lane :macOS do
+  scan(scheme: "Freddy")
+end
+
+desc "Build Freddy for iOS"
+lane :iOS do
+  scan(scheme: "MobileFreddy", device: "iPhone 7 (10.0)")
+end
+
+desc "Build Freddy for tvOS"
+lane :tvOS do
+  scan(scheme: "TVFreddy")
+end
+
+desc "Validate cocoapods podspec file"
+lane :validate_cocoapods do
+  pod_lib_lint(quick: true)
+end
+
+desc "Validate carthage build"
+lane :validate_carthage do
+  if is_ci?
+    system("./Resources/scripts/validate_carthage.sh")
+  else
+    puts "This is a CI only lane, skipping"
+  end
+end
+
+desc "Create docs"
+lane :create_docs do
+  ## TODO: Implement once jazzy is working well for Xcode 8
+  if is_ci?
+    #system("./Resources/scripts/publish_docs.sh")
+    puts "Would be creating docs here"
+  else
+    puts "This is a CI only lane, skipping"
+  end
+end

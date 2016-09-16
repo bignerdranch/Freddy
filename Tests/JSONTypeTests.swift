@@ -12,71 +12,71 @@ import Freddy
 class JSONTypeTests: XCTestCase {
     
     func testCastInitializeArray() {
-        let array = [ JSON.Int(1), JSON.Int(2), JSON.Int(3) ]
-        let expected = JSON.Array(array)
+        let array: [JSON] = [1, 2, 3]
+        let expected = JSON.array(array)
         let json = JSON(array)
         XCTAssertEqual(json, expected)
     }
 
     func testCastInitializeAnyCollection() {
-        let collection = (1 ... 3).lazy.map { JSON.Int($0) }
-        let expected = JSON.Array([ JSON.Int(1), JSON.Int(2), JSON.Int(3) ])
+        let collection = (1 ... 3).lazy.map { JSON.int($0) }
+        let expected: JSON = .array([1, 2, 3])
         let json = JSON(collection)
         XCTAssertEqual(json, expected)
     }
 
     func testCastInitializeDictionary() {
-        let dictionary = [ "foo": JSON.Int(1), "bar": JSON.Int(2), "baz": JSON.Int(3) ]
-        let expected = JSON.Dictionary(dictionary)
+        let dictionary: [String:JSON] = ["foo": 1, "bar": 2, "baz": 3]
+        let expected = JSON.dictionary(dictionary)
         let json = JSON(dictionary)
         XCTAssertEqual(json, expected)
     }
 
     func testCastInitializeAnyDictionary() {
-        let dictionary = [ "foo": 1, "bar": 2, "baz": 3 ]
+        let dictionary = ["foo": 1, "bar": 2, "baz": 3]
         let pairCollection = dictionary.lazy.map { (key, value) in
             (key, JSON(value * 2))
         }
-        let expected = JSON.Dictionary([ "foo": JSON.Int(2), "bar": JSON.Int(4), "baz": JSON.Int(6) ])
+        let expected: JSON = .dictionary(["foo": 2, "bar": 4, "baz": 6])
         let json = JSON(pairCollection)
         XCTAssertEqual(json, expected)
     }
 
     func testCastInitializeDouble() {
         let double = 42.0 as Double
-        let expected = JSON.Double(double)
+        let expected = JSON.double(double)
         let json = JSON(double)
         XCTAssertEqual(json, expected)
     }
 
     func testCastInitializeInt() {
         let int = 65535 as Int
-        let expected = JSON.Int(int)
+        let expected = JSON.int(int)
         let json = JSON(int)
         XCTAssertEqual(json, expected)
     }
 
     func testCastInitializeString() {
         let string = "Don't Panic"
-        let expected = JSON.String(string)
+        let expected = JSON.string(string)
         let json = JSON(string)
         XCTAssertEqual(json, expected)
     }
 
     func testCastInitializeBool() {
         let bool = false
-        let expected = JSON.Bool(bool)
+        let expected = JSON.bool(bool)
         let json = JSON(bool)
         XCTAssertEqual(json, expected)
     }
 
     func testLiteralConversion() {
-        let valueNotLiteral: JSON = .Dictionary([
-            "someKey": .Array([
-                .Dictionary([ "children": .Array([ .String("a string") ]) ]),
-                .Dictionary([ "children": .Array([ .String("\u{00E9}"), .String("\u{00E9}") ]) ]),
-                .Dictionary([ "children": .Array([ .String("\u{1F419}"), .String("\u{1F419}") ]) ]),
-                .Dictionary([ "children": .Array([ .Double(42.0), .Int(65535), .Bool(true), .Null ]) ])
+        let valueNotLiteral: JSON = .dictionary([
+            "someKey": .array([
+                .dictionary([ "children": .array([ .string("a string") ]) ]),
+                .dictionary([ "children": .array([ .string("\u{00E9}"), .string("\u{00E9}") ]) ]),
+                .dictionary([ "children": .array([ .string("\u{1F419}"), .string("\u{1F419}") ]) ]),
+                .dictionary([ "children": .array([ .double(42.0), .int(65535), .bool(true), .null ]) ])
             ])
         ])
         
