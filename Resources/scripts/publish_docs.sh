@@ -2,7 +2,7 @@
 
 if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
     echo -e "Generating Jazzy output \n"
-    jazzy --swift-version 2.2 -m Freddy -g "https://github.com/bignerdranch/Freddy" -a "Big Nerd Ranch" -u "https://github.com/bignerdranch" --module-version=2.1.0 -r "http://bignerdranch.github.io/Freddy/"
+    jazzy --swift-version 3.0 -m Freddy -g "https://github.com/bignerdranch/Freddy" -a "Big Nerd Ranch" -u "https://github.com/bignerdranch" --module-version=3.0.0 -r "http://bignerdranch.github.io/Freddy/"
 
     echo -e "Moving into docs directory \n"
     pushd docs
