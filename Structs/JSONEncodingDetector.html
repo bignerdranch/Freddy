@@ -15,8 +15,6 @@
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">Freddy Docs</a> (100% documented)</p>
-        <p class="header-right"><a href="https://github.com/bignerdranch/Freddy"><img src="../img/gh.png"/>View on GitHub</a></p>
-        <p class="header-right"><a href="dash-feed://http%3A%2F%2Fbignerdranch%2Egithub%2Eio%2FFreddy%2Fdocsets%2FFreddy%2Exml"><img src="../img/dash.png"/>Install in Dash</a></p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -34,6 +32,12 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Enums/JSON.html">JSON</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/JSON/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/JSON/SubscriptingOptions.html">– SubscriptingOptions</a>
               </li>
             </ul>
           </li>
@@ -56,7 +60,10 @@
                 <a href="../Extensions/Int.html">Int</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Extensions/NSJSONSerialization.html">NSJSONSerialization</a>
+                <a href="../Extensions/JSONSerialization.html">JSONSerialization</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/RawRepresentable.html">RawRepresentable</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/String.html">String</a>
@@ -67,7 +74,7 @@
             <a href="../Functions.html">Functions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Functions.html#/s:ZF6Freddyoi2eeFTOS_4JSONS0__Sb">==(_:_:)</a>
+                <a href="../Functions.html#/s:F6Freddyoi2eeFTOS_4JSONS0__Sb">==(_:_:)</a>
               </li>
             </ul>
           </li>
@@ -95,7 +102,13 @@
                 <a href="../Structs/JSONEncodingDetector.html">JSONEncodingDetector</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Structs/JSONEncodingDetector/Encoding.html">– Encoding</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Structs/JSONParser.html">JSONParser</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/JSONParser/Error.html">– Error</a>
               </li>
             </ul>
           </li>
@@ -165,7 +178,61 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">supportedEncodings</span><span class="p">:</span> <span class="p">[</span><span class="kt">Encoding</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="kt">UTF8</span><span class="p">]</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">supportedEncodings</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/JSONEncodingDetector/Encoding.html">Encoding</a></span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="n">utf8</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZFV6Freddy20JSONEncodingDetector14detectEncodingFGVs17RandomAccessSliceGSRVs5UInt8__T8encodingOS0_8Encoding19byteOrderMarkLengthSi_"></a>
+                    <a name="//apple_ref/swift/Method/detectEncoding(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZFV6Freddy20JSONEncodingDetector14detectEncodingFGVs17RandomAccessSliceGSRVs5UInt8__T8encodingOS0_8Encoding19byteOrderMarkLengthSi_">detectEncoding(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>/ Attempts to detect the Unicode encoding used for a given set of data.
+/
+/ This function initially looks for a Byte Order Mark in the following form:
+/
+/     Bytes     | Encoding Form
+/ &mdash;&mdash;&mdash;&mdash;&ndash;|&mdash;&mdash;&mdash;&mdash;&mdash;-
+/ 00 00 FE FF   |   UTF-32, big-endian
+/ FF FE 00 00   |   UTF-32, little-endian
+/ FE FF         |   UTF-16, big-endian
+/ FF FE         |   UTF-16, little-endian
+/ EF BB BF      |   UTF-8
+/
+/ If a BOM is not found then we detect using the following approach described in
+/ the JSON RFC <a href="http://www.ietf.org/rfc/rfc4627.txt:">http://www.ietf.org/rfc/rfc4627.txt:</a>
+/
+/ Since the first two characters of a JSON text will always be ASCII
+/ characters [RFC0020], it is possible to determine whether an octet
+/ stream is UTF-8, UTF-16 (BE or LE), or UTF-32 (BE or LE) by looking
+/ at the pattern of nulls in the first four octets.
+/
+/ 00 00 00 xx  UTF-32BE
+/ 00 xx 00 xx  UTF-16BE
+/ xx 00 00 00  UTF-32LE
+/ xx 00 xx 00  UTF-16LE
+/ xx xx xx xx  UTF-8
+/
+/ - parameter header: The front Slice of data being read and evaluated.
+/ - returns: A tuple containing the detected Unicode encoding and the lenght of the byte order mark.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">static</span> <span class="kd">func</span> <span class="nf">detectEncoding</span><span class="p">(</span><span class="n">_</span> <span class="nv">header</span><span class="p">:</span> <span class="kt">RandomAccessSlice</span><span class="o">&lt;</span><span class="kt">UnsafeBufferPointer</span><span class="o">&lt;</span><span class="kt">UInt8</span><span class="o">&gt;&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">ByteStreamPrefixInformation</span></code></pre>
 
                         </div>
                       </div>
@@ -177,8 +244,8 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2016 <a class="link" href="https://github.com/bignerdranch" target="_blank" rel="external">Big Nerd Ranch</a>. All rights reserved. (Last updated: 2016-01-29)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.5.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2016 <a class="link" href="https://github.com/bignerdranch/Freddy" target="_blank" rel="external">Matt Mathias, John Gallagher, and Zachary Waldowski</a>. All rights reserved. (Last updated: 2016-09-17)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>

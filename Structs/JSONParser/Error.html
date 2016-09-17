@@ -15,8 +15,6 @@
     <header>
       <div class="content-wrapper">
         <p><a href="../../index.html">Freddy Docs</a> (100% documented)</p>
-        <p class="header-right"><a href="https://github.com/bignerdranch/Freddy"><img src="../../img/gh.png"/>View on GitHub</a></p>
-        <p class="header-right"><a href="dash-feed://http%3A%2F%2Fbignerdranch%2Egithub%2Eio%2FFreddy%2Fdocsets%2FFreddy%2Exml"><img src="../../img/dash.png"/>Install in Dash</a></p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -34,6 +32,12 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../../Enums/JSON.html">JSON</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/JSON/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/JSON/SubscriptingOptions.html">– SubscriptingOptions</a>
               </li>
             </ul>
           </li>
@@ -56,7 +60,10 @@
                 <a href="../../Extensions/Int.html">Int</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../Extensions/NSJSONSerialization.html">NSJSONSerialization</a>
+                <a href="../../Extensions/JSONSerialization.html">JSONSerialization</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/RawRepresentable.html">RawRepresentable</a>
               </li>
               <li class="nav-group-task">
                 <a href="../../Extensions/String.html">String</a>
@@ -67,7 +74,7 @@
             <a href="../../Functions.html">Functions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../../Functions.html#/s:ZF6Freddyoi2eeFTOS_4JSONS0__Sb">==(_:_:)</a>
+                <a href="../../Functions.html#/s:F6Freddyoi2eeFTOS_4JSONS0__Sb">==(_:_:)</a>
               </li>
             </ul>
           </li>
@@ -95,7 +102,13 @@
                 <a href="../../Structs/JSONEncodingDetector.html">JSONEncodingDetector</a>
               </li>
               <li class="nav-group-task">
+                <a href="../../Structs/JSONEncodingDetector/Encoding.html">– Encoding</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../../Structs/JSONParser.html">JSONParser</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/JSONParser/Error.html">– Error</a>
               </li>
             </ul>
           </li>
@@ -107,7 +120,7 @@
             <h1>Error</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Error</span><span class="p">:</span> <span class="kt">ErrorType</span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Error</span><span class="p">:</span> <span class="kt">Swift</span><span class="o">.</span><span class="kt">Error</span></code></pre>
 
                 </div>
               </div>
@@ -123,9 +136,9 @@ occurred.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV6Freddy10JSONParser5Error21EndOfStreamUnexpectedFMS1_S1_"></a>
-                    <a name="//apple_ref/swift/Element/EndOfStreamUnexpected" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error21EndOfStreamUnexpectedFMS1_S1_">EndOfStreamUnexpected</a>
+                    <a name="/s:FOV6Freddy10JSONParser5Error21endOfStreamUnexpectedFMS1_S1_"></a>
+                    <a name="//apple_ref/swift/Element/endOfStreamUnexpected" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error21endOfStreamUnexpectedFMS1_S1_">endOfStreamUnexpected</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -142,7 +155,7 @@ quote.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">EndOfStreamUnexpected</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">endOfStreamUnexpected</span></code></pre>
 
                         </div>
                       </div>
@@ -156,9 +169,9 @@ quote.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV6Freddy10JSONParser5Error18EndOfStreamGarbageFMS1_FT6offsetSi_S1_"></a>
-                    <a name="//apple_ref/swift/Element/EndOfStreamGarbage" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error18EndOfStreamGarbageFMS1_FT6offsetSi_S1_">EndOfStreamGarbage</a>
+                    <a name="/s:FOV6Freddy10JSONParser5Error18endOfStreamGarbageFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/endOfStreamGarbage" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error18endOfStreamGarbageFMS1_FT6offsetSi_S1_">endOfStreamGarbage</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -174,7 +187,7 @@ parsing all valid JSON.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">EndOfStreamGarbage</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">endOfStreamGarbage</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -188,9 +201,9 @@ parsing all valid JSON.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV6Freddy10JSONParser5Error20ExceededNestingLimitFMS1_FT6offsetSi_S1_"></a>
-                    <a name="//apple_ref/swift/Element/ExceededNestingLimit" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error20ExceededNestingLimitFMS1_FT6offsetSi_S1_">ExceededNestingLimit</a>
+                    <a name="/s:FOV6Freddy10JSONParser5Error20exceededNestingLimitFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/exceededNestingLimit" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error20exceededNestingLimitFMS1_FT6offsetSi_S1_">exceededNestingLimit</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -206,7 +219,7 @@ around <code>offset</code>.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">ExceededNestingLimit</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">exceededNestingLimit</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -220,9 +233,9 @@ around <code>offset</code>.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV6Freddy10JSONParser5Error12ValueInvalidFMS1_FT6offsetSi9characterSc_S1_"></a>
-                    <a name="//apple_ref/swift/Element/ValueInvalid" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error12ValueInvalidFMS1_FT6offsetSi9characterSc_S1_">ValueInvalid</a>
+                    <a name="/s:FOV6Freddy10JSONParser5Error12valueInvalidFMS1_FT6offsetSi9characterSc_S1_"></a>
+                    <a name="//apple_ref/swift/Element/valueInvalid" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error12valueInvalidFMS1_FT6offsetSi9characterSc_S1_">valueInvalid</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -237,7 +250,7 @@ around <code>offset</code>.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">ValueInvalid</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">character</span><span class="p">:</span> <span class="kt">UnicodeScalar</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">valueInvalid</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">character</span><span class="p">:</span> <span class="kt">UnicodeScalar</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -251,9 +264,9 @@ around <code>offset</code>.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV6Freddy10JSONParser5Error20UnicodeEscapeInvalidFMS1_FT6offsetSi_S1_"></a>
-                    <a name="//apple_ref/swift/Element/UnicodeEscapeInvalid" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error20UnicodeEscapeInvalidFMS1_FT6offsetSi_S1_">UnicodeEscapeInvalid</a>
+                    <a name="/s:FOV6Freddy10JSONParser5Error20unicodeEscapeInvalidFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/unicodeEscapeInvalid" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error20unicodeEscapeInvalidFMS1_FT6offsetSi_S1_">unicodeEscapeInvalid</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -270,7 +283,7 @@ to represent U+1F984, <q>UNICORN FACE</q>.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">UnicodeEscapeInvalid</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">unicodeEscapeInvalid</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -284,9 +297,9 @@ to represent U+1F984, <q>UNICORN FACE</q>.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV6Freddy10JSONParser5Error28ControlCharacterUnrecognizedFMS1_FT6offsetSi_S1_"></a>
-                    <a name="//apple_ref/swift/Element/ControlCharacterUnrecognized" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error28ControlCharacterUnrecognizedFMS1_FT6offsetSi_S1_">ControlCharacterUnrecognized</a>
+                    <a name="/s:FOV6Freddy10JSONParser5Error28controlCharacterUnrecognizedFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/controlCharacterUnrecognized" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error28controlCharacterUnrecognizedFMS1_FT6offsetSi_S1_">controlCharacterUnrecognized</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -303,7 +316,7 @@ and Unicode escape sequences.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">ControlCharacterUnrecognized</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">controlCharacterUnrecognized</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -317,9 +330,9 @@ and Unicode escape sequences.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV6Freddy10JSONParser5Error20LiteralNilMisspelledFMS1_FT6offsetSi_S1_"></a>
-                    <a name="//apple_ref/swift/Element/LiteralNilMisspelled" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error20LiteralNilMisspelledFMS1_FT6offsetSi_S1_">LiteralNilMisspelled</a>
+                    <a name="/s:FOV6Freddy10JSONParser5Error20literalNilMisspelledFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/literalNilMisspelled" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error20literalNilMisspelledFMS1_FT6offsetSi_S1_">literalNilMisspelled</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -334,7 +347,7 @@ and Unicode escape sequences.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">LiteralNilMisspelled</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">literalNilMisspelled</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -348,9 +361,9 @@ and Unicode escape sequences.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV6Freddy10JSONParser5Error21LiteralTrueMisspelledFMS1_FT6offsetSi_S1_"></a>
-                    <a name="//apple_ref/swift/Element/LiteralTrueMisspelled" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error21LiteralTrueMisspelledFMS1_FT6offsetSi_S1_">LiteralTrueMisspelled</a>
+                    <a name="/s:FOV6Freddy10JSONParser5Error21literalTrueMisspelledFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/literalTrueMisspelled" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error21literalTrueMisspelledFMS1_FT6offsetSi_S1_">literalTrueMisspelled</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -365,7 +378,7 @@ and Unicode escape sequences.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">LiteralTrueMisspelled</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">literalTrueMisspelled</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -379,9 +392,9 @@ and Unicode escape sequences.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV6Freddy10JSONParser5Error22LiteralFalseMisspelledFMS1_FT6offsetSi_S1_"></a>
-                    <a name="//apple_ref/swift/Element/LiteralFalseMisspelled" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error22LiteralFalseMisspelledFMS1_FT6offsetSi_S1_">LiteralFalseMisspelled</a>
+                    <a name="/s:FOV6Freddy10JSONParser5Error22literalFalseMisspelledFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/literalFalseMisspelled" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error22literalFalseMisspelledFMS1_FT6offsetSi_S1_">literalFalseMisspelled</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -396,7 +409,7 @@ and Unicode escape sequences.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">LiteralFalseMisspelled</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">literalFalseMisspelled</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -410,9 +423,9 @@ and Unicode escape sequences.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV6Freddy10JSONParser5Error26CollectionMissingSeparatorFMS1_FT6offsetSi_S1_"></a>
-                    <a name="//apple_ref/swift/Element/CollectionMissingSeparator" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error26CollectionMissingSeparatorFMS1_FT6offsetSi_S1_">CollectionMissingSeparator</a>
+                    <a name="/s:FOV6Freddy10JSONParser5Error26collectionMissingSeparatorFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/collectionMissingSeparator" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error26collectionMissingSeparatorFMS1_FT6offsetSi_S1_">collectionMissingSeparator</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -427,7 +440,7 @@ and Unicode escape sequences.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">CollectionMissingSeparator</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">collectionMissingSeparator</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -441,9 +454,9 @@ and Unicode escape sequences.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV6Freddy10JSONParser5Error20DictionaryMissingKeyFMS1_FT6offsetSi_S1_"></a>
-                    <a name="//apple_ref/swift/Element/DictionaryMissingKey" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error20DictionaryMissingKeyFMS1_FT6offsetSi_S1_">DictionaryMissingKey</a>
+                    <a name="/s:FOV6Freddy10JSONParser5Error20dictionaryMissingKeyFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/dictionaryMissingKey" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error20dictionaryMissingKeyFMS1_FT6offsetSi_S1_">dictionaryMissingKey</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -459,7 +472,7 @@ around <code>offset</code>. The start of a string literal was expected.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">DictionaryMissingKey</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">dictionaryMissingKey</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -473,9 +486,9 @@ around <code>offset</code>. The start of a string literal was expected.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV6Freddy10JSONParser5Error29NumberMissingFractionalDigitsFMS1_FT6offsetSi_S1_"></a>
-                    <a name="//apple_ref/swift/Element/NumberMissingFractionalDigits" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error29NumberMissingFractionalDigitsFMS1_FT6offsetSi_S1_">NumberMissingFractionalDigits</a>
+                    <a name="/s:FOV6Freddy10JSONParser5Error29numberMissingFractionalDigitsFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/numberMissingFractionalDigits" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error29numberMissingFractionalDigitsFMS1_FT6offsetSi_S1_">numberMissingFractionalDigits</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -491,7 +504,7 @@ point, a number must include some number of digits.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">NumberMissingFractionalDigits</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">numberMissingFractionalDigits</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -505,9 +518,9 @@ point, a number must include some number of digits.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV6Freddy10JSONParser5Error25NumberSymbolMissingDigitsFMS1_FT6offsetSi_S1_"></a>
-                    <a name="//apple_ref/swift/Element/NumberSymbolMissingDigits" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error25NumberSymbolMissingDigitsFMS1_FT6offsetSi_S1_">NumberSymbolMissingDigits</a>
+                    <a name="/s:FOV6Freddy10JSONParser5Error25numberSymbolMissingDigitsFMS1_FT6offsetSi_S1_"></a>
+                    <a name="//apple_ref/swift/Element/numberSymbolMissingDigits" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error25numberSymbolMissingDigitsFMS1_FT6offsetSi_S1_">numberSymbolMissingDigits</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -523,7 +536,7 @@ digits around <code>offset</code>.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">NumberSymbolMissingDigits</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">numberSymbolMissingDigits</span><span class="p">(</span><span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -537,9 +550,9 @@ digits around <code>offset</code>.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV6Freddy10JSONParser5Error28InvalidUnicodeStreamEncodingFMS1_FT16detectedEncodingOVS_20JSONEncodingDetector8Encoding_S1_"></a>
-                    <a name="//apple_ref/swift/Element/InvalidUnicodeStreamEncoding" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error28InvalidUnicodeStreamEncodingFMS1_FT16detectedEncodingOVS_20JSONEncodingDetector8Encoding_S1_">InvalidUnicodeStreamEncoding</a>
+                    <a name="/s:FOV6Freddy10JSONParser5Error28invalidUnicodeStreamEncodingFMS1_FT16detectedEncodingOVS_20JSONEncodingDetector8Encoding_S1_"></a>
+                    <a name="//apple_ref/swift/Element/invalidUnicodeStreamEncoding" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FOV6Freddy10JSONParser5Error28invalidUnicodeStreamEncodingFMS1_FT16detectedEncodingOVS_20JSONEncodingDetector8Encoding_S1_">invalidUnicodeStreamEncoding</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -554,7 +567,7 @@ digits around <code>offset</code>.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">InvalidUnicodeStreamEncoding</span><span class="p">(</span><span class="nv">detectedEncoding</span><span class="p">:</span> <span class="kt">JSONEncodingDetector</span><span class="o">.</span><span class="kt">Encoding</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">invalidUnicodeStreamEncoding</span><span class="p">(</span><span class="nv">detectedEncoding</span><span class="p">:</span> <span class="kt"><a href="../../Structs/JSONEncodingDetector.html">JSONEncodingDetector</a></span><span class="o">.</span><span class="kt">Encoding</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -566,8 +579,8 @@ digits around <code>offset</code>.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2016 <a class="link" href="https://github.com/bignerdranch" target="_blank" rel="external">Big Nerd Ranch</a>. All rights reserved. (Last updated: 2016-01-29)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.5.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2016 <a class="link" href="https://github.com/bignerdranch/Freddy" target="_blank" rel="external">Matt Mathias, John Gallagher, and Zachary Waldowski</a>. All rights reserved. (Last updated: 2016-09-17)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>
