@@ -56,14 +56,14 @@ Here is a quick example on how to parse this data using Freddy:
 let data = getSomeData()
 do {
     let json = try JSON(data: data)
-    let success = try json.bool("success")
+    let success = try json.getBool(at: "success")
     // do something with `success`
 } catch {
     // do something with the error
 }
 ```
 
-After we load in the data, we create an instance of `JSON`, the workhorse of this framework. This allows us to access the values from the JSON data. We `try` because the `data` may be malformed and the parsing could generate an error. Next, we access the `"success"` key by calling the `bool(_:)` method on `JSON`. We `try` here as well because accessing the `json` for the key `"success"` could fail - e.g., if we had passed an unknown key. This method takes two parameters, both of which are used to define a path into the `JSON` instance to find a Boolean value of interest. If a `Bool` is found at the path described by `"success"`, then `bool(_:)` returns a `Bool`. If the path does not lead to a `Bool`, then an appropriate error is thrown.
+After we load in the data, we create an instance of `JSON`, the workhorse of this framework. This allows us to access the values from the JSON data. We `try` because the `data` may be malformed and the parsing could generate an error. Next, we access the `"success"` key by calling the `getBool(at:)` method on `JSON`. We `try` here as well because accessing the `json` for the key `"success"` could fail - e.g., if we had passed an unknown key. This method takes two parameters, both of which are used to define a path into the `JSON` instance to find a Boolean value of interest. If a `Bool` is found at the path described by `"success"`, then `getBool(at:)` returns a `Bool`. If the path does not lead to a `Bool`, then an appropriate error is thrown.
 
 #### Use Paths to Access Nested Data with Subscripting
 With Freddy, it is possible to use a path to access elements deeper in the json structure. For example:
@@ -72,16 +72,16 @@ With Freddy, it is possible to use a path to access elements deeper in the json 
 let data = getSomeData()
 do {
     let json = try JSON(data: data)
-    let georgiaZipCodes = try json.array("states","Georgia")
-    let firstPersonName = try json.string("people",0,"name")
+    let georgiaZipCodes = try json.getArray(at: "states","Georgia")
+    let firstPersonName = try json.getString(at: "people",0,"name")
 } catch {
     // do something with the error
 }
 ```
 
-In the code `json.array("states","Georgia")`, the keys `"states"` and `"Georgia"` describe a path to the Georgia zip codes within `json`.
+In the code `json.getArray(at: "states","Georgia")`, the keys `"states"` and `"Georgia"` describe a path to the Georgia zip codes within `json`.
 `Freddy`'s parlance calls this process "subscripting" the JSON.
-What is typed between the parentheses of, for example, `array(_:)` is a comma-separated list of keys and indices that describe the path to a value of interest.
+What is typed between the parentheses of, for example, `getArray(at:)` is a comma-separated list of keys and indices that describe the path to a value of interest.
 
 There can be any number of subscripts, and each subscript can be either a `String` indicating a named element in the JSON, or an `Int` that represents an element in an array. If there is something invalid in the path such as an index that doesn't exist in the JSON, an error will be thrown.
 
@@ -94,14 +94,14 @@ Now, let's look an example that parses the data into a model class:
 let data = getSomeData()
 do {
     let json = try JSON(data: data)
-    let people = try json.array("people").map(Person.init)
+    let people = try json.getArray(at: "people").map(Person.init)
     // do something with `people`
 } catch {
     // do something with the error
 }
 ```
 
-Here, we are instead loading the values from the key `"people"` as an array using the method `array(_:)`. This method works a lot like the `bool(_:)` method you saw above. It uses the path provided to the method to find an array. If the path is good, the method will return an `Array` of `JSON`. If the path is bad, then an appropriate error is thrown.
+Here, we are instead loading the values from the key `"people"` as an array using the method `getArray(at:)`. This method works a lot like the `getBool(at:)` method you saw above. It uses the path provided to the method to find an array. If the path is good, the method will return an `Array` of `JSON`. If the path is bad, then an appropriate error is thrown.
 
 We can then call `map` on that `JSON` array. Since the `Person` type conforms to `JSONDecodable`, we can pass in the `Person` type's initializer. This call applies an initializer that takes an instance of `JSON` to each element in the array, producing an array of `Person` instances.
 
@@ -126,40 +126,44 @@ public struct Person {
 
 extension Person: JSONDecodable {
     public init(json value: JSON) throws {
-        name = try value.string("name")
-        age = try value.int("age")
-        spouse = try value.bool("spouse")
+        name = try value.getString(at: "name")
+        age = try value.getInt(at: "age")
+        spouse = try value.getBool(at: "spouse")
     }
 }
 ```
 
-`Person` just has a few properties. It conforms to `JSONDecodable` via an extension. In the extension, we implement a `throws`ing initializer that takes an instance of `JSON` as its sole parameter. In the implementation, we `try` three functions: 1) `string(_:)`, 2) `int(_:)`, and 3) `bool(_:)`. Each of these works as you have seen before. The methods take in a path, which is used to find a value of a specific type within the `JSON` instance passed to the initializer. Since these paths could be bad, or the requested type may not match what is actually inside of the `JSON`, these methods may potentially throw an error.
+`Person` just has a few properties. It conforms to `JSONDecodable` via an extension. In the extension, we implement a `throws`ing initializer that takes an instance of `JSON` as its sole parameter. In the implementation, we `try` three functions: 1) `getString(at:)`, 2) `getInt(at:)`, and 3) `getBool(at:)`. Each of these works as you have seen before. The methods take in a path, which is used to find a value of a specific type within the `JSON` instance passed to the initializer. Since these paths could be bad, or the requested type may not match what is actually inside of the `JSON`, these methods may potentially throw an error.
 
 
 ### Serialization
 Freddy's serialization support centers around the `JSON.serialize()` method.
 
 #### Basic Usage
-The `JSON` enumeration supports conversion to `NSData` directly:
+The `JSON` enumeration supports conversion to `Data` directly:
 
 ```swift
 let someJSON: JSON = …
-let data: NSData = try someJSON.serialize()
+do {
+    let data: Data = try someJSON.serialize()
+} catch {
+    // Handle error
+}
 ```
 
 #### JSONEncodable: Serializing Other Objects
 Most of your objects aren't `Freddy.JSON` objects, though.
-You can serialize them to `NSData` by first converting them to a
+You can serialize them to `Data` by first converting them to a
 `Freddy.JSON` via `JSONEncodable.toJSON()`, the sole method of the
-`JSONEncodable` protocol, and then using `serialize()` to convert
-the `Freddy.JSON` to `NSData`:
+`JSONEncodable` protocol, and then use `serialize()` to convert
+the `Freddy.JSON` to `Data`:
 
 ```swift
 let myObject: JSONEncodable = …
 
-// Object -> JSON -> NSData:
+// Object -> JSON -> Data:
 let objectAsJSON: JSON = myObject.toJSON()
-let data: NSData = try objectAsJSON.serialize()
+let data: Data = try objectAsJSON.serialize()
 
 // More concisely:
 let dataOneLiner = try object.toJSON().serialize()
@@ -172,10 +176,10 @@ and implement that protocol's `toJSON()` method:
 ```swift
 extension Person: JSONEncodable {
     public func toJSON() -> JSON {
-        return .Dictionary([
-            "name": .String(name),
-            "age": .Int(age),
-            "spouse": .Bool(spouse)])
+        return .dictionary([
+            "name": .string(name),
+            "age": .int(age),
+            "spouse": .bool(spouse)])
     }
 }
 ```
@@ -184,9 +188,7 @@ extension Person: JSONEncodable {
 
 ## Getting Started
 
-Freddy requires iOS 7.0, Mac OS X 10.9, watchOS 2.0, or tvOS 9.0. Linux is not yet supported.
-
-Dynamic frameworks on iOS require a minimum deployment target of iOS 8.0. For a project targeting iOS 7, see ["Submodules"](https://github.com/bignerdranch/Freddy#submodules).
+Freddy requires iOS 8.0, Mac OS X 10.9, watchOS 2.0, or tvOS 9.0. Linux is not yet supported.
 
 You have a few different options to install Freddy.
 
@@ -195,7 +197,7 @@ You have a few different options to install Freddy.
 Add us to your `Cartfile`:
 
 ```
-github "bignerdranch/Freddy" ~> 2.1
+github "bignerdranch/Freddy" ~> 3.0
 ```
 
 After running `carthage bootstrap`, add `Freddy.framework` to the "Linked Frameworks and Libraries" panel of your application target. [Read more](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application).
@@ -232,16 +234,14 @@ import PackageDescription
 let package = Package(
     name: "My Nerdy App",
     dependencies: [
-        .Package(url: "https://github.com/bignerdranch/Freddy.git", majorVersion: 2),
+        .Package(url: "https://github.com/bignerdranch/Freddy.git", majorVersion: 3),
     ]
 )
 ```
 
 ### iOS 7
 
-If you would like to use Freddy with iOS 7, then you will need to copy Freddy's source files into your project.
-Embedded frameworks are only supported in iOS 8+.
-You can add Freddy as a submodule (see above), and then make sure to add the source files to your project.
+If you would like to use Freddy with iOS 7, then you will need to use a previous release of Freddy.
 
 ## Setting Breakpoint Errors
 

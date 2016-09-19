@@ -9,7 +9,7 @@ class JSONSerializingTests: XCTestCase {
 
     func testThatJSONCanBeSerializedToNSData() {
         let data = try! json.serialize()
-        XCTAssertGreaterThan(data.length, 0, "There should be data.")
+        XCTAssertGreaterThan(data.count, 0, "There should be data.")
     }
     
     func testThatJSONCanBeSerializedToString() {
@@ -43,46 +43,46 @@ class JSONSerializingTests: XCTestCase {
         XCTAssert(json == serialJSON, "The JSON values should be equal.")
     }
 
-    func testThatJSONDataSerializationHandlesBoolsCorrectly() {
-        let json = JSON.Dictionary([
-            "foo": .Bool(true),
-            "bar": .Bool(false),
-            "baz": .Int(123),
+    func testThatJSONSerializationHandlesBoolsCorrectly() {
+        let json = JSON.dictionary([
+            "foo": .bool(true),
+            "bar": .bool(false),
+            "baz": .int(123),
         ])
         let data = try! json.serialize()
-        let deserializedResult = try! JSON(data: data).dictionary()
-        let deserialized = JSON.Dictionary(deserializedResult)
+        let deserializedResult = try! JSON(data: data).getDictionary()
+        let deserialized = JSON.dictionary(deserializedResult)
         XCTAssertEqual(json, deserialized, "Serialize/Deserialize succeed with Bools")
     }
     
     func testThatJSONStringSerializationHandlesBoolsCorrectly() {
-        let json = JSON.Dictionary([
-            "foo": .Bool(true),
-            "bar": .Bool(false),
-            "baz": .Int(123),
+        let json = JSON.dictionary([
+            "foo": .bool(true),
+            "bar": .bool(false),
+            "baz": .int(123),
         ])
         let string = try! json.serializeString()
-        let deserializedResult = try! JSON(jsonString: string).dictionary()
-        let deserialized = JSON.Dictionary(deserializedResult)
+        let deserializedResult = try! JSON(jsonString: string).getDictionary()
+        let deserialized = JSON.dictionary(deserializedResult)
         XCTAssertEqual(json, deserialized, "Serialize/Deserialize succeed with Bools")
     }
 }
 
 
-func dataFromFixture(filename: String) -> NSData {
-    let testBundle = NSBundle(forClass: JSONSerializingTests.self)
-    guard let URL = testBundle.URLForResource(filename, withExtension: nil) else {
+func dataFromFixture(_ filename: String) -> Data {
+    let testBundle = Bundle(for: JSONSerializingTests.self)
+    guard let URL = testBundle.url(forResource: filename, withExtension: nil) else {
         preconditionFailure("failed to find file \"\(filename)\" in bundle \(testBundle)")
     }
 
-    guard let data = NSData(contentsOfURL: URL) else {
-        preconditionFailure("NSData failed to read file \(URL.path)")
+    guard let data = try? Data(contentsOf: URL) else {
+        preconditionFailure("Data failed to read file \(URL.path)")
     }
     return data
 }
 
 
-func JSONFromFixture(filename: String) -> JSON {
+func JSONFromFixture(_ filename: String) -> JSON {
     let data = dataFromFixture(filename)
     do {
         let json = try JSON(data: data)
