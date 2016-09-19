@@ -60,13 +60,13 @@ extension Int: JSONDecodable {
             self = int
         case let .string(string):
 
-            if let int = Swift.Int(string) {
+            if let int = Int(string) {
                 self = int
                 return
             }
 
-            if let double = Swift.Double(string), double <= Double(Swift.Int.max), Swift.Double(Swift.Int(double)) == double {
-                self = Swift.Int(double)
+            if let double = Double(string), double <= Double(Int.max), Double(Int(double)) == double {
+                self = Int(double)
                 return
             }
             
