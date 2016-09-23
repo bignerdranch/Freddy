@@ -27,18 +27,13 @@ extension Double: JSONDecodable {
     ///           an instance of `Double` cannot be created from the `JSON` value that was
     ///           passed to this initializer.
     public init(json: JSON) throws {
-        switch json {
-        case let .double(double):
+        if case let .double(double) = json {
             self = double
-        case let .int(int):
+        } else if case let .int(int) = json {
             self = Double(int)
-        case let .string(string):
-            if let double = Double(string) {
-                self = double
-                return
-            }
-            throw JSON.Error.valueNotConvertible(value: json, to: Double.self)
-        default:
+        } else if case let .string(string) = json, let s = Double(string) {
+            self = s
+        } else {
             throw JSON.Error.valueNotConvertible(value: json, to: Double.self)
         }
     }
@@ -53,25 +48,16 @@ extension Int: JSONDecodable {
     ///           an instance of `Int` cannot be created from the `JSON` value that was
     ///           passed to this initializer.
     public init(json: JSON) throws {
-        switch json {
-        case let .double(double) where double <= Double(Int.max):
+
+        if case let .double(double) = json, double <= Double(Int.max) {
             self = Int(double)
-        case let .int(int):
+        } else if case let .int(int) = json {
             self = int
-        case let .string(string):
-
-            if let int = Int(string) {
-                self = int
-                return
-            }
-
-            if let double = Double(string), double <= Double(Int.max), Double(Int(double)) == double {
-                self = Int(double)
-                return
-            }
-            
-            throw JSON.Error.valueNotConvertible(value: json, to: Int.self)
-        default:
+        } else if case let .string(string) = json, let int = Int(string) {
+            self = int
+        } else if case let .string(string) = json, let double = Double(string), double <= Double(Int.max), Double(Int(double)) == double {
+            self = Int(double)
+        } else {
             throw JSON.Error.valueNotConvertible(value: json, to: Int.self)
         }
     }
