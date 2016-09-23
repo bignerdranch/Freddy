@@ -55,8 +55,13 @@ extension Int: JSONDecodable {
             self = int
         } else if case let .string(string) = json, let int = Int(string) {
             self = int
-        } else if case let .string(string) = json, let double = Double(string), double <= Double(Int.max), Double(Int(double)) == double {
-            self = Int(double)
+        } else if case let .string(string) = json,
+            let double = Double(string),
+            double <= Double(Int.max),
+            let decimalSeparator = string.characters.index(of: "."),
+            let int = Int(String(string.characters.prefix(upTo: decimalSeparator))),
+            double == Double(int) {
+            self = int
         } else {
             throw JSON.Error.valueNotConvertible(value: json, to: Int.self)
         }

@@ -251,6 +251,25 @@ class JSONParserTests: XCTestCase {
         }
     }
 
+    func testStringFloatingPointCanBeInt() {
+        // This integer cannot be represented on 32-bit
+        let integerString = "4611686018427387901"
+        let floatingPointString = "4611686018427387901.0"
+
+        // Converting floatingPointString to a Double and then to an Int changes it's value due to Double imprecision
+
+        let jsonString = "{\"floatingPointString\": \"\(floatingPointString)\"}"
+
+        do {
+            let json = try JSONParser.parse(jsonString)
+            // Int(integerString) will fail on 32-bit
+            XCTAssertEqual(try? json.getInt(at: "floatingPointString"), Int(integerString))
+        } catch {
+            XCTFail("Integer from floating point String does not match without loosing precision \(error)")
+        }
+
+    }
+
     // This test should also be run on the iPhone 5 simulator to check 32-bit support.
     func testOverflowingIntResultsInStringWithNSJSONSerializationParser() {
         // In spite of writing this as an integer in the JSON, 64-bit NSJSONSerialization reads it in
