@@ -208,6 +208,10 @@ extension JSON {
     public func decodedArray<Decoded: JSONDecodable>(at path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> [Decoded] {
         return try JSON.decodedArray(from: value(at: path))
     }
+    
+    public func decodedArray<Decoded: JSONStaticDecodable>(at path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> [Decoded] {
+        return try JSON.decodedArray(from: value(at: path))
+    }
 
     /// Retrieves a `[String: JSON]` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
