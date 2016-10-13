@@ -19,6 +19,8 @@ public protocol JSONDecodable {
     
 }
 
+/// A protocol to provide functionality for creating a model object with a `JSON`
+/// value. Useful for extension for class. Only works for `final` classes
 public protocol JSONStaticDecodable {
     
     static func fromJSON(json: JSON) throws -> Self
