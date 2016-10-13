@@ -145,6 +145,10 @@ extension JSON {
     public func decode<Decoded: JSONDecodable>(at path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> Decoded {
         return try Decoded(json: value(at: path))
     }
+    
+    public func decode<Decoded: JSONStaticDecodable>(at path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> Decoded {
+        return try Decoded.fromJSON(json: value(at: path))
+    }
 
     /// Retrieves a `Double` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
@@ -204,6 +208,10 @@ extension JSON {
     public func decodedArray<Decoded: JSONDecodable>(at path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> [Decoded] {
         return try JSON.decodedArray(from: value(at: path))
     }
+    
+    public func decodedArray<Decoded: JSONStaticDecodable>(at path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> [Decoded] {
+        return try JSON.decodedArray(from: value(at: path))
+    }
 
     /// Retrieves a `[String: JSON]` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
@@ -228,6 +236,9 @@ extension JSON {
         return try JSON.decodedDictionary(from: value(at: path))
     }
 
+    public func decodedDictionary<Decoded: JSONStaticDecodable>(at path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> [String: Decoded] {
+        return try JSON.decodedDictionary(from: value(at: path))
+    }
 }
 
 // MARK: - NotFound-Or-Null-to-Optional unpacking
@@ -281,6 +292,13 @@ extension JSON {
         return try Decoded.init(json: json)
     }
     
+    private static func getDecoded<Decoded: JSONStaticDecodable>(json: JSON) throws -> Decoded {
+        guard json != .null else {
+            throw Error.valueNotConvertible(value: json, to: Decoded.self)
+        }
+        return try Decoded.fromJSON(json: json)
+    }
+    
     /// Optionally decodes into the returning type from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - parameter alongPath: Options that control what should be done with values that are `null` or keys that are missing.
@@ -299,6 +317,10 @@ extension JSON {
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
     public func decode<Decoded: JSONDecodable>(at path: JSONPathType..., alongPath options: SubscriptingOptions, type: Decoded.Type = Decoded.self) throws -> Decoded? {
+        return try mapOptional(at: path, alongPath: options, transform: JSON.getDecoded)
+    }
+    
+    public func decode<Decoded: JSONStaticDecodable>(at path: JSONPathType..., alongPath options: SubscriptingOptions, type: Decoded.Type = Decoded.self) throws -> Decoded? {
         return try mapOptional(at: path, alongPath: options, transform: JSON.getDecoded)
     }
 
@@ -409,6 +431,10 @@ extension JSON {
     public func decodedArray<Decoded: JSONDecodable>(at path: JSONPathType..., alongPath options: SubscriptingOptions, type: Decoded.Type = Decoded.self) throws -> [Decoded]? {
         return try mapOptional(at: path, alongPath: options, transform: JSON.decodedArray)
     }
+    
+    public func decodedArray<Decoded: JSONStaticDecodable>(at path: JSONPathType..., alongPath options: SubscriptingOptions, type: Decoded.Type = Decoded.self) throws -> [Decoded]? {
+        return try mapOptional(at: path, alongPath: options, transform: JSON.decodedArray)
+    }
 
     /// Optionally retrieves a `[String: JSON]` from a path into the recieving
     /// structure.
@@ -451,6 +477,10 @@ extension JSON {
     public func decodedDictionary<Decoded: JSONDecodable>(at path: JSONPathType..., alongPath options: SubscriptingOptions, type: Decoded.Type = Decoded.self) throws -> [String: Decoded]? {
         return try mapOptional(at: path, alongPath: options, transform: JSON.decodedDictionary)
     }
+    
+    public func decodedDictionary<Decoded: JSONStaticDecodable>(at path: JSONPathType..., alongPath options: SubscriptingOptions, type: Decoded.Type = Decoded.self) throws -> [String: Decoded]? {
+        return try mapOptional(at: path, alongPath: options, transform: JSON.decodedDictionary)
+    }
 
 }
 
@@ -474,6 +504,10 @@ extension JSON {
     ///     the `JSON` instance does not match `Decoded`.
     public func decode<Decoded: JSONDecodable>(at path: JSONPathType..., or fallback: @autoclosure() -> Decoded) throws -> Decoded {
         return try mapOptional(at: path, fallback: fallback, transform: Decoded.init)
+    }
+    
+    public func decode<Decoded: JSONStaticDecodable>(at path: JSONPathType..., or fallback: @autoclosure() -> Decoded) throws -> Decoded {
+        return try mapOptional(at: path, fallback: fallback, transform: Decoded.fromJSON)
     }
     
     /// Retrieves a `Double` from a path into JSON or a fallback if not found.
@@ -572,6 +606,10 @@ extension JSON {
         return try mapOptional(at: path, fallback: fallback, transform: JSON.decodedArray)
     }
     
+    public func decodedArray<Decoded: JSONStaticDecodable>(at path: JSONPathType..., or fallback: @autoclosure() -> [Decoded]) throws -> [Decoded] {
+        return try mapOptional(at: path, fallback: fallback, transform: JSON.decodedArray)
+    }
+    
     /// Retrieves a `[String: JSON]` from a path into JSON or a fallback if not
     /// found.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
@@ -606,6 +644,10 @@ extension JSON {
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
     public func decodedDictionary<Decoded: JSONDecodable>(at path: JSONPathType..., or fallback: @autoclosure() -> [String: Decoded]) throws -> [String: Decoded] {
+        return try mapOptional(at: path, fallback: fallback, transform: JSON.decodedDictionary)
+    }
+    
+    public func decodedDictionary<Decoded: JSONStaticDecodable>(at path: JSONPathType..., or fallback: @autoclosure() -> [String: Decoded]) throws -> [String: Decoded] {
         return try mapOptional(at: path, fallback: fallback, transform: JSON.decodedDictionary)
     }
     

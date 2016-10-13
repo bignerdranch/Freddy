@@ -19,6 +19,13 @@ public protocol JSONDecodable {
     
 }
 
+/// A protocol to provide functionality for creating a model object with a `JSON`
+/// value. Useful for extension for class. Only works for `final` classes
+public protocol JSONStaticDecodable {
+    
+    static func fromJSON(json: JSON) throws -> Self
+}
+
 extension Double: JSONDecodable {
     
     /// An initializer to create an instance of `Double` from a `JSON` value.
@@ -156,6 +163,12 @@ internal extension JSON {
         return try getArray(from: json).map(Decoded.init)
     }
     
+    static func decodedArray<Decoded: JSONStaticDecodable>(from json: JSON) throws -> [Decoded] {
+        // Ideally should be expressed as a conditional protocol implementation on Swift.Dictionary.
+        // This implementation also doesn't do the `type = Type.self` trick.
+        return try getArray(from: json).map(Decoded.fromJSON)
+    }
+    
     /// Attempts to decode many values from a descendant JSON object at a path
     /// into JSON.
     /// - parameter json: A `JSON` to be used to create the returned `Dictionary` of some type conforming to `JSONDecodable`.
@@ -170,6 +183,17 @@ internal extension JSON {
         var decodedDictionary = Swift.Dictionary<String, Decoded>(minimumCapacity: dictionary.count)
         for (key, value) in dictionary {
             decodedDictionary[key] = try Decoded(json: value)
+        }
+        return decodedDictionary
+    }
+    
+    static func decodedDictionary<Decoded: JSONStaticDecodable>(from json: JSON) throws -> [Swift.String: Decoded] {
+        guard case let .dictionary(dictionary) = json else {
+            throw Error.valueNotConvertible(value: json, to: Swift.Dictionary<String, Decoded>)
+        }
+        var decodedDictionary = Swift.Dictionary<String, Decoded>(minimumCapacity: dictionary.count)
+        for (key, value) in dictionary {
+            decodedDictionary[key] = try Decoded.fromJSON(json: value)
         }
         return decodedDictionary
     }
