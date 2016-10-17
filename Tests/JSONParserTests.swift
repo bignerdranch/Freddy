@@ -196,6 +196,7 @@ class JSONParserTests: XCTestCase {
             ("-123.45e-2", -123.45e-2),
             ("0.1e-1", 0.01),
             ("-0.1E-1", -0.01),
+            ("1472861857112", 1472861857112),
         ] {
             do {
                 let value = try JSONParser.parse(string).getDouble()
@@ -250,6 +251,25 @@ class JSONParserTests: XCTestCase {
         }
     }
 
+    func testStringFloatingPointCanBeInt() {
+        // This integer cannot be represented on 32-bit
+        let integerString = "4611686018427387901"
+        let floatingPointString = "4611686018427387901.0"
+
+        // Converting floatingPointString to a Double and then to an Int changes it's value due to Double imprecision
+
+        let jsonString = "{\"floatingPointString\": \"\(floatingPointString)\"}"
+
+        do {
+            let json = try JSONParser.parse(jsonString)
+            // Int(integerString) will fail on 32-bit
+            XCTAssertEqual(try? json.getInt(at: "floatingPointString"), Int(integerString))
+        } catch {
+            XCTFail("Integer from floating point String does not match without loosing precision \(error)")
+        }
+
+    }
+
     // This test should also be run on the iPhone 5 simulator to check 32-bit support.
     func testOverflowingIntResultsInStringWithNSJSONSerializationParser() {
         // In spite of writing this as an integer in the JSON, 64-bit NSJSONSerialization reads it in
@@ -283,8 +303,44 @@ class JSONParserTests: XCTestCase {
 
         // The Freddy parser behaves consistently across architectures.
         XCTAssertEqual(try? json.getInt(at: "exceedsIntMax"), nil, "as int")
-        XCTAssertEqual(try? json.getDouble(at: "exceedsIntMax"), nil, "as double")
+        XCTAssertEqual(try? json.getDouble(at: "exceedsIntMax"), Double(anyValueExceedingIntMax), "as double")
         XCTAssertEqual(try? json.getString(at: "exceedsIntMax"), anyValueExceedingIntMax.description, "as string")
+    }
+
+    // This test should also be run on the iPhone 5 simulator to check 32-bit support.
+    func testOverflowingInt32ResultsInIntWhenAppropriateWithFreddyParser() {
+        let anyValueExceedingInt32Max: Int64 = 4611686018427387901 // This is a 62-bit number that is not accurately representable as a double
+        let jsonString = "{\"exceedsInt32Max\": \(anyValueExceedingInt32Max)}"
+
+        let data = jsonString.data(using: .utf8)!
+        guard let json = try? JSON(data: data) else {
+            XCTFail("Failed to even parse JSON: \(jsonString)")
+            return
+        }
+
+        let expectedIntValue: Int64? = Int64(Int.max) > anyValueExceedingInt32Max ? anyValueExceedingInt32Max : nil
+        let actualIntValue: Int64?
+        do {
+            actualIntValue = try Int64(json.getInt(at: "exceedsInt32Max"))
+        } catch {
+            actualIntValue = nil
+        }
+
+        // The Freddy parser behaves consistently across architectures.
+        XCTAssertEqual(actualIntValue, expectedIntValue, "as int")
+        XCTAssertEqual(try? json.getDouble(at: "exceedsInt32Max"), Double(anyValueExceedingInt32Max), "as double")
+        XCTAssertEqual(try? json.getString(at: "exceedsInt32Max"), anyValueExceedingInt32Max.description, "as string")
+        XCTAssertNotEqual(anyValueExceedingInt32Max, Int64(try! json.getDouble(at: "exceedsInt32Max")), "as double to int64")
+    }
+
+    // This test should also be run on the iPhone 5 simulator to check 32-bit support.
+    func testLargeIntResultsInStringOrIntWithFreddyParser() {
+        let largeValue = "1472861857112"
+        let expectedResult = Int(largeValue) // nil if on 32-bit, an Int otherwise
+
+        let value = try? JSONParser.parse(largeValue).getInt()
+        XCTAssertEqual(value, expectedResult)
+        XCTAssertEqual(try? JSONParser.parse(largeValue).getString(), largeValue)
     }
 
     // This was tripping a fatalError with the Freddy parser for 64-bit at one point:
