@@ -78,7 +78,7 @@ class JSONSubscriptingTests: XCTestCase {
     
     func testNullOptionsDecodes() {
         do {
-            let firstResident = try residentJSON.decode(at: "residents", 0, alongPath: [.NullBecomesNil, .MissingKeyBecomesNil], type: Resident.self)
+            let firstResident = try residentJSON.decode(at: "residents", 0, alongPath: [.nullBecomesNil, .missingKeyBecomesNil], type: Resident.self)
             XCTAssertNotNil(firstResident)
         } catch {
             XCTFail("There should be no error: \(error).")
@@ -130,7 +130,7 @@ class JSONSubscriptingTests: XCTestCase {
     
     func testNullOptionsIndexOutOfBoundsProducesOptional() {
         do {
-            let residentOutOfBounds = try residentJSON.decode(at: "residents", 4, alongPath: .MissingKeyBecomesNil, type: Resident.self)
+            let residentOutOfBounds = try residentJSON.decode(at: "residents", 4, alongPath: .missingKeyBecomesNil, type: Resident.self)
             XCTAssertNil(residentOutOfBounds)
         } catch {
             XCTFail("There should be no error: \(error).")
@@ -140,7 +140,7 @@ class JSONSubscriptingTests: XCTestCase {
     func testArrayOfJSONIntAndNullCreatesOptionalWhenDetectNull() {
         let testJSON: JSON = [1,2,.null,4]
         do {
-            _ = try testJSON.decodedArray(alongPath: .NullBecomesNil, type: Int.self)
+            _ = try testJSON.decodedArray(alongPath: .nullBecomesNil, type: Int.self)
             XCTFail("`testJSON.arrayOf(_:options:type:)` should throw.")
         } catch let JSON.Error.valueNotConvertible(value, type) {
             XCTAssert(type == Int.self, "value (\(value)) is not equal to \(type).")
@@ -152,8 +152,8 @@ class JSONSubscriptingTests: XCTestCase {
     func testArrayProducesOptionalWhenNotFoundOrNull() {
         let testJSON: JSON = ["integers": .null]
         do {
-            let test1 = try testJSON.getArray(at: "integers", alongPath: .NullBecomesNil)
-            let test2 = try testJSON.getArray(at: "residents", alongPath: .MissingKeyBecomesNil)
+            let test1 = try testJSON.getArray(at: "integers", alongPath: .nullBecomesNil)
+            let test2 = try testJSON.getArray(at: "residents", alongPath: .missingKeyBecomesNil)
             XCTAssertNil(test1, "Test1 should be nil.")
             XCTAssertNil(test2, "Test2 should be nil.")
         } catch {
@@ -164,7 +164,7 @@ class JSONSubscriptingTests: XCTestCase {
     func testDictionaryOfJSONIntAndNullCreatesOptionalWhenDetectNull() {
         let testJSON: JSON = ["one": 1, "two": 2, "three": .null, "four": 4]
         do {
-            _ = try testJSON.decodedDictionary(alongPath: .NullBecomesNil, type: Int.self)
+            _ = try testJSON.decodedDictionary(alongPath: .nullBecomesNil, type: Int.self)
             XCTFail("`testJSON.dictionaryOf(_:options:type:)` should throw.")
         } catch let JSON.Error.valueNotConvertible(value, type) {
             XCTAssert(type == Int.self, "value (\(value)) is not equal to \(type).")
@@ -176,8 +176,8 @@ class JSONSubscriptingTests: XCTestCase {
     func testDictionaryProducesOptionalWhenNotFoundOrNull() {
         let testJSON: JSON = ["integers": .null]
         do {
-            let test1 = try testJSON.getDictionary(at: "integers", alongPath: .NullBecomesNil)
-            let test2 = try testJSON.getDictionary(at: "residents", alongPath: .MissingKeyBecomesNil)
+            let test1 = try testJSON.getDictionary(at: "integers", alongPath: .nullBecomesNil)
+            let test2 = try testJSON.getDictionary(at: "residents", alongPath: .missingKeyBecomesNil)
             XCTAssertNil(test1, "Test1 should be nil.")
             XCTAssertNil(test2, "Test2 should be nil.")
         } catch {
@@ -185,10 +185,10 @@ class JSONSubscriptingTests: XCTestCase {
         }
     }
     
-    func testDecodeNullBecomesNilProducesOptional() {
+    func testDecodenullBecomesNilProducesOptional() {
         let json: JSON = ["type": "Apartment", "resident": .null]
         do {
-            let apartment = try json.decode(alongPath: .NullBecomesNil, type: Apartment.self)
+            let apartment = try json.decode(alongPath: .nullBecomesNil, type: Apartment.self)
             XCTAssertNil(apartment?.resident, "This resident should be nil!")
         } catch {
             XCTFail("There should be no error: \(error)")
@@ -411,13 +411,13 @@ class JSONSubscriptingTests: XCTestCase {
     
     func testThatOptionalSubscriptingIntoNullSucceeds() {
         let earlyNull = ["foo": nil] as JSON
-        let string = try! earlyNull.getString(at: "foo", "bar", "baz", alongPath: .NullBecomesNil)
+        let string = try! earlyNull.getString(at: "foo", "bar", "baz", alongPath: .nullBecomesNil)
         XCTAssertNil(string)
     }
     
     func testThatOptionalSubscriptingKeyNotFoundSucceeds() {
         let keyNotFound = ["foo": 2] as JSON
-        let string = try! keyNotFound.getString(at: "bar", alongPath: .MissingKeyBecomesNil)
+        let string = try! keyNotFound.getString(at: "bar", alongPath: .missingKeyBecomesNil)
         XCTAssertNil(string)
     }
     
@@ -433,9 +433,9 @@ private struct Resident {
 extension Resident: JSONDecodable {
     fileprivate init(json: JSON) throws {
         name = try json.getString(at: "name")
-        age = try json.getInt(at: "age", alongPath: .MissingKeyBecomesNil)
-        hasPet = try json.getBool(at: "hasPet", alongPath: .NullBecomesNil)
-        rent = try json.getDouble(at: "rent", alongPath: [.NullBecomesNil, .MissingKeyBecomesNil])
+        age = try json.getInt(at: "age", alongPath: .missingKeyBecomesNil)
+        hasPet = try json.getBool(at: "hasPet", alongPath: .nullBecomesNil)
+        rent = try json.getDouble(at: "rent", alongPath: [.nullBecomesNil, .missingKeyBecomesNil])
     }
 }
 
@@ -447,7 +447,7 @@ private struct Apartment {
 extension Apartment: JSONDecodable {
     fileprivate init(json: JSON) throws {
         type = try json.getString(at: "type")
-        resident = try json.decode(at: "resident", alongPath: .NullBecomesNil, type: Resident.self)
+        resident = try json.decode(at: "resident", alongPath: .nullBecomesNil, type: Resident.self)
     }
 }
 
@@ -473,24 +473,24 @@ private func testUsage() {
     let j = JSON.null
     
     _ = try? j.getInt()
-    _ = try? j.getInt(alongPath: .MissingKeyBecomesNil)
-    _ = try? j.getInt(alongPath: .NullBecomesNil)
+    _ = try? j.getInt(alongPath: .missingKeyBecomesNil)
+    _ = try? j.getInt(alongPath: .nullBecomesNil)
     _ = try? j.getInt(or: 42)
     
     _ = try? j.getInt(at: "key")
-    _ = try? j.getInt(at: "key", alongPath: .MissingKeyBecomesNil)
-    _ = try? j.getInt(at: "key", alongPath: .NullBecomesNil)
+    _ = try? j.getInt(at: "key", alongPath: .missingKeyBecomesNil)
+    _ = try? j.getInt(at: "key", alongPath: .nullBecomesNil)
     _ = try? j.getInt(at: "key", or: 42)
     
     _ = try? j.getInt(at: 1)
-    _ = try? j.getInt(at: 2, alongPath: .MissingKeyBecomesNil)
-    _ = try? j.getInt(at: 3, alongPath: .NullBecomesNil)
+    _ = try? j.getInt(at: 2, alongPath: .missingKeyBecomesNil)
+    _ = try? j.getInt(at: 3, alongPath: .nullBecomesNil)
     _ = try? j.getInt(at: 4, or: 42)
     
     let stringConst = "key"
     
     _ = try? j.getInt(at: stringConst, 1)
-    _ = try? j.getInt(at: stringConst, 2, alongPath: .MissingKeyBecomesNil)
-    _ = try? j.getInt(at: stringConst, 3, alongPath: .NullBecomesNil)
+    _ = try? j.getInt(at: stringConst, 2, alongPath: .missingKeyBecomesNil)
+    _ = try? j.getInt(at: stringConst, 3, alongPath: .nullBecomesNil)
     _ = try? j.getInt(at: stringConst, 4, or: 42)
 }
