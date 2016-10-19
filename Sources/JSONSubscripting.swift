@@ -234,9 +234,9 @@ extension JSON {
 
 extension JSON {
     
-    /// An `OptionSetType` used to represent the different options available for subscripting `JSON` with `null` values or missing keys.
-    /// * `.NullBecomesNil` - Treat `null` values as `nil`.
-    /// * `.MissingKeyBecomesNil` - Treat missing keys as `nil`.
+    /// An `OptionSet` used to represent the different options available for subscripting `JSON` with `null` values or missing keys.
+    /// * `.nullBecomesNil` - Treat `null` values as `nil`.
+    /// * `.missingKeyBecomesNil` - Treat missing keys as `nil`.
     public struct SubscriptingOptions: OptionSet {
         public let rawValue: Int
         public init(rawValue: Int) {
@@ -244,14 +244,14 @@ extension JSON {
         }
         
         /// Treat `null` values as `nil`.
-        public static let NullBecomesNil = SubscriptingOptions(rawValue: 1 << 0)
+        public static let nullBecomesNil = SubscriptingOptions(rawValue: 1 << 0)
         /// Treat missing keys as `nil`.
-        public static let MissingKeyBecomesNil = SubscriptingOptions(rawValue: 1 << 1)
+        public static let missingKeyBecomesNil = SubscriptingOptions(rawValue: 1 << 1)
     }
     
     fileprivate func mapOptional<Value>(at path: [JSONPathType], alongPath options: SubscriptingOptions, transform: (JSON) throws -> Value) throws -> Value? {
-        let detectNull = options.contains(.NullBecomesNil)
-        let detectNotFound = options.contains(.MissingKeyBecomesNil)
+        let detectNull = options.contains(.nullBecomesNil)
+        let detectNotFound = options.contains(.missingKeyBecomesNil)
         var json: JSON?
         do {
             json = try value(at: path, detectingNull: detectNull)
@@ -459,7 +459,7 @@ extension JSON {
 extension JSON {
     
     fileprivate func mapOptional<Value>(at path: [JSONPathType], fallback: () -> Value, transform: (JSON) throws -> Value) throws -> Value {
-        return try mapOptional(at: path, alongPath: .MissingKeyBecomesNil, transform: transform) ?? fallback()
+        return try mapOptional(at: path, alongPath: .missingKeyBecomesNil, transform: transform) ?? fallback()
     }
     
     /// Attempts to decode into the returning type from a path into

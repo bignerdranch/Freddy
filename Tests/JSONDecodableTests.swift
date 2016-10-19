@@ -250,7 +250,7 @@ class JSONDecodableTests: XCTestCase {
         let JSONDictionary: JSON = ["key": .null]
         
         do {
-            let value: Int? = try JSONDictionary.getInt(at: "key", alongPath: .NullBecomesNil)
+            let value: Int? = try JSONDictionary.getInt(at: "key", alongPath: .nullBecomesNil)
             XCTAssertEqual(value, nil)
         } catch {
             XCTFail("Should have retrieved nil for key `key` in `JSONDictionary` when specifying `ifNull` to be `true`.")
