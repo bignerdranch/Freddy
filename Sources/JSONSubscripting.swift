@@ -146,6 +146,10 @@ extension JSON {
         return try Decoded(json: value(at: path))
     }
 
+    public func transformed<Transformer: JSONValueTransformer>(path: JSONPathType..., transformer: Transformer) throws -> Transformer.Out {
+        return try transformer.transformed(valueAtPath(path))
+    }
+
     /// Retrieves a `Double` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
     /// - returns: A floating-point `Double`
