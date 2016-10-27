@@ -151,7 +151,7 @@ class JSONParserTests: XCTestCase {
     func testThatParserFailsWhenIncompleteDataIsPresent() {
         for s in [" ", "[0,", "{\"\":"] {
             do {
-                let value = try JSONParser.parse(" ")
+                let value = try JSONParser.parse(s)
                 XCTFail("Unexpectedly parsed \(s) as \(value)")
             } catch JSONParser.Error.endOfStreamUnexpected {
                 // expected error - do nothing
