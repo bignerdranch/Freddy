@@ -237,6 +237,7 @@ public struct JSONParser {
             switch input[loc] {
             case Literal.BACKSLASH:
                 loc = (loc + 1)
+                guard loc < input.count else { continue }
                 switch input[loc] {
                 case Literal.DOUBLE_QUOTE: stringDecodingBuffer.append(Literal.DOUBLE_QUOTE)
                 case Literal.BACKSLASH:    stringDecodingBuffer.append(Literal.BACKSLASH)
