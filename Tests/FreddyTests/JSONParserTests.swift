@@ -482,4 +482,15 @@ class JSONParserTests: XCTestCase {
             }
         }
     }
+
+    func testThatParserRejectsStringEndingInBackslash() {
+        let invalidJSONString = "[\"\\"
+        do {
+            _ = try JSONParser.parse(invalidJSONString)
+        } catch JSONParser.Error.endOfStreamUnexpected {
+            // do nothing - this is the expected error
+        } catch {
+            XCTFail("Unexpected error: \(error)")
+        }
+    }
 }
