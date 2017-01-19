@@ -54,7 +54,7 @@ extension JSONSerialization: JSONParserType {
     /// Makes a `JSON` object by matching its argument to a case in the `JSON` enum.
     /// - parameter object: The instance of `Any` returned from serializing the JSON.
     /// - returns: An instance of `JSON` matching the JSON given to the function.
-    private static func makeJSON(with object: Any) -> JSON {
+    public static func makeJSON(with object: Any) -> JSON {
         switch object {
         case let n as NSNumber:
             let numberType = CFNumberGetType(n)
