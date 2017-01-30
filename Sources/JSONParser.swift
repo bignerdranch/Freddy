@@ -588,7 +588,15 @@ public struct JSONParser {
                 }
 
                 loc = parser.loc
-                return .String(string)
+                
+                // fix for the fact that we may have overflowed while parsing a floating point number - 
+                // try parsing the full string again.
+                if let dbl = Double(string) {
+                    return .Double(dbl)
+                }
+                else {
+                    return .String(string)                }
+
             }
         }
     }
