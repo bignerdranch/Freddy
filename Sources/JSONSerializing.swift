@@ -2,6 +2,20 @@
 
 import Foundation
 
+// MARK: - Serialize Options
+
+/// An `OptionSet` used to represent the different options available for serializing `JSON` with `null` values.
+/// * `.nullSkipsKey` - Skip keys with `null` values
+public struct SerializeOptions: OptionSet {
+    public let rawValue: Int
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+    
+    /// Skip keys with `null` values
+    public static let nullSkipsKey = SerializeOptions(rawValue: 1 << 0)
+}
+
 // MARK: - Serialize JSON
 
 extension JSON {
@@ -10,16 +24,16 @@ extension JSON {
     /// - returns: A byte-stream containing the `JSON` ready for wire transfer.
     /// - throws: Errors that arise from `JSONSerialization`.
     /// - see: Foundation.JSONSerialization
-    public func serialize() throws -> Data {
-        return try JSONSerialization.data(withJSONObject: toJSONSerializationValue(), options: [])
+    public func serialize(options: SerializeOptions = SerializeOptions(rawValue: 0)) throws -> Data {
+        return try JSONSerialization.data(withJSONObject: toJSONSerializationValue(options: options), options: [])
     }
     
     /// Attempt to serialize `JSON` into a `String`.
     /// - returns: A `String` containing the `JSON`.
     /// - throws: A `JSON.Error.StringSerializationError` or errors that arise from `JSONSerialization`.
     /// - see: Foundation.JSONSerialization
-    public func serializeString() throws -> String {
-        let data = try self.serialize()
+    public func serializeString(options: SerializeOptions = SerializeOptions(rawValue: 0)) throws -> String {
+        let data = try self.serialize(options: options)
         guard let json = String(data: data, encoding: String.Encoding.utf8) else {
             throw Error.stringSerializationError
         }
@@ -28,14 +42,17 @@ extension JSON {
 
     /// A function to help with the serialization of `JSON`.
     /// - returns: An `Any` suitable for `JSONSerialization`'s use.
-    private func toJSONSerializationValue() -> Any {
+    private func toJSONSerializationValue(options: SerializeOptions = SerializeOptions(rawValue: 0)) -> Any {
         switch self {
         case .array(let jsonArray):
             return jsonArray.map { $0.toJSONSerializationValue() }
         case .dictionary(let jsonDictionary):
             var cocoaDictionary = Swift.Dictionary<Swift.String, Any>(minimumCapacity: jsonDictionary.count)
             for (key, json) in jsonDictionary {
-                cocoaDictionary[key] = json.toJSONSerializationValue()
+                
+                if json != .null || (json == .null && !options.contains(.nullSkipsKey)) {
+                    cocoaDictionary[key] = json.toJSONSerializationValue()
+                }
             }
             return cocoaDictionary
         case .string(let str):
