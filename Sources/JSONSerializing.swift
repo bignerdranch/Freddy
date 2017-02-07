@@ -24,7 +24,7 @@ extension JSON {
     /// - returns: A byte-stream containing the `JSON` ready for wire transfer.
     /// - throws: Errors that arise from `JSONSerialization`.
     /// - see: Foundation.JSONSerialization
-    public func serialize(options: SerializeOptions = SerializeOptions(rawValue: 0)) throws -> Data {
+    public func serialize(options: SerializeOptions = []) throws -> Data {
         return try JSONSerialization.data(withJSONObject: toJSONSerializationValue(options: options), options: [])
     }
     
@@ -32,7 +32,7 @@ extension JSON {
     /// - returns: A `String` containing the `JSON`.
     /// - throws: A `JSON.Error.StringSerializationError` or errors that arise from `JSONSerialization`.
     /// - see: Foundation.JSONSerialization
-    public func serializeString(options: SerializeOptions = SerializeOptions(rawValue: 0)) throws -> String {
+    public func serializeString(options: SerializeOptions = []) throws -> String {
         let data = try self.serialize(options: options)
         guard let json = String(data: data, encoding: String.Encoding.utf8) else {
             throw Error.stringSerializationError
@@ -42,7 +42,7 @@ extension JSON {
 
     /// A function to help with the serialization of `JSON`.
     /// - returns: An `Any` suitable for `JSONSerialization`'s use.
-    private func toJSONSerializationValue(options: SerializeOptions = SerializeOptions(rawValue: 0)) -> Any {
+    private func toJSONSerializationValue(options: SerializeOptions = []) -> Any {
         switch self {
         case .array(let jsonArray):
             return jsonArray.map { $0.toJSONSerializationValue() }
