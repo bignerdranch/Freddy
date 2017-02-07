@@ -5,14 +5,16 @@ import Foundation
 // MARK: - Serialize Options
 
 /// An `OptionSet` used to represent the different options available for serializing `JSON` with `null` values.
-/// * `.nullSkipsKey` - Skip keys with `null` values
+/// * `.nullSkipsKey` - Skip keys with `null` values so the key is not included
+/// in the serialized json
 public struct SerializeOptions: OptionSet {
     public let rawValue: Int
     public init(rawValue: Int) {
         self.rawValue = rawValue
     }
     
-    /// Skip keys with `null` values
+    /// Skip keys with `null` values so the key is not included
+    /// in the serialized json
     public static let nullSkipsKey = SerializeOptions(rawValue: 1 << 0)
 }
 
@@ -21,6 +23,7 @@ public struct SerializeOptions: OptionSet {
 extension JSON {
 
     /// Attempt to serialize `JSON` into an `Data`.
+    /// - parameter options: SerializeOptions that control what should be done with keys that have values that are `null` when serializing the JSON
     /// - returns: A byte-stream containing the `JSON` ready for wire transfer.
     /// - throws: Errors that arise from `JSONSerialization`.
     /// - see: Foundation.JSONSerialization
@@ -29,6 +32,7 @@ extension JSON {
     }
     
     /// Attempt to serialize `JSON` into a `String`.
+    /// - parameter options: SerializeOptions that control what should be done with keys that have values that are `null` when serializing the JSON
     /// - returns: A `String` containing the `JSON`.
     /// - throws: A `JSON.Error.StringSerializationError` or errors that arise from `JSONSerialization`.
     /// - see: Foundation.JSONSerialization
@@ -41,6 +45,7 @@ extension JSON {
     }
 
     /// A function to help with the serialization of `JSON`.
+    /// - parameter options: SerializeOptions that control what should be done with keys that have values that are `null` when serializing the JSON
     /// - returns: An `Any` suitable for `JSONSerialization`'s use.
     private func toJSONSerializationValue(options: SerializeOptions = []) -> Any {
         switch self {
