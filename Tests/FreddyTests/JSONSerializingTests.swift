@@ -66,8 +66,49 @@ class JSONSerializingTests: XCTestCase {
         let deserialized = JSON.dictionary(deserializedResult)
         XCTAssertEqual(json, deserialized, "Serialize/Deserialize succeed with Bools")
     }
-}
+    
+    func testThatSerializingCanSkipKeysWithNullValue() {
+        let json = JSON.dictionary([
+            "foo": .bool(true),
+            "bar": .bool(false),
+            "baz": .null,
+            ])
+        let string = try! json.serializeString(options: .nullSkipsKey)
+        XCTAssertFalse(string.contains("baz"))
+    }
 
+    func testThatSerializingUsingOptionalValuesIsPossible() {
+        
+        let phoneNumber: String? = "3332221111"
+        
+        let json = JSON.dictionary([
+            "firstName": .string("fred"),
+            "lastName": .string("flintstone"),
+            "phoneNumber": JSON(phoneNumber)
+            ])
+        let string = try! json.serializeString()
+        let deserializedResult = try! JSON(jsonString: string).getDictionary()
+        let deserialized = JSON.dictionary(deserializedResult)
+        XCTAssertEqual(json, deserialized, "Serialize/Deserialize succeed with Optional Values")
+        XCTAssertEqual(json["phoneNumber"], .string(phoneNumber!))
+    }
+
+    func testThatSerializingUsingOptionalNilValuesIsPossible() {
+        
+        let phoneNumber: String? = nil
+
+        let json = JSON.dictionary([
+                "firstName": .string("fred"),
+                "lastName": .string("flintstone"),
+                "phoneNumber": JSON(phoneNumber)
+            ])
+        let string = try! json.serializeString()
+        let deserializedResult = try! JSON(jsonString: string).getDictionary()
+        let deserialized = JSON.dictionary(deserializedResult)
+        XCTAssertEqual(json, deserialized, "Serialize/Deserialize succeed with Optional Values")
+        XCTAssertEqual(json["phoneNumber"], .null)
+    }
+}
 
 func dataFromFixture(_ filename: String) -> Data {
     let testBundle = Bundle(for: JSONSerializingTests.self)
