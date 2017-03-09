@@ -7,9 +7,23 @@
 //
 
 import XCTest
-import Freddy
+@testable import Freddy
 
 class JSONTypeTests: XCTestCase {
+    
+    static var allTests : [(String, (JSONTypeTests) -> () throws -> Void)] {
+        return [
+            ("testCastInitializeArray", testCastInitializeArray),
+            ("testCastInitializeAnyCollection", testCastInitializeAnyCollection),
+            ("testCastInitializeDictionary", testCastInitializeDictionary),
+            ("testCastInitializeAnyDictionary", testCastInitializeAnyDictionary),
+            ("testCastInitializeDouble", testCastInitializeDouble),
+            ("testCastInitializeInt", testCastInitializeInt),
+            ("testCastInitializeString", testCastInitializeString),
+            ("testCastInitializeBool", testCastInitializeBool),
+            ("testLiteralConversion", testLiteralConversion),
+        ]
+    }
     
     func testCastInitializeArray() {
         let array: [JSON] = [1, 2, 3]

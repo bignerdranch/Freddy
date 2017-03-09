@@ -7,6 +7,11 @@
 //
 
 import Foundation
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin
+#endif
 
 private struct Literal {
     static let BACKSLASH     = UInt8(ascii: "\\")
@@ -591,7 +596,11 @@ public struct JSONParser {
     }
 
     private func detectingFloatingPointErrors<T>(start loc: Int, _ f: () throws -> T) throws -> T {
-        let flags = FE_UNDERFLOW | FE_OVERFLOW
+
+        // Explicit type declaration is necessary
+        // for compilation on Linux to succeed.
+        let flags: Int32 = FE_UNDERFLOW | FE_OVERFLOW
+        
         feclearexcept(flags)
         let value = try f()
         guard fetestexcept(flags) == 0 else {

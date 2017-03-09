@@ -7,9 +7,25 @@
 //
 
 import XCTest
+import Foundation
 @testable import Freddy
 
 class JSONEncodingDetectorTests: XCTestCase {
+    
+    static var allTests : [(String, (JSONEncodingDetectorTests) -> () throws -> Void)] {
+        return [
+            ("testUTF16LittleEndianDetection", testUTF16LittleEndianDetection),
+            ("testUTF16LittleEndianWithBOMDetection", testUTF16LittleEndianWithBOMDetection),
+            ("testUTF16BigEndianDetection", testUTF16BigEndianDetection),
+            ("testUTF16BigEndianWithBOMDetection", testUTF16BigEndianWithBOMDetection),
+            ("testUTF32LittleEndianDetection", testUTF32LittleEndianDetection),
+            ("testUTF32LittleEndianWithBOMDetection", testUTF32LittleEndianWithBOMDetection),
+            ("testUTF32BigEndianDetection", testUTF32BigEndianDetection),
+            ("testUTF32BigEndianWithBOMDetection", testUTF32BigEndianWithBOMDetection),
+            ("testUTF8Detection", testUTF8Detection),
+            ("testUTF8WithBOMDetection", testUTF8WithBOMDetection),
+        ]
+    }
 
     let fixtures = JSONEncodingUTFTestFixtures()
 
