@@ -118,8 +118,8 @@ extension JSONSerialization: JSONParserType {
     /// - parameter jsonDict: The dictionary to transform into `JSON`.
     /// - returns: An instance of `JSON` matching the dictionary.
     private static func makeJSONDictionary(_ jsonDict: [Swift.String: Any]) -> JSON {
-        return JSON(jsonDict.lazy.map { (key, value) in
-            (key, makeJSON(with: value))
+        return JSON(jsonDict.lazy.map { pair in
+            (pair.key, makeJSON(with: pair.value))
         })
     }
 

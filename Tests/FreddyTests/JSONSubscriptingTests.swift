@@ -69,7 +69,7 @@ class JSONSubscriptingTests: XCTestCase {
     func testThatDictionaryOfProducesResidentsByName() {
         do {
             let residentsByName = try residentJSON.decodedDictionary(at: "residentsByName", type: Resident.self)
-            let residentsNames = residentsByName.map { $1.name }
+            let residentsNames = residentsByName.map { $0.value.name }
             XCTAssertEqual(residentsNames.count, 3, "There should be 3 residents.")
         } catch {
             XCTFail("There should be no error: \(error).")
