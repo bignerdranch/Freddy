@@ -49,6 +49,9 @@
 		52E130F11DD53792008A5396 /* sample.JSON in Resources */ = {isa = PBXBuildFile; fileRef = 52E130BA1DD536C3008A5396 /* sample.JSON */; };
 		52E130F21DD53792008A5396 /* sampleNoWhiteSpace.JSON in Resources */ = {isa = PBXBuildFile; fileRef = 52E130BB1DD536C3008A5396 /* sampleNoWhiteSpace.JSON */; };
 		601AE3D31EE1B39300617386 /* IntExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601AE3D21EE1B39300617386 /* IntExtensions.swift */; };
+		601AE3D41EE1C14400617386 /* IntExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601AE3D21EE1B39300617386 /* IntExtensions.swift */; };
+		601AE3D51EE1C14500617386 /* IntExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601AE3D21EE1B39300617386 /* IntExtensions.swift */; };
+		601AE3D61EE1C14500617386 /* IntExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601AE3D21EE1B39300617386 /* IntExtensions.swift */; };
 		DB6ADF231C23610B00D77BF1 /* Freddy.h in Headers */ = {isa = PBXBuildFile; fileRef = DB6ADF221C23610B00D77BF1 /* Freddy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DB6ADF2A1C23610B00D77BF1 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB6ADF1F1C23610B00D77BF1 /* Freddy.framework */; };
 		DB6ADF481C23612000D77BF1 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB6ADF3E1C23612000D77BF1 /* Freddy.framework */; };
@@ -591,6 +594,7 @@
 				DB6ADF911C2362E000D77BF1 /* JSON.swift in Sources */,
 				DB6ADFA91C2362E000D77BF1 /* JSONSubscripting.swift in Sources */,
 				DC6D0C751E44249C0098D123 /* JSONOptional.swift in Sources */,
+				601AE3D41EE1C14400617386 /* IntExtensions.swift in Sources */,
 				DB6ADFA11C2362E000D77BF1 /* JSONParsing.swift in Sources */,
 				DB6ADF991C2362E000D77BF1 /* JSONLiteralConvertible.swift in Sources */,
 				1C67C7271C3B27DA003D5A05 /* JSONEncodable.swift in Sources */,
@@ -660,6 +664,7 @@
 				DB6ADF921C2362E000D77BF1 /* JSON.swift in Sources */,
 				DB6ADFAA1C2362E000D77BF1 /* JSONSubscripting.swift in Sources */,
 				DC6D0C761E44249D0098D123 /* JSONOptional.swift in Sources */,
+				601AE3D51EE1C14500617386 /* IntExtensions.swift in Sources */,
 				DB6ADFA21C2362E000D77BF1 /* JSONParsing.swift in Sources */,
 				DB6ADF9A1C2362E000D77BF1 /* JSONLiteralConvertible.swift in Sources */,
 				1C67C7281C3B27DC003D5A05 /* JSONEncodable.swift in Sources */,
@@ -694,6 +699,7 @@
 				DB6ADF931C2362E000D77BF1 /* JSON.swift in Sources */,
 				DB6ADFAB1C2362E000D77BF1 /* JSONSubscripting.swift in Sources */,
 				DC6D0C771E44249D0098D123 /* JSONOptional.swift in Sources */,
+				601AE3D61EE1C14500617386 /* IntExtensions.swift in Sources */,
 				DB6ADFA31C2362E000D77BF1 /* JSONParsing.swift in Sources */,
 				DB6ADF9B1C2362E000D77BF1 /* JSONLiteralConvertible.swift in Sources */,
 				1C67C7291C3B27DD003D5A05 /* JSONEncodable.swift in Sources */,
