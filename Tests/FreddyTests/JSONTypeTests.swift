@@ -34,15 +34,9 @@ class JSONTypeTests: XCTestCase {
 
     func testCastInitializeAnyDictionary() {
         let dictionary = ["foo": 1, "bar": 2, "baz": 3]
-        #if swift(>=4.0)
-        let pairCollection = dictionary.lazy.map { arg in
-            (arg.key, JSON(arg.value * 2))
+        let pairCollection = dictionary.lazy.map { pair in
+            (pair.key, JSON(pair.value * 2))
         }
-        #else
-        let pairCollection = dictionary.lazy.map { (key, value) in
-            (key, JSON(value * 2))
-        }
-        #endif
         let expected: JSON = .dictionary(["foo": 2, "bar": 4, "baz": 6])
         let json = JSON(pairCollection)
         XCTAssertEqual(json, expected)
