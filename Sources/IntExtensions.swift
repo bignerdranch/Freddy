@@ -8,7 +8,7 @@
 
 import Foundation
 
-#if swift(>=4.0)
+#if swift(>=3.2)
 #else
 
 public enum ArithmeticOverflow {
