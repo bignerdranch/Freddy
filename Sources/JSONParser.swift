@@ -468,7 +468,7 @@ public struct JSONParser {
 
             case .decimal, .exponent:
                 return try detectingFloatingPointErrors(start: parser.start) {
-                    try decodeFloatingPointValue(parser, sign: sign, value: Double(value))
+                    try decodeFloatingPointValue(parser, sign: sign, value: Decimal(value))
                 }
 
             case .postDecimalDigits, .exponentSign, .exponentDigits:
@@ -487,12 +487,12 @@ public struct JSONParser {
         return .int(signedValue)
     }
 
-    private mutating func decodeFloatingPointValue(_ parser: NumberParser, sign: Sign, value: Double) throws -> JSON {
+    private mutating func decodeFloatingPointValue(_ parser: NumberParser, sign: Sign, value: Decimal) throws -> JSON {
         var parser = parser
         var value = value
         var exponentSign = Sign.positive
-        var exponent = Double(0)
-        var position = 0.1
+        var exponent = Decimal(0)
+        var position: Decimal = 0.1
 
         // This would be more natural as `while true { ... }` with a meaningful .Done case,
         // but that causes compile time explosion in Swift 2.2. :-|
@@ -506,8 +506,8 @@ public struct JSONParser {
 
             case .postDecimalDigits:
                 parser.parsePostDecimalDigits { c in
-                    value += position * Double(c - Literal.zero)
-                    position /= 10
+                    value += position * Decimal(c - Literal.zero)
+                    position = position / 10
                 }
 
             case .exponent:
@@ -518,7 +518,7 @@ public struct JSONParser {
 
             case .exponentDigits:
                 parser.parseExponentDigits { c in
-                    exponent = exponent * 10 + Double(c - Literal.zero)
+                    exponent = exponent * 10 + Decimal(c - Literal.zero)
                 }
 
             case .done:
@@ -527,7 +527,7 @@ public struct JSONParser {
         }
 
         loc = parser.loc
-        return .double(Double(sign.rawValue) * value * pow(10, Double(exponentSign.rawValue) * exponent))
+        return .decimal(Decimal(Double(sign.rawValue) * value.doubleValue * pow(10, Double(exponentSign.rawValue) * exponent.doubleValue)))
     }
 
 

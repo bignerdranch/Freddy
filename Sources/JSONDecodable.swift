@@ -19,6 +19,28 @@ public protocol JSONDecodable {
     
 }
 
+extension Decimal: JSONDecodable {
+    
+    /// An initializer to create an instance of `Decimal` from a `JSON` value.
+    /// - parameter json: An instance of `JSON`.
+    /// - throws: The initializer will throw an instance of `JSON.Error` if
+    ///           an instance of `Decimal` cannot be created from the `JSON` value that was
+    ///           passed to this initializer.
+    public init(json: JSON) throws {
+        switch json {
+        case let .decimal(decimal):
+            self = decimal
+        case let .double(double):
+            self = Decimal(double)
+        case let .int(int):
+            self = Decimal(int)
+        default:
+            throw JSON.Error.valueNotConvertible(value: json, to: Decimal.self)
+        }
+    }
+    
+}
+
 extension Double: JSONDecodable {
     
     /// An initializer to create an instance of `Double` from a `JSON` value.
@@ -28,6 +50,8 @@ extension Double: JSONDecodable {
     ///           passed to this initializer.
     public init(json: JSON) throws {
         switch json {
+        case let .decimal(decimal):
+            self = decimal.doubleValue
         case let .double(double):
             self = double
         case let .int(int):
@@ -48,6 +72,8 @@ extension Int: JSONDecodable {
     ///           passed to this initializer.
     public init(json: JSON) throws {
         switch json {
+        case let .decimal(decimal):
+            self = decimal.intValue
         case let .double(double) where double <= Double(Int.max):
             self = Int(double)
         case let .int(int):
@@ -76,6 +102,8 @@ extension String: JSONDecodable {
             self = String(bool)
         case let .double(double):
             self = String(double)
+        case let .decimal(decimal):
+            self = decimal.stringValue
         default:
             throw JSON.Error.valueNotConvertible(value: json, to: String.self)
         }

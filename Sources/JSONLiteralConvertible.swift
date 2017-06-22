@@ -61,6 +61,16 @@ extension JSON: ExpressibleByFloatLiteral {
     public init(floatLiteral value: Swift.Double) {
         self.init(value)
     }
+    
+    /// Create an instance initialized to `Decimal` `value`.
+    public init(_ value: Decimal) {
+        self = .decimal(value)
+    }
+    
+    /// Create a literal instance initialized to `value`.
+    public init(floatLiteral value: Decimal) {
+        self.init(value)
+    }
 
 }
 

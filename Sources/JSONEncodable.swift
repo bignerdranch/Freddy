@@ -50,6 +50,14 @@ extension Int: JSONEncodable {
     }
 }
 
+extension Decimal: JSONEncodable {
+    /// Converts an instance of a conforming type to `JSON`.
+    /// - returns: An instance of `JSON` where the enum case is `.decimal`.
+    public func toJSON() -> JSON {
+        return .decimal(self)
+    }
+}
+
 extension Double: JSONEncodable {
     /// Converts an instance of a conforming type to `JSON`.
     /// - returns: An instance of `JSON` where the enum case is `.double`.

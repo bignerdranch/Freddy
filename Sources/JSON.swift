@@ -12,6 +12,8 @@ public enum JSON {
     case array([JSON])
     /// A case for denoting a dictionary with an associated value of `[Swift.String: JSON]`
     case dictionary([String: JSON])
+    /// A case for denoting a decimal with an associated value of `Swift.Decimal`.
+    case decimal(Decimal)
     /// A case for denoting a double with an associated value of `Swift.Double`.
     case double(Double)
     /// A case for denoting an integer with an associated value of `Swift.Int`.
@@ -50,6 +52,18 @@ extension JSON {
 
 // MARK: - Test Equality
 
+public extension Decimal {
+    var doubleValue: Double {
+        return NSDecimalNumber(decimal:self).doubleValue
+    }
+    var intValue: Int {
+        return NSDecimalNumber(decimal:self).intValue
+    }
+    var stringValue: String {
+        return NSDecimalNumber(decimal:self).stringValue
+    }
+}
+
 /// Return `true` if `lhs` is equal to `rhs`.
 public func ==(lhs: JSON, rhs: JSON) -> Bool {
     switch (lhs, rhs) {
@@ -59,6 +73,16 @@ public func ==(lhs: JSON, rhs: JSON) -> Bool {
         return dictL == dictR
     case (.string(let strL), .string(let strR)):
         return strL == strR
+    case (.decimal(let decL), .decimal(let decR)):
+        return decL == decR
+    case (.decimal(let decL), .double(let dubR)):
+        return decL.doubleValue == dubR
+    case (.double(let dubL), .decimal(let decR)):
+        return dubL == decR.doubleValue
+    case (.decimal(let decL), .int(let intR)):
+        return decL.doubleValue == Double(intR)
+    case (.int(let intL), .decimal(let decR)):
+        return Double(intL) == decR.doubleValue
     case (.double(let dubL), .double(let dubR)):
         return dubL == dubR
     case (.double(let dubL), .int(let intR)):
@@ -88,6 +112,7 @@ extension JSON: CustomStringConvertible {
         case .array(let arr):       return String(describing: arr)
         case .dictionary(let dict): return String(describing: dict)
         case .string(let string):   return string
+            case .decimal(let decimal): return String(describing: decimal)
         case .double(let double):   return String(describing: double)
         case .int(let int):         return String(describing: int)
         case .bool(let bool):       return String(describing: bool)

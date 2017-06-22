@@ -86,7 +86,7 @@ extension JSONSerialization: JSONParserType {
                 #endif
 
             case .float32Type, .float64Type, .floatType, .doubleType, .cgFloatType:
-                return .double(n.doubleValue)
+                return .decimal(n.decimalValue)
             }
 
         case let arr as [Any]:

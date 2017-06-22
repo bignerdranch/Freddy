@@ -145,6 +145,15 @@ extension JSON {
     public func decode<Decoded: JSONDecodable>(at path: JSONPathType..., type: Decoded.Type = Decoded.self) throws -> Decoded {
         return try Decoded(json: value(at: path))
     }
+    
+    /// Retrieves a `Decimal` from a path into JSON.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - returns: A floating-point `Decimal`
+    /// - throws: One of the `JSON.Error` cases thrown by `decode(at:type:)`.
+    /// - seealso: `JSON.decode(at:type:)`
+    public func getDecimal(at path: JSONPathType...) throws -> Decimal {
+        return try Decimal(json: value(at: path))
+    }
 
     /// Retrieves a `Double` from a path into JSON.
     /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
@@ -300,6 +309,23 @@ extension JSON {
     ///   * Any error that arises from decoding the value.
     public func decode<Decoded: JSONDecodable>(at path: JSONPathType..., alongPath options: SubscriptingOptions, type: Decoded.Type = Decoded.self) throws -> Decoded? {
         return try mapOptional(at: path, alongPath: options, transform: JSON.getDecoded)
+    }
+    
+    /// Optionally retrieves a `Decimal` from a path into JSON.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`.
+    /// - parameter alongPath: Options that control what should be done with values that are `null` or keys that are missing.
+    /// - returns: A `Decimal` if a value could be found, otherwise `nil`.
+    /// - throws: One of the following errors contained in `JSON.Error`:
+    ///   * `KeyNotFound`: A key `path` does not exist inside a descendant
+    ///     `JSON` dictionary.
+    ///   * `IndexOutOfBounds`: An index `path` is outside the bounds of a
+    ///     descendant `JSON` array.
+    ///   * `UnexpectedSubscript`: A `path` item cannot be used with the
+    ///     corresponding `JSON` value.
+    ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
+    ///     instance does not match the decoded value.
+    public func getDecimal(at path: JSONPathType..., alongPath options: SubscriptingOptions) throws -> Decimal? {
+        return try mapOptional(at: path, alongPath: options, transform: Decimal.init)
     }
 
     /// Optionally retrieves a `Double` from a path into JSON.
@@ -474,6 +500,15 @@ extension JSON {
     ///     the `JSON` instance does not match `Decoded`.
     public func decode<Decoded: JSONDecodable>(at path: JSONPathType..., or fallback: @autoclosure() -> Decoded) throws -> Decoded {
         return try mapOptional(at: path, fallback: fallback, transform: Decoded.init)
+    }
+    
+    /// Retrieves a `Decimal` from a path into JSON or a fallback if not found.
+    /// - parameter path: 0 or more `String` or `Int` that subscript the `JSON`
+    /// - parameter fallback: `Decimal` to use when one is missing at the subscript.
+    /// - returns: A floating-point `Decimal`
+    /// - throws: One of the `JSON.Error` cases thrown by calling `mapOptional(at:fallback:transform:)`.
+    public func getDecimal(at path: JSONPathType..., or fallback: @autoclosure() -> Decimal) throws -> Decimal {
+        return try mapOptional(at: path, fallback: fallback, transform: Decimal.init)
     }
     
     /// Retrieves a `Double` from a path into JSON or a fallback if not found.

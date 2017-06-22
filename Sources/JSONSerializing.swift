@@ -40,6 +40,8 @@ extension JSON {
             return cocoaDictionary
         case .string(let str):
             return str
+        case .decimal(let dec):
+            return NSDecimalNumber(decimal: dec)
         case .double(let num):
             return NSNumber(value: num)
         case .int(let int):
