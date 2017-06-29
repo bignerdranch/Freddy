@@ -421,6 +421,33 @@ class JSONSubscriptingTests: XCTestCase {
         XCTAssertNil(string)
     }
     
+    func testMissingKeyBecomesNilIsntRecursive() {
+        
+        struct A: JSONDecodable {
+            let b: B?
+            
+            init(json: JSON) throws {
+                b = try json.decode(at: "b", alongPath: [.missingKeyBecomesNil])
+            }
+            
+        }
+        
+        struct B: JSONDecodable {
+            let string: String
+            
+            init(json: JSON) throws {
+                string = try json.decode(at: "string")
+            }
+        }
+        
+        
+        let json: JSON = [
+            "b": [:]
+        ]
+        
+        XCTAssertThrowsError(try json.decode() as A)
+    }
+    
 }
 
 private struct Resident {

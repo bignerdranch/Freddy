@@ -255,14 +255,16 @@ extension JSON {
         var json: JSON?
         do {
             json = try value(at: path, detectingNull: detectNull)
-            return try json.map(transform)
         } catch Error.indexOutOfBounds where detectNotFound {
             return nil
         } catch Error.keyNotFound where detectNotFound {
             return nil
-        } catch Error.valueNotConvertible where detectNull && json == .null {
-            return nil
         } catch SubscriptError.subscriptIntoNull where detectNull {
+            return nil
+        }
+        do {
+            return try json.map(transform)
+        } catch Error.valueNotConvertible where detectNull && json == .null {
             return nil
         }
     }
