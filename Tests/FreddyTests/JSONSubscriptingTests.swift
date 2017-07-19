@@ -448,6 +448,39 @@ class JSONSubscriptingTests: XCTestCase {
         XCTAssertThrowsError(try json.decode() as A)
     }
     
+    func testMissingKeyBecomesNilIsRecursiveIfSpecified() {
+        
+        struct A: JSONDecodable {
+            let b: B?
+            
+            init(json: JSON) throws {
+                b = try json.decode(at: "b", alongPath: [.missingKeyBecomesNil], applyRecursively: true)
+            }
+            
+        }
+        
+        struct B: JSONDecodable {
+            let string: String
+            
+            init(json: JSON) throws {
+                string = try json.decode(at: "string")
+            }
+        }
+        
+        
+        let json: JSON = [
+            "b": [:]
+        ]
+        
+        do {
+            let decoded: A = try json.decode()
+            XCTAssertNil(decoded.b)
+        } catch {
+            XCTFail("JSON.decode() shouldn't throw when .missingKeyBecomesNil is applied recursively")
+        }
+        
+    }
+    
 }
 
 private struct Resident {
