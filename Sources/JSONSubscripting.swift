@@ -502,8 +502,8 @@ extension JSON {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of
     ///     the `JSON` instance does not match `Decoded`.
-    public func decode<Decoded: JSONDecodable>(at path: JSONPathType..., or fallback: @autoclosure() -> Decoded) throws -> Decoded {
-        return try mapOptional(at: path, fallback: fallback, transform: Decoded.init)
+    public func decode<Decoded: JSONDecodable>(at path: JSONPathType..., applyRecursively: Bool = false, or fallback: @autoclosure() -> Decoded) throws -> Decoded {
+        return try mapOptional(at: path, applyRecursively: applyRecursively, fallback: fallback, transform: Decoded.init)
     }
     
     /// Retrieves a `Double` from a path into JSON or a fallback if not found.
@@ -598,8 +598,8 @@ extension JSON {
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
-    public func decodedArray<Decoded: JSONDecodable>(at path: JSONPathType..., or fallback: @autoclosure() -> [Decoded]) throws -> [Decoded] {
-        return try mapOptional(at: path, fallback: fallback, transform: JSON.decodedArray)
+    public func decodedArray<Decoded: JSONDecodable>(at path: JSONPathType..., applyRecursively: Bool = false, or fallback: @autoclosure() -> [Decoded]) throws -> [Decoded] {
+        return try mapOptional(at: path, applyRecursively: applyRecursively, fallback: fallback, transform: JSON.decodedArray)
     }
     
     /// Retrieves a `[String: JSON]` from a path into JSON or a fallback if not
@@ -635,8 +635,8 @@ extension JSON {
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
-    public func decodedDictionary<Decoded: JSONDecodable>(at path: JSONPathType..., or fallback: @autoclosure() -> [String: Decoded]) throws -> [String: Decoded] {
-        return try mapOptional(at: path, fallback: fallback, transform: JSON.decodedDictionary)
+    public func decodedDictionary<Decoded: JSONDecodable>(at path: JSONPathType..., applyRecursively: Bool = false, or fallback: @autoclosure() -> [String: Decoded]) throws -> [String: Decoded] {
+        return try mapOptional(at: path, applyRecursively: applyRecursively, fallback: fallback, transform: JSON.decodedDictionary)
     }
     
     
