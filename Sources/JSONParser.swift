@@ -473,7 +473,7 @@ public struct JSONParser {
                 }
 
             case .postDecimalDigits, .exponentSign, .exponentDigits:
-                assertionFailure("Invalid internal state while parsing number")
+                fatalError("Invalid internal state while parsing number")
 
             case .done:
                 fatalError("impossible condition")
