@@ -58,4 +58,60 @@ extension JSON {
         
         self = .string(optional)
     }
+    
+    /// Create an instance from an Optional JSON into either
+    /// a JSON or .null
+    public init(_ optional: JSONEncodable?) {
+        guard let optional = optional else {
+            self = .null
+            return
+        }
+        
+        self = optional.toJSON()
+    }
+
+    /// Create an instance from an Optional [Double] into either
+    /// a JSON or .null
+    public init(_ optional: [Double]?) {
+        guard let optional = optional else {
+            self = .null
+            return
+        }
+        
+        self = optional.toJSON()
+    }
+    
+    /// Create an instance from an Optional [Int] into either
+    /// a JSON or .null
+    public init(_ optional: [Int]?) {
+        guard let optional = optional else {
+            self = .null
+            return
+        }
+        
+        self = optional.toJSON()
+    }
+
+    /// Create an instance from an Optional [Bool] into either
+    /// a JSON or .null
+    public init(_ optional: [Bool]?) {
+        guard let optional = optional else {
+            self = .null
+            return
+        }
+        
+        self = optional.toJSON()
+    }
+
+    /// Create an instance from an Optional [String] into either
+    /// a JSON or .null
+    public init(_ optional: [String]?) {
+        guard let optional = optional else {
+            self = .null
+            return
+        }
+        
+        self = optional.toJSON()
+    }
+    
 }
