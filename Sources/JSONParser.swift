@@ -916,5 +916,17 @@ extension JSONParser {
         /// get enough information from Swift here to know which it is. The number
         /// causing the overflow/underflow began at `offset`.
         case numberOverflow(offset: Int)
+
+        /// Attempting to parse a number, but the internal state was incorrect. This
+        /// would indicate an error with the internal parser logic.
+        case invalidInternalState(offset: Int)
+
+        /// Another internal parsing error where we still have some data but we think
+        /// we are done. Some say this is impossible.
+        case missionImpossible(offset: Int)
+
+        /// Attempted to parse a number on a valid that is not a number. This shouldn't
+        /// happen with the internal parser.
+        case parsingNumberOnNotANumber
     }
 }
