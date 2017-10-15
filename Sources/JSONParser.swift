@@ -455,14 +455,14 @@ public struct JSONParser {
                 parser.parseLeadingZero()
 
             case .preDecimalDigits:
-                var mutableParser = parser
-                try mutableParser.parsePreDecimalDigits { c in
+                let start = parser.start
+                try parser.parsePreDecimalDigits { c in
                     guard case let (exponent, false) = 10.multipliedReportingOverflow(by: value) else {
-                        throw InternalError.numberOverflow(offset: parser.start)
+                        throw InternalError.numberOverflow(offset: start)
                     }
                     
                     guard case let (newValue, false) = exponent.addingReportingOverflow(Int(c - Literal.zero)) else {
-                        throw InternalError.numberOverflow(offset: parser.start)
+                        throw InternalError.numberOverflow(offset: start)
                     }
                     
                     value = newValue
