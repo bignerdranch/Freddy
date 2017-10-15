@@ -474,10 +474,10 @@ public struct JSONParser {
                 }
 
             case .postDecimalDigits, .exponentSign, .exponentDigits:
-                assertionFailure("Invalid internal state while parsing number")
+                throw InternalError.invalidInternalState(offset: parser.start)
 
             case .done:
-                fatalError("impossible condition")
+                throw InternalError.missionImpossible(offset: parser.start)
             }
         }
 
@@ -501,7 +501,7 @@ public struct JSONParser {
         while parser.state != .done {
             switch parser.state {
             case .leadingMinus, .leadingZero, .preDecimalDigits:
-                assertionFailure("Invalid internal state while parsing number")
+                throw InternalError.invalidInternalState(offset: parser.start)
 
             case .decimal:
                 try parser.parseDecimal()
@@ -524,7 +524,7 @@ public struct JSONParser {
                 }
 
             case .done:
-                fatalError("impossible condition")
+                throw InternalError.missionImpossible(offset: parser.start)
             }
         }
 
@@ -534,14 +534,14 @@ public struct JSONParser {
 
 
     private mutating func decodeNumberAsString(from position: Int) throws -> JSON {
-        var parser: NumberParser = {
+        var parser: NumberParser = try {
             let state: NumberParser.State
             switch input[position] {
             case Literal.MINUS: state = .leadingMinus
             case Literal.zero: state = .leadingZero
             case Literal.one...Literal.nine: state = .preDecimalDigits
             default:
-                fatalError("Internal error: decodeNumber called on not-a-number")
+                 throw InternalError.parsingNumberOnNotANumber
             }
             return NumberParser(loc: position, input: input, state: state)
         }()
