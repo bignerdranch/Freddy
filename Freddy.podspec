@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "Freddy"
-  s.version      = "3.0.2"
+  s.version      = "3.0.3"
   s.summary      = "A JSON parsing library written in Swift"
 
   s.description  = <<-DESC
@@ -28,5 +28,5 @@ Pod::Spec.new do |s|
   s.source_files  = "Sources/**/*.{h,swift}"
 
   s.requires_arc = true
-  s.pod_target_xcconfig = { 'SWIFT_VERSION' => '3.0' }
+  s.pod_target_xcconfig = { 'SWIFT_VERSION' => '3.2' }
 end

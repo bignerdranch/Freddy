@@ -134,7 +134,7 @@ internal extension JSON {
     static func getArray(from json: JSON) throws -> [JSON] {
         // Ideally should be expressed as a conditional protocol implementation on Swift.Array.
         guard case let .array(array) = json else {
-            throw Error.valueNotConvertible(value: json, to: Swift.Array<JSON>)
+            throw Error.valueNotConvertible(value: json, to: Swift.Array<JSON>.self)
         }
         return array
     }
@@ -147,7 +147,7 @@ internal extension JSON {
     static func getDictionary(from json: JSON) throws -> [String: JSON] {
         // Ideally should be expressed as a conditional protocol implementation on Swift.Dictionary.
         guard case let .dictionary(dictionary) = json else {
-            throw Error.valueNotConvertible(value: json, to: Swift.Dictionary<String, JSON>)
+            throw Error.valueNotConvertible(value: json, to: Swift.Dictionary<String, JSON>.self)
         }
         return dictionary
     }
@@ -174,7 +174,7 @@ internal extension JSON {
     /// - seealso: `JSON.decode(_:type:)`
     static func decodedDictionary<Decoded: JSONDecodable>(from json: JSON) throws -> [Swift.String: Decoded] {
         guard case let .dictionary(dictionary) = json else {
-            throw Error.valueNotConvertible(value: json, to: Swift.Dictionary<String, Decoded>)
+            throw Error.valueNotConvertible(value: json, to: Swift.Dictionary<String, Decoded>.self)
         }
         var decodedDictionary = Swift.Dictionary<String, Decoded>(minimumCapacity: dictionary.count)
         for (key, value) in dictionary {
