@@ -35,7 +35,7 @@ end
 
 desc "Build Freddy for iOS"
 lane :iOS do
-  scan(scheme: "MobileFreddy", device: "iPhone 7 (10.0)")
+  scan(scheme: "MobileFreddy")
 end
 
 desc "Build Freddy for tvOS"
