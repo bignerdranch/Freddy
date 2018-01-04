@@ -1,7 +1,7 @@
 language: objective-c
 osx_image: xcode8
 cache: bundler
-rvm: 2.2.1
+rvm: 2.2.5
 install:
   - bundle install
   - brew outdated carthage || brew upgrade carthage
