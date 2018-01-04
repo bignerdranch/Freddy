@@ -20,7 +20,7 @@ end
 #######################################################################
 
 desc "Perform the build steps on travis CI"
-lane :travis do
+lane :test do
   macOS
   iOS
   tvOS
