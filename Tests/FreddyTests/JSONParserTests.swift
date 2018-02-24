@@ -200,7 +200,7 @@ class JSONParserTests: XCTestCase {
         ] {
             do {
                 let value = try JSONParser.parse(string).getDouble()
-                XCTAssertEqual(value, shouldBeDouble, accuracy: .ulpOfOne)
+                XCTAssertEqualWithAccuracy(value, shouldBeDouble, accuracy: DBL_EPSILON)
             } catch {
                 XCTFail("Unexpected error: \(error)")
             }
