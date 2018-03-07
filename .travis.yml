@@ -1,12 +1,12 @@
 language: objective-c
-osx_image: xcode8
+osx_image: xcode9
 cache: bundler
-rvm: 2.2.1
+rvm: 2.2.5
 install:
   - bundle install
   - brew outdated carthage || brew upgrade carthage
 script:
-  - bundle exec fastlane travis
+  - bundle exec fastlane test
 notifications:
   slack:
     secure: VHcEZcTuVR3gfHIcM9jcxrXgE3tkVIT4gWDLpnK7O4em86dCpaVkLDwr0UcQYxvqGS1J8pQqGZCwyOBsdgaItX52eRDMIez/384B56Vl6eufdLAcwWELIEtHyFkJ6XUjmASICaeeb8SpF/rj89/AXoHU6c8shY13NKtoBBZCGq8=
