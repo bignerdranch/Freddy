@@ -7,7 +7,12 @@
 //
 
 import XCTest
-import Freddy
+import Foundation
+#if os(Linux)
+    // Can't seem to find this value in Glibc.
+    let DBL_EPSILON = 2.2204460492503131e-16
+#endif
+@testable import Freddy
 
 private func ==(lhs: JSONParser.Error, rhs: JSONParser.Error) -> Bool {
     switch (lhs, rhs) {
@@ -43,6 +48,44 @@ private func ==(lhs: JSONParser.Error, rhs: JSONParser.Error) -> Bool {
 }
 
 class JSONParserTests: XCTestCase {
+    
+    static var allTests : [(String, (JSONParserTests) -> () throws -> Void)] {
+        return [
+            ("testThatParserThrowsAnErrorForAnEmptyData", testThatParserThrowsAnErrorForAnEmptyData),
+            ("testThatParserThrowsErrorForInsufficientData", testThatParserThrowsErrorForInsufficientData),
+            ("testThatParserCompletesWithSingleZero", testThatParserCompletesWithSingleZero),
+            ("testThatParserCompletesWithBOMAndSingleZero", testThatParserCompletesWithBOMAndSingleZero),
+            ("testThatParserUnderstandsNull", testThatParserUnderstandsNull),
+            ("testThatParserSkipsLeadingWhitespace", testThatParserSkipsLeadingWhitespace),
+            ("testThatParserAllowsTrailingWhitespace", testThatParserAllowsTrailingWhitespace),
+            ("testThatParserFailsWhenTrailingDataIsPresent", testThatParserFailsWhenTrailingDataIsPresent),
+            ("testThatParserUnderstandsTrue", testThatParserUnderstandsTrue),
+            ("testThatParserUnderstandsFalse", testThatParserUnderstandsFalse),
+            ("testThatParserUnderstandsStringsWithoutEscapes", testThatParserUnderstandsStringsWithoutEscapes),
+            ("testThatParserUnderstandsStringsWithEscapedCharacters", testThatParserUnderstandsStringsWithEscapedCharacters),
+            ("testThatParserUnderstandsStringsWithEscapedUnicode", testThatParserUnderstandsStringsWithEscapedUnicode),
+            ("testThatParserFailsWhenIncompleteDataIsPresent", testThatParserFailsWhenIncompleteDataIsPresent),
+            ("testThatParserUnderstandsNumbers", testThatParserUnderstandsNumbers),
+            ("testThatParserRejectsInvalidNumbers", testThatParserRejectsInvalidNumbers),
+            ("testParserHandlingOfNumericOverflow", testParserHandlingOfNumericOverflow),
+            ("testStringFloatingPointCanBeInt", testStringFloatingPointCanBeInt),
+            ("testOverflowingIntResultsInStringWithNSJSONSerializationParser", testOverflowingIntResultsInStringWithNSJSONSerializationParser),
+            ("testOverflowingIntResultsInStringWithFreddyParser", testOverflowingIntResultsInStringWithFreddyParser),
+            ("testOverflowingInt32ResultsInIntWhenAppropriateWithFreddyParser", testOverflowingInt32ResultsInIntWhenAppropriateWithFreddyParser),
+            ("testLargeIntResultsInStringOrIntWithFreddyParser", testLargeIntResultsInStringOrIntWithFreddyParser),
+            ("testReturnsNilWhenDoubleValueExceedingIntMaxIsAccessedAsInt", testReturnsNilWhenDoubleValueExceedingIntMaxIsAccessedAsInt),
+            ("testThatParserUnderstandsEmptyArrays", testThatParserUnderstandsEmptyArrays),
+            ("testThatParserUnderstandsSingleItemArrays", testThatParserUnderstandsSingleItemArrays),
+            ("testThatParserUnderstandsMultipleItemArrays", testThatParserUnderstandsMultipleItemArrays),
+            ("testThatParserUnderstandsEmptyObjects", testThatParserUnderstandsEmptyObjects),
+            ("testThatParserUnderstandsSingleItemObjects", testThatParserUnderstandsSingleItemObjects),
+            ("testThatParserUnderstandsMultipleItemObjects", testThatParserUnderstandsMultipleItemObjects),
+            ("testThatParserFailsForUnsupportedEncodings", testThatParserFailsForUnsupportedEncodings),
+            ("testThatParserAcceptsUTF16SurrogatePairs", testThatParserAcceptsUTF16SurrogatePairs),
+            ("testThatParserRejectsInvalidUTF16SurrogatePairs", testThatParserRejectsInvalidUTF16SurrogatePairs),
+            ("testThatParserRejectsStringEndingInBackslash", testThatParserRejectsStringEndingInBackslash),
+        ]
+    }
 
     func testThatParserThrowsAnErrorForAnEmptyData() {
         

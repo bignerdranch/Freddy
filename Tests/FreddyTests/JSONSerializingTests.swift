@@ -1,9 +1,27 @@
 // Copyright (C) 2016 Big Nerd Ranch, Inc. Licensed under the MIT license WITHOUT ANY WARRANTY.
 
 import XCTest
-import Freddy
+import Foundation
+@testable import Freddy
 
 class JSONSerializingTests: XCTestCase {
+    
+    static var allTests : [(String, (JSONSerializingTests) -> () throws -> Void)] {
+        return [
+            ("testThatJSONCanBeSerializedToNSData", testThatJSONCanBeSerializedToNSData),
+            ("testThatJSONCanBeSerializedToString", testThatJSONCanBeSerializedToString),
+            ("testThatJSONDataIsEqual", testThatJSONDataIsEqual),
+            ("testThatJSONStringIsEqual", testThatJSONStringIsEqual),
+            ("testThatJSONDataSerializationMakesEqualJSON", testThatJSONDataSerializationMakesEqualJSON),
+            ("testThatJSONStringSerializationMakesEqualJSON", testThatJSONStringSerializationMakesEqualJSON),
+            ("testThatJSONSerializationHandlesBoolsCorrectly", testThatJSONSerializationHandlesBoolsCorrectly),
+            ("testThatJSONStringSerializationHandlesBoolsCorrectly", testThatJSONStringSerializationHandlesBoolsCorrectly),
+            ("testThatSerializingCanSkipKeysWithNullValue", testThatSerializingCanSkipKeysWithNullValue),
+            ("testThatSerializingUsingOptionalValuesIsPossible", testThatSerializingUsingOptionalValuesIsPossible),
+            ("testThatSerializingUsingOptionalNilValuesIsPossible", testThatSerializingUsingOptionalNilValuesIsPossible),
+        ]
+    }
+
     let json = JSONFromFixture("sample.JSON")
     let noWhiteSpaceData = dataFromFixture("sampleNoWhiteSpace.JSON")
 

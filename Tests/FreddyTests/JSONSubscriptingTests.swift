@@ -7,9 +7,53 @@
 //
 
 import XCTest
-import Freddy
+import Foundation
+@testable import Freddy
 
 class JSONSubscriptingTests: XCTestCase {
+    
+    static var allTests : [(String, (JSONSubscriptingTests) -> () throws -> Void)] {
+        return [
+            ("testThatArrayOfProducesResidents", testThatArrayOfProducesResidents),
+            ("testThatDictionaryOfProducesResidentsByName", testThatDictionaryOfProducesResidentsByName),
+            ("testNullOptionsDecodes", testNullOptionsDecodes),
+            ("testNullOptionsProducesOptionalForNotFoundWithArrayOf", testNullOptionsProducesOptionalForNotFoundWithArrayOf),
+            ("testNullOptionsProducesOptionalForNotFoundWithDictionaryOf", testNullOptionsProducesOptionalForNotFoundWithDictionaryOf),
+            ("testNullOptionsProducesOptionalForNullOrNotFoundWithArrayOf", testNullOptionsProducesOptionalForNullOrNotFoundWithArrayOf),
+            ("testNullOptionsProducesOptionalForNullOrNotFoundWithDictionaryOf", testNullOptionsProducesOptionalForNullOrNotFoundWithDictionaryOf),
+            ("testNullOptionsIndexOutOfBoundsProducesOptional", testNullOptionsIndexOutOfBoundsProducesOptional),
+            ("testArrayOfJSONIntAndNullCreatesOptionalWhenDetectNull", testArrayOfJSONIntAndNullCreatesOptionalWhenDetectNull),
+            ("testArrayProducesOptionalWhenNotFoundOrNull", testArrayProducesOptionalWhenNotFoundOrNull),
+            ("testDictionaryOfJSONIntAndNullCreatesOptionalWhenDetectNull", testDictionaryOfJSONIntAndNullCreatesOptionalWhenDetectNull),
+            ("testDictionaryProducesOptionalWhenNotFoundOrNull", testDictionaryProducesOptionalWhenNotFoundOrNull),
+            ("testDecodenullBecomesNilProducesOptional", testDecodenullBecomesNilProducesOptional),
+            ("testJSONDictionaryUnexpectedSubscript", testJSONDictionaryUnexpectedSubscript),
+            ("testJSONIndexSubscript", testJSONIndexSubscript),
+            ("testJSONKeySubscript", testJSONKeySubscript),
+            ("testDecodeOr", testDecodeOr),
+            ("testDoubleOr", testDoubleOr),
+            ("testStringOr", testStringOr),
+            ("testIntOr", testIntOr),
+            ("testBoolOr", testBoolOr),
+            ("testArrayOr", testArrayOr),
+            ("testArrayOfOr", testArrayOfOr),
+            ("testDictionaryOr", testDictionaryOr),
+            ("testDictionaryOfOr", testDictionaryOfOr),
+            ("testThatUnexpectedSubscriptIsThrown", testThatUnexpectedSubscriptIsThrown),
+            ("testMissingKeyOptionStillFailsIfNullEncountered", testMissingKeyOptionStillFailsIfNullEncountered),
+            ("testSubscriptingOptionsStillFailIfKeyIsMissing", testSubscriptingOptionsStillFailIfKeyIsMissing),
+//            ("testThatMapCanCreateArrayOfPeople", testThatMapCanCreateArrayOfPeople),
+//            ("testThatSubscriptingJSONWorksForTopLevelObject", testThatSubscriptingJSONWorksForTopLevelObject),
+//            ("testThatPathSubscriptingPerformsNesting", testThatPathSubscriptingPerformsNesting),
+//            ("testJSONSubscriptWithInt", testJSONSubscriptWithInt),
+//            ("testJSONErrorKeyNotFound", testJSONErrorKeyNotFound),
+//            ("testJSONErrorIndexOutOfBounds", testJSONErrorIndexOutOfBounds),
+//            ("testJSONErrorTypeNotConvertible", testJSONErrorTypeNotConvertible),
+//            ("testJSONErrorUnexpectedSubscript", testJSONErrorUnexpectedSubscript),
+            ("testThatOptionalSubscriptingIntoNullSucceeds", testThatOptionalSubscriptingIntoNullSucceeds),
+            ("testThatOptionalSubscriptingKeyNotFoundSucceeds", testThatOptionalSubscriptingKeyNotFoundSucceeds),
+        ]
+    }
     
     private var residentJSON: JSON!
     private var json: JSON!
@@ -35,25 +79,43 @@ class JSONSubscriptingTests: XCTestCase {
             ]
             ])
         
+        #if !os(Linux) // Bundle(for:) is NSNotImplemented
+        let sampleData: Data
         let testBundle = Bundle(for: JSONSubscriptingTests.self)
-        guard let data = testBundle.url(forResource: "sample", withExtension: "JSON").flatMap(NSData.init(contentsOf:)) else {
-            XCTFail("Could not read sample data from test bundle")
+        do {
+            guard let data = try testBundle.url(forResource: "sample", withExtension: "JSON").flatMap({ try Data(contentsOf: $0)} ) else {
+                XCTFail("Could not read sample data from test bundle")
+                return
+            }
+            
+            sampleData = data
+            
+        } catch {
+            XCTFail("Could not read sample data from test bundle: \(error)")
             return
         }
-        
+
         do {
-            self.json = try JSON(data: data as Data, usingParser: parser())
+            self.json = try JSON(data: sampleData, usingParser: parser())
         } catch {
             XCTFail("Could not parse sample JSON: \(error)")
             return
         }
         
-        guard let noWhiteSpaceData = testBundle.url(forResource: "sampleNoWhiteSpace", withExtension: "JSON").flatMap(NSData.init(contentsOf:)) else {
-            XCTFail("Could not read sample data (no whitespace) from test bundle")
+        do {
+            guard let noWhiteSpaceData = try testBundle.url(forResource: "sampleNoWhiteSpace", withExtension: "JSON").flatMap({ try Data(contentsOf: $0)} ) else {
+                XCTFail("Could not read sample data (no whitespace) from test bundle")
+                return
+            }
+            
+            self.noWhiteSpaceData = noWhiteSpaceData
+            
+        } catch {
+            XCTFail("Could not read sample data (no whitespace) from test bundle: \(error)")
             return
         }
-        
-        self.noWhiteSpaceData = noWhiteSpaceData as Data
+        #endif
+
     }
     
     func testThatArrayOfProducesResidents() {

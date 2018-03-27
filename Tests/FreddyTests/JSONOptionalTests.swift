@@ -7,9 +7,18 @@
 //
 
 import XCTest
-import Freddy
+@testable import Freddy
 
 class JSONOptionalTests: XCTestCase {
+    
+    static var allTests : [(String, (JSONOptionalTests) -> () throws -> Void)] {
+        return [
+            ("testThatJSONCanBeCreatedFromDoubleOptionals", testThatJSONCanBeCreatedFromDoubleOptionals),
+            ("testThatJSONCanBeCreatedFromIntOptionals", testThatJSONCanBeCreatedFromIntOptionals),
+            ("testThatJSONCanBeCreatedFromBoolOptionals", testThatJSONCanBeCreatedFromBoolOptionals),
+            ("testThatJSONCanBeCreatedFromStringOptionals", testThatJSONCanBeCreatedFromStringOptionals),
+        ]
+    }
     
     func testThatJSONCanBeCreatedFromDoubleOptionals() {
         

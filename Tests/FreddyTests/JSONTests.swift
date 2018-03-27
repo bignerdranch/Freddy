@@ -7,21 +7,41 @@
 //
 
 import XCTest
-import Freddy
+import Foundation
+@testable import Freddy
 
 class JSONTests: XCTestCase {
+    
+    static var allTests : [(String, (JSONTests) -> () throws -> Void)] {
+        return [
+//            ("testInitializingFromData", testInitializingFromData),
+//            ("DoNotRuntestInitializingFromEmptyData", DoNotRuntestInitializingFromEmptyData), // TODO: Do not run
+            ("testInitializingFromString", testInitializingFromString),
+//            ("DoNotRuntestInitializingFromEmptyString", DoNotRuntestInitializingFromEmptyString), // TODO: Do not run
+        ]
+    }
 
-    var sampleData:Data!
+    var sampleData: Data!
     
     override func setUp() {
         super.setUp()
         
-        let testBundle = Bundle(for: JSONSubscriptingTests.self)
-        guard let data = testBundle.url(forResource: "sample", withExtension: "JSON").flatMap(NSData.init(contentsOf:)) else {
-            XCTFail("Could not read sample data from test bundle")
+        #if !os(Linux) // Bundle(for:) is NSNotImplemented
+        let testBundle = Bundle(for: JSONTests.self)
+        do {
+            guard let data = try testBundle.url(forResource: "sample", withExtension: "JSON").flatMap({ try Data(contentsOf: $0)} ) else {
+                XCTFail("Could not read sample data from test bundle")
+                return
+            }
+            
+            sampleData = data
+            
+        } catch {
+            XCTFail("Could not read sample data from test bundle: \(error)")
             return
         }
-        sampleData = data as Data
+        #endif
+        
     }
     
     func testInitializingFromData() {

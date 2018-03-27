@@ -10,6 +10,19 @@ import XCTest
 @testable import Freddy
 
 class JSONEncodableTests: XCTestCase {
+    
+    static var allTests : [(String, (JSONEncodableTests) -> () throws -> Void)] {
+        return [
+            ("testThatJSONEncodableEncodesString", testThatJSONEncodableEncodesString),
+            ("testThatJSONEncodableEncodesBool", testThatJSONEncodableEncodesBool),
+            ("testThatJSONEncodableEncodesInt", testThatJSONEncodableEncodesInt),
+            ("testThatJSONEncodableEncodesDouble", testThatJSONEncodableEncodesDouble),
+            ("testThatJSONEncodableEncodesModelType", testThatJSONEncodableEncodesModelType),
+            ("testThatJSONEncodableEncodesArray", testThatJSONEncodableEncodesArray),
+            ("testThatJSONEncodableEncodesDictionary", testThatJSONEncodableEncodesDictionary),
+            ("testThatJSONEncodableEncodesArrayOfModels", testThatJSONEncodableEncodesArrayOfModels),
+        ]
+    }
 
     func testThatJSONEncodableEncodesString() {
         let matt = "Matt"

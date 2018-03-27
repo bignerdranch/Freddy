@@ -7,9 +7,27 @@
 //
 
 import XCTest
-import Freddy
+import Foundation
+@testable import Freddy
 
 class JSONDecodableTests: XCTestCase {
+    
+    static var allTests : [(String, (JSONDecodableTests) -> () throws -> Void)] {
+        return [
+            ("testThatJSONDecodableConformanceProducesInstance", testThatJSONDecodableConformanceProducesInstance),
+            ("testJSONDecodableExtensionOnDouble", testJSONDecodableExtensionOnDouble),
+            ("testJSONDecodableExtensionOnInt", testJSONDecodableExtensionOnInt),
+            ("testJSONDecodableExtensionOnString", testJSONDecodableExtensionOnString),
+            ("testJSONDecodableExtensionOnBool", testJSONDecodableExtensionOnBool),
+            ("testThatJSONBoolIsDecodable", testThatJSONBoolIsDecodable),
+            ("testThatJSONArrayIsDecodable", testThatJSONArrayIsDecodable),
+            ("testThatJSONDictionaryIsDecodable", testThatJSONDictionaryIsDecodable),
+            ("testThatArrayOfCanReturnArrayOfJSONDecodable", testThatArrayOfCanReturnArrayOfJSONDecodable),
+            ("testThatDictionaryOfCanReturnDictionaryOfJSONDecodable", testThatDictionaryOfCanReturnDictionaryOfJSONDecodable),
+            ("testThatNullIsDecodedToNilWhenRequestedAtTopLevel", testThatNullIsDecodedToNilWhenRequestedAtTopLevel),
+            ("testThatAttemptingToDecodeNullThrowsWhenRequestedAtTopLevel", testThatAttemptingToDecodeNullThrowsWhenRequestedAtTopLevel),
+        ]
+    }
 
     private var mattJSON: JSON!
     private var matt: Person!
