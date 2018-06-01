@@ -592,7 +592,7 @@ public struct JSONParser {
     }
 
     private func detectingFloatingPointErrors<T>(start loc: Int, _ f: () throws -> T) throws -> T {
-        let flags = FE_UNDERFLOW | FE_OVERFLOW
+        let flags: Int32 = FE_UNDERFLOW | FE_OVERFLOW
         feclearexcept(flags)
         let value = try f()
         guard fetestexcept(flags) == 0 else {
