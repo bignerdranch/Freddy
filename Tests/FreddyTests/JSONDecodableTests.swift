@@ -228,7 +228,7 @@ class JSONDecodableTests: XCTestCase {
         let oneTwoThreeJSON: JSON = [1,2,3]
         
         do {
-            let decodedOneTwoThree = try oneTwoThreeJSON.decodedArray(type: Swift.Int)
+            let decodedOneTwoThree = try oneTwoThreeJSON.decodedArray(type: Swift.Int.self)
             XCTAssertEqual(decodedOneTwoThree, [1,2,3], "`decodedOneTwoThree` should be equal to `[1,2,3]`.")
         } catch {
             XCTFail("`decodedOneTwoThree` should be equal to `[1,2,3]`.")
@@ -239,7 +239,7 @@ class JSONDecodableTests: XCTestCase {
         let oneTwoThreeJSON: JSON = ["one": 1, "two": 2, "three": 3]
         
         do {
-            let decodedOneTwoThree = try oneTwoThreeJSON.decodedDictionary(type: Swift.Int)
+            let decodedOneTwoThree = try oneTwoThreeJSON.decodedDictionary(type: Swift.Int.self)
             XCTAssertEqual(decodedOneTwoThree, ["one": 1, "two": 2, "three": 3], "`decodedOneTwoThree` should be equal to `[\"one\": 1, \"two\": 2, \"three\": 3]`.")
         } catch {
             XCTFail("`decodedOneTwoThree` should be equal to `[\"one\": 1, \"two\": 2, \"three\": 3]`.")
