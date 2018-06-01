@@ -56,14 +56,14 @@ extension JSONSerialization: JSONParserType {
     /// - returns: An instance of `JSON` matching the JSON given to the function.
     public static func makeJSON(with object: Any) -> JSON {
         switch object {
-		case let n as Int:
-			return .int(n)
+        case let n as Int:
+            return .int(n)
 
-		case let n as Double:
-			return .double(n)
-		
-		case let n as Bool:
-			return .bool(n)
+        case let n as Double:
+            return .double(n)
+        
+        case let n as Bool:
+            return .bool(n)
 
         case let arr as [Any]:
             return makeJSONArray(arr)
