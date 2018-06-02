@@ -474,10 +474,10 @@ public struct JSONParser {
                 }
 
             case .postDecimalDigits, .exponentSign, .exponentDigits:
-                assertionFailure("Invalid internal state while parsing number")
+                throw InternalError.invalidInternalState(offset: parser.start)
 
             case .done:
-                fatalError("impossible condition")
+                throw InternalError.missionImpossible(offset: parser.start)
             }
         }
 
@@ -501,7 +501,7 @@ public struct JSONParser {
         while parser.state != .done {
             switch parser.state {
             case .leadingMinus, .leadingZero, .preDecimalDigits:
-                assertionFailure("Invalid internal state while parsing number")
+                throw InternalError.invalidInternalState(offset: parser.start)
 
             case .decimal:
                 try parser.parseDecimal()
@@ -524,7 +524,7 @@ public struct JSONParser {
                 }
 
             case .done:
-                fatalError("impossible condition")
+                throw InternalError.missionImpossible(offset: parser.start)
             }
         }
 
@@ -534,14 +534,14 @@ public struct JSONParser {
 
 
     private mutating func decodeNumberAsString(from position: Int) throws -> JSON {
-        var parser: NumberParser = {
+        var parser: NumberParser = try {
             let state: NumberParser.State
             switch input[position] {
             case Literal.MINUS: state = .leadingMinus
             case Literal.zero: state = .leadingZero
             case Literal.one...Literal.nine: state = .preDecimalDigits
             default:
-                fatalError("Internal error: decodeNumber called on not-a-number")
+                 throw InternalError.parsingNumberOnNotANumber
             }
             return NumberParser(loc: position, input: input, state: state)
         }()
@@ -916,5 +916,17 @@ extension JSONParser {
         /// get enough information from Swift here to know which it is. The number
         /// causing the overflow/underflow began at `offset`.
         case numberOverflow(offset: Int)
+
+        /// Attempting to parse a number, but the internal state was incorrect. This
+        /// would indicate an error with the internal parser logic.
+        case invalidInternalState(offset: Int)
+
+        /// Another internal parsing error where we still have some data but we think
+        /// we are done. Some say this is impossible.
+        case missionImpossible(offset: Int)
+
+        /// Attempted to parse a number on a valid that is not a number. This shouldn't
+        /// happen with the internal parser.
+        case parsingNumberOnNotANumber
     }
 }
