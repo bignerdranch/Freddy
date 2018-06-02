@@ -442,6 +442,12 @@ public struct JSONParser {
         var sign = Sign.positive
         var parser = parser
         var value = 0
+        
+        #if swift(>=3.2)
+        let noOverflow = false
+        #else
+        let noOverflow = ArithmeticOverflow.none
+        #endif
 
         // This would be more natural as `while true { ... }` with a meaningful .Done case,
         // but that causes compile time explosion in Swift 2.2. :-|
@@ -457,11 +463,12 @@ public struct JSONParser {
             case .preDecimalDigits:
                 let start = parser.start
                 try parser.parsePreDecimalDigits { c in
-                    guard case let (exponent, false) = 10.multipliedReportingOverflow(by: value) else {
+
+                    guard case (let exponent, noOverflow) = 10.multipliedReportingOverflow(by: value) else {
                         throw InternalError.numberOverflow(offset: start)
                     }
                     
-                    guard case let (newValue, false) = exponent.addingReportingOverflow(Int(c - Literal.zero)) else {
+                    guard case (let newValue, noOverflow) = exponent.addingReportingOverflow(Int(c - Literal.zero)) else {
                         throw InternalError.numberOverflow(offset: start)
                     }
                     
@@ -481,7 +488,7 @@ public struct JSONParser {
             }
         }
 
-        guard case let (signedValue, false) = sign.rawValue.multipliedReportingOverflow(by: value) else {
+        guard case (let signedValue, noOverflow) = sign.rawValue.multipliedReportingOverflow(by: value) else {
             throw InternalError.numberOverflow(offset: parser.start)
         }
 
