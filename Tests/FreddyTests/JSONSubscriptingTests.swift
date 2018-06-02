@@ -306,7 +306,7 @@ class JSONSubscriptingTests: XCTestCase {
         do {
             _ = try residentJSON.decode(at: "residents", 1, "name", "initial", type: Resident.self)
         } catch JSON.Error.unexpectedSubscript(let type) {
-            XCTAssert(type == Swift.String, "The dictionary at index 1 should not be subscriptable by: \(type).")
+            XCTAssert(type == Swift.String.self, "The dictionary at index 1 should not be subscriptable by: \(type).")
         } catch {
             XCTFail("This should not be: \(error).")
         }
@@ -392,7 +392,7 @@ class JSONSubscriptingTests: XCTestCase {
         do {
             _ = try json.getInt(at: "people", 0, "name")
         } catch let JSON.Error.valueNotConvertible(value, to) {
-            XCTAssert(to == Swift.Int, "The error should be due the value not being an `Int` case, but was \(to).")
+            XCTAssert(to == Swift.Int.self, "The error should be due the value not being an `Int` case, but was \(to).")
             XCTAssert(value == "Matt Mathias", "The error should be due the value being the String 'Matt Mathias', but was \(value).")
         } catch {
             XCTFail("The error should be due to `name` not being convertible to `int`, but was: \(error).")
@@ -403,7 +403,7 @@ class JSONSubscriptingTests: XCTestCase {
         do {
             _ = try json.getString(at: "people", "name")
         } catch JSON.Error.unexpectedSubscript(let type) {
-            XCTAssert(type == Swift.String, "The error should be due the value not being subscriptable with string `String` case, but was \(type).")
+            XCTAssert(type == Swift.String.self, "The error should be due the value not being subscriptable with string `String` case, but was \(type).")
         } catch {
             XCTFail("The error should be due to the `people` `Array` not being subscriptable with `String`s, but was: \(error).")
         }

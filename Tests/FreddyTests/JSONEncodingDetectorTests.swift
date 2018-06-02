@@ -107,7 +107,13 @@ struct JSONEncodingUTFTestFixtures {
         }
     }
 
-    func withPrefixSlice<R>(_ encoding: JSONEncodingDetector.Encoding, includeBOM: Bool, body: (RandomAccessSlice<UnsafeBufferPointer<UInt8>>) throws -> R) rethrows -> R {
+    #if swift(>=3.3)
+    public typealias PrefixSlice = Slice<UnsafeBufferPointer<UInt8>>
+    #else
+    public typealias PrefixSlice = RandomAccessSlice<UnsafeBufferPointer<UInt8>>
+    #endif
+
+    func withPrefixSlice<R>(_ encoding: JSONEncodingDetector.Encoding, includeBOM: Bool, body: (PrefixSlice) throws -> R) rethrows -> R {
         let array = hexArray(encoding, includeBOM: includeBOM)
         return try array.withUnsafeBufferPointer {
             try body($0.prefix(4))

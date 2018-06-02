@@ -55,23 +55,42 @@ extension JSONSerialization: JSONParserType {
     /// - parameter object: The instance of `Any` returned from serializing the JSON.
     /// - returns: An instance of `JSON` matching the JSON given to the function.
     public static func makeJSON(with object: Any) -> JSON {
+        #if !swift(>=3.2) && (os(macOS) || os(iOS) || os(macOS) || os(tvOS))
+            if let n = object as? NSNumber {
+                let numberType = CFNumberGetType(n)
+                switch numberType {
+                case .charType:
+                    return .bool(n.boolValue)
+
+                case .shortType, .intType, .longType, .cfIndexType, .nsIntegerType, .sInt8Type, .sInt16Type, .sInt32Type:
+                    return .int(n.intValue)
+
+                default:
+                    return .double(n.doubleValue)
+                }
+            }
+        #endif
+
         switch object {
+        case let n as Bool:
+            return .bool(n)
+
         case let n as Int:
             return .int(n)
 
         case let n as Double:
             return .double(n)
-        
-        case let n as Bool:
-            return .bool(n)
+
+        case let n as NSNumber:
+            return .double(n.doubleValue)
 
         case let arr as [Any]:
             return makeJSONArray(arr)
 
-        case let dict as [Swift.String: Any]:
+        case let dict as [String: Any]:
             return makeJSONDictionary(dict)
 
-        case let s as Swift.String:
+        case let s as String:
             return .string(s)
 
         default:

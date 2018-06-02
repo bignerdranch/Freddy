@@ -12,9 +12,9 @@ class JSONSerializingTests: XCTestCase {
         XCTAssertGreaterThan(data.count, 0, "There should be data.")
     }
     
-    func testThatJSONCanBeSerializedToString() {
-        let string = try! json.serializeString()
-        XCTAssertGreaterThan(string.characters.count, 0, "There should be characters.")
+    func testThatJSONCanBeSerializedToString() throws {
+        let string = try json.serializeString()
+        XCTAssertFalse(string.isEmpty, "There should be characters.")
     }
 
     func testThatJSONDataIsEqual() {
