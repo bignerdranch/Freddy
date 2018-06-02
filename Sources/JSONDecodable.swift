@@ -41,6 +41,25 @@ extension Double: JSONDecodable {
 }
 
 extension Int: JSONDecodable {
+
+    private init?(exactly string: String) {
+        #if swift(>=3.2)
+        let characters = string
+        #else
+        let characters = string.characters
+        #endif
+
+        if let int = Int(string) {
+            self = int
+        } else if let double = Double(string),
+            let decimalSeparator = characters.index(of: "."),
+            let int = Int(String(characters.prefix(upTo: decimalSeparator))),
+            double == Double(int) {
+            self = int
+        } else {
+            return nil
+        }
+    }
     
     /// An initializer to create an instance of `Int` from a `JSON` value.
     /// - parameter json: An instance of `JSON`.
@@ -48,18 +67,11 @@ extension Int: JSONDecodable {
     ///           an instance of `Int` cannot be created from the `JSON` value that was
     ///           passed to this initializer.
     public init(json: JSON) throws {
-
         if case let .double(double) = json, double <= Double(Int.max) {
             self = Int(double)
         } else if case let .int(int) = json {
             self = int
-        } else if case let .string(string) = json, let int = Int(string) {
-            self = int
-        } else if case let .string(string) = json,
-            let double = Double(string),
-            let decimalSeparator = string.characters.index(of: "."),
-            let int = Int(String(string.characters.prefix(upTo: decimalSeparator))),
-            double == Double(int) {
+        } else if case let .string(string) = json, let int = Int(exactly: string) {
             self = int
         } else {
             throw JSON.Error.valueNotConvertible(value: json, to: Int.self)
@@ -134,7 +146,7 @@ internal extension JSON {
     static func getArray(from json: JSON) throws -> [JSON] {
         // Ideally should be expressed as a conditional protocol implementation on Swift.Array.
         guard case let .array(array) = json else {
-            throw Error.valueNotConvertible(value: json, to: Swift.Array<JSON>)
+            throw Error.valueNotConvertible(value: json, to: Swift.Array<JSON>.self)
         }
         return array
     }
@@ -147,7 +159,7 @@ internal extension JSON {
     static func getDictionary(from json: JSON) throws -> [String: JSON] {
         // Ideally should be expressed as a conditional protocol implementation on Swift.Dictionary.
         guard case let .dictionary(dictionary) = json else {
-            throw Error.valueNotConvertible(value: json, to: Swift.Dictionary<String, JSON>)
+            throw Error.valueNotConvertible(value: json, to: Swift.Dictionary<String, JSON>.self)
         }
         return dictionary
     }
@@ -174,7 +186,7 @@ internal extension JSON {
     /// - seealso: `JSON.decode(_:type:)`
     static func decodedDictionary<Decoded: JSONDecodable>(from json: JSON) throws -> [Swift.String: Decoded] {
         guard case let .dictionary(dictionary) = json else {
-            throw Error.valueNotConvertible(value: json, to: Swift.Dictionary<String, Decoded>)
+            throw Error.valueNotConvertible(value: json, to: Swift.Dictionary<String, Decoded>.self)
         }
         var decodedDictionary = Swift.Dictionary<String, Decoded>(minimumCapacity: dictionary.count)
         for (key, value) in dictionary {
