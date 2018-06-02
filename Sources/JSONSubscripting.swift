@@ -249,23 +249,53 @@ extension JSON {
         public static let missingKeyBecomesNil = SubscriptingOptions(rawValue: 1 << 1)
     }
     
-    fileprivate func mapOptional<Value>(at path: [JSONPathType], alongPath options: SubscriptingOptions, transform: (JSON) throws -> Value) throws -> Value? {
-        let detectNull = options.contains(.nullBecomesNil)
-        let detectNotFound = options.contains(.missingKeyBecomesNil)
-        var json: JSON?
+    fileprivate func mapOptional<Value>(alongPath options: SubscriptingOptions,
+                                        applyRecursively: Bool = false,
+                                        transform: (JSON) throws -> Value) throws -> Value? {
+        
         do {
-            json = try value(at: path, detectingNull: detectNull)
-            return try json.map(transform)
-        } catch Error.indexOutOfBounds where detectNotFound {
+            return try transform(self)
+        } catch Error.valueNotConvertible where options.detectNull && self == .null {
             return nil
-        } catch Error.keyNotFound where detectNotFound {
+        } catch Error.valueNotConvertible(let json, _) where options.detectNull && json == .null && applyRecursively {
             return nil
-        } catch Error.valueNotConvertible where detectNull && json == .null {
+        } catch Error.indexOutOfBounds where options.detectNotFound && applyRecursively {
             return nil
-        } catch SubscriptError.subscriptIntoNull where detectNull {
+        } catch Error.keyNotFound where options.detectNotFound && applyRecursively {
             return nil
         }
     }
+    
+    fileprivate func mapOptional<Value>(at path: [JSONPathType],
+                                        alongPath options: SubscriptingOptions,
+                                        applyRecursively: Bool,
+                                        transform: (JSON) throws -> Value) throws -> Value? {
+        
+        var json: JSON?
+        do {
+            json = try value(at: path, detectingNull: options.detectNull)
+        } catch Error.indexOutOfBounds where options.detectNotFound {
+            return nil
+        } catch Error.keyNotFound where options.detectNotFound {
+            return nil
+        } catch SubscriptError.subscriptIntoNull where options.detectNull {
+            return nil
+        }
+        
+        return try json?.mapOptional(alongPath: options, applyRecursively: applyRecursively, transform: transform)
+    }
+}
+
+extension JSON.SubscriptingOptions {
+    
+    var detectNull: Bool {
+        return contains(.nullBecomesNil)
+    }
+    
+    var detectNotFound: Bool {
+        return contains(.missingKeyBecomesNil)
+    }
+    
 }
 
 extension JSON {
@@ -298,8 +328,8 @@ extension JSON {
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
-    public func decode<Decoded: JSONDecodable>(at path: JSONPathType..., alongPath options: SubscriptingOptions, type: Decoded.Type = Decoded.self) throws -> Decoded? {
-        return try mapOptional(at: path, alongPath: options, transform: JSON.getDecoded)
+    public func decode<Decoded: JSONDecodable>(at path: JSONPathType..., alongPath options: SubscriptingOptions, applyRecursively: Bool = false, type: Decoded.Type = Decoded.self) throws -> Decoded? {
+        return try mapOptional(at: path, alongPath: options, applyRecursively: applyRecursively, transform: JSON.getDecoded)
     }
 
     /// Optionally retrieves a `Double` from a path into JSON.
@@ -315,8 +345,8 @@ extension JSON {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    public func getDouble(at path: JSONPathType..., alongPath options: SubscriptingOptions) throws -> Double? {
-        return try mapOptional(at: path, alongPath: options, transform: Double.init)
+    public func getDouble(at path: JSONPathType..., alongPath options: SubscriptingOptions, applyRecursively: Bool = false) throws -> Double? {
+        return try mapOptional(at: path, alongPath: options, applyRecursively: applyRecursively, transform: Double.init)
     }
 
     /// Optionally retrieves a `Int` from a path into JSON.
@@ -332,8 +362,8 @@ extension JSON {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    public func getInt(at path: JSONPathType..., alongPath options: SubscriptingOptions) throws -> Int? {
-        return try mapOptional(at: path, alongPath: options, transform: Int.init)
+    public func getInt(at path: JSONPathType..., alongPath options: SubscriptingOptions, applyRecursively: Bool = false) throws -> Int? {
+        return try mapOptional(at: path, alongPath: options, applyRecursively: applyRecursively, transform: Int.init)
     }
 
     /// Optionally retrieves a `String` from a path into JSON.
@@ -349,8 +379,8 @@ extension JSON {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    public func getString(at path: JSONPathType..., alongPath options: SubscriptingOptions) throws -> String? {
-        return try mapOptional(at: path, alongPath: options, transform: String.init)
+    public func getString(at path: JSONPathType..., alongPath options: SubscriptingOptions, applyRecursively: Bool = false) throws -> String? {
+        return try mapOptional(at: path, alongPath: options, applyRecursively: applyRecursively, transform: String.init)
     }
 
     /// Optionally retrieves a `Bool` from a path into JSON.
@@ -366,8 +396,8 @@ extension JSON {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    public func getBool(at path: JSONPathType..., alongPath options: SubscriptingOptions) throws -> Bool? {
-        return try mapOptional(at: path, alongPath: options, transform: Bool.init)
+    public func getBool(at path: JSONPathType..., alongPath options: SubscriptingOptions, applyRecursively: Bool = false) throws -> Bool? {
+        return try mapOptional(at: path, alongPath: options, applyRecursively: applyRecursively, transform: Bool.init)
     }
 
     /// Optionally retrieves a `[JSON]` from a path into the recieving structure.
@@ -384,8 +414,8 @@ extension JSON {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    public func getArray(at path: JSONPathType..., alongPath options: SubscriptingOptions) throws -> [JSON]? {
-        return try mapOptional(at: path, alongPath: options, transform: JSON.getArray)
+    public func getArray(at path: JSONPathType..., alongPath options: SubscriptingOptions, applyRecursively: Bool = false) throws -> [JSON]? {
+        return try mapOptional(at: path, alongPath: options, applyRecursively: applyRecursively, transform: JSON.getArray)
     }
 
     /// Optionally decodes many values from a descendant array at a path into
@@ -406,8 +436,8 @@ extension JSON {
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
-    public func decodedArray<Decoded: JSONDecodable>(at path: JSONPathType..., alongPath options: SubscriptingOptions, type: Decoded.Type = Decoded.self) throws -> [Decoded]? {
-        return try mapOptional(at: path, alongPath: options, transform: JSON.decodedArray)
+    public func decodedArray<Decoded: JSONDecodable>(at path: JSONPathType..., alongPath options: SubscriptingOptions, applyRecursively: Bool = false, type: Decoded.Type = Decoded.self) throws -> [Decoded]? {
+        return try mapOptional(at: path, alongPath: options, applyRecursively: applyRecursively, transform: JSON.decodedArray)
     }
 
     /// Optionally retrieves a `[String: JSON]` from a path into the recieving
@@ -425,8 +455,8 @@ extension JSON {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
-    public func getDictionary(at path: JSONPathType..., alongPath options: SubscriptingOptions) throws -> [String: JSON]? {
-        return try mapOptional(at: path, alongPath: options, transform: JSON.getDictionary)
+    public func getDictionary(at path: JSONPathType..., alongPath options: SubscriptingOptions, applyRecursively: Bool = false) throws -> [String: JSON]? {
+        return try mapOptional(at: path, alongPath: options, applyRecursively: applyRecursively, transform: JSON.getDictionary)
     }
     
     /// Optionally attempts to decode many values from a descendant object at a path
@@ -448,8 +478,8 @@ extension JSON {
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
-    public func decodedDictionary<Decoded: JSONDecodable>(at path: JSONPathType..., alongPath options: SubscriptingOptions, type: Decoded.Type = Decoded.self) throws -> [String: Decoded]? {
-        return try mapOptional(at: path, alongPath: options, transform: JSON.decodedDictionary)
+    public func decodedDictionary<Decoded: JSONDecodable>(at path: JSONPathType..., alongPath options: SubscriptingOptions, applyRecursively: Bool = false, type: Decoded.Type = Decoded.self) throws -> [String: Decoded]? {
+        return try mapOptional(at: path, alongPath: options, applyRecursively: applyRecursively, transform: JSON.decodedDictionary)
     }
 
 }
@@ -458,8 +488,8 @@ extension JSON {
 
 extension JSON {
     
-    fileprivate func mapOptional<Value>(at path: [JSONPathType], fallback: () -> Value, transform: (JSON) throws -> Value) throws -> Value {
-        return try mapOptional(at: path, alongPath: .missingKeyBecomesNil, transform: transform) ?? fallback()
+    fileprivate func mapOptional<Value>(at path: [JSONPathType], applyRecursively: Bool = false, fallback: () -> Value, transform: (JSON) throws -> Value) throws -> Value {
+        return try mapOptional(at: path, alongPath: .missingKeyBecomesNil, applyRecursively: applyRecursively, transform: transform) ?? fallback()
     }
     
     /// Attempts to decode into the returning type from a path into
@@ -472,8 +502,8 @@ extension JSON {
     ///     corresponding `JSON` value.
     ///   * `TypeNotConvertible`: The target value's type inside of
     ///     the `JSON` instance does not match `Decoded`.
-    public func decode<Decoded: JSONDecodable>(at path: JSONPathType..., or fallback: @autoclosure() -> Decoded) throws -> Decoded {
-        return try mapOptional(at: path, fallback: fallback, transform: Decoded.init)
+    public func decode<Decoded: JSONDecodable>(at path: JSONPathType..., applyRecursively: Bool = false, or fallback: @autoclosure() -> Decoded) throws -> Decoded {
+        return try mapOptional(at: path, applyRecursively: applyRecursively, fallback: fallback, transform: Decoded.init)
     }
     
     /// Retrieves a `Double` from a path into JSON or a fallback if not found.
@@ -568,8 +598,8 @@ extension JSON {
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
-    public func decodedArray<Decoded: JSONDecodable>(at path: JSONPathType..., or fallback: @autoclosure() -> [Decoded]) throws -> [Decoded] {
-        return try mapOptional(at: path, fallback: fallback, transform: JSON.decodedArray)
+    public func decodedArray<Decoded: JSONDecodable>(at path: JSONPathType..., applyRecursively: Bool = false, or fallback: @autoclosure() -> [Decoded]) throws -> [Decoded] {
+        return try mapOptional(at: path, applyRecursively: applyRecursively, fallback: fallback, transform: JSON.decodedArray)
     }
     
     /// Retrieves a `[String: JSON]` from a path into JSON or a fallback if not
@@ -605,8 +635,8 @@ extension JSON {
     ///   * `TypeNotConvertible`: The target value's type inside of the `JSON`
     ///     instance does not match the decoded value.
     ///   * Any error that arises from decoding the value.
-    public func decodedDictionary<Decoded: JSONDecodable>(at path: JSONPathType..., or fallback: @autoclosure() -> [String: Decoded]) throws -> [String: Decoded] {
-        return try mapOptional(at: path, fallback: fallback, transform: JSON.decodedDictionary)
+    public func decodedDictionary<Decoded: JSONDecodable>(at path: JSONPathType..., applyRecursively: Bool = false, or fallback: @autoclosure() -> [String: Decoded]) throws -> [String: Decoded] {
+        return try mapOptional(at: path, applyRecursively: applyRecursively, fallback: fallback, transform: JSON.decodedDictionary)
     }
     
     
